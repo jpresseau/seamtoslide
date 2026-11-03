@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='06d17d8';
+var RCG_BUILD='4c57bca';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -55815,7 +55815,8 @@ if(window._rcgCrumb)_rcgCrumb('rebuild-END '+Math.round(_D3._lastBuildMs)+'ms');
 try{
 if(_D3._trimN>0&&!_D3._trimSaid&&typeof showToast==='function'){
 _D3._trimSaid=1;
-showToast('🏘 Big map — '+_D3._trimN+' of the smallest building parts left out to fit. ⚡ Graphics → Full brings them back.');
+var _tmsg='🏘 Big map — '+_D3._trimN+' of the smallest building parts left out to fit. ⚡ Graphics → Full brings them back.';
+if(typeof _d3preOn==='function'&&_d3preOn())_D3._trimLater=_tmsg;else showToast(_tmsg);
 }
 }catch(_ts9){}
 _D3._pendingFirstRender=true;
@@ -56376,6 +56377,7 @@ var D=_D3,P=D._pre||(D._pre={}),now=performance.now();P.tap=Math.round(now-(P.t0
 try{if(typeof _RCGLR!=='undefined'&&_RCGLR.t0!=null)_RCGLR.tap=now-_RCGLR.t0;}catch(_lr){}
 var want=null;try{want=__LS.getItem('rcgDriftPattern');}catch(_w){}
 var other=!!(want&&_da&&_da.pattern&&_da.pattern!==want);
+if(D._trimLater){var tm=D._trimLater;D._trimLater=null;if(other)D._trimSaid=0;else try{if(typeof showToast==='function')showToast(tm);}catch(_tm){}}
 var busy=!!(D._building||D._buildPending||(D._settleQ|0)>0||!(D.buildCount>0));
 P.how=other?'other':(busy?'finish':'ready');
 var b=document.getElementById('driftBoot');
