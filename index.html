@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='973f0e1';
+var RCG_BUILD='89f5f88';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -45232,7 +45232,7 @@ var T=window.THREE,cv=document.getElementById('trk3d');
 if(!cv)throw new Error('no #trk3d canvas - the 3D view was asked for before the map was built');
 try{if(typeof _d3smoothInstall==='function')_d3smoothInstall();}catch(_si9){}
 var _q0=_d3qual();
-var ren=new T.WebGLRenderer({canvas:cv,antialias:_q0.aa});try{if(typeof _d3ctxArm==='function')_d3ctxArm(cv);}catch(_ca9){}
+var ren=new T.WebGLRenderer({canvas:cv,antialias:_q0.aa});try{if(typeof _d3ctxArm==='function')_d3ctxArm(cv);}catch(_ca9){}try{if(typeof _d3emptySkipArm==='function')_d3emptySkipArm(ren);}catch(_es9){}
 _D3._aaOn=!!_q0.aa;
 ren.setPixelRatio(_d3pxr());ren.setClearColor(0xbcd9ea,1);
 var _shON=_q0.shadow;try{var _shP=__LS.getItem("rcg_d3shadow");if(_shP!=null)_shON=(_shP!=="0");}catch(_se){}
@@ -45327,6 +45327,13 @@ return [a*cx+b*hx,a*cz+b*hz];
 function _d3shadowSnapAt(tx,tz,half,off,s){
 var R=_d3shadowRig(half,off),ms=s&&s.shadow&&s.shadow.mapSize;
 return _d3shadowSnap(tx,tz,off,R.rx,R.ry,ms?ms.x:0,ms?ms.y:0,_D3_SH_STEP);
+}
+function _d3emptySkipArm(ren){
+if(!ren||ren.__emptySkip)return;ren.__emptySkip=1;
+var rb=ren.renderBufferDirect;
+ren.renderBufferDirect=function(cam,sc,g,m,o,grp){
+if(o&&o.isInstancedMesh&&o.count===0&&!(typeof _D3!=='undefined'&&_D3&&_D3._noEmptySkip)){if(typeof _D3!=='undefined'&&_D3)_D3._emptySkipN=(_D3._emptySkipN|0)+1;return;}
+return rb.apply(this,arguments);};
 }
 var _D3_PXR_SLOW=22;
 var _D3_PXR_SLOW_MS=3000;
@@ -82150,7 +82157,7 @@ var sm=ren.shadowMap,SR=sm.render;
 sm.render=function(){var w=_RCGPF.sh;_RCGPF.sh=true;try{return SR.apply(this,arguments);}finally{_RCGPF.sh=w;}};
 var RB=ren.renderBufferDirect;
 ren.renderBufferDirect=function(cam,sc,g,m,o,grp){
-if(_RCGPF.on&&(_RCGPF.inLoop||_RCGPF.owners)&&!(_RCGPF.sh&&typeof _d3shkSkip==='function'&&_d3shkSkip(o))&&!(_D3._fhd&&_D3._fhd.baking)){var c=_RCGPF.cur,t=0;try{t=_d3pfTris(g,o,grp);}catch(_t){}
+if(_RCGPF.on&&(_RCGPF.inLoop||_RCGPF.owners)&&!(_RCGPF.sh&&typeof _d3shkSkip==='function'&&_d3shkSkip(o))&&!(_D3._fhd&&_D3._fhd.baking)&&!(o&&o.isInstancedMesh&&o.count===0&&!_D3._noEmptySkip)){ var c=_RCGPF.cur,t=0;try{t=_d3pfTris(g,o,grp);}catch(_t){}
 if(_RCGPF.sh){c.ds++;c.ts+=t;}else{c.dm++;c.tm+=t;}
 if(_RCGPF.owners)_d3pfOwnerAdd(o,t);}
 return RB.apply(this,arguments);};
