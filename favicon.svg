@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- HighWall (v1981). A highwall: the bench-cut rock face of a surface mine, seen straight on -
+       four benches stepping back into the hill, green ground on the crest, a pit floor at the
+       foot. It replaces the circuit-and-car this app carried when it was Drift 101 and then
+       Solstice, which named the driving rather than the game.
+       Sized for 16px, which is where a favicon spends its life. Three rules came out of
+       rendering it at 16/20/24/32/48/96 on both light and dark tab chrome:
+         - FOUR benches, not six. At 16px a bench is under three device pixels and the fifth and
+           sixth merge into the ones above them, so the steps stop reading as steps;
+         - each bench is a FLAT SLAB with a lit top edge, because the tread catching the light is
+           what says "cut" rather than "cliff" - a plain gradient reads as a hillside;
+         - the ore seam is the only saturated colour on the tile, so it survives as the one warm
+           mark when everything else has blurred together, the way the red car did before it.
+       Opaque tile, not a transparent silhouette: an icon that is near-black on nothing vanishes
+       in a dark tab. -->
+  <rect width="100" height="100" rx="20" fill="#2b2622"/>
+  <!-- the land on top of the wall -->
+  <path d="M0 20h100v12H0z" fill="#4e7d63"/>
+  <path d="M0 30h100v4H0z" fill="#3d6450"/>
+  <!-- the benches, stepping back left to right: face, then the lit tread above it -->
+  <g>
+    <path d="M0 34h80v15H0z" fill="#6f5740"/><path d="M0 34h80v5H0z" fill="#d9bd93"/>
+    <path d="M0 49h60v15H0z" fill="#634d38"/><path d="M0 49h60v5H0z" fill="#cbad83"/>
+    <path d="M0 64h40v15H0z" fill="#584431"/><path d="M0 64h40v5H0z" fill="#bd9e75"/>
+    <path d="M0 79h20v15H0z" fill="#4d3b2b"/><path d="M0 79h20v5H0z" fill="#ae8f68"/>
+  </g>
+  <!-- the pit floor the wall stands in -->
+  <path d="M0 94h100v6H0z" fill="#3a322b"/>
+  <!-- the seam being worked: the one saturated mark on the tile, on the widest bench so it is
+       still there when the narrow ones have blurred into each other -->
+  <path d="M20 79h20v6H20z" fill="#e9a72e"/>
+  <path d="M40 64h20v6H40z" fill="#e9a72e" opacity=".62"/>
+</svg>
