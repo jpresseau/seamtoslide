@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='af3ca2b';
+var RCG_BUILD='06d17d8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -13634,7 +13634,23 @@ _d3thumbIdbLoad();
 try{if(__LS.getItem('rcgThumbVer')!==_RCG_THUMB_VER){var _tk,_trm=[],_ti;for(_ti=0;;_ti++){_tk=__LS.key(_ti);if(_tk==null)break;if(_tk.indexOf('rcgThumb_')===0)_trm.push(_tk);}for(_ti=0;_ti<_trm.length;_ti++){try{__LS.removeItem(_trm[_ti]);}catch(_e){}}
 if(_D3THMAP){for(_tk in _D3THMAP){if(_tk.indexOf('rcgThumb_')===0)delete _D3THMAP[_tk];}_d3thumbSave();}
 try{__LS.setItem('rcgThumbVer',_RCG_THUMB_VER);}catch(_e){}}}catch(_ve){}
-try{var T=window.THREE;var ren=new T.WebGLRenderer({alpha:true,antialias:true,preserveDrawingBuffer:true});ren.setSize(150,150);ren.setPixelRatio(1);ren.setClearColor(0x000000,0);var sc=new T.Scene();var cam=new T.OrthographicCamera(-2.4,2.4,2.4,-2.4,0.1,100);cam.position.set(4.4,3.7,4.4);cam.lookAt(0,0.5,0); try{ren.outputEncoding=T.sRGBEncoding;ren.toneMapping=T.ACESFilmicToneMapping;ren.toneMappingExposure=0.6;}catch(_tm){}if(typeof _d3dayRig==='function'&&!(_D3&&_D3._oldThumbLook)){_d3dayRig(sc,{dist:10});}else{ren.outputEncoding=T.LinearEncoding;ren.toneMapping=T.NoToneMapping;sc.add(new T.HemisphereLight(0xd2e6ff,0x5a5236,0.5));sc.add(new T.AmbientLight(0xffe9cc,0.1));var dl=new T.DirectionalLight(0xfff1da,1.15);dl.position.set(5,7,4);sc.add(dl);var dl2=new T.DirectionalLight(0x9fc0ff,0.36);dl2.position.set(-4,3,-3);sc.add(dl2);}_D3TH={ren:ren,scene:sc,cam:cam,cache:{}};return _D3TH;}catch(e){return null;}}
+try{var T=window.THREE;var sc=new T.Scene();var cam=new T.OrthographicCamera(-2.4,2.4,2.4,-2.4,0.1,100);cam.position.set(4.4,3.7,4.4);cam.lookAt(0,0.5,0); var look=(typeof _d3dayRig==='function'&&!(_D3&&_D3._oldThumbLook));if(look){_d3dayRig(sc,{dist:10});}else{sc.add(new T.HemisphereLight(0xd2e6ff,0x5a5236,0.5));sc.add(new T.AmbientLight(0xffe9cc,0.1));var dl=new T.DirectionalLight(0xfff1da,1.15);dl.position.set(5,7,4);sc.add(dl);var dl2=new T.DirectionalLight(0x9fc0ff,0.36);dl2.position.set(-4,3,-3);sc.add(dl2);}_D3TH={scene:sc,cam:cam,cache:{},look:look};Object.defineProperty(_D3TH,'ren',{get:function(){return _d3thumbGL(_D3TH);},configurable:true});return _D3TH;}catch(e){return null;}}
+var _D3_THUMB_IDLE=4000;
+function _d3thumbGL(th){
+var r=th._ren,T=window.THREE;
+if(!r){r=new T.WebGLRenderer({alpha:true,antialias:true,preserveDrawingBuffer:true});r.setSize(150,150);r.setPixelRatio(1);r.setClearColor(0x000000,0);
+if(th.look){try{r.outputEncoding=T.sRGBEncoding;r.toneMapping=T.ACESFilmicToneMapping;r.toneMappingExposure=0.6;}catch(_tm){}}
+else{r.outputEncoding=T.LinearEncoding;r.toneMapping=T.NoToneMapping;}
+th._ren=r;th.made=(th.made|0)+1;}
+try{clearTimeout(th._idle);}catch(_c){}
+try{th._idle=setTimeout(function(){if(!(_D3&&_D3._noThumbLetGo))_d3thumbLetGo(th);},_D3_THUMB_IDLE);}catch(_s){}
+return r;
+}
+function _d3thumbLetGo(th){
+var r=th&&th._ren;if(!r)return false;th._ren=null;
+try{r.dispose();}catch(_d){}try{r.forceContextLoss();}catch(_l){}
+th.freed=(th.freed|0)+1;return true;
+}
 function _d3fitOrtho(pts,aspect,pad){
 if(!pts||!pts.length||!(aspect>0))return null;
 var i,minx=Infinity,maxx=-Infinity,miny=Infinity,maxy=-Infinity;
@@ -13785,11 +13801,11 @@ g.boundingBox=null;g.boundingSphere=null;
 }
 var _D3_TEXCAP_PAINT=2048,_D3_TEXCAP=512;
 function _d3texCapSize(w,h,cap){while(w>cap||h>cap){w=Math.max(1,Math.ceil(w/2));h=Math.max(1,Math.ceil(h/2));}return [w,h];}
+function _d3texCapOf(nm,k){nm=String(nm||'');return (k==='map'&&/carpaint|body_paint|livery|paint/i.test(nm)&&!/decal/i.test(nm))?_D3_TEXCAP_PAINT:_D3_TEXCAP;}
 function _d3carGlbTexCap(sc){
 var caps={},tex={},out={n:0,saved:0},SL=['map','normalMap','roughnessMap','metalnessMap','aoMap','emissiveMap','alphaMap','bumpMap','lightMap','clearcoatMap','clearcoatNormalMap','clearcoatRoughnessMap'];
 try{sc.traverse(function(o){if(!o.isMesh||!o.material)return;(Array.isArray(o.material)?o.material:[o.material]).forEach(function(m){if(!m)return;
-var paint=/carpaint|body_paint|livery|paint/i.test(m.name||'');
-SL.forEach(function(k){var t=m[k];if(!t||!t.image)return;var c=(paint&&k==='map')?_D3_TEXCAP_PAINT:_D3_TEXCAP;
+SL.forEach(function(k){var t=m[k];if(!t||!t.image)return;var c=_d3texCapOf(m.name,k);
 tex[t.uuid]=t;caps[t.uuid]=Math.max(caps[t.uuid]||0,c);});});});
 Object.keys(tex).forEach(function(u){var t=tex[u],im=t.image,w=im.width,h=im.height;if(!(w>caps[u]||h>caps[u]))return;
 var z=_d3texCapSize(w,h,caps[u]),cv=document.createElement('canvas');cv.width=z[0];cv.height=z[1];
