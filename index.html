@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='89f5f88';
+var RCG_BUILD='6334485';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -45328,11 +45328,22 @@ function _d3shadowSnapAt(tx,tz,half,off,s){
 var R=_d3shadowRig(half,off),ms=s&&s.shadow&&s.shadow.mapSize;
 return _d3shadowSnap(tx,tz,off,R.rx,R.ry,ms?ms.x:0,ms?ms.y:0,_D3_SH_STEP);
 }
+function _d3emptyDraw(g,o,grp){
+if(o&&o.isInstancedMesh&&o.count===0)return true;
+if(grp&&grp.count===0)return true;
+if(!g)return false;
+if(g.drawRange&&g.drawRange.count===0)return true;
+if(g.isInstancedBufferGeometry&&g.instanceCount===0)return true;
+var ix=g.index,ps=g.attributes&&g.attributes.position;
+return ix?ix.count===0:!!(ps&&ps.count===0);
+}
 function _d3emptySkipArm(ren){
 if(!ren||ren.__emptySkip)return;ren.__emptySkip=1;
-var rb=ren.renderBufferDirect;
+var rb=ren.renderBufferDirect,seen=new WeakMap();
 ren.renderBufferDirect=function(cam,sc,g,m,o,grp){
-if(o&&o.isInstancedMesh&&o.count===0&&!(typeof _D3!=='undefined'&&_D3&&_D3._noEmptySkip)){if(typeof _D3!=='undefined'&&_D3)_D3._emptySkipN=(_D3._emptySkipN|0)+1;return;}
+var D=(typeof _D3!=='undefined')?_D3:null,ms=o?seen.get(o):null;
+if(ms&&!(D&&D._noEmptySkip)&&ms.indexOf(m)>=0&&_d3emptyDraw(g,o,grp)){if(D)D._emptySkipN=(D._emptySkipN|0)+1;return;}
+if(o){if(!ms){ms=[];seen.set(o,ms);}if(ms.indexOf(m)<0){ms.push(m);if(ms.length>6)ms.shift();}}
 return rb.apply(this,arguments);};
 }
 var _D3_PXR_SLOW=22;
@@ -82157,7 +82168,7 @@ var sm=ren.shadowMap,SR=sm.render;
 sm.render=function(){var w=_RCGPF.sh;_RCGPF.sh=true;try{return SR.apply(this,arguments);}finally{_RCGPF.sh=w;}};
 var RB=ren.renderBufferDirect;
 ren.renderBufferDirect=function(cam,sc,g,m,o,grp){
-if(_RCGPF.on&&(_RCGPF.inLoop||_RCGPF.owners)&&!(_RCGPF.sh&&typeof _d3shkSkip==='function'&&_d3shkSkip(o))&&!(_D3._fhd&&_D3._fhd.baking)&&!(o&&o.isInstancedMesh&&o.count===0&&!_D3._noEmptySkip)){ var c=_RCGPF.cur,t=0;try{t=_d3pfTris(g,o,grp);}catch(_t){}
+if(_RCGPF.on&&(_RCGPF.inLoop||_RCGPF.owners)&&!(_RCGPF.sh&&typeof _d3shkSkip==='function'&&_d3shkSkip(o))&&!(_D3._fhd&&_D3._fhd.baking)&&!(typeof _d3emptyDraw==='function'&&!_D3._noEmptySkip&&_d3emptyDraw(g,o,grp))){ var c=_RCGPF.cur,t=0;try{t=_d3pfTris(g,o,grp);}catch(_t){}
 if(_RCGPF.sh){c.ds++;c.ts+=t;}else{c.dm++;c.tm+=t;}
 if(_RCGPF.owners)_d3pfOwnerAdd(o,t);}
 return RB.apply(this,arguments);};
