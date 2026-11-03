@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='4c57bca';
+var RCG_BUILD='372bec2';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -46929,6 +46929,62 @@ return 'at '+e.tier+', '+s(e.at-(t0||0))+' after the tap'+(e.back!=null?', back 
 if(before&&before.length)out.push('graphics taken away in earlier sessions: '+before.slice(-5).map(function(k){return 'at '+k.tier+' on '+new Date(k.when).toISOString().slice(0,16).replace('T',' ');}).join(', '));
 return out;
 }
+var _D3_LIVE_KEY='hwLive',_D3_KILLS_KEY='hwKilled',_D3_LIVE_MS=5000;
+function _d3liveRead(raw){
+var m=null;try{m=JSON.parse(raw);}catch(_p){return null;}
+if(!m||typeof m!=='object'||typeof m.t0!=='number'||typeof m.at!=='number'||!(m.at>=m.t0))return null;
+return {when:m.at,ran:m.at-m.t0,tier:String(m.tier||'?'),pxr:+m.pxr||0,doing:String(m.doing||'?'),crumb:String(m.crumb||''),
+geos:m.geos|0,texs:m.texs|0,builds:m.builds|0};
+}
+function _d3killFormat(K){
+if(!Array.isArray(K)||!K.length)return [];
+return ['the page closed while on screen in earlier sessions (Safari ends a tab short of memory): '+K.slice(-5).map(function(k){
+return 'at '+k.tier+(k.pxr?' '+k.pxr+'x':'')+' after '+(k.ran/60000).toFixed(1)+' min, '+k.doing+
+(k.crumb?' (last: '+k.crumb+')':'')+' on '+new Date(k.when).toISOString().slice(0,16).replace('T',' ');}).join('; ')];
+}
+function _d3liveDoing(){
+var s='the title';
+try{
+if(window._driftMapUp){s=(_D3.drive&&_D3.drive.on)?'driving':(_D3.me&&_D3.me.on)?'on foot':'the map';}
+else if(window._driftPre)s='the title, the map built under it';
+var p=document.querySelector('[data-shname]');if(p&&p.getAttribute('data-shname'))s+=', '+p.getAttribute('data-shname')+' open';
+}catch(_d){}
+return s;
+}
+function _d3liveBeat(){
+if(typeof document==='undefined'||document.hidden||(_D3&&_D3._noLiveMark))return false;
+var now=Date.now(),R=_D3&&_D3.ren,I=R&&R.info&&R.info.memory,m={t0:_D3._liveT0||(_D3._liveT0=now),at:now};
+try{m.tier=(typeof _d3qualName==='function')?_d3qualName():'?';}catch(_t){}
+try{m.pxr=R?Math.round(R.getPixelRatio()*100)/100:0;}catch(_r){}
+m.doing=_d3liveDoing();
+try{m.crumb=String(window.__LS.getItem('rcgCrumb')||'').slice(0,60);}catch(_c){}
+if(I){m.geos=I.geometries;m.texs=I.textures;}m.builds=(_D3&&_D3.buildCount)|0;
+try{window.__LS.setItem(_D3_LIVE_KEY,JSON.stringify(m));}catch(_s){}
+return true;
+}
+function _d3liveLeave(){try{window.__LS.removeItem(_D3_LIVE_KEY);}catch(_r){}}
+function _d3liveBoot(){
+var raw=null;try{raw=window.__LS.getItem(_D3_LIVE_KEY);}catch(_g){}
+_d3liveLeave();
+var k=raw?_d3liveRead(raw):null;if(!k)return null;
+var K=[];try{K=JSON.parse(window.__LS.getItem(_D3_KILLS_KEY)||'[]');if(!Array.isArray(K))K=[];}catch(_k){K=[];}
+K.push(k);try{window.__LS.setItem(_D3_KILLS_KEY,JSON.stringify(K.slice(-5)));}catch(_w){}
+_D3._killedLast=k;
+_D3._killedMsg='⚠️ Last time the page closed while you were playing - '+k.tier+', '+(k.ran/60000).toFixed(1)+' min in, '+k.doing+
+'. Safari ends a page that runs short of memory; your map and career are saved.';
+try{setTimeout(function(){try{if(typeof showToast==='function'){showToast(_D3._killedMsg,9000);_D3._killedSaid=1;}}catch(_t){}},1500);}catch(_st){}
+return k;
+}
+function _d3liveArm(){
+if(_D3._liveArmed)return false;_D3._liveArmed=1;
+try{_d3liveBoot();}catch(_b){}
+try{document.addEventListener('visibilitychange',function(){if(document.hidden)_d3liveLeave();else _d3liveBeat();});}catch(_v){}
+try{window.addEventListener('pagehide',_d3liveLeave);}catch(_p){}
+try{_D3._liveT=setInterval(_d3liveBeat,_D3_LIVE_MS);}catch(_i){}
+_d3liveBeat();
+return true;
+}
+try{if(typeof window!=='undefined'&&window.__LS&&typeof _D3!=='undefined')_d3liveArm();}catch(_la){}
 function _d3poolOwnGeo(g,T){
 var w=new T.BufferGeometry(),k;
 if(g.index)w.setIndex(g.index);
@@ -82182,7 +82238,7 @@ progs:(D.ren&&D.ren.info&&D.ren.info.programs)?D.ren.info.programs.length:0,
 models:_RCGLR.models.map(function(m){var o={};for(var k in m)o[k]=m[k];o.kb=res[m.u]||0;return o;}),
 lt:(t0==null)?[]:_RCGLR.lt.filter(function(x){return x[0]>=t0;})};
 if(t0!=null)d.stalls=_d3lrStalls(_RCGLR.stalls,t0,_RCGLR.lt,_RCGLR.vis);
-var txt=_d3lrFormat(d);try{var _cx=_d3ctxFormat(_RCGCTX.log,_RCGCTX.before,t0||0);if(_cx.length)txt+='\n'+_cx.join('\n');}catch(_cx9){}
+var txt=_d3lrFormat(d);try{var _cx=_d3ctxFormat(_RCGCTX.log,_RCGCTX.before,t0||0);if(_cx.length)txt+='\n'+_cx.join('\n');}catch(_cx9){}try{var _kx=_d3killFormat(JSON.parse(window.__LS.getItem('hwKilled')||'[]'));if(_kx.length)txt+='\n'+_kx.join('\n');}catch(_kx9){}
 try{console.log(txt);}catch(_c){}
 return txt;
 }
