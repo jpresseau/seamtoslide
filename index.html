@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='39ca13e';
+var RCG_BUILD='b3695f0';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -56216,7 +56216,7 @@ return {C:C,tier:t,st:String(s)};
 }
 var _D3_CARMADE=(typeof WeakMap==='function')?new WeakMap():null;
 function _d3carKeepMark(car,C){try{var k=_d3carKeepKey(C);if(_D3_CARMADE&&car&&k)_D3_CARMADE.set(car,k);}catch(_m){}return car;}
-function _d3carKeepN(){var D=window._D3;return D._carKeepN||(D._carKeepN={kept:0,taken:0,built:0,dropped:0});}
+function _d3carKeepN(){var D=window._D3;return D._carKeepN||(D._carKeepN={kept:0,taken:0,built:0,dropped:0,shared:0});}
 function _d3carKeepStash(){
 var D=window._D3;if(!D)return 0;
 if(D._noCarKeep){_d3carKeepDrop();return 0;}
@@ -56251,14 +56251,16 @@ var D=window._D3,K=D&&D._carKeep;if(!K)return 0;D._carKeep=null;
 var L=K.list,n=L.length,i;if(!n)return 0;
 var live=new Set();
 try{if(D.scene)D.scene.traverse(function(o){if(o.geometry)live.add(o.geometry);var M=o.material;if(M){if(Array.isArray(M))M.forEach(function(m){live.add(m);});else live.add(M);}});}catch(_lv){}
-var geos=new Set(),mats=new Set();
+var geos=new Set(),mats=new Set(),shared=0;
 for(i=0;i<n;i++){try{L[i].obj.traverse(function(c){
 if(typeof _d3gpuFree==='function')_d3gpuFree(c);
-if(c.geometry&&!live.has(c.geometry)&&!(c.geometry.userData&&c.geometry.userData._shared))geos.add(c.geometry);
+if(c.geometry&&!live.has(c.geometry)){
+if(!(c.geometry.userData&&c.geometry.userData._shared))geos.add(c.geometry);
+else if(!D._noCarDropShared){shared++;if(!(D._building&&typeof _d3sharedHold==='function'&&_d3sharedHold(c.geometry)))geos.add(c.geometry);}}
 var M=c.material;if(M)(Array.isArray(M)?M:[M]).forEach(function(m){if(m&&!live.has(m))mats.add(m);});});}catch(_tr){}}
 geos.forEach(function(g){try{if(g.dispose)g.dispose();}catch(_d){}});
 mats.forEach(function(m){try{if(typeof _d3matDrop==='function')_d3matDrop(m);else if(m.dispose)m.dispose();}catch(_d){}});
-_d3carKeepN().dropped+=n;
+_d3carKeepN().dropped+=n;_d3carKeepN().shared+=shared;
 return n;
 }
 function _d3scSeat(list,m){
