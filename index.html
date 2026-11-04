@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='fea1319';
+var RCG_BUILD='559c829';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -44299,6 +44299,7 @@ function _d3water(g,m){
 var T=window.THREE;
 var smat=_mat(0x1573a6,{r:0.18,m:0.12,t:true,op:0.56,ds:true});
 var wmat=_mat(0x14b8ec,{r:0.1,m:0.2,t:true,op:0.42,ds:true}) ;
+try{if(typeof _d3waterLookApply==='function')_d3waterLookApply(wmat);}catch(_wl9){}
 try{if(typeof _d3wfxPatch==='function'){_d3wfxPatch(smat,'sea');_d3wfxPatch(wmat,'fresh');}}catch(_wf9){}
 var WY=_D3.WY=0.08;
 var rg=_D3.riverGrp=new T.Group();rg.position.y=-WY;g.add(rg);
@@ -44525,6 +44526,24 @@ mat.needsUpdate=true;return true;
 function _d3wfxStep(now){
 var U=_D3_WFX_U;if(!U)return;U.uWT.value=(now||0)*0.001;U.uWfxOn.value=(_D3&&_D3._noWaterFx)?0:1;
 var w=1;try{if(_D3.wind&&_D3.wind.s>0)w=0.6+Math.min(2,_D3.wind.s*0.4);}catch(_w){}U.uWind.value=w;
+}
+var _D3_RIVER_WATER={c:[0.0257,0.2754,0.2741],op:0.22,r:0.16,m:0.04};
+function _d3waterLook(){
+if(typeof _D3!=='undefined'&&_D3&&_D3._noWaterLook)return 'map';
+var v=null;try{v=(typeof _d3gfxGet==='function')?_d3gfxGet().water:null;}catch(_g){}
+return (v==='river')?'river':'map';
+}
+function _d3waterSpecOf(m){return m?{c:[m.color.r,m.color.g,m.color.b],op:m.opacity,r:m.roughness,m:m.metalness}:null;}
+function _d3waterUnder(W,a){
+if(!W||!a)return W;var c=[0,1,2].map(function(i){return a[i]>0.05?W.c[i]/a[i]:W.c[i];});
+return {c:c,op:W.op,r:W.r,m:W.m};
+}
+function _d3waterSpecSet(m,W){if(!m||!W)return m;m.color.setRGB(W.c[0],W.c[1],W.c[2]);m.opacity=W.op;m.roughness=W.r;m.metalness=W.m;return m;}
+function _d3waterLookApply(wmat){
+if(!wmat)return false;var on=_d3waterLook()==='river';
+if(on){_d3waterSpecSet(wmat,_D3_RIVER_WATER);wmat.userData._waterLook='river';}
+try{_D3._freshWater=_d3waterSpecOf(wmat);}catch(_k){}
+return on;
 }
 function _d3boreFaces(PL){
 var _FACEOUT=null;
@@ -45560,7 +45579,9 @@ d:'Smooth: even greens. Textured: the Ocean Bluff’s moss drawn into every fiel
 {k:'tshape',l:'Tree shape',c:[['round','Round'],['pines','Pines']],build:1,
 d:'Round: the map’s own trees. Pines: every tree a stack of cones in the Canyon Railway’s greens.'},
 {k:'rcol',l:'Rock colour',c:[['map','The map’s'],['sand','Sandstone']],build:1,
-d:'The map’s: its own orange-brown stone. Sandstone: every crag, cliff and bluff in the Canyon Railway’s sandstone.'}
+d:'The map’s: its own orange-brown stone. Sandstone: every crag, cliff and bluff in the Canyon Railway’s sandstone.'},
+{k:'water',l:'Lakes & rivers',c:[['map','The map’s'],['river','Canyon river']],build:1,
+d:'The map’s: bright, half-clear water. Canyon river: every lake and river in the Canyon Railway river’s deep, clear teal. The sea stays the sea.'}
 ];
 var _D3_GFX_TIER={trees:{few:0,some:1,all:2},traffic:{light:0,some:1,busy:2},people:{few:0,some:1,many:2},detail:{low:0,normal:1,high:2}};
 function _d3gfxParse(raw){
@@ -45593,7 +45614,7 @@ if(tp!=null){var p=_d3crowdBudget(tp,dev,true);o.people=p.people;o.mul=p.mul;}
 if(tt!=null)o.traffic=_d3crowdBudget(tt,dev,true).traffic;
 return o;
 }
-function _d3gfxSig(){var G=_d3gfxGet();return [G.trees,G.traffic,G.people,G.detail,G.tshape,G.rcol].join(',');}
+function _d3gfxSig(){var G=_d3gfxGet();return [G.trees,G.traffic,G.people,G.detail,G.tshape,G.rcol,G.water].join(',');}
 function _d3gfxResCap(){var v=+_d3gfxGet().res;return (v>0)?v:0;}
 function _d3gfxResNow(){var p=null;try{p=__LS.getItem('rcgSharp');}catch(_p){}return (p==='1')?'sharp':_d3gfxGet().res;}
 function _d3gfxPace(now,last,cap){return (cap>0&&last!=null&&now-last<1000/cap-4);}
@@ -45631,7 +45652,7 @@ if(typeof driftShadowUI==='function')driftShadowUI();
 if(typeof _d3qualApply==='function')_d3qualApply();}
 else if(k==='glow'){_D3.bloomOn=(v==='on');if(typeof _d3updateGlows==='function')_d3updateGlows();}
 else if(k==='grass'){if(typeof _d3grassApply==='function')_d3grassApply();}
-else if(k==='trees'||k==='traffic'||k==='people'||k==='detail'||k==='tshape'||k==='rcol'){
+else if(k==='trees'||k==='traffic'||k==='people'||k==='detail'||k==='tshape'||k==='rcol'||k==='water'){
 try{if(_D3._gfxBT)clearTimeout(_D3._gfxBT);}catch(_bt){}
 _D3._gfxBT=setTimeout(function(){_D3._gfxBT=0;if(typeof _d3build==='function'&&_D3.inited&&_D3.scene)_d3build();},700);}
 }catch(_ga){}
@@ -82492,9 +82513,10 @@ return ['the canyon: '+(A.gone|0)+' of its '+(A.marked|0)+' buffers let go by th
 var _D3_CANYON_LOOKS=[
 {id:'g',name:'Ground',kit:'The canyon’s own earth and grass',map:'The map’s grass, as it is drawn round the canyon',on:1},
 {id:'t',name:'Trees',kit:'The canyon’s own pines',map:'The colours the map’s trees are drawn in',on:1},
-{id:'r',name:'Rock',kit:'The canyon’s own sandstone',map:'The colour the map’s rock is drawn in',on:0}
+{id:'r',name:'Rock',kit:'The canyon’s own sandstone',map:'The colour the map’s rock is drawn in',on:0},
+{id:'w',name:'Water',kit:'The canyon’s own river',map:'The map’s lakes and rivers',on:0}
 ];
-var _D3_CANYON_GROUND=/^(soil|roadLawn|grass|grassLight)(_flat)?$/,_D3_CANYON_TREES=/^(pine|pineLight|bush)(_flat)?$/,_D3_CANYON_ROCK=/^(sand[A-Z]\w*)(_flat)?$/;
+var _D3_CANYON_GROUND=/^(soil|roadLawn|grass|grassLight)(_flat)?$/,_D3_CANYON_TREES=/^(pine|pineLight|bush)(_flat)?$/,_D3_CANYON_ROCK=/^(sand[A-Z]\w*)(_flat)?$/,_D3_CANYON_WATER=/^water$/;
 var _D3_CANYON_TREE_K={round:[4.69,5.15,4.04],pines:[2.98,3.3,2.29]};
 var _D3_CANYON_GROUND_K=[1,1,1];
 function _d3cyLook(st,c,L){
@@ -82517,6 +82539,7 @@ return P;
 function _d3cyLookPrep(src){
 if(!src||src.userData.__cyGround)return src&&src.userData.__cyGround;
 src.userData.__cyTrees=_d3cyPartsOf(src,_D3_CANYON_TREES);src.userData.__cyRock=_d3cyPartsOf(src,_D3_CANYON_ROCK);
+src.userData.__cyWater=_d3cyPartsOf(src,_D3_CANYON_WATER).map(function(q){q.spec={c:[q.base.r,q.base.g,q.base.b],op:q.m.opacity,r:q.m.roughness,m:q.m.metalness};return q;});
 return (src.userData.__cyGround=_d3cyPartsOf(src,_D3_CANYON_GROUND));
 }
 function _d3cyPartsMean(P){
@@ -82530,7 +82553,13 @@ return m?[m[0]*K[0],m[1]*K[1],m[2]*K[2]]:null;}catch(_w){return null;}
 }
 function _d3cyLookTint(B){
 var e=(typeof _D3GLB!=='undefined')?_D3GLB[_D3_CANYON_MODEL]:null,S=e&&e.scene;if(!S||!B||!B.st)return 0;
-return _d3cyGroundTint(B,S.userData.__cyGround)+_d3cyTreeTint(B,S.userData.__cyTrees)+_d3cyRockTint(B,S.userData.__cyRock);
+return _d3cyGroundTint(B,S.userData.__cyGround)+_d3cyTreeTint(B,S.userData.__cyTrees)+_d3cyRockTint(B,S.userData.__cyRock)+_d3cyWaterTint(B,S.userData.__cyWater);
+}
+function _d3cyWaterTint(B,P){
+if(!P||!P.length)return 0;
+var on=_d3cyLook(B.st,'w')&&!(typeof _D3!=='undefined'&&_D3&&_D3._noCanyonLook),W=(on&&typeof _D3!=='undefined'&&_D3)?_D3._freshWater:null;
+P.forEach(function(q){_d3waterSpecSet(q.m,W?_d3waterUnder(W,q.alb):q.spec);});
+B.lookW=!!W;return P.length;
 }
 function _d3cyRockTint(B,P){
 if(!P||!P.length)return 0;
