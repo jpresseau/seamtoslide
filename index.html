@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='b13ec9a';
+var RCG_BUILD='fea1319';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -45558,7 +45558,9 @@ d:'How many of a big map’s small building parts are kept.'},
 {k:'grass',l:'Grass',c:[['smooth','Smooth'],['textured','Textured']],live:1,
 d:'Smooth: even greens. Textured: the Ocean Bluff’s moss drawn into every field and hillside.'},
 {k:'tshape',l:'Tree shape',c:[['round','Round'],['pines','Pines']],build:1,
-d:'Round: the map’s own trees. Pines: every tree a stack of cones in the Canyon Railway’s greens.'}
+d:'Round: the map’s own trees. Pines: every tree a stack of cones in the Canyon Railway’s greens.'},
+{k:'rcol',l:'Rock colour',c:[['map','The map’s'],['sand','Sandstone']],build:1,
+d:'The map’s: its own orange-brown stone. Sandstone: every crag, cliff and bluff in the Canyon Railway’s sandstone.'}
 ];
 var _D3_GFX_TIER={trees:{few:0,some:1,all:2},traffic:{light:0,some:1,busy:2},people:{few:0,some:1,many:2},detail:{low:0,normal:1,high:2}};
 function _d3gfxParse(raw){
@@ -45591,7 +45593,7 @@ if(tp!=null){var p=_d3crowdBudget(tp,dev,true);o.people=p.people;o.mul=p.mul;}
 if(tt!=null)o.traffic=_d3crowdBudget(tt,dev,true).traffic;
 return o;
 }
-function _d3gfxSig(){var G=_d3gfxGet();return [G.trees,G.traffic,G.people,G.detail,G.tshape].join(',');}
+function _d3gfxSig(){var G=_d3gfxGet();return [G.trees,G.traffic,G.people,G.detail,G.tshape,G.rcol].join(',');}
 function _d3gfxResCap(){var v=+_d3gfxGet().res;return (v>0)?v:0;}
 function _d3gfxResNow(){var p=null;try{p=__LS.getItem('rcgSharp');}catch(_p){}return (p==='1')?'sharp':_d3gfxGet().res;}
 function _d3gfxPace(now,last,cap){return (cap>0&&last!=null&&now-last<1000/cap-4);}
@@ -45629,7 +45631,7 @@ if(typeof driftShadowUI==='function')driftShadowUI();
 if(typeof _d3qualApply==='function')_d3qualApply();}
 else if(k==='glow'){_D3.bloomOn=(v==='on');if(typeof _d3updateGlows==='function')_d3updateGlows();}
 else if(k==='grass'){if(typeof _d3grassApply==='function')_d3grassApply();}
-else if(k==='trees'||k==='traffic'||k==='people'||k==='detail'||k==='tshape'){
+else if(k==='trees'||k==='traffic'||k==='people'||k==='detail'||k==='tshape'||k==='rcol'){
 try{if(_D3._gfxBT)clearTimeout(_D3._gfxBT);}catch(_bt){}
 _D3._gfxBT=setTimeout(function(){_D3._gfxBT=0;if(typeof _d3build==='function'&&_D3.inited&&_D3.scene)_d3build();},700);}
 }catch(_ga){}
@@ -51713,11 +51715,13 @@ var v=(typeof _D3==='object'&&_D3&&_D3._rockSat!=null)?+_D3._rockSat:_D3_ROCK_SA
 return (v>=0&&v<=1)?v:_D3_ROCK_SAT;
 }
 function _d3rockTone(r,g,b){
+if(typeof _d3rockSandOn==='function'&&_d3rockSandOn()){var G=_d3sandGainNow();return [r*G[0],g*G[1],b*G[2]];}
 var k=_d3rockSat(),L=0.2126*r+0.7152*g+0.0722*b;
 return [L+(r-L)*k,L+(g-L)*k,L+(b-L)*k];
 }
 function _d3rockMat(c,ro){
 var sh=(typeof _d3rockShade==='function')?_d3rockShade():1;
+if(typeof _d3rockSandOn==='function'&&_d3rockSandOn()){var _sm9=_mat(0xffffff,{r:(ro>0?ro:0.95),flat:true}),_sc9=_d3sandShade(c,sh);_sm9.color.setRGB(_sc9[0],_sc9[1],_sc9[2]);return _sm9;}
 var _t9=_d3rockTone(((c>>16)&255)/255,((c>>8)&255)/255,(c&255)/255);
 var r=Math.min(255,Math.round(_t9[0]*255*sh)),g9=Math.min(255,Math.round(_t9[1]*255*sh)),
 b9=Math.min(255,Math.round(_t9[2]*255*sh));
@@ -51768,6 +51772,38 @@ if(_f9>0)_r9+=_f9*2.6;
 if(_dx9*_dx9+_dz9*_dz9<_r9*_r9)return true;
 }
 return false;
+}
+var _D3_SAND_ALB={sandBed:[0.499,0.347,0.183],sandShale:[0.378,0.286,0.179],sandBreccia:[0.5,0.334,0.164],
+sandChalk:[0.57,0.434,0.269],sandIron:[0.389,0.24,0.122],sandGranite:[0.375,0.289,0.185]};
+var _D3_ROCK_BASE=[0.686,0.32,0.137];
+function _d3rockLook(){
+if(typeof _D3!=='undefined'&&_D3&&_D3._noRockSand)return 'map';
+var v=null;try{v=(typeof _d3gfxGet==='function')?_d3gfxGet().rcol:null;}catch(_g){}
+return (v==='sand')?'sand':'map';
+}
+var _D3_ROCK_SANDC={k:null,on:false};
+function _d3rockSandOn(){
+var k=((typeof _D3!=='undefined'&&_D3)?(_D3.buildCount|0)+':'+(_D3._noRockSand?1:0):'0:0');
+if(_D3_ROCK_SANDC.k!==k){_D3_ROCK_SANDC.k=k;_D3_ROCK_SANDC.on=_d3rockLook()==='sand';}
+return _D3_ROCK_SANDC.on;
+}
+function _d3sandMean(A){
+A=A||_D3_SAND_ALB;var s=[0,0,0],n=0,k,c;for(k in A){for(c=0;c<3;c++)s[c]+=A[k][c];n++;}
+return n?[s[0]/n,s[1]/n,s[2]/n]:[1,1,1];
+}
+function _d3sandGain(A,B){var S=_d3sandMean(A),b=B||_D3_ROCK_BASE;return [S[0]/b[0],S[1]/b[1],S[2]/b[2]];}
+var _D3_SAND_G=null;
+function _d3sandGainNow(){return _D3_SAND_G||(_D3_SAND_G=_d3sandGain());}
+function _d3sandShade(c,sh,A){
+var r=((c>>16)&255)/255,g=((c>>8)&255)/255,b=(c&255)/255,B=_D3_ROCK_BASE,M=(r+g+b)/3,MB=(B[0]+B[1]+B[2])/3,
+S=_d3sandMean(A),k=(MB>0?M/MB:1)*(sh>0?sh:1);
+return [Math.min(1,S[0]*k),Math.min(1,S[1]*k),Math.min(1,S[2]*k)];
+}
+function _d3rockColsMean(){
+if(typeof _d3rockMats!=='function')return null;
+var M=null,s=[0,0,0],i;try{M=_d3rockMats();}catch(_m){return null;}
+for(i=0;i<M.length;i++){s[0]+=M[i].color.r;s[1]+=M[i].color.g;s[2]+=M[i].color.b;try{M[i].dispose();}catch(_d){}}
+return M.length?[s[0]/M.length,s[1]/M.length,s[2]/M.length]:null;
 }
 var _D3_RF_CELL=[0.5,0.36];
 var _D3_RF_RISE=0.8;
@@ -82455,9 +82491,10 @@ return ['the canyon: '+(A.gone|0)+' of its '+(A.marked|0)+' buffers let go by th
 }
 var _D3_CANYON_LOOKS=[
 {id:'g',name:'Ground',kit:'The canyon’s own earth and grass',map:'The map’s grass, as it is drawn round the canyon',on:1},
-{id:'t',name:'Trees',kit:'The canyon’s own pines',map:'The colours the map’s trees are drawn in',on:1}
+{id:'t',name:'Trees',kit:'The canyon’s own pines',map:'The colours the map’s trees are drawn in',on:1},
+{id:'r',name:'Rock',kit:'The canyon’s own sandstone',map:'The colour the map’s rock is drawn in',on:0}
 ];
-var _D3_CANYON_GROUND=/^(soil|roadLawn|grass|grassLight)(_flat)?$/,_D3_CANYON_TREES=/^(pine|pineLight|bush)(_flat)?$/;
+var _D3_CANYON_GROUND=/^(soil|roadLawn|grass|grassLight)(_flat)?$/,_D3_CANYON_TREES=/^(pine|pineLight|bush)(_flat)?$/,_D3_CANYON_ROCK=/^(sand[A-Z]\w*)(_flat)?$/;
 var _D3_CANYON_TREE_K={round:[4.69,5.15,4.04],pines:[2.98,3.3,2.29]};
 var _D3_CANYON_GROUND_K=[1,1,1];
 function _d3cyLook(st,c,L){
@@ -82479,7 +82516,7 @@ return P;
 }
 function _d3cyLookPrep(src){
 if(!src||src.userData.__cyGround)return src&&src.userData.__cyGround;
-src.userData.__cyTrees=_d3cyPartsOf(src,_D3_CANYON_TREES);
+src.userData.__cyTrees=_d3cyPartsOf(src,_D3_CANYON_TREES);src.userData.__cyRock=_d3cyPartsOf(src,_D3_CANYON_ROCK);
 return (src.userData.__cyGround=_d3cyPartsOf(src,_D3_CANYON_GROUND));
 }
 function _d3cyPartsMean(P){
@@ -82493,7 +82530,14 @@ return m?[m[0]*K[0],m[1]*K[1],m[2]*K[2]]:null;}catch(_w){return null;}
 }
 function _d3cyLookTint(B){
 var e=(typeof _D3GLB!=='undefined')?_D3GLB[_D3_CANYON_MODEL]:null,S=e&&e.scene;if(!S||!B||!B.st)return 0;
-return _d3cyGroundTint(B,S.userData.__cyGround)+_d3cyTreeTint(B,S.userData.__cyTrees);
+return _d3cyGroundTint(B,S.userData.__cyGround)+_d3cyTreeTint(B,S.userData.__cyTrees)+_d3cyRockTint(B,S.userData.__cyRock);
+}
+function _d3cyRockTint(B,P){
+if(!P||!P.length)return 0;
+var on=_d3cyLook(B.st,'r')&&!(typeof _D3!=='undefined'&&_D3&&_D3._noCanyonLook),want=(on&&typeof _d3rockColsMean==='function')?_d3rockColsMean():null,
+f=want?_d3cyTreeFactor(P,want,_D3_CANYON_TREE_CAP):null;
+P.forEach(function(q){if(f)q.m.color.setRGB(q.base.r*f[0],q.base.g*f[1],q.base.b*f[2]);else q.m.color.copy(q.base);});
+B.lookR=!!f;return P.length;
 }
 var _D3_CANYON_TREE_CAP=1.2;
 function _d3cyTreeFactor(P,want,cap){
