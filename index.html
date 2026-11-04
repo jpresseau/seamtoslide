@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='c6d4d6f';
+var RCG_BUILD='39ca13e';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -46925,6 +46925,7 @@ var prev=L.length>=2?L[L.length-2]:null,step=!!(prev&&now-prev.at<_D3_CTX_AGAIN&
 if(step){e.stepped=String(e.forced-1);
 try{if(typeof _d3qualSet==='function')_d3qualSet(e.stepped);}catch(_s){}
 try{if(typeof showToast==='function')showToast('⚠️ The browser took the graphics away twice at '+e.tier+' — one step lighter now');}catch(_t2){}}
+try{if(typeof _d3reefLetGoBack==='function')_d3reefLetGoBack();}catch(_rb){}
 return e;
 }
 function _d3ctxFormat(log,before,t0){
@@ -80603,6 +80604,7 @@ _D3._reefMovePaths=_d3reefMovers(reef);
 _D3._reefLodD=_d3reefLodTable(reef.group);
 _D3._reefLodMax=null;
 _D3._reefLodGen=(_D3._reefLodGen||0)+1;
+try{if(typeof _d3reefLetGoMark==='function')_d3reefLetGoMark(reef.group);}catch(_lg9){}
 try{if(typeof _d3reefCoarseStart==='function')_d3reefCoarseStart(reef.group);}catch(_rc9){}
 _D3.scene.add(reef.group);
 _D3.reef=reef;_D3._reefAt={detail:B.detail,area:area};
@@ -81158,7 +81160,7 @@ if(unit&&isz===3){var l=Math.hypot(B[j*3],B[j*3+1],B[j*3+2])||1;B[j*3]/=l;B[j*3+
 return B;
 }
 function _d3reefCoarseStart(g){
-var D=_D3,T=window.THREE;_d3reefCoarseDrop();if(!g||!T||D._noReefCoarse)return 0;
+var D=_D3,T=window.THREE;_d3reefCoarseDrop();if(!g||!T||D._noReefCoarse){if(g&&typeof _d3reefLetGoArm==='function'){var G0=[];g.traverse(function(o){if(o.isMesh)G0.push(o.geometry);});_d3reefLetGoArm(G0);}return 0;}
 var mv=new Set();(D._reefMovePaths||[]).forEach(function(p){var o=g,i;for(i=0;i<p.length;i++)o=o&&o.children[p[i]];if(o)mv.add(o);});
 g.updateMatrixWorld(true);var inv=new T.Matrix4().copy(g.matrixWorld).invert(),mm=new T.Matrix4(),L=[],jobs=[],full=0;
 g.traverse(function(o){if(o.isMesh)L.push(o);});
@@ -81169,6 +81171,7 @@ full+=t;_D3_REEF_COARSE.forEach(function(c,k){jobs.push({i:i,k:k,geo:gm,cell:c/s
 jobs.sort(function(a,b){return a.k-b.k;});
 D._reefCoarseQ={gen:D._reefLodGen,n:L.length,full:L.map(function(o){return o.geometry;}),lv:_D3_REEF_COARSE.map(function(){return new Array(L.length).fill(null);}),jobs:jobs,S:null,made:0,ms:0,v:0};
 D._reefCoarse={pieces:jobs.length/_D3_REEF_COARSE.length,jobs:jobs.length,made:0,ms:0,tris:{full:Math.round(full),lv:_D3_REEF_COARSE.map(function(){return 0;})}};
+if(typeof _d3reefLetGoArm==='function'){var hasJ=new Set(jobs.map(function(j){return j.geo;}));_d3reefLetGoArm(D._reefCoarseQ.full.filter(function(gm){return !hasJ.has(gm);}),!!jobs.length);}
 if(jobs.length)D._reefCoarseT=setTimeout(_d3reefCoarsePump,0);
 return jobs.length;
 }
@@ -81186,10 +81189,11 @@ bg.setAttribute(nm,new T.BufferAttribute(_d3reefCoarseAttr(at.array,at.itemSize,
 bg.setIndex(new T.BufferAttribute(m>65535?new Uint32Array(S.ni):new Uint16Array(S.ni),1));
 if(gm.groups&&gm.groups.length)S.ng.forEach(function(x){bg.addGroup(x.start,x.count,x.materialIndex);});
 bg.boundingSphere=gm.boundingSphere?gm.boundingSphere.clone():null;bg.boundingBox=gm.boundingBox?gm.boundingBox.clone():null;if(!bg.boundingSphere)bg.computeBoundingSphere();
+if(typeof _d3reefLetGoForm==='function'){_d3reefLetGoForm(bg);if(!Q.jobs.some(function(j){return j.geo===gm;}))_d3reefLetGoArm([gm],true);}
 Q.lv[J.k][J.i]=bg;Q.made++;Q.v++;D._reefCoarse.made=Q.made;D._reefCoarse.tris.lv[J.k]+=S.ni.length/3;
 }
 Q.ms+=performance.now()-t0;D._reefCoarse.ms=Math.round(Q.ms);
-if(Q.jobs.length)D._reefCoarseT=setTimeout(_d3reefCoarsePump,0);
+if(Q.jobs.length)D._reefCoarseT=setTimeout(_d3reefCoarsePump,0);else if(typeof _d3reefLetGoArm==='function')_d3reefLetGoArm(Q.full);
 }
 function _d3reefCoarseApply(g,pxPerModel){
 var D=_D3,Q=D&&D._reefCoarseQ;if(!g||!Q||Q.gen!==D._reefLodGen)return -1;
@@ -81209,6 +81213,60 @@ var groups=[(D.reef&&D.reef.group)||null].concat(D.reefMore||[]),n=0;
 groups.forEach(function(g){if(!g)return;var i=0;g.traverse(function(o){if(!o.isMesh)return;if(i<Q.n&&o.geometry!==Q.full[i])o.geometry=Q.full[i];i++;});var st=_reefLodS[g.uuid];if(st)st.cKey=null;});
 Q.lv.forEach(function(row){row.forEach(function(bg){if(bg){bg.dispose();n++;}});});
 D._reefCoarseQ=null;return n;
+}
+function _d3reefLetGoAcc(){
+var D=_D3;if(!D._reefLetGo)D._reefLetGo={marked:0,gone:0,bytes:0,MB:0,waiting:0,backs:0};
+return D._reefLetGo;
+}
+function _d3reefLetGoDrop(at){
+if(!at||at._rGone||!at.array||!at.array.length)return 0;
+var C=at.array.constructor,b=at.array.byteLength,A=_d3reefLetGoAcc();
+at.array=(C&&C.BYTES_PER_ELEMENT)?new C(0):new Float32Array(0);at._rGone=1;
+A.gone++;A.bytes+=b;A.MB=Math.round(A.bytes/104857.6)/10;if(A.waiting>0)A.waiting--;
+return b;
+}
+function _d3reefLetGoUp(){this._rUp=1;if(this._rGo)_d3reefLetGoDrop(this);}
+function _d3reefLetGoOk(at){return !!(at&&at.isBufferAttribute&&!at.isInterleavedBufferAttribute&&!at.isInstancedBufferAttribute&&at.array&&at.array.length);}
+function _d3reefLetGoGeo(gm,go,seen){
+if(!gm||seen.has(gm))return 0;seen.add(gm);
+try{if(!gm.boundingBox)gm.computeBoundingBox();if(!gm.boundingSphere)gm.computeBoundingSphere();}catch(_bb){return 0;}
+var L=[],nm,n=0,A=_d3reefLetGoAcc();for(nm in gm.attributes)L.push(gm.attributes[nm]);if(gm.index)L.push(gm.index);
+L.forEach(function(at){if(!_d3reefLetGoOk(at)||at._rMark)return;at._rMark=1;at.onUploadCallback=_d3reefLetGoUp;
+if(go)at._rGo=1;A.marked++;A.waiting++;n++;});
+return n;
+}
+function _d3reefLetGoMark(g){
+var D=_D3;D._reefLetGo=null;if(!g||D._noReefLetGo)return 0;
+var seen=new Set(),n=0;
+g.traverse(function(o){if(!o.isMesh||o.isInstancedMesh||o.isSkinnedMesh||!o.geometry)return;n+=_d3reefLetGoGeo(o.geometry,false,seen);});
+_d3reefLetGoAcc();
+return n;
+}
+function _d3reefLetGoArm(L,part){
+var D=_D3;if(!L||D._noReefLetGo||!D._reefLetGo)return 0;
+var n=0,seen=new Set();L.forEach(function(gm){var nm,at;if(!gm||seen.has(gm))return;seen.add(gm);
+for(nm in gm.attributes){at=gm.attributes[nm];if(at&&at._rMark){at._rGo=1;if(at._rUp)n+=_d3reefLetGoDrop(at)?1:0;}}
+at=gm.index;if(at&&at._rMark){at._rGo=1;if(at._rUp)n+=_d3reefLetGoDrop(at)?1:0;}});
+if(!part)D._reefLetGo.armed=1;
+return n;
+}
+function _d3reefLetGoForm(bg){
+if(!bg||_D3._noReefLetGo)return 0;
+return _d3reefLetGoGeo(bg,true,new Set());
+}
+function _d3reefLetGoBack(){
+var D=_D3,A=D&&D._reefLetGo;if(!A||!(A.gone>0)||!D.reef)return false;
+A.backs++;var backs=A.backs;
+try{_d3reefRemove();}catch(_rm){}
+try{_d3reefAdd().then(function(){try{if(D._reefLetGo)D._reefLetGo.backs=backs;}catch(_s){}}).catch(function(e){try{console.warn('reef rebuild after a lost context failed:',e);}catch(_c){}});}catch(_ad){}
+return true;
+}
+function _d3reefLetGoFormat(A,at,places){
+if(!at)return [];
+var l='the reef: built at detail '+(+at.detail).toFixed(2)+' over '+(places|0)+' placements';
+if(!A)l+=', its arrays kept (the switch)';
+else l+=', '+(A.gone|0)+' of its arrays let go by the page ('+(+A.MB||0).toFixed(1)+' MB)'+((A.waiting|0)?', '+(A.waiting|0)+' kept until first drawn':'')+(A.armed?'':', waiting for its coarse forms')+((A.backs|0)?', built again after '+A.backs+' lost context'+(A.backs>1?'s':''):'');
+return [l];
 }
 (function(global){
 global.attachBluffRockDetail=function(T,root){
@@ -82248,7 +82306,7 @@ progs:(D.ren&&D.ren.info&&D.ren.info.programs)?D.ren.info.programs.length:0,
 models:_RCGLR.models.map(function(m){var o={};for(var k in m)o[k]=m[k];o.kb=res[m.u]||0;return o;}),
 lt:(t0==null)?[]:_RCGLR.lt.filter(function(x){return x[0]>=t0;})};
 if(t0!=null)d.stalls=_d3lrStalls(_RCGLR.stalls,t0,_RCGLR.lt,_RCGLR.vis);
-var txt=_d3lrFormat(d);try{var _cx=_d3ctxFormat(_RCGCTX.log,_RCGCTX.before,t0||0);if(_cx.length)txt+='\n'+_cx.join('\n');}catch(_cx9){}try{var _kx=_d3killFormat(JSON.parse(window.__LS.getItem('hwKilled')||'[]'));if(_kx.length)txt+='\n'+_kx.join('\n');}catch(_kx9){}
+var txt=_d3lrFormat(d);try{var _cx=_d3ctxFormat(_RCGCTX.log,_RCGCTX.before,t0||0);if(_cx.length)txt+='\n'+_cx.join('\n');}catch(_cx9){}try{var _kx=_d3killFormat(JSON.parse(window.__LS.getItem('hwKilled')||'[]'));if(_kx.length)txt+='\n'+_kx.join('\n');}catch(_kx9){}try{if(typeof _d3reefLetGoFormat==='function'){var _rx=_d3reefLetGoFormat(_D3._reefLetGo,_D3._reefAt,(typeof _d3reefPlaceTotal==='function')?_d3reefPlaceTotal():0);if(_rx.length)txt+='\n'+_rx.join('\n');}}catch(_rx9){}
 try{console.log(txt);}catch(_c){}
 return txt;
 }
