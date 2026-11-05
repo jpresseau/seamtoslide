@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='8a4e314';
+var RCG_BUILD='73084c1';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -10875,86 +10875,6 @@ var card=azCardEl();if(card){var r=card.getBoundingClientRect();try{__LS.setItem
 }
 function anatomySelect(k){var ov=document.getElementById('anatomyOverlay');if(!ov)return;ov.querySelectorAll('.az-part.active,.az-leg.active').forEach(function(e){e.classList.remove('active');});ov.querySelectorAll('[data-k="'+k+'"]').forEach(function(e){e.classList.add('active');});var info=ANATOMY[k];var box=document.getElementById('azInfo');if(info&&box)box.innerHTML='<div class="az-info-t">'+info.i+' '+info.t+'</div><div class="az-info-d">'+info.d+'</div>'+azTuneHint(k)+azInvBtn(k);}
 function anatomyHover(k){anatomySelect(k);}
-const REC_CHASSIS=[
-{brand:'Atomic RC',name:'DRZ3-MP',scale:'1/24 & 1/28',tag:'Flagship',aliases:['atomic','atomicrc'],
-blurb:`The current benchmark micro-drift chassis. MacPherson-strut front for big steering angle, wheelbase adjustable 90\u2013130mm to fit both 1/24 and 1/28 bodies, quick-change caster (2\u201316\u00b0) and easy Ackermann tuning, and a top-deck-less layout for clean electronics \u2014 it even supports a rear-motor (RR) configuration.`,
-why:`If you want the most adjustable, competition-ready platform to anchor the fleet, this is the one to beat.`},
-{brand:'ZeroRC',name:'RW00S',scale:'1/24',tag:'Competition',aliases:['zerorc'],
-blurb:`A competition-focused 1/24 chassis with a multi-stage rear-gearbox angle adjustment for fine weight-distribution control, refined front geometry, and strong body-mount magnets \u2014 built for a very tunable, mechanical feel.`,
-why:`You already run ZeroRC, so the RW00S is the natural step up in adjustability.`},
-{brand:'GL Racing',name:'BMR-X (EVO / PRO)',scale:'1/24 & 1/28',tag:'Deep support',aliases:['glracing','gl'],
-blurb:`GL Racing\u2019s RWD drift line spans 1/24 and 1/28 across EVO, PRO and ONE variants. Well supported with parts and bodies, and an approachable platform that scales from a first build to a competitive one.`,
-why:`Both scales covered with broad parts support \u2014 an easy long-term platform to live with.`},
-{brand:'Reflex Racing',name:'RX28',scale:'1/28',tag:'Mini-Z staple',aliases:['reflex','reflexracing'],
-blurb:`A well-regarded 1/28 RWD chassis with a strong following and tidy engineering \u2014 a clean, reliable Mini-Z-size platform that\u2019s quick to set up and forgiving on slick tiles.`,
-why:`A proven 1/28 option that drops straight into your low-grip tile routine.`},
-{brand:'PN Racing',name:'MR-03 RWD',scale:'1/28',tag:'Premium parts',aliases:['pnracing','pn'],
-blurb:`PN Racing builds premium chassis and conversions around the Kyosho MR-03 platform, known for precision parts and a huge upgrade catalog. A great route if you like fine-tuning with high-quality hop-ups.`,
-why:`If you enjoy dialing in premium parts, PN\u2019s ecosystem is hard to beat.`},
-{brand:'Kyosho',name:'Mini-Z MR-03 RWD',scale:'1/28',tag:'The OEM base',aliases:['kyosho','miniz'],
-blurb:`The original Mini-Z RWD platform the whole micro-drift scene is built on. Atomic, PN and Reflex all make chassis and parts that bolt onto it, so it has the widest body and parts compatibility of all.`,
-why:`The safest backbone for the hobby \u2014 everything fits it.`},
-{brand:'RTRC',name:'RTA',scale:'1/28',tag:'Tuner pick',aliases:['rtrc'],
-blurb:`A 1/28 RWD drift chassis aimed at tuners, carried alongside the established Mini-Z-class platforms. A less-common choice that stands out from the usual grid.`,
-why:`Something different from the DRZ / RX28 crowd if you want variety.`},
-{brand:'MWX',name:'R.1',scale:'1/28',tag:'Boutique',aliases:['mwx'],
-blurb:`A boutique 1/28 RWD chassis carried by specialist drift shops \u2014 worth a look if you collect distinctive, lower-volume platforms.`,
-why:`A collector-friendly, less-mainstream chassis for the shelf and the track.`}
-];
-function _normBrand(x){return String(x==null?'':x).toLowerCase().replace(/[^a-z0-9]/g,'');}
-function _recLoad(key){try{return new Set(JSON.parse(__LS.getItem(key)||'[]'));}catch(e){return new Set();}}
-function _recSave(key,set){try{__LS.setItem(key,JSON.stringify(Array.from(set)));}catch(e){}}
-function recFavSet(){return _recLoad('rcg_rec_fav');}
-function recDismissSet(){return _recLoad('rcg_rec_dismiss');}
-function recId(c){return _normBrand(c.brand)+'__'+_normBrand(c.name);}
-function recToggleFav(id){var s=recFavSet();if(s.has(id))s.delete(id);else s.add(id);_recSave('rcg_rec_fav',s);renderRecommended();}
-function recDismiss(id){var s=recDismissSet();s.add(id);_recSave('rcg_rec_dismiss',s);renderRecommended();}
-function recRestoreOne(id){var s=recDismissSet();s.delete(id);_recSave('rcg_rec_dismiss',s);renderRecommended();}
-function recRestore(){_recSave('rcg_rec_dismiss',new Set());renderRecommended();}
-var _recShowHidden=false;function recToggleHidden(){_recShowHidden=!_recShowHidden;renderRecommended();}
-function recCard(c){
-var find='https://www.google.com/search?q='+encodeURIComponent(c.brand+' '+c.name+' RWD drift chassis');
-var fav=c._fav,dis=c._dismissed,id=c._id||'';
-return '<div class="rec-card'+(c.owned?' owned':'')+(fav?' rec-fav':'')+(dis?' rec-dis':'')+'">'
-+'<div class="rec-card-top"><div class="rec-id"><div class="rec-brand">'+escapeHtml(c.brand)+'</div><div class="rec-name">'+escapeHtml(c.name)+'</div></div>'
-+'<span class="rec-badge'+(c.owned?' own':'')+'">'+(c.owned?'\u2713 In your fleet':escapeHtml(c.tag))+'</span></div>'
-+'<div class="rec-scale">\ud83d\udcd0 '+escapeHtml(c.scale)+'</div>'
-+'<div class="rec-blurb">'+c.blurb+'</div>'
-+'<div class="rec-why">'+c.why+'</div>'
-+'<div class="rec-foot-row"><a class="rec-find" href="'+find+'" target="_blank" rel="noopener">Find it \u2192</a>'
-+'<div class="rec-acts">'
-+'<button class="rec-act'+(fav?' on':'')+'" onclick="recToggleFav(\''+id+'\')" title="'+(fav?'Unfavourite':'Favourite')+'">'+(fav?'\u2605':'\u2606')+'</button>'
-+(dis?'<button class="rec-act" onclick="recRestoreOne(\''+id+'\')" title="Restore">\u21a9</button>':'<button class="rec-act rec-x" onclick="recDismiss(\''+id+'\')" title="Hide">\u2715</button>')
-+'</div></div>'
-+'</div>';
-}
-function renderRecommended(){
-var mv=document.getElementById('mv');
-var ownedSet=new Set(parts.map(function(p){return _normBrand(p.brand);}));
-function ct(t){return parts.filter(function(p){return partType(p)===t;}).length;}
-var rollers=Math.min(ct('Motor'),ct('ESC'),ct('Servo'),ct('Receivers'));
-var favS=recFavSet(),disS=recDismissSet();
-var newOnes=[],ownedOnes=[],hidden=[];
-REC_CHASSIS.forEach(function(c){
-var owned=c.aliases.some(function(a){return ownedSet.has(a);});
-var o={};for(var k in c)o[k]=c[k];o.owned=owned;o._id=recId(c);o._fav=favS.has(o._id);o._dismissed=disS.has(o._id);
-if(o._dismissed){hidden.push(o);return;}
-(owned?ownedOnes:newOnes).push(o);
-});
-function favsort(a,b){return (b._fav?1:0)-(a._fav?1:0);}
-newOnes.sort(favsort);ownedOnes.sort(favsort);
-var html='<div class="rec-wrap">';
-html+='<div class="rec-intro"><div class="rec-intro-t">\ud83d\udca1 Recommended drift chassis</div><div class="rec-intro-d">Curated 1/24\u20131/28 RWD platforms worth adding to your fleet'+(rollers>0?' \u2014 and you already hold spare electronics for about <b>'+rollers+'</b> more complete roller'+(rollers===1?'':'s')+'.':'.')+'</div></div>';
-if(newOnes.length){html+='<div class="rec-sec-h">Worth adding</div><div class="rec-grid">'+newOnes.map(recCard).join('')+'</div>';}
-if(ownedOnes.length){html+='<div class="rec-sec-h">Already in your fleet</div><div class="rec-grid">'+ownedOnes.map(recCard).join('')+'</div>';}
-if(hidden.length){
-html+='<div class="rec-hidden-bar"><span>\ud83d\ude48 '+hidden.length+' hidden</span><button class="rec-showhide" onclick="recToggleHidden()">'+(_recShowHidden?'Hide':'Show')+'</button><button class="rec-showhide" onclick="recRestore()">Restore all</button></div>';
-if(_recShowHidden){html+='<div class="rec-grid">'+hidden.map(recCard).join('')+'</div>';}
-}
-html+='<div class="rec-foot">\u201cIn your fleet\u201d is matched from the brands in your parts list. \u2606 favourites a chassis (sorts it to the top), \u2715 hides it. Tap \u201cFind it\u201d to search.</div>';
-html+='</div>';
-mv.innerHTML=html;
-}
 function clearFilters(){
 document.getElementById('fs').value='';window._fscSet.clear();window._fdrift=false;
 window._floSet.clear();document.getElementById('fbl').value='';
@@ -47240,6 +47160,13 @@ try{window.__LS.setItem(_D3_LIVE_KEY,JSON.stringify(m));}catch(_s){}
 return true;
 }
 function _d3liveLeave(){try{window.__LS.removeItem(_D3_LIVE_KEY);}catch(_r){}}
+var _D3_KILL_AGAIN=3600000,_D3_KILL_TIERS=['Faster','Fast','Full'];
+function _d3killStepDown(K,forced){
+var f=String(forced),t=(f==='2'||f==='1')?+f:-1;if(t<1||!Array.isArray(K)||K.length<2)return null;
+var a=K[K.length-2],b=K[K.length-1],nm=_D3_KILL_TIERS[t];
+if(!a||!b||a.tier!==nm||b.tier!==nm||!(b.when>=a.when)||b.when-a.when>_D3_KILL_AGAIN)return null;
+return t-1;
+}
 function _d3liveBoot(){
 var raw=null;try{raw=window.__LS.getItem(_D3_LIVE_KEY);}catch(_g){}
 _d3liveLeave();
@@ -47249,6 +47176,11 @@ K.push(k);try{window.__LS.setItem(_D3_KILLS_KEY,JSON.stringify(K.slice(-5)));}ca
 _D3._killedLast=k;
 _D3._killedMsg='⚠️ Last time the page closed while you were playing - '+k.tier+', '+(k.ran/60000).toFixed(1)+' min in, '+k.doing+
 '. Safari ends a page that runs short of memory; your map and career are saved.';
+var f=null,dn=null;try{f=window.__LS.getItem('rcg_d3tier');}catch(_f){}
+if(!_D3._noKillStep)dn=_d3killStepDown(K,f);
+if(dn!=null){try{window.__LS.setItem('rcg_d3tier',String(dn));}catch(_st){}_D3._tier=null;_D3._killStep={from:+f,to:dn};
+_D3._killedMsg='⚠️ The page closed twice on '+k.tier+' - Safari ends a page that runs short of memory - so the graphics are set back to '+
+_D3_KILL_TIERS[dn]+'. Your map and career are saved; More ▸ ⚡ Graphics & performance to try '+k.tier+' again.';}
 try{setTimeout(function(){try{if(typeof showToast==='function'){showToast(_D3._killedMsg,9000);_D3._killedSaid=1;}}catch(_t){}},1500);}catch(_st){}
 return k;
 }
@@ -47262,6 +47194,39 @@ _d3liveBeat();
 return true;
 }
 try{if(typeof window!=='undefined'&&window.__LS&&typeof _D3!=='undefined')_d3liveArm();}catch(_la){}
+var _D3_LOAD_OK_MS=20000,_D3_LOAD_OK_CAP=180000;
+function _d3loadOkDue(st,now,ms,cap){
+if(!st)return true;
+if(now-st.since>=cap)return true;
+return st.calm!=null&&now-st.calm>=ms;
+}
+function _d3loadSettled(){
+var D=(typeof _D3!=='undefined')?_D3:null;
+if(!D||D._building||D._buildPending||D._baT||(D._settleQ|0)>0||D._bldSettling)return false;
+if(D._kitTrainWait&&D._kitTrainWait.length)return false;
+try{if(typeof _D3GLB!=='undefined')for(var k in _D3GLB)if(_D3GLB[k]&&_D3GLB[k].state==='load')return false;}catch(_g){}
+return true;
+}
+function _d3loadOkNow(){
+var D=_D3;if(D._loadOkT){clearInterval(D._loadOkT);D._loadOkT=0;}D._loadOk=null;
+try{if(typeof _rcgGfxOk==='function')_rcgGfxOk();}catch(_a){}
+try{if(typeof _d3gfxOk==='function')_d3gfxOk();}catch(_b){}
+return true;
+}
+function _d3loadOkLater(){
+var D=_D3,ms=(D._loadOkMs>0)?D._loadOkMs:_D3_LOAD_OK_MS;
+if(D._noLoadOkWait)return _d3loadOkNow();
+D._loadOk={since:Date.now(),calm:null};
+if(!D._loadOkT)D._loadOkT=setInterval(function(){
+var st=D._loadOk,now=Date.now();if(!st){clearInterval(D._loadOkT);D._loadOkT=0;return;}
+if(_d3loadSettled()){if(st.calm==null)st.calm=now;}else st.calm=null;
+if(_d3loadOkDue(st,now,(D._loadOkMs>0)?D._loadOkMs:ms,(D._loadOkCap>0)?D._loadOkCap:_D3_LOAD_OK_CAP))_d3loadOkNow();
+},Math.min(1000,Math.max(50,ms>>2)));
+if(!D._loadOkHide){D._loadOkHide=1;
+try{document.addEventListener('visibilitychange',function(){if(document.hidden&&D._loadOk)_d3loadOkNow();});}catch(_v){}
+try{window.addEventListener('pagehide',function(){if(D._loadOk)_d3loadOkNow();});}catch(_p){}}
+return false;
+}
 function _d3poolOwnGeo(g,T){
 var w=new T.BufferGeometry(),k;
 if(g.index)w.setIndex(g.index);
@@ -56217,8 +56182,7 @@ if(_bw8)_D3._bldWetSaid=_bw8.n;
 }catch(_bws){}
 try{if(typeof _d3bldClaimPlinths==='function')_d3bldClaimPlinths();}catch(_bcp){}
 try{if(typeof _d3bldSettle==='function')_d3bldSettle();}catch(_bse){}
-try{if(typeof _rcgGfxOk==='function')_rcgGfxOk();}catch(_gok){}
-try{if(typeof _d3gfxOk==='function')_d3gfxOk();}catch(_gok2){}
+try{if(typeof _d3loadOkLater==='function')_d3loadOkLater();else{if(typeof _rcgGfxOk==='function')_rcgGfxOk();if(typeof _d3gfxOk==='function')_d3gfxOk();}}catch(_gok){}
 try{_D3.startHandles=[];if(_da&&_da.startMode&&typeof _d3startHandle3D==='function'&&_D3.trackG)_d3startHandle3D(_D3.trackG,_d3map());}catch(_shb){}
 if(window._rcgCrumb)_rcgCrumb('rebuild-END '+Math.round(_D3._lastBuildMs)+'ms');
 try{
