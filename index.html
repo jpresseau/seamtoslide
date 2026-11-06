@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='d236678';
+var RCG_BUILD='829df4b';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -80891,6 +80891,7 @@ var B=_d3reefBudget(area,_d3reefPlaceTotal());
 var reef=null;
 try{
 var _pt9=performance.now(),_pl9=[];
+var _rsW=(typeof _d3reefScratchWatch==='function')?_d3reefScratchWatch():null;
 reef=await window._d3reefBuild({
 detail:B.detail,
 terrain:B.terrain,
@@ -80901,6 +80902,7 @@ _pl9.push([(p&&p.phase)||'?',Math.round(n9-_pt9)]);_pt9=n9;
 _d3reefSay((p&&p.done)||0,(p&&p.total)||0);
 }
 });
+try{if(typeof _d3reefScratchDone==='function')_d3reefScratchDone(_rsW,reef);}catch(_rs9){}
 try{
 _pl9.sort(function(a,b){return b[1]-a[1];});
 _D3._reefPhase=_pl9.slice(0,6);
@@ -80925,6 +80927,7 @@ _d3reefSun();
 try{_d3reefPlace();}catch(_pl9){}
 }finally{
 _d3reefSayDone();
+try{if(_rsW)_rsW.stop();}catch(_rs8){}
 _reefBusy=false;
 if(_reefWanted){_reefWanted=false;if(reef)_d3reefReseat();}
 }
@@ -81607,6 +81610,34 @@ var l='the reef: built at detail '+(+at.detail).toFixed(2)+' over '+(places|0)+'
 if(!A)l+=', its arrays kept (the switch)';
 else l+=', '+(A.gone|0)+' of its arrays let go by the page ('+(+A.MB||0).toFixed(1)+' MB)'+((A.waiting|0)?', '+(A.waiting|0)+' kept until first drawn':'')+((A.noFull|0)?', '+(A.noFull|0)+' of its pieces at their finest coarse form, none kept full (a phone)':'')+(A.armed?'':', waiting for its coarse forms')+((A.backs|0)?', built again after '+A.backs+' lost context'+(A.backs>1?'s':''):'');
 return [l];
+}
+var _D3_REEF_PIECE_KINDS={coral:1,rock:1,vegetation:1};
+function _d3reefScratchWatch(){
+var T=window.THREE,P=T&&T.Object3D&&T.Object3D.prototype,D=_D3;
+if(!P||!D||D._noReefScratch||P.add.__rsW)return null;
+var add0=P.add,roots=new Set(),id0=new T.Object3D().id;
+var w=function(o){
+try{if(arguments.length===1&&o&&o.userData&&_D3_REEF_PIECE_KINDS[o.userData.kind]===1&&this.id>id0)roots.add(this);}catch(_w){}
+return add0.apply(this,arguments);};
+w.__rsW=1;P.add=w;
+return {stop:function(){if(P.add===w)P.add=add0;return roots;}};
+}
+function _d3reefScratchHeld(o,keep){
+for(var q=o,d=0;q&&d<4096;q=q.parent,d++){if(q===keep)return true;if(!q.parent)return !!q.isScene;}
+return true;
+}
+function _d3reefScratchFree(root){
+var st=[root],all=[],o,i;
+while(st.length){o=st.pop();all.push(o);for(i=0;i<o.children.length;i++)st.push(o.children[i]);}
+for(i=0;i<all.length;i++){all[i].children.length=0;if(all[i]!==root)all[i].parent=null;}
+if(root.parent){var c=root.parent.children,k=c.indexOf(root);if(k>=0)c.splice(k,1);root.parent=null;}
+return all.length;
+}
+function _d3reefScratchDone(W,reef){
+var D=_D3,R=W?W.stop():null,A={roots:0,objects:0};if(!R)return null;
+var keep=reef&&reef.group;
+R.forEach(function(p){if(_d3reefScratchHeld(p,keep))return;A.roots++;A.objects+=_d3reefScratchFree(p);});
+D._reefScratch=A;return A;
 }
 (function(global){
 global.attachBluffRockDetail=function(T,root){
