@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='73084c1';
+var RCG_BUILD='d236678';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -81502,8 +81502,10 @@ bg.setAttribute(nm,new T.BufferAttribute(_d3reefCoarseAttr(at.array,at.itemSize,
 bg.setIndex(new T.BufferAttribute(m>65535?new Uint32Array(S.ni):new Uint16Array(S.ni),1));
 if(gm.groups&&gm.groups.length)S.ng.forEach(function(x){bg.addGroup(x.start,x.count,x.materialIndex);});
 bg.boundingSphere=gm.boundingSphere?gm.boundingSphere.clone():null;bg.boundingBox=gm.boundingBox?gm.boundingBox.clone():null;if(!bg.boundingSphere)bg.computeBoundingSphere();
-if(typeof _d3reefLetGoForm==='function'){_d3reefLetGoForm(bg);if(!Q.jobs.some(function(j){return j.geo===gm;}))_d3reefLetGoArm([gm],true);}
-Q.lv[J.k][J.i]=bg;Q.made++;Q.v++;D._reefCoarse.made=Q.made;D._reefCoarse.tris.lv[J.k]+=S.ni.length/3;
+Q.lv[J.k][J.i]=bg;
+if(typeof _d3reefLetGoForm==='function'){_d3reefLetGoForm(bg);if(!Q.jobs.some(function(j){return j.geo===gm;})){
+if(!(typeof _d3reefNoFull==='function'&&_d3reefNoFull()&&_d3reefCoarseNoFull(gm)>=0))_d3reefLetGoArm([gm],true);}}
+Q.made++;Q.v++;D._reefCoarse.made=Q.made;D._reefCoarse.tris.lv[J.k]+=S.ni.length/3;
 }
 Q.ms+=performance.now()-t0;D._reefCoarse.ms=Math.round(Q.ms);
 if(Q.jobs.length)D._reefCoarseT=setTimeout(_d3reefCoarsePump,0);else if(typeof _d3reefLetGoArm==='function')_d3reefLetGoArm(Q.full);
@@ -81515,10 +81517,23 @@ if(st.cKey===key)return st.cLv;st.cKey=key;
 var i,k,top=-1,made=new Array(_D3_REEF_COARSE.length);
 for(i=0;i<M.length&&i<Q.n;i++){
 for(k=0;k<_D3_REEF_COARSE.length;k++)made[k]=!!Q.lv[k][i];
-var pk=off?-1:_d3reefCoarsePick(pxPerModel,_D3_REEF_COARSE,made),want=(pk<0)?Q.full[i]:Q.lv[pk][i];
+var pk=off?-1:_d3reefCoarsePick(pxPerModel,_D3_REEF_COARSE,made);
+if(pk<0&&Q.full[i]&&Q.full[i]._rNoFull)pk=_d3reefCoarseFinest(made);
+var want=(pk<0)?Q.full[i]:Q.lv[pk][i];
 if(M[i].geometry!==want)M[i].geometry=want;
 if(pk>=0&&(top<0||_D3_REEF_COARSE[pk]>_D3_REEF_COARSE[top]))top=pk;}
 st.cLv=top;return top;
+}
+function _d3reefCoarseFinest(made){var k;for(k=made.length-1;k>=0;k--)if(made[k])return k;return -1;}
+function _d3reefCoarseNoFull(gm){
+var D=_D3,Q=D&&D._reefCoarseQ;if(!Q||!gm)return -1;
+var idx=[],fks=[],i;for(i=0;i<Q.n;i++)if(Q.full[i]===gm)idx.push(i);
+for(i=0;i<idx.length;i++){fks.push(_d3reefCoarseFinest(Q.lv.map(function(row){return !!row[idx[i]];})));if(fks[i]<0)return -1;}
+if(!idx.length)return -1;
+var groups=[(D.reef&&D.reef.group)||null].concat(D.reefMore||[]);
+idx.forEach(function(i,j){groups.forEach(function(g){if(!g)return;var st=_d3reefLodState(g),M=st.m;
+if(M[i]&&M[i].geometry===gm){M[i].geometry=Q.lv[fks[j]][i];st.cKey=null;}});});
+return _d3reefLetGoUnseen([gm]);
 }
 function _d3reefCoarseDrop(){
 var D=_D3,Q=D&&D._reefCoarseQ;if(D&&D._reefCoarseT){clearTimeout(D._reefCoarseT);D._reefCoarseT=0;}if(!Q)return 0;
@@ -81563,6 +81578,18 @@ at=gm.index;if(at&&at._rMark){at._rGo=1;if(at._rUp)n+=_d3reefLetGoDrop(at)?1:0;}
 if(!part)D._reefLetGo.armed=1;
 return n;
 }
+function _d3reefNoFull(){
+var D=(typeof _D3!=='undefined')?_D3:null;if(!D||D._noReefLetGo||D._noReefNoFull)return false;
+if(D._reefNoFullForce)return true;
+try{return typeof _d3devTier==='function'&&_d3devTier()<2;}catch(_t){return false;}
+}
+function _d3reefLetGoUnseen(L){
+var D=_D3,n=0,seen=new Set();if(!L||!D._reefLetGo)return 0;
+L.forEach(function(gm){var nm,at;if(!gm||seen.has(gm))return;seen.add(gm);gm._rNoFull=1;D._reefLetGo.noFull=(D._reefLetGo.noFull|0)+1;
+for(nm in gm.attributes){at=gm.attributes[nm];if(at&&at._rMark){at._rGo=1;n+=_d3reefLetGoDrop(at)?1:0;}}
+at=gm.index;if(at&&at._rMark){at._rGo=1;n+=_d3reefLetGoDrop(at)?1:0;}});
+return n;
+}
 function _d3reefLetGoForm(bg){
 if(!bg||_D3._noReefLetGo)return 0;
 return _d3reefLetGoGeo(bg,true,new Set());
@@ -81578,7 +81605,7 @@ function _d3reefLetGoFormat(A,at,places){
 if(!at)return [];
 var l='the reef: built at detail '+(+at.detail).toFixed(2)+' over '+(places|0)+' placements';
 if(!A)l+=', its arrays kept (the switch)';
-else l+=', '+(A.gone|0)+' of its arrays let go by the page ('+(+A.MB||0).toFixed(1)+' MB)'+((A.waiting|0)?', '+(A.waiting|0)+' kept until first drawn':'')+(A.armed?'':', waiting for its coarse forms')+((A.backs|0)?', built again after '+A.backs+' lost context'+(A.backs>1?'s':''):'');
+else l+=', '+(A.gone|0)+' of its arrays let go by the page ('+(+A.MB||0).toFixed(1)+' MB)'+((A.waiting|0)?', '+(A.waiting|0)+' kept until first drawn':'')+((A.noFull|0)?', '+(A.noFull|0)+' of its pieces at their finest coarse form, none kept full (a phone)':'')+(A.armed?'':', waiting for its coarse forms')+((A.backs|0)?', built again after '+A.backs+' lost context'+(A.backs>1?'s':''):'');
 return [l];
 }
 (function(global){
