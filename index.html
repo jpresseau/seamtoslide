@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='f45eaa6';
+var RCG_BUILD='9b9ddf6';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -59490,11 +59490,16 @@ if(D.drive&&D.drive.on&&D.drive.S)return {x:D.drive.S.x,z:D.drive.S.z,cam:cam||D
 if(D.pilot&&D.pilot.on&&D.pilot.S)return {x:D.pilot.S.x,z:D.pilot.S.z,cam:cam||D.cam,mode:'helm'};
 if(D.me&&D.me.on&&D.me.S)return {x:D.me.S.x,z:D.me.S.z,cam:cam||D.cam,mode:'walk'};
 if(D.fly&&D.fly.on&&D.fly.F)return {x:D.fly.F.x,z:D.fly.F.z,cam:cam||D.cam,mode:'fly'};
-if(((D.dive&&D.dive.on)||(D.ride&&D.ride.on))&&cam&&cam.position)return {x:cam.position.x,z:cam.position.z,cam:cam,mode:(D.dive&&D.dive.on)?'dive':'ride'};
+if(((D.dive&&D.dive.on)||(D.ride&&D.ride.on))&&cam&&cam.position){var w=_d3focusWorld(cam);return {x:w.x,z:w.z,cam:cam,mode:(D.dive&&D.dive.on)?'dive':'ride'};}
 }
 }catch(_f){}
 var t=(D&&D.target)||{x:0,z:0};
 return {x:t.x||0,z:t.z||0,cam:(D&&D.cam)||cam,mode:'map'};
+}
+var _d3focusV=null;
+function _d3focusWorld(cam){
+if(!cam.parent||typeof cam.getWorldPosition!=='function')return {x:cam.position.x,z:cam.position.z};
+var V=_d3focusV||(_d3focusV=new window.THREE.Vector3());cam.getWorldPosition(V);return {x:V.x,z:V.z};
 }
 function _d3focusAt(){var F=_d3focus();return {x:F.x,z:F.z};}
 var _D3_SFX_GEARS=[0,1.5,2.8,4.3,6.0,8.4];
