@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='f50d5f6';
+var RCG_BUILD='e976768';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -45406,7 +45406,8 @@ var ft=null;try{ft=(follow&&typeof _d3shadowFoot==='function')?_d3shadowFoot(fo)
 var half=ft?ft.half:_d3shadowBox(span,spanW,_D3.el),ty=ft?ft.ty:0,rc={up:0,down:0,fr:0};
 if(ft)try{rc=_d3shadowReach(_d3shadowLand(tx,tz,half),ty,off);}catch(_rc){}
 if(follow&&!_D3._noShadowSnap&&typeof _d3shadowSnapAt==='function'){var sn=_d3shadowSnapAt(tx,tz,half,off,s,ty,rc);tx=sn[0];tz=sn[1];}
-var key=tx.toFixed(2)+','+tz.toFixed(2)+','+half.toFixed(2)+','+off.join(',')+','+ty+','+rc.up+','+rc.down+','+rc.fr;
+var key=tx.toFixed(2)+','+tz.toFixed(2)+','+half.toFixed(2)+','+off.join(',')+','+ty+','+rc.up+','+rc.down+','+rc.fr+','+((s.shadow&&s.shadow.mapSize)?s.shadow.mapSize.x:0);
+try{if(typeof _d3worldSlopeK==='function')_d3worldSlopeK(_D3.ren);}catch(_wk){}
 if(!force&&_D3._shKey===key)return;
 _D3._shKey=key;
 var R=_d3shadowRig(half,off,rc.up,rc.down,rc.fr);
@@ -45416,8 +45417,8 @@ s.target.position.set(tx,ty,tz);s.target.updateMatrixWorld();
 var sc=s.shadow.camera;
 sc.left=-R.rx;sc.right=R.rx;sc.top=R.ry;sc.bottom=-R.ry;sc.near=R.near;sc.far=R.far;
 sc.updateProjectionMatrix();
-s.shadow.normalBias=R.normalBias;
-_D3._shBox={half:half,span:span,spanW:spanW,el:_D3.el,tx:tx,tz:tz,ty:ty,up:rc.up,down:rc.down,fr:rc.fr,foot:!!ft,k:R.k,rx:R.rx,ry:R.ry,near:R.near,far:R.far};
+s.shadow.normalBias=(_D3._oldNormalBias||typeof _d3shadowNB!=='function')?R.normalBias:_d3shadowNB(R.rx,R.ry,s.shadow.mapSize.x);
+_D3._shBox={half:half,span:span,spanW:spanW,el:_D3.el,tx:tx,tz:tz,ty:ty,up:rc.up,down:rc.down,fr:rc.fr,foot:!!ft,k:R.k,rx:R.rx,ry:R.ry,near:R.near,far:R.far,nb:s.shadow.normalBias};
 }
 function _d3qualApply(){
 try{
@@ -45587,6 +45588,44 @@ if(C&&C.k===k)return C.L;
 var L=(typeof _d3drawnH==='function')?_d3shadowLandOf(cx,cz,half,_d3drawnH,_D3_SH_LANDN):null;
 D._shLand={k:k,L:L};return L;
 }
+var _D3_SH_NBTEX=1.5;
+function _d3shadowNB(rx,ry,px){
+var p=(px>0)?px:2048,r=Math.max(rx>0?rx:0,ry>0?ry:0);
+return _D3_SH_NBTEX*2*r/p;
+}
+var _D3_SH_SLOPE=2;
+var _D3_SH_SLOPE_PCF=4;
+var _D3_SH_ZLINE='float fragCoordZ = 0.5 * vHighPrecisionZW[0] / vHighPrecisionZW[1] + 0.5;';
+var _D3SHSLOPE=null;
+function _d3slopeK(soft){return soft?_D3_SH_SLOPE:_D3_SH_SLOPE_PCF;}
+function _d3slopeFrag(src){
+var s=String(src==null?'':src),i=s.indexOf(_D3_SH_ZLINE);
+if(i<0||s.indexOf(_D3_SH_ZLINE,i+1)>=0)return null;
+var e=i+_D3_SH_ZLINE.length;
+return 'uniform float d3Slope;\n'+s.slice(0,e)+'\n\tfragCoordZ = min( fragCoordZ + d3Slope * fwidth( fragCoordZ ), 1.0 );'+s.slice(e);
+}
+function _d3worldDepthMat(T){
+if(_D3SHSLOPE)return _D3SHSLOPE;if(!T||!T.MeshDepthMaterial)return null;
+var m=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking}),k={value:_D3_SH_SLOPE};
+m.extensions={derivatives:true};
+m.userData.k=k;
+m.onBeforeCompile=function(sh){var f=_d3slopeFrag(sh.fragmentShader);if(f){sh.fragmentShader=f;sh.uniforms.d3Slope=k;}else{try{_D3._shSlopeMiss=1;}catch(_m){}}};
+m.customProgramCacheKey=function(){return 'd3slope';};
+m.name='d3worldSlope';
+return (_D3SHSLOPE=m);
+}
+function _d3worldSlopeK(ren){
+if(!_D3SHSLOPE)return 0;var T=window.THREE,soft=!(ren&&ren.shadowMap&&T&&ren.shadowMap.type===T.PCFShadowMap);
+return (_D3SHSLOPE.userData.k.value=_d3slopeK(soft));
+}
+function _d3worldSlope(mesh,T){
+if(!mesh)return null;
+var dm=(typeof _D3!=='undefined'&&_D3&&_D3._noShadowSlope)?undefined:(_d3worldDepthMat(T)||undefined);
+mesh.customDepthMaterial=dm;
+var c=mesh.userData&&mesh.userData.mergeCells,i;if(c)for(i=0;i<c.length;i++)c[i].customDepthMaterial=dm;
+return dm||null;
+}
+var _D3_LOD_SINK=0.2;
 function _d3emptyDraw(g,o,grp){
 if(o&&o.isInstancedMesh&&o.count===0)return true;
 if(grp&&grp.count===0)return true;
@@ -45938,7 +45977,7 @@ var m=new T.Mesh(new T.BoxGeometry(w,h,d),_mat(col,{r:0.9,flat:true}));
 m.position.set(ctr.x,y,ctr.z);m.castShadow=true;m.receiveShadow=true;
 m.userData._noB=1;m.userData.noMerge=true;m.userData._lodImp=1;g2.add(m);
 }
-ib(sz.x*0.96,sz.y*0.62,sz.z*0.96,bodyC,bb.min.y+sz.y*0.31);
+var _sk9=(typeof _D3_LOD_SINK==='number')?_D3_LOD_SINK:0;ib(sz.x*0.96,sz.y*0.62+_sk9,sz.z*0.96,bodyC,bb.min.y+sz.y*0.31-_sk9/2);
 ib(sz.x*0.86,sz.y*0.38,sz.z*0.86,roofC,bb.min.y+sz.y*0.81);
 g2.userData._noB=1;g2.userData.noMerge=true;g2.userData._lodImp=1;g2.visible=false;
 g2.applyMatrix4(inv);
@@ -51716,6 +51755,7 @@ var _gn9=new Set(objs),_dd9=new Set();objs.forEach(function(o2){if(o2.parent)_dd
 objs.forEach(function(o2){if(o2.parent){o2.parent=null;o2.dispatchEvent({type:'removed'});}if(o2.geometry&&o2.geometry.dispose&&!(o2.geometry.userData&&o2.geometry.userData._shared))o2.geometry.dispose();if(o2.material&&o2.material.dispose)o2.material.dispose();});
 var mat=new T.MeshStandardMaterial({vertexColors:true,roughness:0.92,metalness:0.0,side:T.DoubleSide});var mesh=new T.Mesh(out,mat);mesh.matrixAutoUpdate=false;mesh.frustumCulled=false;mesh.castShadow=true;mesh.receiveShadow=true;_D3.mergedMesh=mesh;g.add(mesh);
 try{if(typeof _d3mergeCells==='function')_d3mergeCells(mesh,T);}catch(_mc9){}
+try{if(typeof _d3worldSlope==='function')_d3worldSlope(mesh,T);}catch(_ws9){}
 }
 function _d3mergeIndexed(plan,total,totalV,_ln,T){
 var pos=new Float32Array(totalV*3),nor=_ln?new Int8Array(totalV*3):new Float32Array(totalV*3),colA=_ln?new Uint8Array(totalV*3):new Float32Array(totalV*3);
