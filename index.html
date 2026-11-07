@@ -2890,7 +2890,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='e976768';
+var RCG_BUILD='ba7dbff';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -45577,9 +45577,20 @@ for(i=0;i<P.length;i+=3){v=Math.abs(-((P[i]-L.cx)*hx+(P[i+2]-L.cz)*hz)*dy+(P[i+1
 r.fr=Math.ceil(m)+1;}
 return r;
 }
+function _d3shadowRider(fo){
+var D=_D3,m=fo&&fo.mode;if(D._noShadowRide)return null;
+if(m==='drive')return (D.drive&&D.drive.obj)||null;
+if(m==='helm')return (D.pilot&&D.pilot.obj)||null;
+if(m==='ride')return (D.ride&&D.ride.kind!=='air'&&D.ride.obj)||null;
+return null;
+}
 function _d3shadowFoot(fo){
-var D=_D3;if(!fo||fo.mode!=='walk'||D._noShadowFoot)return null;
-var y=0;try{var o=D.me&&D.me.obj;y=(o&&o.position&&isFinite(o.position.y))?o.position.y:0;}catch(_y){}
+var D=_D3;if(!fo||D._noShadowFoot)return null;
+var y=0,o;
+if(fo.mode==='walk'){try{o=D.me&&D.me.obj;y=(o&&o.position&&isFinite(o.position.y))?o.position.y:0;}catch(_y){}}
+else{o=_d3shadowRider(fo);if(!o)return null;
+try{if(o.updateWorldMatrix&&o.matrixWorld){o.updateWorldMatrix(true,false);y=o.matrixWorld.elements[13];}else if(o.position)y=o.position.y;}catch(_w){}
+if(typeof y!=='number'||!isFinite(y))y=0;}
 return {half:_D3_SH_FOOT,ty:Math.round(y)};
 }
 function _d3shadowLand(x,z,half){
