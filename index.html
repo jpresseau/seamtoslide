@@ -2891,7 +2891,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='9603c60';
+var RCG_BUILD='fd1c6d8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -45358,7 +45358,7 @@ function _d3qual(at){
 var t=(at===0||at===1||at===2)?at:_d3tier(),fo=null;
 try{var _fv=__LS.getItem('rcg_d3tier');if(_fv==='0'||_fv==='1'||_fv==='2')fo=+_fv;}catch(_qf){}
 var dv=_d3devTier(),cp=_d3ceil(dv),cap=(dv>=t);
-var q={tier:t,forced:fo,dev:dv,aa:cap?(t>=2):((t>=2)&&cp.aa),shadow:(t>=2)||(t===1&&fo==null),
+var q={tier:t,forced:fo,dev:dv,aa:cap?(t>=2):((t>=2)&&cp.aa),shadow:true,
 shMap:cap?((t>=2)?2048:1024):Math.min((t>=2)?2048:1024,cp.shMap),shSoft:(t>=2),lite:(t<2),
 trunkCap:cap?((t>=2)?1e9:((t===1)?3200:1600)):Math.min((t>=2)?1e9:((t===1)?3200:1600),cp.trunk),
 blobCap:(typeof window!=='undefined'&&window._RCG_BLOBCAP>0)?window._RCG_BLOBCAP:(cap?((t>=2)?1e9:((t===1)?19000:9000)):Math.min((t>=2)?1e9:((t===1)?19000:9000),cp.blob)),
