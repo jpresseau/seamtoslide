@@ -2891,7 +2891,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='c1ad6d5';
+var RCG_BUILD='6f5cb6a';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -48968,7 +48968,7 @@ what:'A village street - the road every map has drawn until now'},
 what:'Half again as wide, with a solid double line down the middle'},
 {id:'track',name:'Dirt track', w:0.62, dash:'none', pave:false, big:false, col:null, edge:null,
 what:'Graded earth, no markings and no pavements - and no bus or artic on it'},
-{id:'highway',name:'Highway', w:3.10, dash:'lanes', pave:false, big:true, col:_D3_ROAD_TARMAC, edge:_D3_ROAD_TARMAC_E, spd:2.2,
+{id:'highway',name:'Highway', w:3.33, dash:'lanes', pave:false, big:true, col:_D3_ROAD_TARMAC, edge:_D3_ROAD_TARMAC_E, spd:2.2,
 what:'Two lanes each way behind a median barrier - crossed by bridges, joined by slip roads'},
 {id:'ramp', name:'Slip road', w:0.90, dash:'edge', pave:false, big:true, col:_D3_ROAD_TARMAC, edge:_D3_ROAD_TARMAC_E, spd:1.4, pick:false,
 what:'One lane, one way, between a highway and the road over it'}
@@ -49215,7 +49215,7 @@ var _D3_RS_LIFT=0.062;
 function _d3rsMats(){
 var M={kerb:_mat(0xaaa69d,{r:0.85,ds:true}),pave:_mat(0xbdb7ab,{r:0.92}),lip:_mat(0x8f8b83,{r:0.95,ds:true}),
 white:_mat(0xe9e7e0,{r:0.6}),yellow:_mat(0xf2c235,{e:0xc99a14,ei:0.3})};
-try{M.pave.userData.roadCls='pave';M.white.userData.roadCls='paint';}catch(_t9){}
+try{M.pave.userData.roadCls='pave';M.white.userData.roadCls='paint';M.yellow.userData.roadCls='paintY';}catch(_t9){}
 return M;
 }
 function _d3rsBin(B,mt){var b=B.get(mt);if(!b){b={p:[],i:[]};B.set(mt,b);}return b;}
@@ -50081,7 +50081,7 @@ if(a2<0&&-a2<half+h2+rw*1.4+Math.max(0,v2-vMe)*2+v2*0.4)return false;}
 tc.lcX=me.x-p.x;tc.lcZ=me.z-p.z;tc.lcK=1;tc.lcCool=_D3_LC.cool;tc.lcN=(tc.lcN||0)+1;tc.lcFrom=ed.lane;
 tc.e=T.i;tc.s=T.q.s;tc.fdir=1;tc.rcDone=null;tc.hld=0;
 return true;}
-var _D3_HW={med:0.16,ish:0.27,lane:1.0,osh:0.67};
+var _D3_HW={med:0.16,ish:0.34,lane:1.0,osh:0.83};
 function _d3hwX(rw){var H=_D3_HW,m=H.med*rw,i=m+H.ish*rw;
 return {med:m,inner:i,lanes:[i+H.lane*rw*0.5,i+H.lane*rw*1.5],outer:i+2*H.lane*rw,hw:i+2*H.lane*rw+H.osh*rw};}
 function _d3hwCurve(p0,t0,p3,t1,k,h){
@@ -50271,7 +50271,7 @@ return h;
 }
 function _d3hwClaimW(){
 var rw=(typeof _D3!=='undefined'&&_D3&&_D3.roadW>0)?_D3.roadW:0.3,cs=(typeof _d3hillCell==='function')?_d3hillCell():1.6;
-var hw=((typeof _d3hwX==='function')?_d3hwX(rw).hw:rw*3.1)+0.1;
+var hw=((typeof _d3hwX==='function')?_d3hwX(rw).hw:rw*_d3roadClass('highway').w)+0.1;
 return {rw:hw,cw:hw,cut:Math.max(cs*0.75,0.7),fill:_D3_HW_FILL};
 }
 function _d3hwRibbon(){
@@ -51472,9 +51472,10 @@ return n;
 }
 function _d3rsPaintEdge(B,MT,R,S,rw){
 var hw=R.hw,ew=Math.max(0.008,rw*0.04),ei=Math.max(0.02,rw*0.08),C=R._clip;
-if(C)return _d3rsStripe(B,MT.white,S,C.sg*(hw-ei),ew,hw)+_d3rsRampInnerLine(B,MT,R,S,rw,C)+_d3rsGoreHatch(B,MT,R,S,rw,C);
-return _d3rsStripe(B,MT.white,S,hw-ei,ew,hw)+_d3rsStripe(B,MT.white,S,-(hw-ei),ew,hw);
+if(C)return _d3rsStripe(B,_d3rsEdgeMat(MT,C.sg),S,C.sg*(hw-ei),ew,hw)+_d3rsRampInnerLine(B,MT,R,S,rw,C)+_d3rsGoreHatch(B,MT,R,S,rw,C);
+return _d3rsStripe(B,MT.white,S,hw-ei,ew,hw)+_d3rsStripe(B,_d3rsEdgeMat(MT,-1),S,-(hw-ei),ew,hw);
 }
+function _d3rsEdgeMat(MT,sd){return (sd<0&&MT.yellow&&!(typeof _D3!=='undefined'&&_D3&&_D3._noRampYellow))?MT.yellow:MT.white;}
 function _d3rsPaintHwEdge(B,MT,R,S,rw,sd,o,ew,hw){
 var L0=S[0].s,L1=S[S.length-1].s,cur=L0,n=0,J=(R._joins||[]).filter(function(j){return j.sd===sd;}).sort(function(p,q){return p.a-q.a;});
 var dl=rw*0.45,per=rw*1.2,q;
@@ -51487,15 +51488,18 @@ return n;
 }
 function _d3rsHwY(H,s){if(!H||!H.Y)return null;if(H.ring&&H.L>0)s=((s%H.L)+H.L)%H.L;var q=_d3rjAt(H.P,H.cum,s);return H.Y[q.i-1]+(H.Y[q.i]-H.Y[q.i-1])*q.f;}
 function _d3rsRampInnerLine(B,MT,R,S,rw,C){
-var hw=R.hw,ew=Math.max(0.008,rw*0.04),ei=Math.max(0.02,rw*0.08),o=-C.sg*(hw-ei),n=0,i=0,N=S.length,H=R._hwRec;
+var hw=R.hw,ew=Math.max(0.008,rw*0.04),ei=Math.max(0.02,rw*0.08),o=-C.sg*(hw-ei),n=0,i=0,N=S.length,H=R._hwRec,Ym=_d3rsEdgeMat(MT,-C.sg),q=0;
 function cross(k){var a=C.dLn[k],b=C.dLn[k+1],f=(C.vee-a)/((b-a)||1e-9);return S[k].s+(S[k+1].s-S[k].s)*Math.max(0,Math.min(1,f));}
+function clear(s){while(q>0&&S[q].s>s)q--;while(q<N-1&&S[q+1].s<=s)q++;var k=(q<N-1&&S[q+1].s-s<s-S[q].s)?q+1:q;return !!C.full[k];}
 while(i<N){if(!C.line[i]){i++;continue;}var a0=i;while(i<N&&C.line[i])i++;var b0=i-1;
 var sa=(a0>0)?cross(a0-1):S[a0].s,sb=(b0<N-1)?cross(b0):S[b0].s;if(sb-sa<1e-6)continue;
-var sub=(sa>S[0].s+1e-9||sb<S[N-1].s-1e-9)?_d3rsSub(S,sa,sb):S,A=[],Bq=[],k;
+var sub=(sa>S[0].s+1e-9||sb<S[N-1].s-1e-9)?_d3rsSub(S,sa,sb):S,A=[],Bq=[],Mk=[],k;
 for(k=0;k<sub.length;k++){var st=sub[k],y=_d3rsY(st,o,hw);
 if(H){var px=st.x+st.nx*o,pz=st.z+st.nz*o,pr=_d3rjProject(H.P,H.cum,px,pz);if(pr.d<H.hw){var yh=_d3rsHwY(H,pr.s);if(yh!=null)y=Math.max(y,yh+_D3_RS_LIFT);}}
-y+=_D3_RS_PAINT_UP;A.push([st.x+st.nx*(o+ew/2),y,st.z+st.nz*(o+ew/2)]);Bq.push([st.x+st.nx*(o-ew/2),y,st.z+st.nz*(o-ew/2)]);}
-n+=_d3rsStrip(B,MT.white,A,Bq);}
+y+=_D3_RS_PAINT_UP;A.push([st.x+st.nx*(o+ew/2),y,st.z+st.nz*(o+ew/2)]);Bq.push([st.x+st.nx*(o-ew/2),y,st.z+st.nz*(o-ew/2)]);
+Mk.push((Ym!==MT.white&&clear(st.s))?Ym:MT.white);}
+var k0=0;for(k=1;k<sub.length;k++)if(Mk[k]!==Mk[k0]){n+=_d3rsStrip(B,Mk[k0],A.slice(k0,k+1),Bq.slice(k0,k+1));k0=k;}
+if(sub.length-1>k0)n+=_d3rsStrip(B,Mk[k0],A.slice(k0),Bq.slice(k0));}
 return n;
 }
 function _d3rsGoreHatch(B,MT,R,S,rw,C){
