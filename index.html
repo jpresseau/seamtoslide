@@ -2891,7 +2891,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='2dddfb7';
+var RCG_BUILD='1f74ea5';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -50370,6 +50370,17 @@ n++;
 }
 return n;
 }
+function _d3hwPortalsOf(P,bo){
+var o=[],i,n=P?P.length:0;if(!bo||n<2)return o;
+for(i=0;i+1<n;i++){var a=!!bo[i],b=!!bo[i+1];if(a===b)continue;
+var p=b?P[i+1]:P[i],q=b?P[i]:P[i+1],tx=p.x-q.x,tz=p.z-q.z,tl=Math.hypot(tx,tz)||1;
+o.push({x:p.x,z:p.z,tx:tx/tl,tz:tz/tl});}
+return o;
+}
+function _d3hwPastPortal(PT,x,z,r){
+for(var i=0;i<PT.length;i++){var p=PT[i],dx=x-p.x,dz=z-p.z;if(dx*dx+dz*dz>r*r)continue;if(dx*p.tx+dz*p.tz>0)return true;}
+return false;
+}
 function _d3hwBore(pts,Y,rw,g){
 if(!pts||!Y||!Y._bore||pts.length<3||!_d3hwTunOn()||typeof _D3==='undefined'||!_D3)return 0;
 var n=pts.length,B=Y._bore,i,any=false;for(i=0;i<n;i++)if(B[i]){any=true;break;}
@@ -55066,7 +55077,7 @@ var HL8=_d3shOwnLows(RG8.E,_shN9*_shN9),hw8=0;
 for(ei8=0;ei8<RG8.E.length;ei8++){E8=RG8.E[ei8];P8=E8.pts;Y8=E8.ys;hw8=(HL8&&E8.c==='highway'&&E8.hw!=null)?(E8.hw+1):0;
 if(!P8||P8.length<2||!Y8||Y8.length!==P8.length)continue;
 var _Yh8=Y8._p0||Y8;
-bo8=Y8._bore;var cn8=Y8._cany;var _Lf8=(E8.c==='highway')?null:(Y8._p0&&!_D3._noSettleP0)?Y8._p0._lift:Y8._lift;
+bo8=Y8._bore;var cn8=Y8._cany;var PT8=(bo8&&!_D3._noPortalFace&&typeof _d3hwPortalsOf==='function')?_d3hwPortalsOf(P8,bo8):null;if(PT8&&!PT8.length)PT8=null; var _Lf8=(E8.c==='highway')?null:(Y8._p0&&!_D3._noSettleP0)?Y8._p0._lift:Y8._lift;
 for(k8=0;k8<P8.length-1;k8++){
 if(bo8&&(bo8[k8]||bo8[k8+1]))continue;
 if(_Lf8&&(_Lf8[k8]||_Lf8[k8+1]))continue;
@@ -55078,6 +55089,7 @@ z18=Math.min(_shN9-1,Math.ceil((Math.max(p8.z,q8.z)+rch8+_bx9)/cs8));
 vx8=q8.x-p8.x;vz8=q8.z-p8.z;L28=vx8*vx8+vz8*vz8||1e-9;
 for(jz8=z08;jz8<=z18;jz8++){wz8=-_bx9+jz8*cs8;
 for(jx8=x08;jx8<=x18;jx8++){wx8=-_bx9+jx8*cs8;
+if(PT8&&_d3hwPastPortal(PT8,wx8,wz8,rch8*2))continue;
 t8=((wx8-p8.x)*vx8+(wz8-p8.z)*vz8)/L28;if(t8<0)t8=0;else if(t8>1)t8=1;
 dx8=wx8-(p8.x+vx8*t8);dz8=wz8-(p8.z+vz8*t8);d28=dx8*dx8+dz8*dz8;
 c8=jz8*_shN9+jx8;
