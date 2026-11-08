@@ -2891,7 +2891,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='3d6c0ba';
+var RCG_BUILD='80d9295';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -45754,8 +45754,8 @@ d:'Smooth: even greens. Textured: the Ocean Bluff’s moss drawn into every fiel
 d:'Round: the map’s own trees. Pines: every tree a stack of cones in the Canyon Railway’s greens. Mixed: the two together, tree by tree, the pines in loose groves.'},
 {k:'tcol',l:'Leaf colour',c:[['season','The season’s'],['autumn','Autumn']],build:1,
 d:'The season’s: the round trees turn with the year. Autumn: every round tree in its fall reds, oranges and golds, whatever the season. The pines keep their green.'},
-{k:'tfall',l:'Autumn colours',c:[['vivid','Vivid'],['rich','Rich'],['soft','Soft'],['muted','Muted']],def:'soft',on:['tcol','autumn'],build:1,
-d:'With Leaf colour on Autumn: how strong the fall colours are. Vivid: the reds and golds at full strength. Rich, Soft and Muted: each a step nearer grey, the trees as light as before.'},
+{k:'tfall',l:'Autumn colours',c:[['vivid','Vivid'],['rich','Rich'],['soft','Soft'],['muted','Muted']],def:'soft',on:['tcol','autumn'],orAutumn:1,build:1,
+d:'In autumn, or with Leaf colour on Autumn: how strong the fall colours are. Vivid: at full strength. Rich, Soft and Muted: each a step nearer grey, the trees as light as before.'},
 {k:'rcol',l:'Rock colour',c:[['map','The map’s'],['sand','Sandstone']],build:1,
 d:'The map’s: its own orange-brown stone. Sandstone: every crag, cliff and bluff in the Canyon Railway’s sandstone.'},
 {k:'water',l:'Lakes & rivers',c:[['map','The map’s'],['river','Canyon river']],build:1,
@@ -45763,7 +45763,8 @@ d:'The map’s: bright, half-clear water. Canyon river: every lake and river in 
 ];
 var _D3_GFX_TIER={trees:{few:0,some:1,all:2},traffic:{light:0,some:1,busy:2},people:{few:0,some:1,many:2},detail:{low:0,normal:1,high:2}};
 function _d3gfxDef(S){return (S&&S.def!=null)?S.def:S.c[0][0];}
-function _d3gfxOn(G,S){return !S.on||!!(G&&G[S.on[0]]===S.on[1]);}
+function _d3gfxOn(G,S,se){return !S.on||!!(G&&G[S.on[0]]===S.on[1])||!!(S.orAutumn&&se===1);}
+function _d3gfxSeason(){try{return (typeof _d3season==='function')?(_d3season()|0):0;}catch(_s){return 0;}}
 function _d3gfxParse(raw){
 var o=null,G={},i,j;try{o=raw?JSON.parse(raw):null;}catch(_p){o=null;}
 for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i],v=o&&o[S.k],ok=false;
@@ -45794,7 +45795,7 @@ if(tp!=null){var p=_d3crowdBudget(tp,dev,true);o.people=p.people;o.mul=p.mul;}
 if(tt!=null)o.traffic=_d3crowdBudget(tt,dev,true).traffic;
 return o;
 }
-function _d3gfxSig(){var G=_d3gfxGet(),o=[],i;for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i];if(S.build)o.push((!S.on||G[S.on[0]]===S.on[1])?G[S.k]:'-');}return o.join(',');}
+function _d3gfxSig(){var G=_d3gfxGet(),se=_d3gfxSeason(),o=[],i;for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i];if(S.build)o.push(_d3gfxOn(G,S,se)?G[S.k]:'-');}return o.join(',');}
 function _d3gfxBuilt(k){for(var i=0;i<_D3_GFX.length;i++)if(_D3_GFX[i].k===k)return !!_D3_GFX[i].build;return false;}
 function _d3gfxResCap(){var v=+_d3gfxGet().res;return (v>0)?v:0;}
 function _d3gfxResNow(){var p=null;try{p=__LS.getItem('rcgSharp');}catch(_p){}return (p==='1')?'sharp':_d3gfxGet().res;}
@@ -58918,7 +58919,7 @@ if(k==='res')return (pxr>0)?(Math.round(pxr*100)/100)+'×':'';
 return '';
 }
 function _d3gfxOnSays(S){var O=null,ol=S.on[1],j;for(j=0;j<_D3_GFX.length;j++)if(_D3_GFX[j].k===S.on[0])O=_D3_GFX[j];
-if(O)for(j=0;j<O.c.length;j++)if(O.c[j][0]===S.on[1])ol=O.c[j][1];return 'with '+(O?O.l:S.on[0])+' on '+ol;}
+if(O)for(j=0;j<O.c.length;j++)if(O.c[j][0]===S.on[1])ol=O.c[j][1];return (S.orAutumn?'in autumn, or ':'')+'with '+(O?O.l:S.on[0])+' on '+ol;}
 function _d3gfxShown(k){if(k==='shadow')return _d3gfxShadowNow();if(k==='res')return _d3gfxResNow();return _d3gfxGet()[k];}
 function _d3gfxPanelClose(){
 var d=document.getElementById(_D3_GFXP_ID);if(d&&d.parentNode)d.parentNode.removeChild(d);
@@ -58964,7 +58965,7 @@ var h='<div data-shtop style="display:flex;align-items:center;gap:8px"><b style=
 h+='<div style="margin-top:12px"><div style="display:flex;gap:8px"><span style="flex:1">Preset</span><span style="color:#94a6c4;font-weight:400">'+_d3qualName()+' · '+devName+'</span></div>'+
 _d3gfxSeg('tier:',[['auto','Auto'],['2','Full'],['1','Fast'],['0','Faster']],(cur==='0'||cur==='1'||cur==='2')?cur:'auto')+
 '<div style="margin-top:4px;color:#94a6c4;font:400 11px system-ui">Sets every row below that is on Auto. Auto picks by device.</div></div>';
-for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i],v=_d3gfxShown(S.k),au=_d3gfxAutoSays(S.k,t,q0,pxr),off=!_d3gfxOn(_d3gfxGet(),S);
+for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i],v=_d3gfxShown(S.k),au=_d3gfxAutoSays(S.k,t,q0,pxr),off=!_d3gfxOn(_d3gfxGet(),S,_d3gfxSeason());
 var note=S.build?'rebuilds the map':(S.reload?'next time the map opens':'');
 if(S.k==='aa'&&_D3._aaOn!=null&&_d3qual().aa!==_D3._aaOn)note='on reload: '+(_d3qual().aa?'On':'Off');
 if(off)note=_d3gfxOnSays(S);
@@ -58991,7 +58992,7 @@ for(i=0;i<_D3_GFX.length;i++)if(_D3_GFX[i].k===k)S=_D3_GFX[i];
 if(S&&_d3gfxSet(k,v)){var lab=v;for(i=0;i<S.c.length;i++)if(S.c[i][0]===v)lab=S.c[i][1];
 if(k==='glow'){var gb=document.getElementById('d3Bloom');if(gb)gb.classList.toggle('on',v==='on');}
 if(k==='res'){var sb=document.getElementById('d3Sharp');if(sb)sb.classList.toggle('on',v==='sharp');}
-say('⚡ '+S.l+': '+lab+(!_d3gfxOn(_d3gfxGet(),S)?' — '+_d3gfxOnSays(S):(S.build?' — the map rebuilds':(S.reload?' — next time the map opens':''))));}}
+say('⚡ '+S.l+': '+lab+(!_d3gfxOn(_d3gfxGet(),S,_d3gfxSeason())?' — '+_d3gfxOnSays(S):(S.build?' — the map rebuilds':(S.reload?' — next time the map opens':''))));}}
 _d3gfxPanelFill();
 }
 var _D3_MAPS_ID='d3MapsPanel',_D3_BSH_ID='d3BuildSheet';
@@ -59611,10 +59612,17 @@ return (Math.round(Math.max(0,Math.min(1,R))*255)<<16)
 |(Math.round(Math.max(0,Math.min(1,G))*255)<<8)
 | Math.round(Math.max(0,Math.min(1,B))*255);
 }
+function _d3seasonGrade(h,sat){
+if(!(sat<1)||typeof _d3lumaLerp!=='function')return h;
+var L=_d3lumaLerp(((h>>16)&255)/255,((h>>8)&255)/255,(h&255)/255,Math.max(0,sat)),o=0,c;
+for(c=0;c<3;c++)o=o*256+Math.max(0,Math.min(255,Math.round(L[c]*255)));
+return o;
+}
 function _d3seasonPal(pal){
 var se=_d3season();if(!se||!pal||!pal.length)return pal;
-var out=[],i;
-for(i=0;i<pal.length;i++)out.push(_d3seasonHex(pal[i],se));
+var out=[],i,sat=1;
+if(se===1)try{if(typeof _d3autumnSat==='function')sat=_d3autumnSat();}catch(_as){}
+for(i=0;i<pal.length;i++)out.push(_d3seasonGrade(_d3seasonHex(pal[i],se),sat));
 if(se===3)out.push(0xf2c8d8,0xf6dce6,0xfbeef2);
 return out;
 }
