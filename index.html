@@ -2891,7 +2891,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='2147346';
+var RCG_BUILD='fc57bf7';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -60739,7 +60739,7 @@ var _D3_CPUFF_FS=[
 '#include <fog_pars_fragment>',
 'void main(){',
 '  vec4 t=texture2D(uTex,vUv);float a=t.a*vX.x*smoothstep(vX.z-0.12,vX.z+0.5,vX.y);',
-'  if(uHole.x>0.0)a*=1.0-uHole.x*(1.0-smoothstep(uHole.y,uHole.z,length(vV.xy-uTv.xy)))*smoothstep(0.0,uHole.w,vV.z-uTv.z);',
+'  if(uHole.x>0.0){vec2 hd=vV.xy-uTv.xy;hd.x/=uHole.w;a*=1.0-uHole.x*(1.0-smoothstep(uHole.y,uHole.z,length(hd)));}',
 '  if(a<0.004)discard;',
 '  vec2 nx=t.rg*2.0-1.0;vec3 nt=vec3(nx,sqrt(max(0.0,1.0-dot(nx,nx))));',
 '  vec3 n=normalize(mix(normalize(vNm.xyz),nt,0.55));',
@@ -60873,7 +60873,7 @@ var _D3_CSHEET_FS=[
 '    a=p*(max(smoothstep(0.5,0.82,s1),smoothstep(0.55,0.85,s2)*0.75)*0.72+0.12*p);f=0.92;',
 '  }',
 '  a*=vA.x*(1.0-smoothstep(uRim.x,uRim.y,vA.z+(n-0.5)*70.0));',
-'  if(uHole.x>0.0)a*=1.0-uHole.x*(1.0-smoothstep(uHole.y,uHole.z,length(vV.xy-uTv.xy)))*smoothstep(0.0,uHole.w,vV.z-uTv.z);',
+'  if(uHole.x>0.0){vec2 hd=vV.xy-uTv.xy;hd.x/=uHole.w;a*=1.0-uHole.x*(1.0-smoothstep(uHole.y,uHole.z,length(hd)));}',
 '  if(a<0.004)discard;',
 '  vec3 col=uCol*uShade*uDark.y*exp2(f*uLr);',
 '  gl_FragColor=vec4(col,a);',
@@ -60907,9 +60907,10 @@ for(i=0;i<o.length&&i<4;i++){A.array[i*4]=o[i].y;A.array[i*4+1]=o[i].seed;A.arra
 A.needsUpdate=true;M.geometry.instanceCount=Math.min(4,o.length);
 }
 var _D3_CLOUD_LIT={sun:1.9,sunSat:0.4,sky:3.0,night:0.75,shSky:0.95,shSun:0.06,tint:[0.97,0.9,1.1],darkLit:1.1,fogMap:0.6,fogSky:0.72};
+var _D3_CLOUD_WIN={r0:0.55,r1:1.05};
 function _d3cloudHole(viewH,fit){
 var f=Math.max(1,+fit||0),t=(viewH-f*0.55)/(f*0.35);t=t<0?0:(t>1?1:t);
-return {k:1-t*t*(3-2*t),r0:0.2,r1:0.38};
+return {k:1-t*t*(3-2*t),r0:_D3_CLOUD_WIN.r0,r1:_D3_CLOUD_WIN.r1};
 }
 function _d3cloudU(){
 var D=_D3,T=window.THREE;if(D._cloudU)return D._cloudU;
@@ -60962,13 +60963,13 @@ if(!L||!P||!U||!cam||scene!==D.scene)return;var vp=!!(Mp&&Mp.visible&&Mp.parent=
 var o=!!cam.isOrthographicCamera,c=(o&&D.target)?D.target:cam.position,vd=U.uVd.value,K=_D3_CLOUD_LIT;
 cam.updateMatrixWorld();U.uOrtho.value=o?1:0;U.uEye.value.setFromMatrixPosition(cam.matrixWorld);cam.getWorldDirection(vd);vd.negate();
 U.uUp.value.set(cam.matrixWorld.elements[4],cam.matrixWorld.elements[5],cam.matrixWorld.elements[6]).normalize();
-var zk=0,ho=null,ht=Math.max(1e-6,cam.top||1);
+var zk=0,ho=null,ht=Math.max(1e-6,cam.top||1),asp=o?Math.max(1e-6,(cam.right-cam.left)/Math.max(1e-6,cam.top-cam.bottom)):1;
 if(o&&cam===D.cam&&D.target){var vh=D.viewH||ht,fit=(typeof _d3viewFit==='function'&&D.worldR>0)?_d3viewFit(D.worldR,(cam.right-cam.left)/(2*ht),D.az,D.el,(typeof _D3_FIT_PAD!=='undefined')?_D3_FIT_PAD:1):vh;
 ho=_d3cloudHole(vh,fit);zk=ho.k;}
 var lean=_D3_CLOUD.P*0.15*zk,off=D._cloudOff||{x:0,z:0};U.uCam.value.set(c.x+vd.x*lean,0,c.z+vd.z*lean);U.uOff.value.set(off.x,off.z);
 U.uMap.value.set(o?1:0,_D3_CLOUD.mapM);U.uFogK.value=o?K.fogMap:K.fogSky;
 var hk=0;
-if(ho&&!D._noCloudHole){hk=ho.k;U.uHole.value.set(hk,ho.r0*ht,ho.r1*ht,4);U.uTv.value.copy(D.target).applyMatrix4(cam.matrixWorldInverse);}
+if(ho&&!D._noCloudHole){hk=ho.k;U.uHole.value.set(hk,ho.r0*ht,ho.r1*ht,asp);U.uTv.value.copy(D.target).applyMatrix4(cam.matrixWorldInverse);}
 if(!(hk>0))U.uHole.value.x=0;D._cloudHoleK=+hk.toFixed(3);
 _d3cloudLight(U,L);
 if(vs)Ms.material.uniforms.uCiMapY.value=L.peak+_D3_CLOUD_SHEET.ciMap;
@@ -61141,7 +61142,7 @@ var _D3_RSHAFT_FS=[
 '  float dy=fract((vQ.y-uTime*uSpd*(0.85+0.3*r1))/(4.0+8.0*r2)+r3);',
 '  float st=ln*smoothstep(0.0,0.06,dy)*(1.0-smoothstep(0.2+0.35*r3,0.3+0.4*r3,dy))*step(0.45,r1);',
 '  float a=uDens*vA*side*top*(0.6+0.55*st);',
-'  if(uHole.x>0.0)a*=1.0-uHole.x*(1.0-smoothstep(uHole.y,uHole.z,length(vV.xy-uTv.xy)))*smoothstep(0.0,uHole.w,vV.z-uTv.z);',
+'  if(uHole.x>0.0){vec2 hd=vV.xy-uTv.xy;hd.x/=uHole.w;a*=1.0-uHole.x*(1.0-smoothstep(uHole.y,uHole.z,length(hd)));}',
 '  if(a<0.004)discard;',
 '  vec3 sh=uCol*uShade*uDark.y;float l=dot(sh,vec3(0.3,0.59,0.11));',
 '  gl_FragColor=vec4(mix(vec3(l),sh,0.55)*(0.62+0.3*st),a);',
