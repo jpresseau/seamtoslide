@@ -2891,7 +2891,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='fc57bf7';
+var RCG_BUILD='8250268';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -10033,7 +10033,7 @@ return _D3_WX_RAIN[w.rain]+(nr?' \u2014 but '+{off:'the clouds are off',clear:'t
 if(k==='wind')return _D3_WX_WIND[w.wind];
 if(k==='season'){var sn=_D3_WX_SEASON[(typeof _d3season==='function')?_d3season():0];return (_da&&_da.wx&&_da.wx.season!=null)?sn:('By the year \u2014 '+sn);}
 if(k==='event')return (typeof _d3wxEventLabel==='function')?_d3wxEventLabel():'None';
-return ['N','NE','E','SE','S','SW','W','NW'][Math.round(w.dir/45)%8];
+return _D3_WX_DIRS[Math.round(w.dir/45)%8];
 }
 function driftWxUI(){
 var b=document.getElementById('trkWxBtn');
@@ -10052,6 +10052,9 @@ if(k==='dir')_d3wxSet('dir',(w.dir+45)%360);
 else if(k==='season'){var sr=(_da&&_da.wx&&_da.wx.season!=null)?(_da.wx.season|0):n,sx=(sr+1)%(n+1);_d3wxSet('season',sx===n?null:sx);}
 else if(k==='event')_d3wxSet('event',((typeof _d3wxEvent==='function'?_d3wxEvent():0)+1)%n);
 else _d3wxSet(k,(w[k]+1)%n);
+_d3wxAfter(k);
+}
+function _d3wxAfter(k){
 driftWxUI();
 try{if(typeof showToast==='function')showToast('Weather: '+_d3wxLabel());}catch(e){}
 try{if(typeof drift3DMenuRefresh==='function')drift3DMenuRefresh();}catch(e){}
@@ -10060,10 +10063,6 @@ else{try{if(typeof _d3applyTimeOfDay==='function')_d3applyTimeOfDay();}catch(_4)
 }
 function driftWxSeason(){driftWxCycle('season',4);}
 function driftWxCloud(){driftWxCycle('cloud',5);}
-function driftWxCloudType(){driftWxCycle('ctype',5);}
-function driftWxRain(){driftWxCycle('rain',4);}
-function driftWxWind(){driftWxCycle('wind',5);}
-function driftWxDir(){driftWxCycle('dir',8);}
 function driftWxEvent(){driftWxCycle('event',3);}
 function driftSfxLabel(){return (typeof _d3sfxLabel==='function')?_d3sfxLabel():'Off';}
 function driftSfxUI(){
@@ -58792,13 +58791,13 @@ town:{t:'Town',rows:[
 {i:'\ud83d\ude97',l:'Traffic',d:'Cars, buses and lorries on the village roads',click:'trkCarsBtn',onEl:'trkCarsBtn'}]},
 weather:{t:'Weather Station',rows:[
 {sec:'Sky',i:'\u2601\ufe0f',l:'Clouds',d:'Poofy clouds drifting overhead',click:'trkCloudBtn',onEl:'trkCloudBtn'},
-{i:'\u26c5',l:'Cloud cover',d:'Clear to storm \u2014 now: '+((typeof driftWxLabel==='function')?driftWxLabel('cloud'):'Fair'),fn:'driftWxCloud'},
-{i:'\ud83c\udf25\ufe0f',l:'Cloud type',d:'Cumulus, stratus, cirrus or cumulonimbus, or Auto by the cover \u2014 now: '+((typeof driftWxLabel==='function')?driftWxLabel('ctype'):'Auto'),fn:'driftWxCloudType'},
-{i:'\ud83c\udf27\ufe0f',l:'Rain',d:'Dry to downpour \u2014 now: '+((typeof driftWxLabel==='function')?driftWxLabel('rain'):'Dry'),fn:'driftWxRain'},
-{i:'\ud83d\udca8',l:'Wind',d:'Calm to gale, and it blows the cloud, the rain, the sea and the trees \u2014 now: '+((typeof driftWxLabel==='function')?driftWxLabel('wind'):'Light'),fn:'driftWxWind'},
-{i:'\ud83e\udded',l:'Wind from',d:'Which way the weather comes from \u2014 now: '+((typeof driftWxLabel==='function')?driftWxLabel('dir'):'NE'),fn:'driftWxDir'},
-{sec:'Year',i:'\ud83c\udf41',l:'Season',d:'Summer, Autumn, Winter, Spring \u2014 now: '+((typeof driftWxLabel==='function')?driftWxLabel('season'):'Summer'),fn:'driftWxSeason'},
-{i:'\ud83c\udf00',l:'Natural disaster',d:'A tornado that crosses the map, or a hurricane with an eye that passes over you \u2014 now: '+((typeof driftWxLabel==='function')?driftWxLabel('event'):'None'),fn:'driftWxEvent'}]},
+{i:'\u26c5',l:'Cloud cover',d:'How much of the sky is cloud',pick:'cloud'},
+{i:'\ud83c\udf25\ufe0f',l:'Cloud type',d:'What the clouds are, or Auto by the cover',pick:'ctype'},
+{sec:'Rain & wind',i:'\ud83c\udf27\ufe0f',l:'Rain',d:'How hard it rains - only ever from a cloud',pick:'rain'},
+{i:'\ud83d\udca8',l:'Wind',d:'It blows the cloud, the rain, the sea and the trees',pick:'wind'},
+{i:'\ud83e\udded',l:'Wind from',d:'Which way the weather comes from',pick:'dir'},
+{sec:'Year',i:'\ud83c\udf41',l:'Season',d:'The colour of the land - the leaves, the grass, the snow',pick:'season'},
+{i:'\ud83c\udf00',l:'Natural disaster',d:'A tornado that crosses the map, or a hurricane with an eye that passes over you',pick:'event'}]},
 fish:{t:'Fish',rows:[
 {i:'\u26f5',l:'From a boat',d:'On the lake \u2014 cast, watch the float, set the hook and play it',menu:function(){drift3DFish();}},
 {i:'\u3030\ufe0f',l:'On the stream',d:'From the bank of a creek \u2014 a lure, live bait or a fly; the trout in its pools rise to it',menu:function(){drift3DStreamFish();}}]},
@@ -58864,6 +58863,7 @@ html+='<div data-sec="'+_sn+'" style="break-inside:avoid;margin:0 0 4px'+(R.grid
 html+='<button type="button" data-row="'+r+'" data-rowl="'+_rl+'" style="display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;width:100%;font:600 13px system-ui;color:'+(on?'#fff':'#dfe5f5')+';background:'+(on?'#2f6fb0':'#262c42')+';border:1px solid '+(on?'#4f93dd':'#39406090')+';border-radius:9px;padding:8px 11px;cursor:pointer;margin-bottom:6px'+'">'
 +'<span>'+R.i+' '+R.l+(on?'<span data-tick>\u2003\u2713</span>':'')+'</span><span data-rowd style="font:400 11px system-ui;opacity:.72;line-height:1.3">'+R.d+'</span>'
 +(_rs?'<span data-rows style="display:none;font:600 11px system-ui;color:#9fb3d6;line-height:1.2">'+_rs+'</span>':'');
+if(R.pick&&typeof _d3pickHtml==='function')html+=_d3pickHtml(R.pick,r);
 if(R.acts){html+='<span style="display:flex;gap:6px;margin-top:5px">';for(var a=0;a<R.acts.length;a++){var _al=R.acts[a][0],_sp=_al.indexOf(' ');
 html+='<span data-act="'+r+':'+a+'" title="'+_al+'" aria-label="'+_al+'" style="font:600 11px system-ui;color:#dfe5f5;background:#1b2033;border:1px solid #39406090;border-radius:7px;padding:4px 9px">'+((_sg>1&&_sp>0)?_al.slice(0,_sp):_al)+'</span>';}html+='</span>';}
 html+='</button>';}
@@ -58888,9 +58888,11 @@ return;
 };
 var _grpCoverClose=function(){_grpCoverSweep();setTimeout(_grpCoverSweep,20);};
 _grpTouchCss();var _grpAct=function(ev){var t=ev.target;var ak=t&&t.getAttribute&&t.getAttribute('data-act');
+var pk=(typeof _d3pickHit==='function')?_d3pickHit(t,d):null;if(pk){ev.stopPropagation();ev.preventDefault();try{driftWxPick(pk[0],pk[1]);}catch(_p){}return;}
 if(ak){ev.stopPropagation();ev.preventDefault();var p=ak.split(':'),RR=C.rows[+p[0]],fn2=RR.acts[+p[1]][1];try{if(typeof window[fn2]==='function')window[fn2]();}catch(_e){}try{driftModeBanner();}catch(_e2){}_grpCoverClose();return;}
 var rowEl=t;while(rowEl&&rowEl!==d&&!(rowEl.getAttribute&&rowEl.getAttribute('data-row')))rowEl=rowEl.parentNode;
 if(rowEl&&rowEl!==d){ev.stopPropagation();ev.preventDefault();var RI=C.rows[+rowEl.getAttribute('data-row')];
+if(RI.pick)return;
 if(RI.menu){if(d.parentNode)d.parentNode.removeChild(d);document.removeEventListener('pointerdown',_grpDismiss,true);try{RI.menu(btn);}catch(_m){}return;}
 if(RI.click){var _tb2=document.getElementById(RI.click);if(_tb2){try{_tb2.click();}catch(_c){}}}
 else if(RI.fn){try{if(typeof window[RI.fn]==='function')window[RI.fn]();}catch(_f){}}
@@ -60339,6 +60341,96 @@ var d=Math.hypot(x-cx,z-cz);
 _D3._wxThunderIn=0.35+d*0.055;
 _D3._wxThunderMag=Math.max(0.25,1-d/(R*1.2));
 }
+var _D3_WX_DIRS=['N','NE','E','SE','S','SW','W','NW'];
+var _D3_WX_TIPS={
+cloud:['No cloud at all: a clear blue sky and the full sun','A few fair-weather clouds, about a sixth of the sky',
+'Half the sky in cloud, the sun in and out','A grey layer over nearly all the sky, the light gone flat',
+'A dark deck over the whole sky, the wind up and lightning in it'],
+ctype:['The cover decides: cumulus, a layer of stratus when it is overcast, cumulonimbus over stratus in a storm',
+'Fluffy heaps with flat bases, the fair-weather cloud','A low, even grey layer',
+'Thin wisps of ice high over everything, too high to rain','Towering storm clouds with anvil tops'],
+rain:['No rain','A light, fine rain','Steady rain','Heavy rain that hazes the air'],
+wind:['Still air, the trees and the sea at rest','A light breeze','The trees sway and the cloud moves along',
+'The trees bend, the rain slants, the sea runs','Everything streams: the cloud races, the rain drives across'],
+season:['Follows your calendar, the season turning as the days go by','Green leaves and green grass','Leaves gold and rust',
+'Snow on the ground, the woods bare','Fresh greens and blossom'],
+event:['No disaster','A tornado crosses the map, dark, wet and windy round it while it lasts',
+'A hurricane passes over you, its eye and all: a storm, a downpour and a gale while it lasts']
+};
+var _D3_WX_DIRW=['north','north-east','east','south-east','south','south-west','west','north-west'];
+function _d3wxPickOf(k,raw,eff){
+raw=raw||{};eff=eff||raw;var o,c,e;
+if(k==='cloud'){o=_D3_WX_CLOUD;c=raw.cloud;e=eff.cloud;}
+else if(k==='ctype'){o=_D3_CLOUD_KINDS;c=raw.ctype;e=c;}
+else if(k==='rain'){o=_D3_WX_RAIN;c=raw.rain;e=eff.rain;}
+else if(k==='wind'){o=_D3_WX_WIND;c=raw.wind;e=eff.wind;}
+else if(k==='dir'){o=_D3_WX_DIRS;c=Math.round((((+raw.dir||0)%360+360)%360)/45)%8;e=c;}
+else if(k==='season'){o=['By the year'].concat(_D3_WX_SEASON);c=(raw.season==null)?0:(raw.season|0)+1;e=c;}
+else if(k==='event'){o=_D3_WX_EVENT;c=raw.event;e=c;}
+else return null;
+c=Math.max(0,Math.min(o.length-1,c|0));e=Math.max(0,Math.min(o.length-1,e|0));
+var t=(k==='dir')?_D3_WX_DIRW.map(function(w){return 'The weather comes from the '+w;}):(_D3_WX_TIPS[k]||[]);
+return {k:k,opts:o.slice(),tips:t,cur:c,eff:e};
+}
+function _d3wxPickVal(k,i){
+i=i|0;
+if(k==='dir')return ['dir',i*45];
+if(k==='season')return ['season',i<=0?null:i-1];
+return [k,i];
+}
+function _d3wxPicks(k){
+var raw=(typeof _d3wxRaw==='function')?_d3wxRaw():{},eff=(typeof _d3wx==='function')?_d3wx():raw,w=(typeof _da!=='undefined'&&_da&&_da.wx)||{};
+raw.season=(w.season==null)?null:w.season;raw.event=(typeof _d3wxEvent==='function')?_d3wxEvent():(w.event|0);
+return _d3wxPickOf(k,raw,eff);
+}
+function driftWxPick(k,i){
+var P=_d3wxPicks(k);if(!P)return;i=Math.max(0,Math.min(P.opts.length-1,i|0));
+var kv=_d3wxPickVal(k,i);_d3wxSet(kv[0],kv[1]);
+if(typeof _d3wxAfter==='function')_d3wxAfter(k);
+}
+function _d3wxPickNote(k,P){
+if(P.eff!==P.cur){var ev=(typeof _d3wxEventLabel==='function')?_d3wxEventLabel():'';
+return (ev&&ev!=='None'?'The '+ev.toLowerCase():'The weather')+' holds it at '+P.opts[P.eff]+' while it lasts';}
+if(k==='rain'||k==='ctype'||k==='season'){var s=(typeof driftWxLabel==='function')?String(driftWxLabel(k)):'',j=s.indexOf(' \u2014 ');
+if(j>=0&&k==='rain')return 'But '+s.slice(j+3).replace(/^but /,'');
+if(j>=0)return (k==='ctype'?'The cover makes it ':'By the calendar it is ')+s.slice(j+3);}
+return '';
+}
+var _D3_PICK_CSS=
+'#grpOpMenu [data-pick]{display:inline-flex;align-items:center;font:600 11.5px system-ui;color:#dfe5f5;background:#1b2033;border:1px solid #39406090;border-radius:7px;padding:4px 9px;cursor:pointer}'+
+'#grpOpMenu [data-pick][data-on]{color:#fff;background:#2f6fb0;border-color:#4f93dd}'+
+'#grpOpMenu [data-pick]:hover{border-color:#6f8fc8}'+
+'#grpOpMenu.d3-compact button[data-row]:has([data-pickbox]){grid-column:1/-1}'+
+'#grpOpMenu.d3-compact [data-pick-tip]{display:none !important}'+
+'@media (pointer:coarse){#grpOpMenu [data-pick]{font-size:13px;min-height:40px;padding:0 12px}#grpOpMenu.d3-compact [data-pick]{font-size:12px;min-height:34px;padding:0 9px}}';
+function _d3pickCss(){
+if(document.getElementById('d3PickCss'))return;
+var s=document.createElement('style');s.id='d3PickCss';s.textContent=_D3_PICK_CSS;document.head.appendChild(s);
+}
+var _d3pickEsc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');};
+function _d3pickHtml(k,r){
+var P=_d3wxPicks(k);if(!P)return '';try{_d3pickCss();}catch(_c){}
+var h='<span data-pickbox="'+k+'" data-pickrow="'+r+'" style="display:flex;flex-direction:column;gap:5px;width:100%;margin-top:4px">'
++'<span style="display:flex;flex-wrap:wrap;gap:5px">';
+for(var i=0;i<P.opts.length;i++)h+='<span role="button" data-pick="'+k+':'+i+'"'+(i===P.cur?' data-on="1" aria-pressed="true"':' aria-pressed="false"')
++' title="'+_d3pickEsc(P.tips[i]||P.opts[i])+'">'+_d3pickEsc(P.opts[i])+'</span>';
+var n=_d3wxPickNote(k,P);
+h+='</span><span data-pick-tip style="font:400 11px system-ui;line-height:1.3;color:#c9d3ea"><b data-pick-now style="color:#9fd0ff">now: '
++_d3pickEsc(P.opts[P.cur])+'</b>'+(P.tips[P.cur]?' \u2014 '+_d3pickEsc(P.tips[P.cur].charAt(0).toLowerCase()+P.tips[P.cur].slice(1)):'')+'</span>'
++(n?'<span data-pick-note style="font:600 11px system-ui;color:#ffcf7a;line-height:1.3">'+_d3pickEsc(n)+'</span>':'')+'</span>';
+return h;
+}
+function _d3pickHit(el,d){
+for(var t=el;t&&t!==d;t=t.parentNode){var p=t.getAttribute&&t.getAttribute('data-pick');if(p){var q=p.split(':');return [q[0],+q[1]];}}
+return null;
+}
+function _d3pickRefresh(d){
+d=d||document.getElementById('grpOpMenu');if(!d)return 0;
+var bs=d.querySelectorAll('[data-pickbox]'),n=0;
+for(var i=0;i<bs.length;i++){var b=bs[i],h=_d3pickHtml(b.getAttribute('data-pickbox'),b.getAttribute('data-pickrow'));if(h){b.outerHTML=h;n++;}}
+return n;
+}
+function drift3DMenuRefresh(){try{return _d3pickRefresh();}catch(_r){return 0;}}
 function _d3wxStep(now,dt){
 try{
 if(!_D3||!_D3.scene)return;
