@@ -2891,7 +2891,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='1d4f995';
+var RCG_BUILD='bd33f05';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -60563,7 +60563,10 @@ var _D3_CLOUD={P:420,
 cover:[0,0.16,0.5,0.94,1.0],
 baseK:0.62,baseMin:16,
 topMin:125,topOver:40,
-grid:[15,12,10],det:[1,1,2],
+grid:[15,13,12],
+rings:[[6,12,18],[8,16,24],[8,16,24,32]],
+mapM:0.7,mapCol:6,mapDeck:0.5,
+mapSink:0.35,mapJit:0.4,
 oct:4,seed:7};
 var _D3_CLOUD_STRIDE=10;
 function _d3cloudLayer(peak,dial){
@@ -60609,22 +60612,30 @@ K=K||_D3_CLOUD;var out=[],n=Math.max(4,Math.round(K.P/sp)),g=K.P/n,thr=_d3cloudT
 if(!(L.cover>0))return {thr:thr,n:0,data:new Float32Array(0),cells:0,g:g,share:0};
 var R=function(i,j,k){var q=Math.imul(i+311,374761393)^Math.imul(j+733,668265263)^Math.imul(k+97,2147483647);q=Math.imul(q^(q>>>15),2246822519);q^=q>>>13;return (q>>>0)/4294967296;};
 var cx=0,cz=0,ch=0,cw=0,push=function(x,y,z,sx,sy,sz){out.push(x,y,z,sx,sy,sz,cx,cz,ch,cw);},cells=0;
+var at=function(i,j){return [-K.P/2+(i+0.5)*g+(R(i,j,1)-0.5)*g*0.5,-K.P/2+(j+0.5)*g+(R(i,j,2)-0.5)*g*0.5];},V=new Float32Array(n*n),vmax=thr;
+for(i=0;i<n;i++)for(j=0;j<n;j++){var p=at(i,j);V[i*n+j]=_d3cloudField(p[0],p[1],K);vmax=Math.max(vmax,V[i*n+j]);}
 for(i=0;i<n;i++)for(j=0;j<n;j++){
-var x=-K.P/2+(i+0.5)*g+(R(i,j,1)-0.5)*g*0.5,z=-K.P/2+(j+0.5)*g+(R(i,j,2)-0.5)*g*0.5,v=_d3cloudField(x,z,K);
+var xz=at(i,j),x=xz[0],z=xz[1],v=V[i*n+j];
 if(!(v>thr))continue;cells++;
-var d=Math.min(1,(v-thr)/Math.max(1e-6,1-Math.max(0,thr))),r=g*(0.62+0.42*d)*(0.9+R(i,j,3)*0.25);
+var d=Math.min(1,(v-thr)/Math.max(1e-6,1-Math.max(0,thr))),dn=Math.min(1,(v-thr)/Math.max(1e-6,vmax-thr)),r=g*(0.62+0.42*d)*(0.9+R(i,j,3)*0.25);
 cx=x;cz=z;
 if(L.dial>=3){
-ch=L.top-L.base;cw=2+d;push(x,L.base+r*0.18,z,r*1.15,r*0.34,r*1.15);
-var ty=L.top-6+R(i,j,4)*6+d*6;cw=4+d;push(x,ty,z,r*1.1,r*(0.45+0.3*d),r*1.1);
-if(L.dial===4&&d>0.75)push(x+(R(i,j,5)-0.5)*g,ty+r*0.7,z+(R(i,j,6)-0.5)*g,r*0.9,r*0.8,r*0.9);
+var bx=r*(0.95+0.3*R(i,j,7)),by=bx*0.78;ch=L.top-L.base;cw=2+d;push(x,L.base+by,z,bx,by,bx);
+var tr=r*(0.75+0.1*d+0.35*R(i,j,8)),ty=L.top-tr*(0.95-0.25*R(i,j,4));cw=4+d;push(x+g*0.5,ty,z+g*0.5,tr,tr*0.92,tr);
+if(L.dial===4&&d>0.75){var sr=r*0.85;cw=6+d;push(x+(R(i,j,5)-0.5)*g,ty+tr*0.6,z+(R(i,j,6)-0.5)*g,sr,sr,sr);}
 continue;}
-var h=_d3cloudTall(L,d),y=L.base+r*0.2,k=0;ch=h;cw=d;
-push(x,y,z,r*1.1,r*0.36,r*1.1);
-while(y+r*0.5<L.base+h&&k<8){k++;var rr=r*(1-0.45*(y-L.base)/Math.max(1,h)),ox=(R(i,j,10+k)-0.5)*r*0.5,oz=(R(i,j,20+k)-0.5)*r*0.5;
-y+=rr*0.75;push(x+ox,y,z+oz,rr*0.95,rr*0.8,rr*0.95);}
+r=g*(0.5+0.75*dn)*(0.9+R(i,j,3)*0.25);
+var cb=r*1.05,cy=cb*0.74,y=L.base+cy,k=0,top=Math.max(L.base+_d3cloudTall(L,d),y+r*0.9),h=top-L.base,kmax=7;ch=h;cw=d;
+push(x,y,z,cb,cy,cb);
+while(k<kmax){var rr=r*(1-0.3*Math.min(1,(y-L.base)/h))*(0.8+0.4*R(i,j,30+k)),st=Math.max(rr*0.85,(top-y-rr*0.5)/(kmax-k));
+if(y+st>top)break;k++;
+var ox=(R(i,j,10+k)-0.5)*r*0.7,oz=(R(i,j,20+k)-0.5)*r*0.7;y+=st;push(x+ox,y,z+oz,rr,rr,rr);}
 }
 return {thr:thr,n:out.length/_D3_CLOUD_STRIDE,data:new Float32Array(out),cells:cells,g:g,share:cells/(n*n)};
+}
+function _d3cloudMapK(L,K){
+K=K||_D3_CLOUD;var room=Math.max(0,(+L.peak||0)-L.base);
+return {col:Math.max(K.mapCol,room),deck:K.mapDeck,m:K.mapM,sink:K.mapSink,jit:K.mapJit};
 }
 function _d3cloudPeak(){
 var D=_D3,pk=0,i;if(!D)return 0;
@@ -60646,95 +60657,114 @@ return Math.max(L.base+10,Math.min(y,L.top-6));
 }
 var _D3_CLOUD_VS=[
 'attribute vec4 aM;',
-'uniform vec3 uCam;uniform vec2 uOff;uniform float uP;uniform float uSquash;uniform float uBase0;uniform float uCut;uniform vec2 uRim;',
-'varying vec3 vW;varying vec3 vU;varying vec3 vN;varying vec3 vM;varying vec3 vK;',
+'uniform vec3 uCam;uniform vec2 uOff;uniform float uP;uniform float uBase0;uniform vec2 uRim;uniform vec4 uMap;uniform vec2 uMapD;',
+'uniform vec3 uEye;uniform vec3 uVd;uniform float uOrtho;uniform float uG;',
+'uniform vec3 uSunDir;uniform vec3 uShade;uniform vec2 uDark;uniform vec3 uLr;',
+'varying vec3 vW;varying vec3 vN;varying vec3 vNm;varying vec3 vSh;varying vec3 vLr;varying vec2 vF;varying vec3 vV;',
 '#include <fog_pars_vertex>',
 'void main(){',
 '  vec3 c=vec3(instanceMatrix[3][0],instanceMatrix[3][1],instanceMatrix[3][2]);',
 '  vec3 sc=vec3(length(instanceMatrix[0].xyz),length(instanceMatrix[1].xyz),length(instanceMatrix[2].xyz));',
 '  vec2 d=c.xz+uOff-uCam.xz;d=mod(d+0.5*uP,uP)-0.5*uP;',
 '  vec2 sh=uCam.xz+d-c.xz;vec2 cc=aM.xy+sh;',
-'  float kind=floor(aM.w*0.5),dd=aM.w-kind*2.0,h=aM.z;',
-'  float cy=kind<0.5?uBase0+h*0.45:c.y;',
-'  float t=max(uCut,smoothstep(uRim.x,uRim.y,length(cc-uCam.xz))*1.25);',
-'  float s=smoothstep(t-0.2,t,dd);',
-'  vec3 m=vec3(cc.x,cy,cc.y),pc=m+(vec3(c.x+sh.x,c.y,c.z+sh.y)-m)*s;sc*=s;',
-'  vU=pc+position*sc;vM=m;vN=normalize(position/max(sc,vec3(1e-4)));vK=vec3(max(h,0.5),kind,dd);',
-'  vec3 pq=pc;pq.y=uBase0+(pc.y-uBase0)*uSquash;vec3 sq=sc;sq.y*=max(uSquash,0.45);',
-'  vec3 wp=pq+position*sq;vW=wp;',
-'  vec4 mvPosition=viewMatrix*vec4(wp,1.0);gl_Position=projectionMatrix*mvPosition;',
+'  float kind=floor(aM.w*0.5),dd=aM.w-kind*2.0,h=aM.z,R=uG*(0.62+0.42*dd)*1.1;',
+'  vec3 pc=vec3(c.x+sh.x,c.y,c.z+sh.y);',
+'  if(uMap.x>0.5){float H=kind<0.5?uMap.y:uMap.z,hy=(pc.y-uBase0)*uMap.w;pc.y=uBase0+(hy>0.0?H*(1.0-exp(-hy/H)):hy);sc*=uMap.w;R*=uMap.w;',
+'    if(kind<0.5){pc.xz=cc+(pc.xz-cc)*uMap.w;h=H*(1.0-exp(-h*uMap.w/H));}',
+'    else{h=H;pc.y+=((fract(sin(dot(c.xz,vec2(12.9898,78.233)))*43758.5453)-0.5)*uMapD.y-uMapD.x)*sc.y;}}',
+'  vec3 m=vec3(cc.x,kind<0.5?uBase0+h*0.45:pc.y,cc.y);h=max(h,0.5);',
+'  float t=smoothstep(uRim.x,uRim.y,length(cc-uCam.xz))*1.25;float s=smoothstep(t-0.2,t,dd);',
+'  pc=m+(pc-m)*s;sc=max(sc*s,vec3(1e-4));',
+'  vec3 ax;float th=1.5707963;',
+'  if(uOrtho>0.5)ax=normalize(uVd/sc);',
+'  else{vec3 e=(uEye-pc)/sc;float el=length(e);ax=e/max(el,1e-4);th=el>1.0001?acos(1.0/el):0.0;}',
+'  vec3 up=abs(ax.y)<0.95?vec3(0.0,1.0,0.0):vec3(1.0,0.0,0.0);vec3 e1=normalize(cross(up,ax)),e2=cross(ax,e1);',
+'  float a=position.z*th;vec3 pu=cos(a)*ax+sin(a)*(position.x*e1+position.y*e2);',
+'  vec3 wp=pc+pu*sc,q=wp-m;vW=wp;vN=pu/sc;',
+'  vNm=kind<0.5?vec3(q.x/R,q.y/(h*0.55+R*0.3),q.z/R):(kind<1.5?vec3(q.x/R*0.35,-1.0,q.z/R*0.35):vec3(q.x/R*0.5,1.0,q.z/R*0.5));',
+'  float und=smoothstep(0.05,-0.75,normalize(vN).y);',
+'  float sd=1.0-und*(0.12+0.16*dd);vSh=uShade*sd*uDark.y;vLr=uLr-log2(sd);',
+'  vec3 v=uOrtho>0.5?uVd:normalize(uEye-wp);',
+'  float sl=max(dot(-v,uSunDir),0.0);sl*=sl*sl;vF=vec2(mix(0.15,1.0,smoothstep(0.05,0.55,clamp((wp.y-uBase0)/h,0.0,1.0))),sl*sl*0.6);',
+'  vec4 mvPosition=viewMatrix*vec4(wp,1.0);vV=mvPosition.xyz;gl_Position=projectionMatrix*mvPosition;',
 '  #include <fog_vertex>',
 '}'].join('\n');
 var _D3_CLOUD_FS=[
-'uniform vec3 uSunDir;uniform vec3 uSunC;uniform vec3 uSky;uniform vec3 uLow;uniform vec3 uCol;uniform float uBase;uniform float uG;',
-'uniform vec3 uEye;uniform vec3 uVd;uniform float uNear;uniform float uOrtho;',
-'varying vec3 vW;varying vec3 vU;varying vec3 vN;varying vec3 vM;varying vec3 vK;',
+'uniform vec3 uSunC;uniform vec3 uCol;uniform vec3 uL;',
+'uniform vec3 uEye;uniform vec3 uVd;uniform float uNear;uniform float uOrtho;uniform vec4 uHole;uniform vec3 uTv;uniform float uFogK;',
+'varying vec3 vW;varying vec3 vN;varying vec3 vNm;varying vec3 vSh;varying vec3 vLr;varying vec2 vF;varying vec3 vV;',
 '#include <common>',
 '#include <fog_pars_fragment>',
+'float cdith(){return fract(52.9829189*fract(dot(gl_FragCoord.xy,vec2(0.06711056,0.00583715))));}',
 'void main(){',
-'  float h=vK.x,kind=vK.y,dd=vK.z,R=uG*(0.62+0.42*dd)*1.1;',
-'  vec3 n0=normalize(vN),q=vU-vM,nm;float a;',
-'  if(kind<0.5){nm=normalize(vec3(q.x/R,q.y/(h*0.55+R*0.3),q.z/R));a=n0.y>0.0?0.55:0.2;}',
-'  else if(kind<1.5){nm=normalize(vec3(q.x/R*0.35,-1.0,q.z/R*0.35));a=0.15;}',
-'  else{nm=normalize(vec3(q.x/R*0.5,1.0,q.z/R*0.5));a=0.55;}',
-'  vec3 n=normalize(mix(nm,n0,a));',
-'  if(kind<0.5)n=normalize(mix(n,vec3(0.0,-1.0,0.0),smoothstep(0.1,-0.5,n.y)*0.45));',
-'  float hv=kind<0.5?smoothstep(0.0,0.5,clamp((vU.y-uBase)/h,0.0,1.0)):(kind<1.5?0.0:1.0);',
-'  float lo=mix(0.7,0.54,dd);if(kind<0.5)lo*=mix(0.9,1.14,smoothstep(0.3,1.0,length(q.xz)/R));',
-'  float sk=mix(lo,1.0,hv);',
-'  float wr=clamp((dot(n,uSunDir)+0.3)/1.3,0.0,1.0);wr=wr*wr*(3.0-2.0*wr);',
-'  vec3 v=uOrtho>0.5?uVd:normalize(uEye-vW);',
-'  vec3 col=uCol*(uSunC*wr+mix(uLow,uSky,clamp(n.y*0.5+0.5,0.0,1.0))*sk);',
-'  float bl=pow(max(dot(-v,uSunDir),0.0),6.0)*pow(1.0-abs(dot(n0,v)),3.0);',
-'  col+=uSunC*bl*0.7;',
-'  if(uOrtho<0.5){float k=smoothstep(uNear*0.35,uNear,length(uEye-vW));',
-'    if(k<0.999&&k<=fract(52.9829189*fract(dot(gl_FragCoord.xy,vec2(0.06711056,0.00583715)))))discard;}',
+'  if(uHole.x>0.0){float k=uHole.x*(1.0-smoothstep(uHole.y,uHole.z,length(vV.xy-uTv.xy)))*smoothstep(0.0,uHole.w,vV.z-uTv.z);if(k>cdith())discard;}',
+'  if(uOrtho<0.5){float k=smoothstep(uNear*0.35,uNear,length(uEye-vW));if(k<0.999&&k<=cdith())discard;}',
+'  vec3 n0=normalize(vN),n=normalize(mix(normalize(vNm),n0,0.6)),v=uOrtho>0.5?uVd:normalize(uEye-vW);float nv=clamp(dot(n0,v),0.0,1.0);',
+'  float nl=dot(n,uL),f=(0.55*smoothstep(-0.25,0.05,nl)+0.45*smoothstep(0.2,0.55,nl))*vF.x;',
+'  vec3 sh=vSh*mix(0.78,1.0,smoothstep(0.0,0.7,nv)),col=uCol*sh*exp2(f*vLr);',
+'  col=mix(col,uCol*sh,(1.0-smoothstep(0.0,0.55,nv))*0.55);',
+'  float r=1.0-nv;col+=uSunC*vF.y*r*r*r;',
 '  gl_FragColor=vec4(col,1.0);',
 '  #include <tonemapping_fragment>',
 '  #include <encodings_fragment>',
-'  #include <fog_fragment>',
+'  #ifdef USE_FOG',
+'  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,smoothstep(fogNear,fogFar,fogDepth)*uFogK);',
+'  #endif',
 '}'].join('\n');
-var _D3_CLOUD_LIT={sun:0.97,sky:3.3,night:0.65};
-function _d3cloudMapFade(viewH,H){var h=Math.max(1,H||47),t=(viewH-h*0.4)/(h*0.6);t=t<0?0:(t>1?1:t);return t*t*(3-2*t);}
-function _d3cloudSquash(L){var want=Math.max(L.peak,L.base+4)-L.base;return Math.max(0.05,Math.min(1,want*0.55/Math.max(1,L.top-L.base)));}
-function _d3cloudGeo(det){
-var T=window.THREE,src=new T.IcosahedronGeometry(1,det),p=src.attributes.position,map={},pos=[],idx=[],i;
-for(i=0;i<p.count;i++){var x=p.getX(i),y=p.getY(i),z=p.getZ(i),k=Math.round(x*1e4)+','+Math.round(y*1e4)+','+Math.round(z*1e4),j=map[k];
-if(j===undefined){j=map[k]=pos.length/3;pos.push(x,y,z);}idx.push(j);}
-src.dispose();var g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setIndex(idx);
+var _D3_CLOUD_LIT={sun:1.9,sunSat:0.4,sky:3.0,night:0.75,shSky:0.95,shSun:0.06,tint:[0.97,0.9,1.1],fogMap:0.6};
+function _d3cloudHole(viewH,fit){
+var f=Math.max(1,+fit||0),t=(viewH-f*0.55)/(f*0.35);t=t<0?0:(t>1?1:t);
+return {k:1-t*t*(3-2*t),r0:0.24,r1:0.33};
+}
+function _d3cloudGeo(rings){
+var T=window.THREE,pos=[1,0,0],idx=[],prev=[0],i,j;
+for(i=0;i<rings.length;i++){
+var s=rings[i],a=(i+1)/rings.length,cur=[],p,q,u=0,w=0;
+for(j=0;j<s;j++){var f=j/s*Math.PI*2;cur.push(pos.length/3);pos.push(Math.cos(f),Math.sin(f),a);}
+p=prev.length;q=cur.length;
+while(u<p||w<q){
+if(p===1){if(w>=q)break;idx.push(prev[0],cur[w],cur[(w+1)%q]);w++;continue;}
+if(u>=p||(w<q&&(w+1)/q<=(u+1)/p)){idx.push(prev[u%p],cur[w%q],cur[(w+1)%q]);w++;}
+else{idx.push(prev[u%p],cur[w%q],prev[(u+1)%p]);u++;}
+}
+prev=cur;
+}
+var g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setIndex(idx);
 g.boundingSphere=new T.Sphere(new T.Vector3(),1e9);return g;
 }
-function _d3cloudArm(n,det){
+function _d3cloudArm(n,rings){
 var D=_D3,T=window.THREE;if(!D||!D.scene||!T)return null;
-var M=D._cloudMesh;det=det||1;
-if(M&&M.parent===D.scene&&M.userData.cap>=n&&M.userData.det===det)return M;
+var M=D._cloudMesh,rk=String(rings);
+if(M&&M.parent===D.scene&&M.userData.cap>=n&&M.userData.rings===rk)return M;
 if(M){try{if(M.parent)M.parent.remove(M);M.geometry.dispose();M.dispose&&M.dispose();}catch(_d){}}
-var cap=Math.max(1,n),geo=_d3cloudGeo(det);geo.setAttribute('aM',new T.InstancedBufferAttribute(new Float32Array(cap*4),4));
+var cap=Math.max(1,n),geo=_d3cloudGeo(rings);geo.setAttribute('aM',new T.InstancedBufferAttribute(new Float32Array(cap*4),4));
 var U=T.UniformsUtils.merge([T.UniformsLib.fog,{uCam:{value:new T.Vector3()},uOff:{value:new T.Vector2()},uP:{value:_D3_CLOUD.P},
-uSunDir:{value:new T.Vector3(0,1,0)},uSunC:{value:new T.Color(1,1,1)},uSky:{value:new T.Color(0.7,0.8,0.9)},uLow:{value:new T.Color(0.7,0.7,0.7)},
-uCol:{value:new T.Color(1,1,1)},uBase:{value:20},uG:{value:12},uEye:{value:new T.Vector3()},uVd:{value:new T.Vector3(0,1,0)},uNear:{value:8},
-uOrtho:{value:0},uSquash:{value:1},uBase0:{value:20},uCut:{value:0},uRim:{value:new T.Vector2(160,206)}}]);
+uSunDir:{value:new T.Vector3(0,1,0)},uSunC:{value:new T.Color(1,1,1)},uSky:{value:new T.Color(0.7,0.8,0.9)},uShade:{value:new T.Color(0.7,0.7,0.8)},
+uCol:{value:new T.Color(1,1,1)},uG:{value:12},uEye:{value:new T.Vector3()},uVd:{value:new T.Vector3(0,1,0)},uNear:{value:8},
+uOrtho:{value:0},uBase0:{value:20},uMap:{value:new T.Vector4(0,6,3,1)},uMapD:{value:new T.Vector2(0,0)},uRim:{value:new T.Vector2(160,206)},
+uHole:{value:new T.Vector4(0,1,2,3)},uTv:{value:new T.Vector3()},uFogK:{value:1},uDark:{value:new T.Vector2(1,1)},uL:{value:new T.Vector3(0,1,0)},uLr:{value:new T.Vector3(1,1,1)}}]);
 var mat=D._cloudMat||(D._cloudMat=new T.ShaderMaterial({uniforms:U,vertexShader:_D3_CLOUD_VS,fragmentShader:_D3_CLOUD_FS,fog:true,lights:false}));
 M=new T.InstancedMesh(geo,mat,cap);M.count=0;M.name='cloudLayer';M.frustumCulled=false;M.castShadow=false;M.receiveShadow=false;
-M.matrixAutoUpdate=false;M.raycast=function(){};M.userData.noMerge=true;M.userData._noB=1;M.userData._glbFitSkip=1;M.userData.cap=cap;M.userData.det=det;
+M.matrixAutoUpdate=false;M.raycast=function(){};M.userData.noMerge=true;M.userData._noB=1;M.userData._glbFitSkip=1;M.userData.cap=cap;M.userData.rings=rk;
 M.onBeforeRender=function(ren,scene,cam){_d3cloudBefore(M,ren,scene,cam);};
 D.scene.add(M);D._cloudMesh=M;return M;
 }
-function _d3cloudFill(P,det){
-var T=window.THREE,M=_d3cloudArm(P.n,det),i,m=new T.Matrix4(),q=new T.Quaternion(),p=new T.Vector3(),s=new T.Vector3(),S=_D3_CLOUD_STRIDE;if(!M)return null;
-var A=M.geometry.attributes.aM;
-for(i=0;i<P.n;i++){var b=i*S;p.set(P.data[b],P.data[b+1],P.data[b+2]);s.set(P.data[b+3],P.data[b+4],P.data[b+5]);m.compose(p,q,s);M.setMatrixAt(i,m);
-A.array[i*4]=P.data[b+6];A.array[i*4+1]=P.data[b+7];A.array[i*4+2]=P.data[b+8];A.array[i*4+3]=P.data[b+9];}
+function _d3cloudFill(P,rings){
+var T=window.THREE,M=_d3cloudArm(P.n,rings),i,j=0,pass,m=new T.Matrix4(),q=new T.Quaternion(),p=new T.Vector3(),s=new T.Vector3(),S=_D3_CLOUD_STRIDE;if(!M)return null;
+var A=M.geometry.attributes.aM;M.userData.nMap=0;
+for(pass=0;pass<2;pass++)for(i=0;i<P.n;i++){var b=i*S;if((P.data[b+9]>=6)!==(pass===1))continue;
+p.set(P.data[b],P.data[b+1],P.data[b+2]);s.set(P.data[b+3],P.data[b+4],P.data[b+5]);m.compose(p,q,s);M.setMatrixAt(j,m);
+A.array[j*4]=P.data[b+6];A.array[j*4+1]=P.data[b+7];A.array[j*4+2]=P.data[b+8];A.array[j*4+3]=P.data[b+9];j++;if(!pass)M.userData.nMap=j;}
 M.count=P.n;M.instanceMatrix.needsUpdate=true;A.needsUpdate=true;M.material.uniforms.uG.value=P.g||12;return M;
 }
 function _d3cloudStep(now,dt){
 var D=_D3,L=_d3cloudNow(),M=D._cloudMesh;D._cloudL=L;
 if(!L){if(M)M.visible=false;D._cloudN=0;D._cloudShare=0;_d3cloudFog(0,null);return;}
-var tier=(typeof _d3tier==='function')?_d3tier():2,ti=Math.max(0,Math.min(2,tier)),sp=_D3_CLOUD.grid[ti],det=_D3_CLOUD.det[ti];
-var sig=[L.dial,L.base.toFixed(2),L.top.toFixed(2),sp,det].join('|');
-if(D._cloudSig!==sig||!M||M.parent!==D.scene){var P=_d3cloudPlan(L,sp);D._cloudPlan=P;M=_d3cloudFill(P,det);D._cloudSig=sig;}
+var tier=(typeof _d3tier==='function')?_d3tier():2,ti=Math.max(0,Math.min(2,tier)),sp=_D3_CLOUD.grid[ti],rings=_D3_CLOUD.rings[ti];
+var sig=[L.dial,L.base.toFixed(2),L.top.toFixed(2),L.peak.toFixed(2),sp,rings].join('|');
+if(D._cloudSig!==sig||!M||M.parent!==D.scene){var P=_d3cloudPlan(L,sp);D._cloudPlan=P;D._cloudMapK=_d3cloudMapK(L);M=_d3cloudFill(P,rings);D._cloudSig=sig;}
 if(!M)return;
-D._cloudN=D._cloudPlan?D._cloudPlan.n:0;D._cloudShare=D._cloudPlan?D._cloudPlan.share:0;
+D._cloudN=D._cloudPlan?D._cloudPlan.n:0;D._cloudShare=D._cloudPlan?D._cloudPlan.share:0;M.count=D._cloudN;
 var w=D.wind||((typeof _d3wxWind==='function')?_d3wxWind():{x:1,z:0,s:0.6}),v=0.9*(w.s||0);
 D._cloudOff=D._cloudOff||{x:0,z:0};D._cloudOff.x=(D._cloudOff.x+(w.x||0)*v*dt)%_D3_CLOUD.P;D._cloudOff.z=(D._cloudOff.z+(w.z||0)*v*dt)%_D3_CLOUD.P;D._cloudDrift=+v.toFixed(3);
 M.visible=!!(D.scene&&D.fog&&D.scene.fog===D.fog);
@@ -60745,20 +60775,31 @@ _d3cloudFog(k,L);
 }
 function _d3cloudBefore(M,ren,scene,cam){
 var D=_D3,U=M.material&&M.material.uniforms,L=D._cloudL,K=_D3_CLOUD_LIT;if(!L||!U||!U.uCam)return;
-var o=!!cam.isOrthographicCamera,c=(o&&D.target)?D.target:cam.position;
-U.uCam.value.set(c.x,0,c.z);U.uOff.value.set(D._cloudOff?D._cloudOff.x:0,D._cloudOff?D._cloudOff.z:0);
-U.uOrtho.value=o?1:0;U.uEye.value.setFromMatrixPosition(cam.matrixWorld);cam.getWorldDirection(U.uVd.value);U.uVd.value.negate();
-U.uCut.value=o?(1-_d3cloudMapFade(D.viewH||0,D.islandHalf||47))*1.25:0;U.uNear.value=8;
-U.uRim.value.set(_D3_CLOUD.P*0.38,_D3_CLOUD.P*0.49);
-U.uBase.value=L.base;U.uBase0.value=L.base;
-U.uSquash.value=o?_d3cloudSquash(L):1;
+var o=!!cam.isOrthographicCamera,c=(o&&D.target)?D.target:cam.position,vd=U.uVd.value;
+U.uOrtho.value=o?1:0;U.uEye.value.setFromMatrixPosition(cam.matrixWorld);cam.getWorldDirection(vd);vd.negate();
+var zk=0,ho=null,ht=Math.max(1e-6,cam.top||1);
+if(o&&cam===D.cam&&D.target){var vh=D.viewH||ht,fit=(typeof _d3viewFit==='function'&&D.worldR>0)?_d3viewFit(D.worldR,(cam.right-cam.left)/(2*ht),D.az,D.el,(typeof _D3_FIT_PAD!=='undefined')?_D3_FIT_PAD:1):vh;
+ho=_d3cloudHole(vh,fit);zk=ho.k;}
+var lean=_D3_CLOUD.P*0.15*zk;U.uCam.value.set(c.x+vd.x*lean,0,c.z+vd.z*lean);U.uOff.value.set(D._cloudOff?D._cloudOff.x:0,D._cloudOff?D._cloudOff.z:0);
+U.uNear.value=8;U.uRim.value.set(_D3_CLOUD.P*0.38,_D3_CLOUD.P*0.49);U.uBase0.value=L.base;U.uFogK.value=o?K.fogMap:1;
+var mk=D._cloudMapK||{col:6,deck:3,m:1,sink:0,jit:0};U.uMap.value.set(o?1:0,mk.col,mk.deck,mk.m);U.uMapD.value.set(mk.sink,mk.jit);
+if(o&&M.userData.nMap!=null)M.count=Math.min(M.count,M.userData.nMap);
+var hk=0;
+if(ho&&!D._noCloudHole){hk=ho.k;U.uHole.value.set(hk,ho.r0*ht,ho.r1*ht,4);U.uTv.value.copy(D.target).applyMatrix4(cam.matrixWorldInverse);}
+if(!(hk>0))U.uHole.value.x=0;D._cloudHoleK=+hk.toFixed(3);
 var so=D._sunOff||[14,11,8],l=Math.hypot(so[0],so[1],so[2])||1;U.uSunDir.value.set(so[0]/l,so[1]/l,so[2]/l);
+U.uL.value.copy(U.uSunDir.value);U.uL.value.y+=0.5;U.uL.value.normalize();
 var sI=(D._wxSun0!=null)?D._wxSun0:(D.sun?D.sun.intensity:1),hI=(D._wxHemi0!=null)?D._wxHemi0:(D.hemi?D.hemi.intensity:0.35);
 var nf=1-K.night*Math.max(0,Math.min(1,+D.night||0));
-if(D.sun)U.uSunC.value.copy(D.sun.color).multiplyScalar(sI*K.sun*nf);else U.uSunC.value.setRGB(K.sun*nf,K.sun*nf,K.sun*nf);
+if(D.sun){var su0=D.sun.color,sl=su0.r*0.3+su0.g*0.59+su0.b*0.11,ss=K.sunSat;U.uSunC.value.setRGB(sl+(su0.r-sl)*ss,sl+(su0.g-sl)*ss,sl+(su0.b-sl)*ss).multiplyScalar(sI*K.sun*nf);}
+else U.uSunC.value.setRGB(K.sun*nf,K.sun*nf,K.sun*nf);
 if(D.hemi)U.uSky.value.copy(D.hemi.color).multiplyScalar(hI*K.sky*nf);else if(D.fog)U.uSky.value.copy(D.fog.color).multiplyScalar(hI*K.sky*nf);
-var sk=U.uSky.value,lu=sk.r*0.3+sk.g*0.59+sk.b*0.11;U.uLow.value.setRGB(lu,lu,lu);
-var C=(typeof _D3_WX_COVER!=='undefined'&&_D3_WX_COVER[L.dial])?_D3_WX_COVER[L.dial].col:0xf7f9fb;U.uCol.value.setHex(C);
+var sk=U.uSky.value,su=U.uSunC.value,tn=K.tint;
+U.uShade.value.setRGB((sk.r*K.shSky+su.r*K.shSun)*tn[0],(sk.g*K.shSky+su.g*K.shSun)*tn[1],(sk.b*K.shSky+su.b*K.shSun)*tn[2]);
+var W=(typeof _D3_WX_COVER!=='undefined')?_D3_WX_COVER[L.dial]:null,C=W?W.col:0xf7f9fb,dm=W?Math.max(0.2,Math.min(1,W.dim)):1;U.uCol.value.setHex(C);
+U.uDark.value.set(Math.pow(dm,1.5),Math.sqrt(dm));
+var lr=function(a,b,c){return Math.log2(Math.max(1e-4,(a+b*0.6)*U.uDark.value.x/Math.max(1e-4,c*U.uDark.value.y)));};
+U.uLr.value.set(lr(su.r,sk.r,U.uShade.value.r),lr(su.g,sk.g,U.uShade.value.g),lr(su.b,sk.b,U.uShade.value.b));
 }
 function _d3cloudFog(k,L){
 var D=_D3,F=D&&D.fog;if(!F)return;
