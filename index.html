@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='cbf7719';
+var RCG_BUILD='9fcba40';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -44877,6 +44877,7 @@ sh.fragmentShader='uniform float uWT;uniform float uWind;uniform sampler2D uShor
 '    float edge='+R.foamW.toFixed(3)+'*(0.75+0.25*sin(lap*6.2832))+'+(R.lap*0.3).toFixed(3)+';\n'+
 '    float fo=(d<-0.05)?0.0:(1.0-smoothstep(edge*0.35,edge,max(d,0.0)))*(0.55+0.45*brk);\n'+
 '    diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.93,0.96,0.97),fo*0.85); diffuseColor.a=max(diffuseColor.a,fo*0.9); }');
+if(kind==='far')sh.fragmentShader=sh.fragmentShader.replace('if(uShoreOn>0.5&&uWfxOn>0.5){','if(false){');
 mat.userData._wfxShader=sh;};
 mat.customProgramCacheKey=function(){return 'wfx'+(kind||1);};
 mat.needsUpdate=true;return true;
@@ -45766,6 +45767,7 @@ var _shON=_q0.shadow;try{var _shP=__LS.getItem("rcg_d3shadow");if(_shP!=null)_sh
 try{if(typeof _d3gfxBoot==='function')_d3gfxBoot();}catch(_gb){}
 _D3._shadows=_shON;ren.shadowMap.enabled=_shON;ren.shadowMap.type=_q0.shSoft?T.PCFSoftShadowMap:T.PCFShadowMap;
 ren.outputEncoding=T.sRGBEncoding;ren.toneMapping=T.ACESFilmicToneMapping;ren.toneMappingExposure=0.56;
+try{if(typeof _d3lookRen==='function')_d3lookRen(ren);}catch(_lk){}
 var scene=new T.Scene();try{_d3dirtyWorld(scene);}catch(_dw9){}
 _D3.smokeTex=_d3smokeTex();_D3.aoTex=_d3aoTex();
 scene.background=_d3skyTex(false);
@@ -46026,6 +46028,8 @@ d:'How many pixels the map is drawn with. Auto starts sharp and steps down only 
 d:'A cap saves battery and heat; 30 moves less smoothly.'},
 {k:'shadow',l:'Shadows',c:[['auto','Auto'],['off','Off'],['low','Low'],['high','High']],live:1,
 d:'The sun’s shadows — the biggest single cost on most devices.'},
+{k:'look',l:'Look',c:[['real','Realistic'],['classic','Classic']],live:1,
+d:'Realistic: natural greens, deeper light and shade, and the sea out to the horizon. Classic: the brighter, softer colours the map had before.'},
 {k:'glow',l:'Glow',c:[['off','Off'],['on','On']],live:1,
 d:'Halos on lights and signs, brightest at dusk.'},
 {k:'aa',l:'Smooth edges',c:[['auto','Auto'],['off','Off'],['on','On']],reload:1,
@@ -46126,6 +46130,7 @@ if(typeof driftShadowUI==='function')driftShadowUI();
 if(typeof _d3qualApply==='function')_d3qualApply();}
 else if(k==='glow'){_D3.bloomOn=(v==='on');if(typeof _d3updateGlows==='function')_d3updateGlows();}
 else if(k==='grass'){if(typeof _d3grassApply==='function')_d3grassApply();}
+else if(k==='look'){if(typeof _d3lookApply==='function')_d3lookApply();}
 else if(_d3gfxBuilt(k)){
 try{if(_D3._gfxBT)clearTimeout(_D3._gfxBT);}catch(_bt){}
 _D3._gfxBT=setTimeout(function(){_D3._gfxBT=0;if(typeof _d3build==='function'&&_D3.inited&&_D3.scene)_d3build();},700);}
@@ -46151,6 +46156,75 @@ window.__RCG_GFX_RAISED=out;return out;
 }catch(_r){return null;}
 }
 try{_d3gfxRescue();}catch(_xr){}
+var _D3_LOOK={exp:0.54,gK:2.5,gR:0.22,cool:[0.94,0.99,1.08],warm:[1.06,1.0,0.92],sat:0.96,gam:1.14,seaY:0.06,seaC:0x0a5f88,seaRo:0.3,seaR:15000};
+function _d3look(){
+if(typeof _D3!=='undefined'&&_D3&&_D3._noLook)return 'classic';
+var v=null;try{v=(typeof _d3gfxGet==='function')?_d3gfxGet().look:null;}catch(_g){}
+return (v==='classic')?'classic':'real';
+}
+function _d3lookF(x){var s=String(+(+x).toFixed(5));return s.indexOf('.')<0&&s.indexOf('e')<0?s+'.0':s;}
+function _d3lookV3(a){return 'vec3( '+_d3lookF(a[0])+', '+_d3lookF(a[1])+', '+_d3lookF(a[2])+' )';}
+function _d3lookGLSL(K){K=K||_D3_LOOK;return [
+'vec3 CustomToneMapping( vec3 color ) {',
+'  color *= toneMappingExposure / 0.6;',
+'  float gd = clamp( ( color.g - max( color.r, color.b ) ) / max( color.g, 1e-4 ) * '+_d3lookF(K.gK)+', 0.0, 1.0 );',
+'  color.r *= 1.0 - '+_d3lookF(K.gR)+' * gd;',
+'  float L0 = dot( color, vec3( 0.2126, 0.7152, 0.0722 ) );',
+'  color *= mix( '+_d3lookV3(K.cool)+', '+_d3lookV3(K.warm)+', smoothstep( 0.02, 0.7, L0 ) );',
+'  const mat3 I = mat3( vec3( 0.59719, 0.07600, 0.02840 ), vec3( 0.35458, 0.90834, 0.13383 ), vec3( 0.04823, 0.01566, 0.83777 ) );',
+'  const mat3 O = mat3( vec3( 1.60475, -0.10208, -0.00327 ), vec3( -0.53108, 1.10813, -0.07276 ), vec3( -0.07367, -0.00605, 1.07602 ) );',
+'  color = I * color;',
+'  vec3 a = color * ( color + 0.0245786 ) - 0.000090537; vec3 b = color * ( 0.983729 * color + 0.4329510 ) + 0.238081;',
+'  color = clamp( O * ( a / b ), 0.0, 1.0 );',
+'  float L = dot( color, vec3( 0.2126, 0.7152, 0.0722 ) );',
+'  color = mix( vec3( L ), color, '+_d3lookF(K.sat)+' );',
+'  color = pow( max( color, 0.0 ), vec3( '+_d3lookF(K.gam)+' ) );',
+'  return clamp( color, 0.0, 1.0 );',
+'}'].join('\n');}
+function _d3lookGrade(c,exp,K){K=K||_D3_LOOK;exp=(exp>0)?exp:K.exp;
+var r=c[0]*exp/0.6,g=c[1]*exp/0.6,b=c[2]*exp/0.6,cl=function(x){return Math.max(0,Math.min(1,x));};
+var gd=cl((g-Math.max(r,b))/Math.max(g,1e-4)*K.gK);r*=1-K.gR*gd;
+var L0=0.2126*r+0.7152*g+0.0722*b,t=cl((L0-0.02)/0.68);t=t*t*(3-2*t);
+r*=K.cool[0]+(K.warm[0]-K.cool[0])*t;g*=K.cool[1]+(K.warm[1]-K.cool[1])*t;b*=K.cool[2]+(K.warm[2]-K.cool[2])*t;
+var I=[[0.59719,0.35458,0.04823],[0.07600,0.90834,0.01566],[0.02840,0.13383,0.83777]],O=[[1.60475,-0.53108,-0.07367],[-0.10208,1.10813,-0.00605],[-0.00327,-0.07276,1.07602]];
+var v=[r,g,b],w=[0,0,0],i;for(i=0;i<3;i++)w[i]=I[i][0]*v[0]+I[i][1]*v[1]+I[i][2]*v[2];
+for(i=0;i<3;i++){var x=w[i];w[i]=(x*(x+0.0245786)-0.000090537)/(x*(0.983729*x+0.4329510)+0.238081);}
+for(i=0;i<3;i++)v[i]=cl(O[i][0]*w[0]+O[i][1]*w[1]+O[i][2]*w[2]);
+var L=0.2126*v[0]+0.7152*v[1]+0.0722*v[2];
+for(i=0;i<3;i++)v[i]=cl(Math.pow(Math.max(0,L+(v[i]-L)*K.sat),K.gam));
+return v;}
+function _d3lookChunk(){
+var T=window.THREE;if(!T||!T.ShaderChunk||_d3lookChunk.done)return !!_d3lookChunk.done;
+var s=T.ShaderChunk.tonemapping_pars_fragment,stub='vec3 CustomToneMapping( vec3 color ) { return color; }';
+if(s.indexOf(stub)<0)return false;
+T.ShaderChunk.tonemapping_pars_fragment=s.replace(stub,_d3lookGLSL());_d3lookChunk.done=true;return true;
+}
+function _d3lookRen(ren){
+var T=window.THREE;if(!ren||!T)return;var real=_d3look()==='real'&&_d3lookChunk();
+ren.toneMapping=real?T.CustomToneMapping:T.ACESFilmicToneMapping;ren.toneMappingExposure=real?_D3_LOOK.exp:0.56;
+}
+function _d3lookRing(R,K){K=K||_D3_LOOK;var o=K.seaR,q=[[-o,-o,-R,-R],[o,-o,R,-R],[o,o,R,R],[-o,o,-R,R]],out=[],i;
+for(i=0;i<4;i++){var a=q[i],b=q[(i+1)%4];out.push(a[0],a[1],b[2],b[3],b[0],b[1], a[0],a[1],a[2],a[3],b[2],b[3]);}
+return out;}
+function _d3lookSea(){
+var D=_D3,T=window.THREE;if(!D||!D.scene||!T)return null;
+var on=_d3look()==='real',S=D._lookSea,K=_D3_LOOK,R=(D.islandHalf>0)?D.islandHalf:44;
+if(!S&&on){S=new T.Mesh(new T.BufferGeometry(),new T.MeshStandardMaterial({color:K.seaC,roughness:K.seaRo,metalness:0.05}));
+S.position.y=K.seaY;S.receiveShadow=false;S.castShadow=false;S.frustumCulled=false;S.userData.noMerge=true;S.name='lookSea';
+S.matrixAutoUpdate=false;S.updateMatrix();D._lookSea=S;
+try{if(typeof _d3wfxPatch==='function')_d3wfxPatch(S.material,'far');}catch(_wf){}}
+if(S&&on&&S.userData.R!==R){var xz=_d3lookRing(R,K),n=xz.length/2,P=new Float32Array(n*3),N=new Float32Array(n*3),i;
+for(i=0;i<n;i++){P[i*3]=xz[i*2];P[i*3+2]=xz[i*2+1];N[i*3+1]=1;}
+var g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(P,3));g.setAttribute('normal',new T.BufferAttribute(N,3));
+if(S.geometry)S.geometry.dispose();S.geometry=g;S.userData.R=R;}
+if(S){if(S.parent!==D.scene)D.scene.add(S);if(S.visible!==on)S.visible=on;}
+return S;
+}
+function _d3lookApply(){
+var D=_D3;if(!D||!D.ren)return;_d3lookRen(D.ren);
+try{if(D.scene)D.scene.traverse(function(o){var m=o.material;if(!m)return;if(Array.isArray(m)){for(var i=0;i<m.length;i++)if(m[i])m[i].needsUpdate=true;}else m.needsUpdate=true;});}catch(_t){}
+_d3lookSea();
+}
 function _d3textSign(text,wWorld,hWorld,opts){
 opts=opts||{};var T=window.THREE;
 var cw=512,ch=Math.max(48,Math.round(cw*hWorld/wWorld));
@@ -86150,6 +86224,7 @@ if(_D3.dive&&_D3.dive.on){try{_d3diveStep(dt);}catch(_dvs){}}
 if(_D3.fishing&&_D3.fishing.on){try{_d3fishStep(dt);}catch(_fss){}}
 if(_D3.ren&&!_D3.ren.__shk&&typeof _d3shkArm==='function'){try{_d3shkArm();}catch(_shk9){}}
 if(!_D3._sky&&typeof _d3skyArm==='function'){try{_d3skyArm();}catch(_sky9){}}
+if(typeof _d3lookSea==='function'){try{_d3lookSea();}catch(_ls9){}}
 if(typeof _d3fhdFrame==='function'){try{_d3fhdFrame((typeof _d3camNow==='function')?_d3camNow():_D3.cam);}catch(_fh9){}}
 var _rt0=performance.now();var _pfr9=!!_D3._pendingFirstRender;if(_pfr9&&window._rcgCrumb)_rcgCrumb('render-BEFORE');
 var _jn9=!_pfr9&&typeof _d3jnCovers==='function'&&_d3jnCovers();_D3._jnHeld=_jn9;
@@ -89808,6 +89883,7 @@ if(Math.abs(C.aspect-w/h)>1e-3){C.aspect=w/h;C.updateProjectionMatrix();}
 if(D._hwlT0==null)D._hwlT0=now;
 var p=hwLiveCam((now-D._hwlT0)/1000,D.worldR,K,w/h);C.position.set(p.x,p.y,p.z);C.lookAt(p.lx,p.ly,p.lz);C.updateMatrixWorld(true);
 try{if(typeof _d3wfxStep==='function')_d3wfxStep(now);}catch(_w){}
+try{if(typeof _d3lookSea==='function')_d3lookSea();}catch(_ls){}
 try{if(typeof _d3cloudStep==='function')_d3cloudStep(now,dt);}catch(_c){}
 var F=D.scene.fog,fn=F?F.near:0,ff=F?F.far:0;if(F&&F.isFog){F.near=p.d*K.fogN;F.far=p.d*K.fogF;}
 try{D.ren.render(D.scene,C);}finally{if(F&&F.isFog){F.near=fn;F.far=ff;}}
