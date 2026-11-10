@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='707cc2c';
+var RCG_BUILD='5b66ebe';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -55079,10 +55079,10 @@ var U=_d3groundU(),on=(typeof _d3look==='function')&&_d3look()==='real'&&!(typeo
 U.uGndOn.value=on?1:0;return on;
 }
 var _D3_TREELOOK={keep:0.32,sc:0.035,edge:0.06,mixG:0.4,green:[0.24,0.44,0.13],jit:0.07,br0:0.965,br1:0.995,bb0:0.965,bb1:0.995};
-var _D3_TREESNOW={s0:0.05,s1:0.45,n:0.6,ns:0.9,col:[0.82,0.85,0.9]};
+var _D3_TREESNOW={s0:0.05,s1:0.45,n:0.6,ns:0.9,col:[0.82,0.85,0.9],a0:-0.35,alt:0.8};
 var _D3_TREELOOK_U=null;
-function _d3treeLookU(){return _D3_TREELOOK_U||(_D3_TREELOOK_U={uTreeReal:{value:0},uTreeSnow:{value:0}});}
-function _d3treeSnowAt(up,n,K){K=K||_D3_TREESNOW;var t=Math.max(0,Math.min(1,(up+(n-0.5)*K.n-K.s0)/(K.s1-K.s0)));return t*t*(3-2*t);}
+function _d3treeLookU(){return _D3_TREELOOK_U||(_D3_TREELOOK_U={uTreeReal:{value:0},uTreeSnow:{value:0},uTreeSnowH:{value:16}});}
+function _d3treeSnowAt(up,n,K,a){K=K||_D3_TREESNOW;var al=Math.max(0,Math.min(1,+a||0)),t=Math.max(0,Math.min(1,(up+(n-0.5)*K.n+K.a0+al*K.alt-K.s0)/(K.s1-K.s0)));return t*t*(3-2*t);}
 function _d3treeBlossom(c,K){K=K||_D3_TREELOOK;var ss=function(a,b,x){var t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);},g=Math.max(c[1],1e-4);
 return ss(K.br0,K.br1,c[0]/g)*ss(K.bb0,K.bb1,c[2]/g);}
 function _d3treeKeepAt(n,K){K=K||_D3_TREELOOK;var a=1-K.keep-K.edge/2,b=1-K.keep+K.edge/2,t=Math.max(0,Math.min(1,(n-a)/(b-a)));return t*t*(3-2*t);}
@@ -55095,7 +55095,7 @@ function _d3treeV3(a){return 'vec3('+a.map(function(v){return (+v).toFixed(4);})
 function _d3treeLookGlsl(K){K=K||_D3_TREELOOK;var f=function(v){return (+v).toFixed(4);},gL=_d3treeLum(K.green);
 return {vsPre:'varying vec3 vTreeI;\n',
 vsBody:'#ifdef USE_INSTANCING\n  vTreeI=(modelMatrix*vec4(instanceMatrix[3].xyz,1.0)).xyz;\n#else\n  vTreeI=(modelMatrix*vec4(0.0,0.0,0.0,1.0)).xyz;\n#endif\n',
-fsPre:'uniform float uTreeReal;\nuniform float uTreeSnow;\nvarying vec3 vTreeI;\n'+
+fsPre:'uniform float uTreeReal;\nuniform float uTreeSnow;\nuniform float uTreeSnowH;\nvarying vec3 vTreeI;\n'+
 'float trH(vec2 p){ return fract(sin(p.x*127.1+p.y*311.7)*43758.5453); }\n'+
 'float trN(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(trH(i),trH(i+vec2(1.0,0.0)),f.x),mix(trH(i+vec2(0.0,1.0)),trH(i+vec2(1.0,1.0)),f.x),f.y); }\n',
 fsBody:'  if(uTreeReal>0.5){ vec3 tc=diffuseColor.rgb; float tg=max(tc.g,1e-4);\n'+
@@ -55107,14 +55107,14 @@ fsBody:'  if(uTreeReal>0.5){ vec3 tc=diffuseColor.rgb; float tg=max(tc.g,1e-4);\
 fsSnow:_d3treeSnowGlsl()};}
 function _d3treeSnowGlsl(S){S=S||_D3_TREESNOW;var f=function(v){return (+v).toFixed(4);};
 return '  if(uTreeSnow>0.001){ vec3 tsUp=normalize((viewMatrix*vec4(0.0,1.0,0.0,0.0)).xyz);\n'+
-'    float tsU=dot(normal,tsUp)+(trN(vLeafP.xz*'+f(S.ns)+'+vec2(vLeafP.y*0.7,0.0))-0.5)*'+f(S.n)+';\n'+
+'    float tsU=dot(normal,tsUp)+(trN(vLeafP.xz*'+f(S.ns)+'+vec2(vLeafP.y*0.7,0.0))-0.5)*'+f(S.n)+'+'+f(S.a0)+'+clamp(vTreeI.y/max(uTreeSnowH,1.0),0.0,1.0)*'+f(S.alt)+';\n'+
 '    float tsK=smoothstep('+f(S.s0)+','+f(S.s1)+',tsU)*uTreeSnow; diffuseColor.rgb=mix(diffuseColor.rgb,'+_d3treeV3(S.col)+',tsK); }\n';}
 function _d3treeLookSh(sh){
 if(!sh||sh.uniforms.uTreeReal)return false;var G=_d3treeLookGlsl();sh.uniforms.uTreeReal=_d3treeLookU().uTreeReal;
 sh.vertexShader=G.vsPre+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody);
 sh.fragmentShader=G.fsPre+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n'+G.fsBody)
 .replace('#include <emissivemap_fragment>',G.fsSnow+'#include <emissivemap_fragment>');
-sh.uniforms.uTreeSnow=_d3treeLookU().uTreeSnow;
+sh.uniforms.uTreeSnow=_d3treeLookU().uTreeSnow;sh.uniforms.uTreeSnowH=_d3treeLookU().uTreeSnowH;
 return true;
 }
 function _d3treeLookStep(){
@@ -55122,6 +55122,8 @@ var U=_d3treeLookU(),on=(typeof _d3look==='function')&&_d3look()==='real'&&!(typ
 U.uTreeReal.value=on?1:0;
 var sn=false;try{sn=(typeof _d3season==='function')&&_d3season()===2&&!(typeof _D3!=='undefined'&&_D3&&_D3._noTreeSnow);}catch(_se){}
 U.uTreeSnow.value=sn?1:0;
+if(sn){try{U.uTreeSnowH.value=(typeof _d3snowAltRef==='function')?_d3snowAltRef():16;}catch(_sh){}}
+if(typeof _D3!=='undefined'&&_D3&&_D3._noSnowAlt)U.uTreeSnowH.value=1e6;
 return on;
 }
 function _d3parkScatter(g,m,pts,half){var it=_d3parkScatterSteps(g,m,pts,half),r;do{r=it.next();}while(!r.done);return r.value;}
@@ -61157,8 +61159,8 @@ var _D3_CPUFF_VS=[
 'varying vec2 vUv;varying vec3 vLt;varying vec4 vNm;varying vec3 vSh;varying vec3 vLr;varying vec4 vX;varying vec3 vV;varying float vFg;',
 '#include <fog_pars_vertex>',
 'void main(){',
-'  vec2 cc=aC.xy,d=cc+uOff-uCam.xz;d=mod(d+0.5*uP,uP)-0.5*uP;vec2 c2=uCam.xz+d;',
-'  float b=aC.z,H=aC.w,R=aQ.w,rx=aP.w,ry=aQ.x,kind=aQ.z;vec3 pc=vec3(aP.x-cc.x+c2.x,aP.y,aP.z-cc.y+c2.y);',
+'  float an=step(2.5,aQ.z);vec2 cc=aC.xy,d=cc+uOff*(1.0-an)-uCam.xz;d=mix(mod(d+0.5*uP,uP)-0.5*uP,d,an);vec2 c2=uCam.xz+d;',
+'  float b=aC.z,H=aC.w,R=aQ.w,rx=aP.w,ry=aQ.x,kind=aQ.z*(1.0-an);vec3 pc=vec3(aP.x-cc.x+c2.x,aP.y,aP.z-cc.y+c2.y);',
 '  float lk=uLife.y,lt=uLife.x*0.010471976;vec3 q0=pc-vec3(c2.x,b,c2.y);',
 '  float hs=fract(sin(dot(aP.xyz-vec3(cc.x,0.0,cc.y),vec3(12.9898,78.233,37.719)))*43758.5453),h2=fract(hs*7.31),h3=fract(hs*13.17);',
 '  float hc=fract(sin(dot(cc,vec2(41.37,17.93)))*24634.63),hf=clamp(q0.y/max(H,1.0),0.0,1.0);',
@@ -61171,7 +61173,7 @@ var _D3_CPUFF_VS=[
 '  float lean=lk*(kind<0.5?0.07:0.13)*H*hf*hf*(0.55+0.45*sin(lt*(16.0+floor(hc*8.0))+hc*6.2832));pc.xz+=uLife.zw*lean;',
 '  float gr=1.0+lk*0.07*sin(lt*(10.0+floor(hc*6.0))+hc*12.566);pc=vec3(c2.x,b,c2.y)+(pc-vec3(c2.x,b,c2.y))*gr;sw*=gr;',
 '  float th=Am.w*pow(min(rx,ry)/max(rx,ry),2.0)*sin(lt*(30.0+floor(h2*20.0))+hs*12.566),ct=cos(th),st=sin(th);',
-'  if(uMap.x>0.5){float m=uMap.y;pc=vec3(c2.x,b,c2.y)+(pc-vec3(c2.x,b,c2.y))*m;rx*=m;ry*=m;H*=m;R*=m;}',
+'  if(uMap.x>0.5&&an<0.5){float m=uMap.y;pc=vec3(c2.x,b,c2.y)+(pc-vec3(c2.x,b,c2.y))*m;rx*=m;ry*=m;H*=m;R*=m;}',
 '  vec3 q=pc-vec3(c2.x,b,c2.y);',
 '  vec3 ax=uOrtho>0.5?uVd:normalize(uEye-pc);vec3 up=abs(ax.y)<0.97?vec3(0.0,1.0,0.0):uUp;',
 '  vec3 e1=normalize(cross(up,ax)),e2=cross(ax,e1);float se=abs(ax.y),hy=sqrt(ry*ry*(1.0-se*se)+rx*rx*se*se);',
@@ -61237,8 +61239,8 @@ M.userData.plan=P;M.userData.sortKey=null;M.geometry.instanceCount=P?P.n:0;retur
 }
 function _d3cloudOrder(P,o,eye,vd,cam,off,m,K){
 K=K||_D3_CLOUD;var S=_D3_CLOUD_PSTRIDE,d=P.data,n=P.n,key=new Float32Array(n),ix=new Uint32Array(n),i,mm=m||1;
-for(i=0;i<n;i++){var b=i*S,cx=d[b+5],cz=d[b+6],bx=cam.x+_d3cloudWrap(cx+off.x-cam.x,K.P),bz=cam.z+_d3cloudWrap(cz+off.z-cam.z,K.P),bs=d[b+8];
-var x=bx+(d[b]-cx)*mm,y=bs+(d[b+1]-bs)*mm,z=bz+(d[b+2]-cz)*mm;ix[i]=i;
+for(i=0;i<n;i++){var b=i*S,cx=d[b+5],cz=d[b+6],an=d[b+11]>2.5,bx=an?cx:cam.x+_d3cloudWrap(cx+off.x-cam.x,K.P),bz=an?cz:cam.z+_d3cloudWrap(cz+off.z-cam.z,K.P),bs=d[b+8],ma=an?1:mm;
+var x=bx+(d[b]-cx)*ma,y=bs+(d[b+1]-bs)*ma,z=bz+(d[b+2]-cz)*ma;ix[i]=i;
 key[i]=o?(x*vd.x+y*vd.y+z*vd.z):-((x-eye.x)*(x-eye.x)+(y-eye.y)*(y-eye.y)+(z-eye.z)*(z-eye.z));}
 ix.sort(function(a,c){return key[a]-key[c];});
 return ix;
@@ -61401,12 +61403,13 @@ function _d3cloudStep(now,dt){
 var D=_D3,L=_d3cloudNow(),Mp=D._cloudPuffs,Ms=D._cloudSheets,P=D._cloudPlan;D._cloudL=L;
 if(!L){if(Mp)Mp.visible=false;if(Ms)Ms.visible=false;D._cloudN=0;D._cloudShare=0;_d3cloudFog(0,null);return;}
 var tier=(typeof _d3tier==='function')?_d3tier():2,ti=Math.max(0,Math.min(2,tier)),U=_d3cloudU();
-var sig=[L.dial,L.kind,L.base.toFixed(2),L.top.toFixed(2),L.peak.toFixed(2),ti].join('|');
+var sig=[L.dial,L.kind,L.base.toFixed(2),L.top.toFixed(2),L.peak.toFixed(2),ti,(typeof _d3cloudPkSig==='function')?_d3cloudPkSig(L):''].join('|');
 var lost=!!P&&((P.n>0&&(!Mp||Mp.parent!==D.scene))||(P.sheets.length>0&&(!Ms||Ms.parent!==D.scene)));
 if(D._cloudSig!==sig||!P||lost){
 var ns=_d3cloudSheetsOf(L,L.kind).length>0;if(ns){Ms=_d3cloudSheetArm(U);if(!Ms)return;}
 P=_d3cloudSkyOf(L,ti,ns?D._cloudSheetData:null);D._cloudPlan=P;
-if(P.n>0)Mp=_d3cloudPuffFill(P.puffs,U);else if(Mp){Mp.userData.plan=null;Mp.geometry.instanceCount=0;}
+try{if(typeof _d3cloudPkAdd==='function')_d3cloudPkAdd(P,L,ti);}catch(_pk){D._cloudErr=(_pk&&_pk.message)||String(_pk);}
+if(P.n>0)Mp=_d3cloudPuffFill(P.bill||P.puffs,U);else if(Mp){Mp.userData.plan=null;Mp.geometry.instanceCount=0;}
 if(Ms){Ms.userData.sheets=P.sheets;Ms.userData.order=null;Ms.material.uniforms.uThr.value=P.thr;Ms.geometry.instanceCount=0;}
 _d3cloudHook(D.scene);D._cloudSig=sig;
 }
@@ -61419,7 +61422,7 @@ _d3cloudLifeStep(now,dt,P,U,w,D._wxAt||{x:0,z:0});
 var sh=!!(D.scene&&D.fog&&D.scene.fog===D.fog),cam=(typeof _d3camNow==='function')?_d3camNow():D.cam,k=0;
 if(Mp)Mp.visible=sh&&P.n>0;if(Ms)Ms.visible=sh&&P.sheets.length>0;
 if(Ms&&Ms.visible)_d3cloudSheetOrder(Ms,(cam&&!cam.isOrthographicCamera)?cam.position.y:1e9);
-if(sh&&cam&&!cam.isOrthographicCamera){var cp=cam.position;k=_d3cloudIn(L,P,cp.x-D._cloudOff.x,cp.y,cp.z-D._cloudOff.z);}
+if(sh&&cam&&!cam.isOrthographicCamera){var cp=cam.position;k=_d3cloudIn(L,P,cp.x-D._cloudOff.x,cp.y,cp.z-D._cloudOff.z);if(P.mtn)k=Math.max(k,_d3cloudPkIn(P.mtn,cp.x,cp.y,cp.z));}
 _d3cloudFog(k,L);
 }
 function _d3cloudPre(ren,scene,cam){
@@ -61508,6 +61511,93 @@ var x=cx+_d3cloudWrap(c.x+off.x-cx,K.P)+Math.cos(a)*r,z=cz+_d3cloudWrap(c.z+off.
 _d3cloudFlash(c,(typeof performance!=='undefined')?performance.now():Date.now());
 return {x:x,z:z,y:c.base};
 }
+var _D3_CLOUD_PK={st:2,gmax:170,win:9,dropR:12,minK:0.7,prom:[6,0.3],sep:18,max:[3,5,8],levelK:0.82,nd:16,maxR:30,
+rb:[0.3,3,4,9],fill:[0,0.5,0.82,1,1],lee:0.75,up:0.85,dn:0.6,capK:1.8,inRock:0.3};
+function _d3cloudPkFind(G,base,mx,K){
+K=K||_D3_CLOUD_PK;var n=G.n,H=G.h,st=G.st,w=Math.max(1,Math.round(K.win/st)),dr=Math.max(1,Math.round(K.dropR/st)),out=[],i,j,a,b;
+var minH=base*K.minK;
+for(j=w;j<n-w;j++)for(i=w;i<n-w;i++){var h=H[j*n+i];if(!(h>=minH))continue;var top=true;
+for(b=-w;b<=w&&top;b++)for(a=-w;a<=w;a++){if((a||b)&&H[(j+b)*n+i+a]>h){top=false;break;}}
+if(!top)continue;
+var lo=1e9;for(var k=0;k<16;k++){var an=k*0.3927,ii=Math.round(i+Math.cos(an)*dr),jj=Math.round(j+Math.sin(an)*dr);
+if(ii>=0&&jj>=0&&ii<n&&jj<n)lo=Math.min(lo,H[jj*n+ii]);}
+if(h-lo<Math.max(K.prom[0],K.prom[1]*h))continue;
+out.push({x:G.x0+i*st,z:G.x0+j*st,h:h});}
+out.sort(function(p,q){return q.h-p.h;});
+var keep=[];for(i=0;i<out.length&&keep.length<mx;i++){var p=out[i],ok=true;
+for(j=0;j<keep.length;j++)if(Math.hypot(p.x-keep[j].x,p.z-keep[j].z)<K.sep){ok=false;break;}
+if(ok)keep.push(p);}
+return keep;
+}
+function _d3cloudPkLevel(h,base,K){K=K||_D3_CLOUD_PK;return Math.min(base,h*K.levelK);}
+function _d3cloudPkRing(hf,x,z,y,K){
+K=K||_D3_CLOUD_PK;var nd=K.nd,st=K.st*0.5,R=[],k,r;
+for(k=0;k<nd;k++){var a=k/nd*6.2832,ca=Math.cos(a),sa=Math.sin(a),far=0;
+for(r=st;r<=K.maxR;r+=st)if(hf(x+ca*r,z+sa*r)>=y)far=r;R.push(far);}
+var S=[];for(k=0;k<nd;k++)S.push(R[k]>0?(R[(k+nd-1)%nd]*0.25+R[k]*0.5+R[(k+1)%nd]*0.25):0);
+return S;
+}
+function _d3cloudPkWalk(x,z,rr,gap){
+var nd=rr.length,P=[],k,out=[];for(k=0;k<nd;k++){var a=k/nd*6.2832;P.push(rr[k]>0?[x+Math.cos(a)*rr[k],z+Math.sin(a)*rr[k],a]:null);}
+var carry=0;for(k=0;k<nd;k++){var p=P[k],q=P[(k+1)%nd];if(!p||!q){carry=0;continue;}
+var L=Math.hypot(q[0]-p[0],q[1]-p[1]),t=carry;
+while(t<L){var f=L>1e-6?t/L:0,da=((q[2]-p[2]+9.4248)%6.2832)-3.1416;out.push([p[0]+(q[0]-p[0])*f,p[1]+(q[1]-p[1])*f,p[2]+da*f]);t+=gap;}
+carry=t-L;}
+if(!out.length){for(k=0;k<nd;k++)if(P[k])out.push(P[k]);}
+return out;
+}
+function _d3cloudPkPlan(S,L,wd,K,hf){
+K=K||_D3_CLOUD_PK;var out=[],clouds=[],d=Math.max(0,Math.min(4,L.dial|0)),fill=K.fill[d],lee=Math.atan2((wd&&wd.z)||0,(wd&&wd.x)||1);
+for(var si=0;si<S.length;si++){var s=S[si],rb=s.rb,ix=Math.round(s.x*7),iz=Math.round(s.z*7),rn=function(k){return _d3cloudRnd(ix,iz,k);};
+var bil=[],lo=1e9,hi=-1e9,Rm=0,t,m,j,u=0;
+var rows=[[0,0.15,1,1],[0,0.95,0.9,0.85],[1,0.1,0.75,K.up],[2,0.3,0.85,d>=3?1:0]];
+for(t=0;t<rows.length;t++){var w=rows[t],g=s.rings[w[0]],tf=fill*w[3];if(!g||!(tf>0))continue;
+var pts=_d3cloudPkWalk(s.x,s.z,g.rr,rb*w[2]*0.95);
+for(m=0;m<pts.length;m++){var pt=pts[m],a=pt[2];u++;
+var p=tf>=1?1:Math.max(0,Math.min(1,tf+K.lee*Math.cos(a-lee)*Math.min(tf,1-tf)*2));if(rn(60+u)>=p)continue;
+var rx=rb*w[2]*(0.85+0.3*rn(100+u)),o=rb*w[1]+rb*0.2*(rn(120+u)-0.5),y=g.y+(rn(140+u)-0.5)*rb*0.3;
+var bx=pt[0]+Math.cos(a)*o,bz=pt[1]+Math.sin(a)*o,rr2=Math.hypot(bx-s.x,bz-s.z);if(hf&&hf(bx,bz)>y+rb*K.inRock)continue;
+bil.push([bx,y,bz,rx,rx*0.8,rn(180+u)]);lo=Math.min(lo,y-rx*0.8);hi=Math.max(hi,y+rx*0.8);Rm=Math.max(Rm,rr2+rx);}}
+if(fill>0&&s.h-s.yc<rb*K.capK){var nc=d>=2?3:2;for(j=0;j<nc;j++){var ac=rn(220+j)*6.2832,dc=rb*0.45*rn(230+j),rc=rb*(0.8+0.25*rn(240+j)),yc2=s.h+rb*0.15+rc*0.2*j;
+bil.push([s.x+Math.cos(ac)*dc,yc2,s.z+Math.sin(ac)*dc,rc,rc*0.75,rn(250+j)]);lo=Math.min(lo,yc2-rc*0.75);hi=Math.max(hi,yc2+rc*0.75);Rm=Math.max(Rm,dc+rc);}}
+if(!bil.length)continue;
+var n0=out.length/_D3_CLOUD_PSTRIDE,cl={x:s.x,z:s.z,base:lo,R:Rm,H:Math.max(1,hi-lo),kind:3,peak:s.h,yc:s.yc,i0:n0,i1:n0+bil.length};clouds.push(cl);
+for(m=0;m<bil.length;m++){var q=bil[m];out.push(q[0],q[1],q[2],q[3],q[4],s.x,s.z,q[5],cl.base,cl.R,cl.H,3);}}
+return {clouds:clouds,data:new Float32Array(out),n:out.length/_D3_CLOUD_PSTRIDE};
+}
+function _d3cloudPkFrom(M,x,z,need){
+if(!M||!M.clouds)return -1;var best=-1,d=M.data,S=_D3_CLOUD_PSTRIDE,nd=+need||-1e9;
+for(var i=0;i<M.clouds.length;i++){var c=M.clouds[i];if(Math.hypot(x-c.x,z-c.z)>c.R)continue;
+for(var j=c.i0;j<c.i1;j++){var b=j*S,dx=x-d[b],dz=z-d[b+2],rx=d[b+3]*0.9;if(dx*dx+dz*dz>rx*rx)continue;
+var y=d[b+1]-d[b+4];if(y<nd)y=d[b+1]+d[b+4];if(y>=nd&&(best<0||y<best))best=y;}}
+return best;
+}
+function _d3cloudPkIn(M,x,y,z){
+if(!M||!M.n)return 0;var d=M.data,S=_D3_CLOUD_PSTRIDE,best=0;
+for(var i=0;i<M.n;i++){var b=i*S,rx=d[b+3],ry=d[b+4],dx=(x-d[b])/rx,dy=(y-d[b+1])/ry,dz=(z-d[b+2])/rx,q=dx*dx+dy*dy+dz*dz;if(q<1)best=Math.max(best,Math.min(1,(1-q)*2.2));}
+return best;
+}
+function _d3cloudPkH(x,z){var h=_d3drawnH(x,z);try{if(typeof _d3mtnCoverH==='function')h+=_d3mtnCoverH(x,z);}catch(_m){}return (h===h)?h:0;}
+function _d3cloudPkShapes(L,ti){
+var D=_D3,K=_D3_CLOUD_PK,key=D.buildCount+'|'+L.base.toFixed(2)+'|'+ti;if(D._cloudPkKey===key&&D._cloudPkShapes)return D._cloudPkShapes;
+var ih=D.islandHalf>0?D.islandHalf:44,st=Math.max(K.st,2*ih/K.gmax),n=Math.ceil(2*ih/st)+1,H=new Float32Array(n*n),i,j;
+for(j=0;j<n;j++)for(i=0;i<n;i++)H[j*n+i]=_d3cloudPkH(-ih+i*st,-ih+j*st);
+var P=_d3cloudPkFind({x0:-ih,st:st,n:n,h:H},L.base,K.max[Math.max(0,Math.min(2,ti|0))],K),out=[];
+for(i=0;i<P.length;i++){var p=P[i],yc=_d3cloudPkLevel(p.h,L.base,K),r0=_d3cloudPkRing(_d3cloudPkH,p.x,p.z,yc,K),rbar=0,c=0;
+for(j=0;j<r0.length;j++)if(r0[j]>0){rbar+=r0[j];c++;}rbar=c?rbar/c:0;
+var rb=Math.max(K.rb[2],Math.min(K.rb[3],K.rb[0]*rbar+K.rb[1])),yu=yc+rb*K.up,yd=yc-rb*K.dn;
+out.push({x:p.x,z:p.z,h:p.h,yc:yc,rb:rb,rings:[{y:yc,rr:r0},{y:yu,rr:_d3cloudPkRing(_d3cloudPkH,p.x,p.z,yu,K)},{y:yd,rr:_d3cloudPkRing(_d3cloudPkH,p.x,p.z,yd,K)}]});}
+D._cloudPkKey=key;D._cloudPkShapes=out;return out;
+}
+function _d3cloudPkSig(L){var D=_D3;if(!L||D._noPeakClouds||L.kind==='ci')return 'off';var w=(typeof _d3wxRaw==='function')?_d3wxRaw().dir:35;return D.buildCount+'|'+Math.round(w/45);}
+function _d3cloudPkAdd(P,L,ti){
+var D=_D3;P.mtn=null;P.bill=null;
+if(!L||D._noPeakClouds||L.kind==='ci'||!(L.cover>0)||typeof _d3drawnH!=='function')return;
+var S=_d3cloudPkShapes(L,ti);if(!S.length)return;
+var a=((typeof _d3wxRaw==='function')?_d3wxRaw().dir:35)*Math.PI/180,M=_d3cloudPkPlan(S,L,{x:Math.cos(a),z:Math.sin(a)},_D3_CLOUD_PK,_d3cloudPkH);if(!M.n)return;
+var pu=P.puffs,n0=pu?pu.n:0,data=new Float32Array((n0+M.n)*_D3_CLOUD_PSTRIDE);if(pu)data.set(pu.data,0);data.set(M.data,n0*_D3_CLOUD_PSTRIDE);
+P.mtn=M;P.bill={data:data,n:n0+M.n};P.n=P.bill.n;
+}
 var _D3_RAIN={box:14,foot:[0.75,0.85],streak:0.075};
 function _d3rainFrom(P,x,z,m,K){
 K=K||_D3_CLOUD;if(!P)return -1;var R=_D3_RAIN,mm=m>0?m:1,best=-1,i,cl=P.puffs&&P.puffs.clouds,S=P.sheets;
@@ -61531,11 +61621,19 @@ if(ev===2){if(!L&&(D._cloudPkAt!==D.buildCount||D._cloudPk==null)){D._cloudPk=_d
 return {all:1,base:L?L.base:_d3cloudLayer(D._cloudPk,4).base,P:null,m:1,L:L};}
 if(!L||!P||L.kind==='ci')return null;
 var cam=(typeof _d3camNow==='function')?_d3camNow():D.cam,m=(cam&&cam.isOrthographicCamera&&cam===D.cam)?_D3_CLOUD.mapM:1;
-return {all:0,base:L.base,P:P,m:m,L:L};
+return {all:0,base:L.base,P:P,m:m,L:L,mtn:P.mtn||null};
+}
+function _d3rainBaseAt(src,x,z,g,len){
+var need=g+0.4+len,b;
+if(src.all)b=src.base;else{var o=_D3._cloudOff;b=_d3rainFrom(src.P,x-((o&&o.x)||0),z-((o&&o.z)||0),src.m);}
+if(!(b>=need))b=-1;
+if(src.mtn){var bm=_d3cloudPkFrom(src.mtn,x,z,need);if(bm>=0&&(b<0||bm<b))b=bm;}
+return b;
 }
 function _d3rainGround(x,z){
 var g=(typeof _d3drawnH==='function')?_d3drawnH(x,z):0,w=(typeof _d3waterLevelAt==='function')?_d3waterLevelAt(x,z):null;
-if(!(g===g))g=0;return (w!=null&&w>g)?w:g;
+if(!(g===g))g=0;if(typeof _d3mtnCoverH==='function'){var mh=_d3mtnCoverH(x,z);if(mh>0)g+=mh;}
+return (w!=null&&w>g)?w:g;
 }
 function _d3wxRainBuild(){
 var T=window.THREE;
@@ -61556,12 +61654,13 @@ geo.setDrawRange(0,0);
 try{if(typeof _d3snowBuild==='function')_d3snowBuild(N);}catch(_sb){}
 }
 function _d3rainPlace(st,on,i,x,z,y,src,len,gF,bk){
-var k=i*4,b=(bk!=null)?bk:(src.all?src.base:_d3rainFrom(src.P,x-((_D3._cloudOff&&_D3._cloudOff.x)||0),z-((_D3._cloudOff&&_D3._cloudOff.z)||0),src.m)),g=-1e9,ih=_D3.islandHalf;
-if(ih>0&&(Math.abs(x)>ih||Math.abs(z)>ih))b=-1;
-if(b>=0){g=_d3rainGround(x,z);if(b-len<g+0.4)b=-1;}
+var k=i*4,b=-1,g=-1e9,ih=_D3.islandHalf;
+if(!(ih>0&&(Math.abs(x)>ih||Math.abs(z)>ih))){g=_d3rainGround(x,z);b=(bk!=null)?bk:_d3rainBaseAt(src,x,z,g,len);if(b-len<g+0.4)b=-1;}
 if(y==null)y=(b>=0)?b-len:src.base-len;
 st[k]=x;st[k+2]=z;st[k+1]=y;
-if(b>=0&&y<=b-len+1e-3){on[i]=1;st[k+3]=g;}else{on[i]=0;st[k+3]=gF;}
+if(b>=0&&y<=b-len+1e-3){on[i]=1;st[k+3]=g;
+if(src.sn&&Math.random()>src.kb*_d3snowAltK(g,src.ahi)){on[i]=0;return 1;}}
+else{on[i]=0;st[k+3]=gF;}
 return on[i];
 }
 function _d3wxRainStep(dt,cx,cy,cz){
@@ -61573,14 +61672,16 @@ var eye=_D3._hurEye||0,dry=Math.max(0,(1-eye-0.10)/0.90);
 var want=Math.round(wet.n*dry);
 if(want<1){off();return;}
 var src=_d3rainSrc();if(!src){off();return;}
-var N=Math.min(_D3._rainN,want),st=_D3._rainPts,on=_D3._rainOn,a=_D3._rainArr,R=_D3._rainBox,i,j=0,hit=0,tries=0;
 var sn=(typeof _d3snowNow==='function')&&_d3snowNow()&&!!sm,SK=(typeof _D3_SNOW!=='undefined')?_D3_SNOW:null;
+var sa=sn&&!_D3._noSnowAlt;if(sa)want=Math.round(want*SK.alt[1]);
+var N=Math.min(_D3._rainN,want),st=_D3._rainPts,on=_D3._rainOn,a=_D3._rainArr,R=_D3._rainBox,i,j=0,hit=0,tries=0;
+src.sn=sa;src.kb=sa?Math.round(wet.n*dry)/N:1;src.ahi=src.L?src.L.base:src.base;
 var wd=_d3wxWind(),hs=Math.max(wd.s*2.2,(typeof _d3cloudDriftOf==='function')?_d3cloudDriftOf(wd.s):0),vx=wd.x*hs,vz=wd.z*hs,vy=-wet.spd*(sn?SK.spd:1);
 var L=_D3_RAIN.streak,ln=sn?SK.len:wet.spd*L,gF=_d3rainGround(cx,cz),rnd=Math.random,tN=performance.now()/1000,sa=sn?_D3._snowArr:null;
 var key=src.all+'|'+src.m+'|'+src.base.toFixed(2)+'|'+ln.toFixed(3)+'|'+(sn?1:0),far=_D3._rainAt&&(Math.abs(_D3._rainAt.x-cx)>R*3||Math.abs(_D3._rainAt.z-cz)>R*3);
 if(_D3._rainKey!==key||_D3._rainSky!==src.P||far){_D3._rainKey=key;_D3._rainSky=src.P;var h0=0;
-for(i=0;i<_D3._rainN;i++){var x0=cx+(rnd()*2-1)*R,z0=cz+(rnd()*2-1)*R,b0=src.all?src.base:_d3rainFrom(src.P,x0-((_D3._cloudOff&&_D3._cloudOff.x)||0),z0-((_D3._cloudOff&&_D3._cloudOff.z)||0),src.m);
-var g0=b0>=0?_d3rainGround(x0,z0):gF,top=(b0>=0?b0:src.base)-ln;h0+=_d3rainPlace(st,on,i,x0,z0,g0+(top-g0)*rnd(),src,ln,gF,b0);}
+for(i=0;i<_D3._rainN;i++){var x0=cx+(rnd()*2-1)*R,z0=cz+(rnd()*2-1)*R,gg=_d3rainGround(x0,z0),b0=_d3rainBaseAt(src,x0,z0,gg,ln);
+var g0=b0>=0?gg:gF,top=(b0>=0?b0:src.base)-ln;h0+=_d3rainPlace(st,on,i,x0,z0,g0+(top-g0)*rnd(),src,ln,gF,b0);}
 _D3._fallHere=h0/_D3._rainN;}
 _D3._rainAt={x:cx,z:cz};
 for(i=0;i<N;i++){
@@ -61613,11 +61714,13 @@ if(sm)sm.visible=false;_D3._snowDrawn=0;_D3._snowHere=0;
 }
 _d3rainShaftStep(dt,src,w.rain,dry,sn);
 }
-var _D3_RSHAFT={dens:[0,0.4,0.6,0.78],near:25,upd:12,cb:1.25};
+var _D3_RSHAFT={dens:[0,0.4,0.6,0.78],near:25,upd:12,cb:1.25,mtn:1.2,mtnR:0.7};
 function _d3rainShaftsOf(P){
-var out=[],cl=P&&P.puffs&&P.puffs.clouds,R=_D3_RAIN,i;if(!cl)return out;
-for(i=0;i<cl.length;i++){var c=cl[i],cb=c.kind===1,r=c.R*(cb?R.foot[1]:R.foot[0]),e=cb?0:(c.e||0);
-out.push({x:c.x,z:c.z,base:c.base,ra:r*(1+e),rb:r*(1-0.25*e),ax:c.ax==null?1:c.ax,az:c.az||0,k:cb?_D3_RSHAFT.cb:0.55+0.45*(c.d||0),s:_d3cloudRnd(i,7,321)});}
+var out=[],cl=P&&P.puffs&&P.puffs.clouds,R=_D3_RAIN,K=_D3_RSHAFT,i;
+for(i=0;cl&&i<cl.length;i++){var c=cl[i],cb=c.kind===1,r=c.R*(cb?R.foot[1]:R.foot[0]),e=cb?0:(c.e||0);
+out.push({x:c.x,z:c.z,base:c.base,ra:r*(1+e),rb:r*(1-0.25*e),ax:c.ax==null?1:c.ax,az:c.az||0,k:cb?K.cb:0.55+0.45*(c.d||0),s:_d3cloudRnd(i,7,321)});}
+var mc=P&&P.mtn&&P.mtn.clouds;
+for(i=0;mc&&i<mc.length;i++){var m=mc[i];out.push({x:m.x,z:m.z,base:m.base,ra:m.R*K.mtnR,rb:m.R*K.mtnR,ax:1,az:0,k:K.mtn,s:_d3cloudRnd(i,9,323),an:1});}
 return out;
 }
 var _D3_RSHAFT_VS=[
@@ -61627,8 +61730,8 @@ var _D3_RSHAFT_VS=[
 'varying vec4 vQ;varying float vA;varying vec3 vV;',
 '#include <fog_pars_vertex>',
 'void main(){',
-'  vec2 d=aS.xy+uOff-uCam.xz;d=mod(d+0.5*uP,uP)-0.5*uP;vec2 c2=uCam.xz+d;',
-'  float b=aS.z,fall=max(1.0,b-aS.w),m=uMap.x>0.5?uMap.y:1.0,ra=aT.x*m,rb=aT.y*m;vec2 ax=aT.zw;',
+'  float an=aU.z;vec2 d=aS.xy+uOff*(1.0-an)-uCam.xz;d=mix(mod(d+0.5*uP,uP)-0.5*uP,d,an);vec2 c2=uCam.xz+d;',
+'  float b=aS.z,fall=max(1.0,b-aS.w),m=(uMap.x>0.5&&an<0.5)?uMap.y:1.0,ra=aT.x*m,rb=aT.y*m;vec2 ax=aT.zw;',
 '  vec3 vv=uOrtho>0.5?uVd:(uEye-vec3(c2.x,b,c2.y));vec2 h=vec2(-vv.z,vv.x);float hl=length(h);h=hl>1e-4?h/hl:vec2(1.0,0.0);',
 '  float ha=dot(h,ax),hb=dot(h,vec2(-ax.y,ax.x)),hw=sqrt(ra*ra*ha*ha+rb*rb*hb*hb);',
 '  vec3 wp=vec3(c2.x+h.x*position.x*hw+uSlant.x*position.y*fall,b-position.y*fall,c2.y+h.y*position.x*hw+uSlant.y*position.y*fall);',
@@ -61680,20 +61783,20 @@ M.raycast=function(){};M.userData.noMerge=true;M.userData._noB=1;M.userData._glb
 D.scene.add(M);D._rainShafts=M;return M;
 }
 function _d3rainShaftFoot(M,i,cam,off){
-var c=M.userData.list[i],K=_D3_CLOUD,x=cam.x+_d3cloudWrap(c.x+off.x-cam.x,K.P),z=cam.z+_d3cloudWrap(c.z+off.z-cam.z,K.P),lo=1e9,q;
+var c=M.userData.list[i],K=_D3_CLOUD,x=c.an?c.x:cam.x+_d3cloudWrap(c.x+off.x-cam.x,K.P),z=c.an?c.z:cam.z+_d3cloudWrap(c.z+off.z-cam.z,K.P),lo=1e9,q;
 var S=[[0,0],[0.7,0],[-0.7,0],[0,0.7],[0,-0.7]];
 for(q=0;q<S.length;q++){var u=S[q][0]*c.ra,v=S[q][1]*c.rb,g=_d3rainGround(x+c.ax*u-c.az*v,z+c.az*u+c.ax*v);if(g<lo)lo=g;}
 var a=M.geometry.attributes.aS;a.array[i*4+3]=Math.min(c.base-1,lo-1.5);c.foot={x:x,z:z};
 }
 function _d3rainShaftStep(dt,src,r,dry,sn){
 var D=_D3,M=D._rainShafts,P=src&&src.P,Mp=D._cloudPuffs,U=D._cloudU;
-var on=!D._noRainShafts&&!!P&&!!P.puffs&&P.puffs.n>0&&!!(Mp&&Mp.visible)&&!!U&&r>0&&dry>0.01;
+var on=!D._noRainShafts&&!!P&&((!!P.puffs&&P.puffs.n>0)||!!P.mtn)&&!!(Mp&&Mp.visible)&&!!U&&r>0&&dry>0.01;
 if(!on){if(M)M.visible=false;D._rainShaftN=0;return;}
 if(!M||M.parent!==D.scene||M.userData.plan!==P){
 var L=_d3rainShaftsOf(P);M=_d3rainShaftArm(L.length,U);if(!M)return;
 var g=M.geometry,aS=g.attributes.aS.array,aT=g.attributes.aT.array,aU=g.attributes.aU.array,i;
 for(i=0;i<L.length;i++){var c=L[i],q=i*4;aS[q]=c.x;aS[q+1]=c.z;aS[q+2]=c.base;aS[q+3]=c.base-40;
-aT[q]=c.ra;aT[q+1]=c.rb;aT[q+2]=c.ax;aT[q+3]=c.az;aU[q]=c.k;aU[q+1]=c.s;aU[q+2]=0;aU[q+3]=0;}
+aT[q]=c.ra;aT[q+1]=c.rb;aT[q+2]=c.ax;aT[q+3]=c.az;aU[q]=c.k;aU[q+1]=c.s;aU[q+2]=c.an?1:0;aU[q+3]=0;}
 M.userData.plan=P;M.userData.list=L;M.userData.rr=0;g.instanceCount=L.length;
 var cam0=U.uCam.value,off0=D._cloudOff||{x:0,z:0};for(i=0;i<L.length;i++)_d3rainShaftFoot(M,i,cam0,off0);
 g.attributes.aS.needsUpdate=true;g.attributes.aT.needsUpdate=true;g.attributes.aU.needsUpdate=true;
@@ -61709,11 +61812,16 @@ u.uSlant.value.set(wd.x*sl,wd.z*sl);
 var cv=D.ren&&D.ren.domElement;u.uPxW.value=cv?cv.width*0.5:640;u.uIsle.value=(D.islandHalf>0)?D.islandHalf:1e9;
 M.visible=true;D._rainShaftN=M.geometry.instanceCount;
 }
-var _D3_SNOW={spd:0.11,len:0.06,wob:[0.32,0.9],size:0.16,max:14,px:4,op:[0,0.62,0.8,0.92],col:0xf6f9fc,words:['Dry','Flurries','Snow','Heavy snow'],
+var _D3_SNOW={spd:0.11,len:0.06,wob:[0.32,0.9],size:0.16,max:14,px:4,alt:[0.55,1.6],op:[0,0.62,0.8,0.92],col:0xf6f9fc,words:['Dry','Flurries','Snow','Heavy snow'],
 tips:['No snow','A few flakes drifting down','Steady snow, the air full of it','Heavy snow that hazes the air']};
 function _d3snowNow(){
 if(typeof _D3!=='undefined'&&_D3&&_D3._noSnowFall)return false;
 try{return typeof _d3season==='function'&&_d3season()===2;}catch(_s){return false;}
+}
+function _d3snowAltK(g,hi,K){K=K||_D3_SNOW;var a=Math.max(0,Math.min(1,(+g||0)/Math.max(1,+hi||1)));return K.alt[0]+(K.alt[1]-K.alt[0])*a;}
+function _d3snowAltRef(){
+var D=_D3;if(!D)return 16;if(D._cloudPkAt!==D.buildCount||D._cloudPk==null){D._cloudPk=_d3cloudPeak();D._cloudPkAt=D.buildCount;}
+return _d3cloudLayer(D._cloudPk,1).base;
 }
 function _d3snowSway(t,ph,K){K=K||_D3_SNOW;var w=K.wob;return [Math.sin(t*w[1]+ph)*w[0],Math.cos(t*w[1]*0.83+ph*1.7)*w[0]];}
 function _d3wxFallWord(r,snow){var R=(typeof _D3_WX_RAIN!=='undefined')?_D3_WX_RAIN:['Dry','Drizzle','Rain','Downpour'],S=snow?_D3_SNOW.words:R;r=r|0;return S[r]||S[0];}
