@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='794f214';
+var RCG_BUILD='707cc2c';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -10112,7 +10112,7 @@ var w=(typeof _d3wx==='function')?_d3wx():{cloud:1,rain:0,wind:1,dir:35};
 if(k==='cloud')return _D3_WX_CLOUD[w.cloud];
 if(k==='ctype')return (typeof _d3cloudTypeLabel==='function')?_d3cloudTypeLabel((typeof _d3wxRaw==='function')?_d3wxRaw().ctype:0,w.cloud):'Auto';
 if(k==='rain'){var nr=(typeof _d3rainNone==='function'&&typeof _d3cloudNow==='function')?_d3rainNone(w,_d3cloudNow(),!(_da&&_da.clouds===false)&&!(_D3&&_D3._noClouds),(typeof _d3wxEvent==='function')?_d3wxEvent():0):'';
-return _D3_WX_RAIN[w.rain]+(nr?' \u2014 but '+{off:'the clouds are off',clear:'the sky is clear',ci:'cirrus are too high to rain'}[nr]+', so none falls':'');}
+return ((typeof _d3wxFallWord==='function')?_d3wxFallWord(w.rain,typeof _d3snowNow==='function'&&_d3snowNow()):_D3_WX_RAIN[w.rain])+(nr?' \u2014 but '+{off:'the clouds are off',clear:'the sky is clear',ci:'cirrus are too high to rain'}[nr]+', so none falls':'');}
 if(k==='wind')return _D3_WX_WIND[w.wind];
 if(k==='season'){var sn=_D3_WX_SEASON[(typeof _d3season==='function')?_d3season():0];return (_da&&_da.wx&&_da.wx.season!=null)?sn:('By the year \u2014 '+sn);}
 if(k==='event')return (typeof _d3wxEventLabel==='function')?_d3wxEventLabel():'None';
@@ -55079,8 +55079,10 @@ var U=_d3groundU(),on=(typeof _d3look==='function')&&_d3look()==='real'&&!(typeo
 U.uGndOn.value=on?1:0;return on;
 }
 var _D3_TREELOOK={keep:0.32,sc:0.035,edge:0.06,mixG:0.4,green:[0.24,0.44,0.13],jit:0.07,br0:0.965,br1:0.995,bb0:0.965,bb1:0.995};
+var _D3_TREESNOW={s0:0.05,s1:0.45,n:0.6,ns:0.9,col:[0.82,0.85,0.9]};
 var _D3_TREELOOK_U=null;
-function _d3treeLookU(){return _D3_TREELOOK_U||(_D3_TREELOOK_U={uTreeReal:{value:0}});}
+function _d3treeLookU(){return _D3_TREELOOK_U||(_D3_TREELOOK_U={uTreeReal:{value:0},uTreeSnow:{value:0}});}
+function _d3treeSnowAt(up,n,K){K=K||_D3_TREESNOW;var t=Math.max(0,Math.min(1,(up+(n-0.5)*K.n-K.s0)/(K.s1-K.s0)));return t*t*(3-2*t);}
 function _d3treeBlossom(c,K){K=K||_D3_TREELOOK;var ss=function(a,b,x){var t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);},g=Math.max(c[1],1e-4);
 return ss(K.br0,K.br1,c[0]/g)*ss(K.bb0,K.bb1,c[2]/g);}
 function _d3treeKeepAt(n,K){K=K||_D3_TREELOOK;var a=1-K.keep-K.edge/2,b=1-K.keep+K.edge/2,t=Math.max(0,Math.min(1,(n-a)/(b-a)));return t*t*(3-2*t);}
@@ -55093,7 +55095,7 @@ function _d3treeV3(a){return 'vec3('+a.map(function(v){return (+v).toFixed(4);})
 function _d3treeLookGlsl(K){K=K||_D3_TREELOOK;var f=function(v){return (+v).toFixed(4);},gL=_d3treeLum(K.green);
 return {vsPre:'varying vec3 vTreeI;\n',
 vsBody:'#ifdef USE_INSTANCING\n  vTreeI=(modelMatrix*vec4(instanceMatrix[3].xyz,1.0)).xyz;\n#else\n  vTreeI=(modelMatrix*vec4(0.0,0.0,0.0,1.0)).xyz;\n#endif\n',
-fsPre:'uniform float uTreeReal;\nvarying vec3 vTreeI;\n'+
+fsPre:'uniform float uTreeReal;\nuniform float uTreeSnow;\nvarying vec3 vTreeI;\n'+
 'float trH(vec2 p){ return fract(sin(p.x*127.1+p.y*311.7)*43758.5453); }\n'+
 'float trN(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(trH(i),trH(i+vec2(1.0,0.0)),f.x),mix(trH(i+vec2(0.0,1.0)),trH(i+vec2(1.0,1.0)),f.x),f.y); }\n',
 fsBody:'  if(uTreeReal>0.5){ vec3 tc=diffuseColor.rgb; float tg=max(tc.g,1e-4);\n'+
@@ -55101,16 +55103,26 @@ fsBody:'  if(uTreeReal>0.5){ vec3 tc=diffuseColor.rgb; float tg=max(tc.g,1e-4);\
 '    float tk=smoothstep('+f(1-K.keep-K.edge/2)+','+f(1-K.keep+K.edge/2)+',trN(vTreeI.xz*'+f(K.sc)+'));\n'+
 '    float tL=dot(tc,vec3(0.2126,0.7152,0.0722)); vec3 tgn='+_d3treeV3(K.green)+'*min(1.6,tL/'+f(gL)+')*0.62;\n'+
 '    vec3 tx=mix(tgn,mix(tc,tgn,'+f(K.mixG)+'),tk); float tj=trH(floor(vTreeI.xz*1.7))*2.0-1.0;\n'+
-'    diffuseColor.rgb=mix(tc,tx,tb)*(1.0+tj*'+f(K.jit)+'); }\n'};}
+'    diffuseColor.rgb=mix(tc,tx,tb)*(1.0+tj*'+f(K.jit)+'); }\n',
+fsSnow:_d3treeSnowGlsl()};}
+function _d3treeSnowGlsl(S){S=S||_D3_TREESNOW;var f=function(v){return (+v).toFixed(4);};
+return '  if(uTreeSnow>0.001){ vec3 tsUp=normalize((viewMatrix*vec4(0.0,1.0,0.0,0.0)).xyz);\n'+
+'    float tsU=dot(normal,tsUp)+(trN(vLeafP.xz*'+f(S.ns)+'+vec2(vLeafP.y*0.7,0.0))-0.5)*'+f(S.n)+';\n'+
+'    float tsK=smoothstep('+f(S.s0)+','+f(S.s1)+',tsU)*uTreeSnow; diffuseColor.rgb=mix(diffuseColor.rgb,'+_d3treeV3(S.col)+',tsK); }\n';}
 function _d3treeLookSh(sh){
 if(!sh||sh.uniforms.uTreeReal)return false;var G=_d3treeLookGlsl();sh.uniforms.uTreeReal=_d3treeLookU().uTreeReal;
 sh.vertexShader=G.vsPre+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody);
-sh.fragmentShader=G.fsPre+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n'+G.fsBody);
+sh.fragmentShader=G.fsPre+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n'+G.fsBody)
+.replace('#include <emissivemap_fragment>',G.fsSnow+'#include <emissivemap_fragment>');
+sh.uniforms.uTreeSnow=_d3treeLookU().uTreeSnow;
 return true;
 }
 function _d3treeLookStep(){
 var U=_d3treeLookU(),on=(typeof _d3look==='function')&&_d3look()==='real'&&!(typeof _D3!=='undefined'&&_D3&&_D3._noTreeLook);
-U.uTreeReal.value=on?1:0;return on;
+U.uTreeReal.value=on?1:0;
+var sn=false;try{sn=(typeof _d3season==='function')&&_d3season()===2&&!(typeof _D3!=='undefined'&&_D3&&_D3._noTreeSnow);}catch(_se){}
+U.uTreeSnow.value=sn?1:0;
+return on;
 }
 function _d3parkScatter(g,m,pts,half){var it=_d3parkScatterSteps(g,m,pts,half),r;do{r=it.next();}while(!r.done);return r.value;}
 var _d3parkScatterSteps0=function*(g,m,pts,half){
@@ -59090,7 +59102,7 @@ weather:{t:'Weather Station',rows:[
 {sec:'Sky',i:'\u2601\ufe0f',l:'Clouds',d:'Poofy clouds drifting overhead',click:'trkCloudBtn',onEl:'trkCloudBtn'},
 {i:'\u26c5',l:'Cloud cover',d:'How much of the sky is cloud',pick:'cloud'},
 {i:'\ud83c\udf25\ufe0f',l:'Cloud type',d:'What the clouds are, or Auto by the cover',pick:'ctype'},
-{sec:'Rain & wind',i:'\ud83c\udf27\ufe0f',l:'Rain',d:'How hard it rains - only ever from a cloud',pick:'rain'},
+{sec:'Rain & wind',i:'\ud83c\udf27\ufe0f',l:'Rain',d:'How hard it rains, or in the winter snows - only ever from a cloud',pick:'rain'},
 {i:'\ud83d\udca8',l:'Wind',d:'It blows the cloud, the rain, the sea and the trees',pick:'wind'},
 {i:'\ud83e\udded',l:'Wind from',d:'Which way the weather comes from',pick:'dir'},
 {sec:'Year',i:'\ud83c\udf41',l:'Season',d:'The colour of the land - the leaves, the grass, the snow',pick:'season'},
@@ -60641,7 +60653,8 @@ function _d3wxLabel(){
 var w=_d3wx();
 var ev=(typeof _d3wxEvent==='function')?_d3wxEvent():0;
 if(ev)return _D3_WX_SEASON[_d3season()]+' \u2014 '+_D3_WX_EVENT[ev].toUpperCase();
-return _D3_WX_SEASON[_d3season()]+' \u2014 '+_D3_WX_CLOUD[w.cloud]+', '+_D3_WX_RAIN[w.rain]+', '+_D3_WX_WIND[w.wind];
+var _sn9=(typeof _d3snowNow==='function')&&_d3snowNow();
+return _D3_WX_SEASON[_d3season()]+' \u2014 '+_D3_WX_CLOUD[w.cloud]+', '+((typeof _d3wxFallWord==='function')?_d3wxFallWord(w.rain,_sn9):_D3_WX_RAIN[w.rain])+', '+_D3_WX_WIND[w.wind];
 }
 function _d3wxApplyLight(){
 try{
@@ -60756,6 +60769,7 @@ function _d3wxPicks(k){
 var raw=(typeof _d3wxRaw==='function')?_d3wxRaw():{},eff=(typeof _d3wx==='function')?_d3wx():raw,w=(typeof _da!=='undefined'&&_da&&_da.wx)||{};
 raw.season=(w.season==null)?null:w.season;raw.event=(typeof _d3wxEvent==='function')?_d3wxEvent():(w.event|0);
 var P=_d3wxPickOf(k,raw,eff);if(!P)return null;
+if(k==='rain'&&typeof _d3snowNow==='function'&&_d3snowNow()){P.opts=_D3_SNOW.words.slice();P.tips=_D3_SNOW.tips.slice();}
 P.note=_d3wxPickNote(k,P);P.set=function(i){driftWxPick(k,i);};
 return P;
 }
@@ -60892,8 +60906,8 @@ if(se===1){
 var lum=r*0.30+g*0.59+b*0.11,t=Math.max(0,Math.min(1,(lum-0.10)/0.40));
 R=0.40+t*0.54;G=0.17+t*0.43;B=0.06+t*0.11;
 }else if(se===2){
-var w2=0.62;
-R=(r*(1-w2)+0.86*w2)*0.94;G=(g*(1-w2)+0.89*w2)*0.96;B=b*(1-w2)+0.95*w2;
+var w2=0.3;
+R=(r*(1-w2)+0.86*w2)*0.86;G=(g*(1-w2)+0.89*w2)*0.92;B=b*(1-w2)+0.95*w2;
 }else{
 R=Math.min(1,r*1.10+0.10);G=Math.min(1,g*1.16+0.12);B=Math.min(1,b*0.94+0.02);
 }
@@ -61537,8 +61551,9 @@ var m=new T.LineSegments(geo,mat);
 m.frustumCulled=false;m.renderOrder=12;m.userData.noMerge=true;
 _D3.scene.add(m);
 _D3._rainMesh=m;_D3._rainPts=new Float32Array(N*4);_D3._rainOn=new Uint8Array(N);_D3._rainN=N;_D3._rainArr=pos;_D3._rainAttr=geo.attributes.position;
-_D3._rainKey=null;_D3._rainHere=0;
+_D3._rainKey=null;_D3._rainHere=0;_D3._fallHere=0;
 geo.setDrawRange(0,0);
+try{if(typeof _d3snowBuild==='function')_d3snowBuild(N);}catch(_sb){}
 }
 function _d3rainPlace(st,on,i,x,z,y,src,len,gF,bk){
 var k=i*4,b=(bk!=null)?bk:(src.all?src.base:_d3rainFrom(src.P,x-((_D3._cloudOff&&_D3._cloudOff.x)||0),z-((_D3._cloudOff&&_D3._cloudOff.z)||0),src.m)),g=-1e9,ih=_D3.islandHalf;
@@ -61552,24 +61567,26 @@ return on[i];
 function _d3wxRainStep(dt,cx,cy,cz){
 var w=_d3wx(),wet=_D3_WX_WET[w.rain]||_D3_WX_WET[0];
 var m=_D3._rainMesh;if(!m)return;
-var off=function(){m.visible=false;_D3._rainHere=0;_D3._rainDrawn=0;_d3rainShaftStep(dt,null,0,0);};
+var sm=_D3._snowMesh,off=function(){m.visible=false;_D3._rainHere=0;_D3._fallHere=0;_D3._rainDrawn=0;if(sm)sm.visible=false;_D3._snowHere=0;_D3._snowDrawn=0;_d3rainShaftStep(dt,null,0,0);};
 if(!wet.n){off();return;}
 var eye=_D3._hurEye||0,dry=Math.max(0,(1-eye-0.10)/0.90);
 var want=Math.round(wet.n*dry);
 if(want<1){off();return;}
 var src=_d3rainSrc();if(!src){off();return;}
 var N=Math.min(_D3._rainN,want),st=_D3._rainPts,on=_D3._rainOn,a=_D3._rainArr,R=_D3._rainBox,i,j=0,hit=0,tries=0;
-var wd=_d3wxWind(),hs=Math.max(wd.s*2.2,(typeof _d3cloudDriftOf==='function')?_d3cloudDriftOf(wd.s):0),vx=wd.x*hs,vz=wd.z*hs,vy=-wet.spd;
-var L=_D3_RAIN.streak,ln=wet.spd*L,gF=_d3rainGround(cx,cz),rnd=Math.random;
-var key=src.all+'|'+src.m+'|'+src.base.toFixed(2)+'|'+ln.toFixed(3),far=_D3._rainAt&&(Math.abs(_D3._rainAt.x-cx)>R*3||Math.abs(_D3._rainAt.z-cz)>R*3);
+var sn=(typeof _d3snowNow==='function')&&_d3snowNow()&&!!sm,SK=(typeof _D3_SNOW!=='undefined')?_D3_SNOW:null;
+var wd=_d3wxWind(),hs=Math.max(wd.s*2.2,(typeof _d3cloudDriftOf==='function')?_d3cloudDriftOf(wd.s):0),vx=wd.x*hs,vz=wd.z*hs,vy=-wet.spd*(sn?SK.spd:1);
+var L=_D3_RAIN.streak,ln=sn?SK.len:wet.spd*L,gF=_d3rainGround(cx,cz),rnd=Math.random,tN=performance.now()/1000,sa=sn?_D3._snowArr:null;
+var key=src.all+'|'+src.m+'|'+src.base.toFixed(2)+'|'+ln.toFixed(3)+'|'+(sn?1:0),far=_D3._rainAt&&(Math.abs(_D3._rainAt.x-cx)>R*3||Math.abs(_D3._rainAt.z-cz)>R*3);
 if(_D3._rainKey!==key||_D3._rainSky!==src.P||far){_D3._rainKey=key;_D3._rainSky=src.P;var h0=0;
 for(i=0;i<_D3._rainN;i++){var x0=cx+(rnd()*2-1)*R,z0=cz+(rnd()*2-1)*R,b0=src.all?src.base:_d3rainFrom(src.P,x0-((_D3._cloudOff&&_D3._cloudOff.x)||0),z0-((_D3._cloudOff&&_D3._cloudOff.z)||0),src.m);
 var g0=b0>=0?_d3rainGround(x0,z0):gF,top=(b0>=0?b0:src.base)-ln;h0+=_d3rainPlace(st,on,i,x0,z0,g0+(top-g0)*rnd(),src,ln,gF,b0);}
-_D3._rainHere=h0/_D3._rainN;}
+_D3._fallHere=h0/_D3._rainN;}
 _D3._rainAt={x:cx,z:cz};
 for(i=0;i<N;i++){
 var k=i*4;
 st[k]+=vx*dt;st[k+1]+=vy*dt;st[k+2]+=vz*dt;
+if(sn){var sw=_d3snowSway(tN,i*2.399,SK);st[k]+=sw[0]*dt;st[k+2]+=sw[1]*dt;}
 if(st[k+1]<st[k+3]){tries++;hit+=_d3rainPlace(st,on,i,cx+(rnd()*2-1)*R,cz+(rnd()*2-1)*R,null,src,ln,gF);}
 else{
 var dx=st[k]-cx,dz=st[k+2]-cz,wr=0;
@@ -61578,16 +61595,23 @@ if(dz>R){st[k+2]-=2*R;wr=1;}else if(dz<-R){st[k+2]+=2*R;wr=1;}
 if(wr)_d3rainPlace(st,on,i,st[k],st[k+2],st[k+1],src,ln,gF);
 }
 if(!on[i])continue;
+if(sn){var q=j*3;sa[q]=st[k];sa[q+1]=st[k+1];sa[q+2]=st[k+2];j++;continue;}
 var b=j*6;
 a[b]=st[k];a[b+1]=st[k+1];a[b+2]=st[k+2];
 a[b+3]=st[k]-vx*L;a[b+4]=st[k+1]-vy*L;a[b+5]=st[k+2]-vz*L;j++;
 }
-if(tries>0){var kk=Math.min(1,dt*1.2*Math.max(1,tries/8));_D3._rainHere=(_D3._rainHere||0)+(hit/tries-(_D3._rainHere||0))*kk;}
+if(tries>0){var kk=Math.min(1,dt*1.2*Math.max(1,tries/8));_D3._fallHere=(_D3._fallHere||0)+(hit/tries-(_D3._fallHere||0))*kk;}
+if(sn){
+_D3._snowAttr.needsUpdate=true;sm.visible=j>0;sm.geometry.setDrawRange(0,j);sm.material.opacity=(SK.op[w.rain]||SK.op[1])*dry;
+m.visible=false;_D3._rainDrawn=0;_D3._snowDrawn=j;_D3._snowHere=_D3._fallHere||0;_D3._rainHere=0;
+}else{
 _D3._rainAttr.needsUpdate=true;
-m.visible=j>0;_D3._rainDrawn=j;
+m.visible=j>0;_D3._rainDrawn=j;_D3._rainHere=_D3._fallHere||0;
 m.geometry.setDrawRange(0,j*2);
 m.material.opacity=(0.30+0.16*(w.rain/3))*dry;
-_d3rainShaftStep(dt,src,w.rain,dry);
+if(sm)sm.visible=false;_D3._snowDrawn=0;_D3._snowHere=0;
+}
+_d3rainShaftStep(dt,src,w.rain,dry,sn);
 }
 var _D3_RSHAFT={dens:[0,0.4,0.6,0.78],near:25,upd:12,cb:1.25};
 function _d3rainShaftsOf(P){
@@ -61618,7 +61642,7 @@ var _D3_RSHAFT_VS=[
 '}'].join('\n');
 var _D3_RSHAFT_FS=[
 'uniform vec3 uShade;uniform vec2 uDark;uniform vec3 uCol;uniform vec3 uLr;uniform float uFogK;uniform vec4 uHole;uniform vec3 uTv;',
-'uniform float uTime;uniform float uDens;uniform float uSpd;',
+'uniform float uTime;uniform float uDens;uniform float uSpd;uniform float uSnow;',
 'varying vec4 vQ;varying float vA;varying vec3 vV;',
 '#include <common>',
 '#include <fog_pars_fragment>',
@@ -61633,7 +61657,8 @@ var _D3_RSHAFT_FS=[
 '  if(uHole.x>0.0){vec2 hd=vV.xy-uTv.xy;hd.x/=uHole.w;a*=1.0-uHole.x*(1.0-smoothstep(uHole.y,uHole.z,length(hd)));}',
 '  if(a<0.004)discard;',
 '  vec3 sh=uCol*uShade*uDark.y;float l=dot(sh,vec3(0.3,0.59,0.11));',
-'  gl_FragColor=vec4(mix(vec3(l),sh,0.55)*(0.62+0.3*st),a);',
+'  vec3 rc=mix(vec3(l),sh,0.55)*(0.62+0.3*st),scl=mix(vec3(l),vec3(1.0),0.6)*(0.86+0.14*st);',
+'  gl_FragColor=vec4(mix(rc,scl,uSnow),a*(1.0-0.2*uSnow));',
 '  #include <tonemapping_fragment>',
 '  #include <encodings_fragment>',
 '  #ifdef USE_FOG',
@@ -61648,7 +61673,7 @@ var cap=Math.max(16,n),g=new T.InstancedBufferGeometry(),A=function(k){var a=new
 g.setAttribute('position',new T.Float32BufferAttribute([-1,0,0,1,0,0,1,1,0,-1,1,0],3));g.setIndex([0,1,2,0,2,3]);A('aS');A('aT');A('aU');g.instanceCount=0;
 g.boundingSphere=new T.Sphere(new T.Vector3(),1e9);
 var mat=D._rainShaftMat;
-if(!mat){var u=Object.assign({},T.UniformsUtils.clone(T.UniformsLib.fog),U,{uSlant:{value:new T.Vector2()},uNearR:{value:_D3_RSHAFT.near},uPxW:{value:640},uIsle:{value:1e9},uTime:{value:0},uDens:{value:0},uSpd:{value:9}});
+if(!mat){var u=Object.assign({},T.UniformsUtils.clone(T.UniformsLib.fog),U,{uSlant:{value:new T.Vector2()},uNearR:{value:_D3_RSHAFT.near},uPxW:{value:640},uIsle:{value:1e9},uTime:{value:0},uDens:{value:0},uSpd:{value:9},uSnow:{value:0}});
 mat=D._rainShaftMat=new T.ShaderMaterial({uniforms:u,vertexShader:_D3_RSHAFT_VS,fragmentShader:_D3_RSHAFT_FS,fog:true,lights:false,transparent:true,depthWrite:false,side:T.DoubleSide});}
 M=new T.Mesh(g,mat);M.name='rainShafts';M.frustumCulled=false;M.castShadow=false;M.receiveShadow=false;M.matrixAutoUpdate=false;
 M.raycast=function(){};M.userData.noMerge=true;M.userData._noB=1;M.userData._glbFitSkip=1;M.userData.cap=cap;
@@ -61660,7 +61685,7 @@ var S=[[0,0],[0.7,0],[-0.7,0],[0,0.7],[0,-0.7]];
 for(q=0;q<S.length;q++){var u=S[q][0]*c.ra,v=S[q][1]*c.rb,g=_d3rainGround(x+c.ax*u-c.az*v,z+c.az*u+c.ax*v);if(g<lo)lo=g;}
 var a=M.geometry.attributes.aS;a.array[i*4+3]=Math.min(c.base-1,lo-1.5);c.foot={x:x,z:z};
 }
-function _d3rainShaftStep(dt,src,r,dry){
+function _d3rainShaftStep(dt,src,r,dry,sn){
 var D=_D3,M=D._rainShafts,P=src&&src.P,Mp=D._cloudPuffs,U=D._cloudU;
 var on=!D._noRainShafts&&!!P&&!!P.puffs&&P.puffs.n>0&&!!(Mp&&Mp.visible)&&!!U&&r>0&&dry>0.01;
 if(!on){if(M)M.visible=false;D._rainShaftN=0;return;}
@@ -61678,10 +61703,34 @@ for(k=0;k<Math.min(n,_D3_RSHAFT.upd);k++){_d3rainShaftFoot(M,M.userData.rr%n,cam
 if(n)M.geometry.attributes.aS.needsUpdate=true;
 }
 var wet=_D3_WX_WET[r]||_D3_WX_WET[0],wd=(typeof _d3wxWind==='function')?_d3wxWind():{x:1,z:0,s:0},u=M.material.uniforms,sp=Math.max(1,wet.spd);
-u.uTime.value=(performance.now()/1000)%3600;u.uSpd.value=sp;u.uDens.value=(_D3_RSHAFT.dens[r]||0)*dry;
-u.uSlant.value.set(wd.x*wd.s*2.2/sp,wd.z*wd.s*2.2/sp);
+var sk=(sn&&typeof _D3_SNOW!=='undefined')?_D3_SNOW.spd:1,sv=sp*sk,sl=Math.min(sn?1.2:1e9,wd.s*2.2/sv);
+u.uTime.value=(performance.now()/1000)%3600;u.uSpd.value=sv;u.uDens.value=(_D3_RSHAFT.dens[r]||0)*dry;u.uSnow.value=sn?1:0;
+u.uSlant.value.set(wd.x*sl,wd.z*sl);
 var cv=D.ren&&D.ren.domElement;u.uPxW.value=cv?cv.width*0.5:640;u.uIsle.value=(D.islandHalf>0)?D.islandHalf:1e9;
 M.visible=true;D._rainShaftN=M.geometry.instanceCount;
+}
+var _D3_SNOW={spd:0.11,len:0.06,wob:[0.32,0.9],size:0.16,max:14,px:4,op:[0,0.62,0.8,0.92],col:0xf6f9fc,words:['Dry','Flurries','Snow','Heavy snow'],
+tips:['No snow','A few flakes drifting down','Steady snow, the air full of it','Heavy snow that hazes the air']};
+function _d3snowNow(){
+if(typeof _D3!=='undefined'&&_D3&&_D3._noSnowFall)return false;
+try{return typeof _d3season==='function'&&_d3season()===2;}catch(_s){return false;}
+}
+function _d3snowSway(t,ph,K){K=K||_D3_SNOW;var w=K.wob;return [Math.sin(t*w[1]+ph)*w[0],Math.cos(t*w[1]*0.83+ph*1.7)*w[0]];}
+function _d3wxFallWord(r,snow){var R=(typeof _D3_WX_RAIN!=='undefined')?_D3_WX_RAIN:['Dry','Drizzle','Rain','Downpour'],S=snow?_D3_SNOW.words:R;r=r|0;return S[r]||S[0];}
+function _d3snowBuild(N){
+var D=_D3,T=window.THREE,K=_D3_SNOW;if(!D||!D.scene||!T)return null;
+if(D._snowMesh){try{D.scene.remove(D._snowMesh);D._snowMesh.geometry.dispose();D._snowMesh.material.dispose();}catch(_d){}D._snowMesh=null;}
+var tex=D._snowTex;
+if(!tex){var c=document.createElement('canvas');c.width=c.height=32;var x=c.getContext('2d'),g=x.createRadialGradient(16,16,0,16,16,16);
+g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(0.45,'rgba(255,255,255,0.85)');g.addColorStop(1,'rgba(255,255,255,0)');
+x.fillStyle=g;x.fillRect(0,0,32,32);tex=D._snowTex=new T.CanvasTexture(c);}
+var pos=new Float32Array(N*3),geo=new T.BufferGeometry();geo.setAttribute('position',new T.BufferAttribute(pos,3));geo.setDrawRange(0,0);
+var mat=new T.PointsMaterial({color:K.col,map:tex,size:K.size,sizeAttenuation:true,transparent:true,opacity:0.8,depthWrite:false,toneMapped:false}),uMax={value:K.max};
+mat.onBeforeCompile=function(sh){sh.uniforms.uSnowMax=uMax;sh.vertexShader='uniform float uSnowMax;\n'+sh.vertexShader.replace('#include <worldpos_vertex>','gl_PointSize=min(gl_PointSize,uSnowMax);\n#include <worldpos_vertex>');};
+var m=new T.Points(geo,mat);m.frustumCulled=false;m.renderOrder=12;m.userData.noMerge=true;m.name='snowFall';m.visible=false;
+m.onBeforeRender=function(ren,sc,cam){var o=!!cam.isOrthographicCamera,pr=(ren.getPixelRatio&&ren.getPixelRatio())||1;mat.size=o?K.px*pr:K.size;uMax.value=K.max*pr;};
+D.scene.add(m);D._snowMesh=m;D._snowArr=pos;D._snowAttr=geo.attributes.position;D._snowHere=0;D._snowDrawn=0;
+return m;
 }
 var _D3_WX_EVENT=['None','Tornado','Hurricane'];
 function _d3wxEvent(){
