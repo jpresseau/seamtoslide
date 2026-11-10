@@ -2444,6 +2444,7 @@ html,body{margin:0;height:100%;background:#0b0d0b;overscroll-behavior:none}
 #driftWelcome.shot-on #hwScene{display:none}
 @keyframes hwShotPan{from{transform:scale(1.02) translate(-1.2%,.6%)}to{transform:scale(1.12) translate(1.2%,-.8%)}}
 #driftWelcome img.dw-sk,#driftWelcome img.dw-sk-s{object-fit:cover}
+#driftWelcome .dw-shothint{font:600 11.5px/1.35 system-ui,sans-serif;color:#a9d4ff}
 #driftWelcome img[hidden]{display:none !important}
 @media (prefers-reduced-motion:reduce){
   #driftWelcome .dw-shot img{animation:none}
@@ -2781,7 +2782,8 @@ html,body{margin:0;height:100%;background:#0b0d0b;overscroll-behavior:none}
         <canvas class="dw-sk" id="dwMapSk" width="168" height="112" aria-hidden="true"></canvas><img class="dw-sk" id="dwMapShot" alt="" hidden>
         <span class="dw-pw"><b>Map</b><span class="dw-name" id="dwMapName">Open the map</span>
           <i id="dwMapSub">Terrain, water, weather, a town, a railway — and a car you drive</i>
-          <span class="dw-stat" id="dwCareer"></span></span>
+          <span class="dw-stat" id="dwCareer"></span>
+          <span class="dw-shothint" id="dwShotHint" hidden>📷 Play it a few seconds and this screen becomes a picture of it</span></span>
         <span class="dw-go" aria-hidden="true">▸</span></button>
       
       <button type="button" class="dw-tile" id="dwGuide" onclick="driftLaunch('guide')">
@@ -2909,7 +2911,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='8453622';
+var RCG_BUILD='c95939b';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -89733,9 +89735,10 @@ setInterval(function(){try{if(w.style.display!=='none')hwTitleApply();}catch(_t)
 }catch(_w){}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hwTitleStart);else hwTitleStart();
-var _HW_SHOT={db:'highwall-shots',first:10000,every:90000,full:1600,thumb:480,q:0.8,maps:8};
+var _HW_SHOT={db:'highwall-shots',first:3000,soon:30000,every:90000,leave:5000,full:1600,thumb:480,q:0.8,maps:8};
 function hwShotDue(st,now,K){K=K||_HW_SHOT;if(!st||!(st.up>0)||!(now>0))return false;
-return now-st.up>=K.first&&(!(st.last>0)||now-st.last>=K.every);}
+if(!(st.last>0))return now-st.up>=K.first;
+return now-st.last>=(((st.k|0)<2)?K.soon:K.every);}
 function hwShotFit(w,h,m){w=+w||0;h=+h||0;var s=Math.min(1,(+m||1)/Math.max(w,h,1));
 return {w:Math.max(1,Math.round(w*s)),h:Math.max(1,Math.round(h*s))};}
 function hwShotLive(px,step){step=Math.max(1,step|0||1);var n=0,s=0,s2=0,i;
@@ -89812,10 +89815,22 @@ if(typeof document!=='undefined'&&document.visibilityState&&document.visibilityS
 var w=document.getElementById('driftWelcome');if(w&&w.style.display!=='none')return false;
 if(D._building||D._pendingFirstRender||(typeof _d3buildBusy==='function'&&_d3buildBusy()))return false;
 var id=hwShotMapId();if(!id)return false;
-if(id!==S.id){S.id=id;S.up=now;S.last=0;return false;}
+if(id!==S.id){S.id=id;S.up=now;S.last=0;S.k=0;return false;}
 if(!hwShotDue(S,now,_HW_SHOT))return false;
-S.last=now;return hwShotTake(id);
+S.last=now;S.k=(S.k|0)+1;return hwShotTake(id);
 }
+function hwShotLeave(){
+if(window._HW_NO_SHOTS)return false;var S=_hwShotSt,D=(typeof _D3!=='undefined')?_D3:null,now=performance.now();
+if(S.busy||!window._driftMapUp||!D||!D.ren||!D.scene)return false;
+var w=document.getElementById('driftWelcome');if(w&&w.style.display!=='none')return false;
+if(D._building||D._pendingFirstRender||(typeof _d3buildBusy==='function'&&_d3buildBusy()))return false;
+if(typeof _d3jnCovers==='function'&&_d3jnCovers())return false;
+var id=hwShotMapId();if(!id||(S.id===id&&S.last>0&&now-S.last<_HW_SHOT.leave))return false;
+try{D.ren.render(D.scene,(typeof _d3camNow==='function')?_d3camNow():D.cam);}catch(_r){return false;}
+if(S.id!==id){S.id=id;S.k=0;}if(!S.up)S.up=now;S.last=now;S.k=(S.k|0)+1;S.left=(S.left|0)+1;return hwShotTake(id);
+}
+try{document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')try{hwShotLeave();}catch(_l){}});
+window.addEventListener('pagehide',function(){try{hwShotLeave();}catch(_p){}});}catch(_ev){}
 var _hwShotUrls={};
 function _hwShotUrl(slot,buf){if(_hwShotUrls[slot]){try{URL.revokeObjectURL(_hwShotUrls[slot]);}catch(_r){}}
 var u='';try{if(buf)u=URL.createObjectURL(new Blob([buf],{type:'image/jpeg'}));}catch(_u){}_hwShotUrls[slot]=u;return u;}
@@ -89839,14 +89854,18 @@ im.src=_hwShotUrl(slot,buf);}
 function hwShotCard(id){
 var w=document.getElementById('driftWelcome');if(!w)return Promise.resolve(null);
 var tok=w._hwShotTok=(w._hwShotTok||0)+1,cv=document.getElementById('dwMapSk'),im=document.getElementById('dwMapShot');
+var hint=document.getElementById('dwShotHint'),say=function(on){if(hint)hint.hidden=!on;};
 var none=function(){hwShotBack(null);hwShotOver(cv,im,'card',null);return null;};
-if(window._HW_NO_SHOTS||!id)return Promise.resolve(none());
+if(window._HW_NO_SHOTS||!id){say(false);return Promise.resolve(none());}
 return hwShotMetas().then(function(M){if(w._hwShotTok!==tok)return null;
-var hr=hwTitleHour(),m=hwShotPick(M,id,hwTitleBand(hr).k);if(!m)return none();
+hwShotCount(M);var hr=hwTitleHour(),m=hwShotPick(M,id,hwTitleBand(hr).k);say(!m);if(!m)return none();
 return Promise.all([hwShotGet('full',m.key),hwShotGet('thumb',m.key)]).then(function(B){if(w._hwShotTok!==tok)return null;
 if(!B[0])return none();hwShotBack(m,B[0],hr);hwShotOver(cv,im,'card',B[1]);return m;});
 }).catch(function(){return null;});
 }
+function hwShotMaps(M){var o={},i;for(i=0;i<(M||[]).length;i++)if(M[i]&&M[i].map!=null)o[M[i].map]=1;return Object.keys(o).length;}
+function hwShotCount(M){var dv=document.getElementById('dwDevice');if(!dv)return;var n=hwShotMaps(M),t=dv.textContent.replace(/ · \d+ pictured$/,'');
+dv.textContent=t+(n?(' · '+n+' pictured'):'');}
 function hwShotTiles(g){
 if(!g||window._HW_NO_SHOTS)return Promise.resolve(0);
 return hwShotMetas().then(function(M){var cs=g.querySelectorAll('canvas[data-map]'),band=hwTitleBand(hwTitleHour()).k,P=[],i;
