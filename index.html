@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='9fcba40';
+var RCG_BUILD='99c92bc';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -52329,9 +52329,8 @@ if(_D3._lkGround&&typeof _d3lkGround==='function'&&t-(K.tg||0)>500){K.tg=t;_d3lk
 var L=(typeof _D3!=='undefined'&&_D3)?_D3._lkNight:null,i;
 if(L&&(L!==K.nl||L.length!==K.nn||n!==K.nv)){K.nl=L;K.nn=L.length;K.nv=n;for(i=0;i<L.length;i++)L[i].visible=n;}
 if(!K.on||!L||!L.length)return;
-var cam=(typeof _d3camNow==='function'&&_d3camNow())||_D3.cam,ren=_D3.ren;if(!cam||!ren)return;
-var h=Math.max(1,ren.domElement.height||600);
-U.uPx.value=cam.isOrthographicCamera?(8*(cam.top-cam.bottom)/Math.max(1e-6,cam.zoom||1)/h):(8*2*Math.tan((cam.fov||50)*Math.PI/360)/h);
+var ren=_D3.ren;if(!ren)return;
+U.uPx.value=8/Math.max(1,ren.domElement.height||600);
 }
 var _D3_LK_MAST=4.0;
 function _d3lkEvery(P,n,k){
@@ -52364,7 +52363,7 @@ vertexShader:'attribute float aSeed;\nvarying float vSeed;\nvarying vec2 vUv;\nv
 '\tvec3 lkEye = isOrthographic ? vec3( viewMatrix[ 0 ][ 2 ], viewMatrix[ 1 ][ 2 ], viewMatrix[ 2 ][ 2 ] ) : normalize( cameraPosition - lkW.xyz );\n'+
 '\tvec4 mv = viewMatrix * lkW;\n\tfloat lkD = isOrthographic ? 10.0 : -mv.z;\n'+
 '\tvA = ( 0.2 + 0.8 * smoothstep( -0.1, 0.7, dot( lkAim, lkEye ) ) ) * smoothstep( 0.3, 1.5, lkD );\n'+
-'\tfloat lkR = max( lkS, uPx * ( isOrthographic ? 1.0 : lkD ) );\n'+
+'\tfloat lkR = max( lkS, uPx * 2.0 / projectionMatrix[ 1 ][ 1 ] * ( isOrthographic ? 1.0 : lkD ) );\n'+
 '\tmv.xy += position.xy * lkR;\n\tmv.z += lkS * 0.6;\n\tgl_Position = projectionMatrix * mv;\n}',
 fragmentShader:_D3_LK_HEAD+'uniform vec3 uCol;\nvarying vec2 vUv;\nvarying float vA;\n'+
 'void main(){\n\t'+_d3lkGlsl()+
