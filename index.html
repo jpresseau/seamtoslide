@@ -2891,7 +2891,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='3a1166f';
+var RCG_BUILD='f6c2909';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -60858,13 +60858,15 @@ var _D3_CPUFF_VS=[
 '  float lk=uLife.y,lt=uLife.x*0.010471976;vec3 q0=pc-vec3(c2.x,b,c2.y);',
 '  float hs=fract(sin(dot(aP.xyz-vec3(cc.x,0.0,cc.y),vec3(12.9898,78.233,37.719)))*43758.5453),h2=fract(hs*7.31),h3=fract(hs*13.17);',
 '  float hc=fract(sin(dot(cc,vec2(41.37,17.93)))*24634.63),hf=clamp(q0.y/max(H,1.0),0.0,1.0);',
-'  float s1=sin(lt*(13.0+floor(hs*9.0))+hs*6.2832),wa=lt*(19.0+floor(h2*11.0)),s3=sin(lt*(7.0+floor(h3*5.0))+h3*6.2832);',
-'  vec4 Am=lk*(kind<0.5?vec4(0.07,0.07,0.1,0.25):(kind<1.5?vec4(0.1,0.1,0.24,0.3):vec4(0.06,0.05,0.0,0.06)));',
+'  float s1=sin(lt*(40.0+floor(hs*25.0))+hs*6.2832),wa=lt*(55.0+floor(h2*30.0)),s3=sin(lt*(24.0+floor(h3*14.0))+h3*6.2832);',
+'  vec4 Am=lk*(kind<0.5?vec4(0.1,0.1,0.16,0.35):(kind<1.5?vec4(0.12,0.12,0.0,0.4):vec4(0.1,0.08,0.0,0.1)));',
 '  float sw=1.0+Am.x*s1;pc+=vec3(sin(wa+h2*6.2832),0.0,cos(wa+h3*6.2832))*rx*Am.y;pc.y+=rx*Am.z*smoothstep(0.08,0.4,hf)*(0.5+0.5*s1);',
-'  if(kind>1.5)pc.xz+=q0.xz/max(length(q0.xz),1.0)*rx*lk*0.14*(0.5+0.5*s3);',
-'  float lean=lk*(kind<0.5?0.05:0.09)*H*hf*hf*(0.6+0.4*sin(lt*(5.0+floor(hc*4.0))+hc*6.2832));pc.xz+=uLife.zw*lean;',
-'  float gr=1.0+lk*0.05*sin(lt*(3.0+floor(hc*3.0))+hc*12.566);pc=vec3(c2.x,b,c2.y)+(pc-vec3(c2.x,b,c2.y))*gr;sw*=gr;',
-'  float th=Am.w*pow(min(rx,ry)/max(rx,ry),2.0)*sin(lt*(9.0+floor(h2*6.0))+hs*12.566),ct=cos(th),st=sin(th);',
+'  float tw=lk*step(0.5,kind)*step(kind,1.5)*smoothstep(0.1,0.22,hf)*smoothstep(0.25,0.4,length(q0.xz)/max(R,1.0));',
+'  if(tw>0.0){float u=fract(lt*(70.0+floor(h2*40.0))/6.2831853+hs);pc.y+=tw*(u-0.5)*R*0.65;pc.xz+=tw*q0.xz/max(length(q0.xz),1.0)*R*0.15*u;sw*=mix(1.0,1.2*pow(sin(3.14159*u),0.6),tw);}',
+'  if(kind>1.5)pc.xz+=q0.xz/max(length(q0.xz),1.0)*rx*lk*0.22*(0.5+0.5*s3);',
+'  float lean=lk*(kind<0.5?0.07:0.13)*H*hf*hf*(0.55+0.45*sin(lt*(16.0+floor(hc*8.0))+hc*6.2832));pc.xz+=uLife.zw*lean;',
+'  float gr=1.0+lk*0.07*sin(lt*(10.0+floor(hc*6.0))+hc*12.566);pc=vec3(c2.x,b,c2.y)+(pc-vec3(c2.x,b,c2.y))*gr;sw*=gr;',
+'  float th=Am.w*pow(min(rx,ry)/max(rx,ry),2.0)*sin(lt*(30.0+floor(h2*20.0))+hs*12.566),ct=cos(th),st=sin(th);',
 '  if(uMap.x>0.5){float m=uMap.y;pc=vec3(c2.x,b,c2.y)+(pc-vec3(c2.x,b,c2.y))*m;rx*=m;ry*=m;H*=m;R*=m;}',
 '  vec3 q=pc-vec3(c2.x,b,c2.y);',
 '  vec3 ax=uOrtho>0.5?uVd:normalize(uEye-pc);vec3 up=abs(ax.y)<0.97?vec3(0.0,1.0,0.0):uUp;',
