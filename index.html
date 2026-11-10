@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='5b66ebe';
+var RCG_BUILD='17c9abd';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -40640,9 +40640,16 @@ function _driftBldLineSay(kind){
 var w=(kind==='road')?'\uD83D\uDEE3\uFE0F Not on the road':'\uD83D\uDEE3\uFE0F Not on the highway';
 try{if(typeof showToast==='function')showToast(w+' \u2014 put it beside it.');}catch(_ls9){}
 }
+var _D3_ONLINE_SAID='hwOnLineSaid';
+function _d3bldOnLineSaidKept(S){
+if(!S||!S.p||(typeof _D3!=='undefined'&&_D3&&_D3._noOnLineSaidKeep)||typeof _d3mapKeepGet!=='function')return false;
+var e=_d3mapKeepGet(_D3_ONLINE_SAID,S.p,S.p);return !!(e&&e.k===S.key);
+}
 function _d3bldOnLineSay(S){
 if(!S)return;
-if(S.n>0&&_D3._bldOnLineSaid!==S.key&&typeof showToast==='function')showToast('\uD83D\uDEE3\uFE0F '+S.n+' building'+(S.n===1?' stands':'s stand')+' where a line runs \u2014 not built there: Buildings \u25B8 \u2723 Move, or \u2715 Delete.');
+var kept=_d3bldOnLineSaidKept(S);
+if(S.n>0&&_D3._bldOnLineSaid!==S.key&&!kept&&typeof showToast==='function')showToast('\uD83D\uDEE3\uFE0F '+S.n+' building'+(S.n===1?' stands':'s stand')+' where a line runs \u2014 not built there: Buildings \u25B8 \u2723 Move, or \u2715 Delete.');
+if(S.n>0&&S.p&&!S.err&&!kept&&typeof _d3mapKeepPut==='function')_d3mapKeepPut(_D3_ONLINE_SAID,S.p,{w:S.p,k:S.key},4000);
 _D3._bldOnLineSaid=S.key;
 }
 function _d3bldBesideOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noBldBeside);}
@@ -46086,28 +46093,36 @@ d:'Realistic: natural greens, deeper light and shade, and the sea out to the hor
 d:'Halos on lights and signs, brightest at dusk.'},
 {k:'aa',l:'Smooth edges',c:[['auto','Auto'],['off','Off'],['on','On']],reload:1,
 d:'Antialiasing. Takes effect the next time the map opens; a phone never draws it (it is a framebuffer it cannot spare).'},
-{k:'trees',l:'Trees',c:[['auto','Auto'],['few','Few'],['some','Some'],['all','All']],build:1,
-d:'How much of the forest is planted.'},
-{k:'leaves',l:'Tree detail',c:[['auto','Auto'],['simple','Simple'],['full','Full']],live:1,
-d:'Close up, each crown in clumps with its leaves. Simple keeps every tree a smooth round, the cheapest.'},
+{k:'trees',l:'Trees',c:[['auto','Auto'],['few','Few'],['some','Some'],['all','All']],build:1,home:['nature','Plants'],i:'\ud83c\udf32',md:'How much of the forest is planted',
+d:'How much of the forest is planted.',
+t:['','A thin forest, as the Faster preset plants it - the lightest to draw','About half the forest, as the Fast preset plants it','Every tree the map plants, as Full does']},
+{k:'leaves',l:'Tree detail',c:[['auto','Auto'],['simple','Simple'],['full','Full']],live:1,home:['nature','Plants'],i:'\ud83c\udf43',md:'How much of each crown is drawn close up',
+d:'Close up, each crown in clumps with its leaves. Simple keeps every tree a smooth round, the cheapest.',
+t:['','Every tree a smooth round, the cheapest','Close up, each crown in clumps with its leaves']},
 {k:'traffic',l:'Traffic',c:[['auto','Auto'],['light','Light'],['some','Some'],['busy','Busy']],build:1,
 d:'Cars, buses and lorries on the roads and round the track.'},
 {k:'people',l:'People',c:[['auto','Auto'],['few','Few'],['some','Some'],['many','Many']],build:1,
 d:'Walkers on the pavements and the crowd at the track.'},
 {k:'detail',l:'Building detail',c:[['auto','Auto'],['low','Low'],['normal','Normal'],['high','High']],build:1,
 d:'How many of a big map’s small building parts are kept.'},
-{k:'grass',l:'Grass',c:[['smooth','Smooth'],['textured','Textured']],live:1,
-d:'Smooth: even greens. Textured: the Ocean Bluff’s moss drawn into every field and hillside.'},
-{k:'tshape',l:'Tree shape',c:[['round','Round'],['pines','Pines'],['mixed','Mixed']],build:1,
-d:'Round: the map’s own trees. Pines: every tree a stack of cones in the Canyon Railway’s greens. Mixed: the two together, tree by tree, the pines in loose groves.'},
-{k:'tcol',l:'Leaf colour',c:[['season','The season’s'],['autumn','Autumn']],build:1,
-d:'The season’s: the round trees turn with the year. Autumn: every round tree in its fall reds, oranges and golds, whatever the season. The pines keep their green.'},
-{k:'tfall',l:'Autumn colours',c:[['vivid','Vivid'],['rich','Rich'],['soft','Soft'],['muted','Muted']],def:'soft',on:['tcol','autumn'],orAutumn:1,build:1,
-d:'In autumn, or with Leaf colour on Autumn: how strong the fall colours are. Vivid: at full strength. Rich, Soft and Muted: each a step nearer grey, the trees as light as before.'},
-{k:'rcol',l:'Rock colour',c:[['map','The map’s'],['sand','Sandstone']],build:1,
-d:'The map’s: its own orange-brown stone. Sandstone: every crag, cliff and bluff in the Canyon Railway’s sandstone.'},
-{k:'water',l:'Lakes & rivers',c:[['map','The map’s'],['river','Canyon river']],build:1,
-d:'The map’s: bright, half-clear water. Canyon river: every lake and river in the Canyon Railway river’s deep, clear teal. The sea stays the sea.'}
+{k:'grass',l:'Grass',c:[['smooth','Smooth'],['textured','Textured']],live:1,home:['nature','Ground'],i:'\ud83c\udf31',md:'How every field and hillside is drawn',
+d:'Smooth: even greens. Textured: the Ocean Bluff’s moss drawn into every field and hillside.',
+t:['Even greens','The Ocean Bluff’s moss drawn into every field and hillside']},
+{k:'tshape',l:'Tree shape',c:[['round','Round'],['pines','Pines'],['mixed','Mixed']],build:1,home:['nature','Plants'],i:'\ud83c\udf33',md:'Round trees, pines, or the two together',
+d:'Round: the map’s own trees. Pines: every tree a stack of cones in the Canyon Railway’s greens. Mixed: the two together, tree by tree, the pines in loose groves.',
+t:['The map’s own round trees','Every tree a stack of cones in the Canyon Railway’s greens','The two together, tree by tree, the pines in loose groves']},
+{k:'tcol',l:'Leaf colour',c:[['season','The season’s'],['autumn','Autumn']],build:1,home:['weather','Year'],i:'\ud83c\udf42',md:'The round trees’ leaves: the season’s, or autumn all year',
+d:'The season’s: the round trees turn with the year. Autumn: every round tree in its fall reds, oranges and golds, whatever the season. The pines keep their green.',
+t:['The round trees turn with the year','Every round tree in its fall reds, oranges and golds, whatever the season; the pines keep their green']},
+{k:'tfall',l:'Autumn colours',c:[['vivid','Vivid'],['rich','Rich'],['soft','Soft'],['muted','Muted']],def:'soft',on:['tcol','autumn'],orAutumn:1,build:1,home:['weather','Year'],i:'\ud83c\udfa8',md:'How strong the fall colours are',
+d:'In autumn, or with Leaf colour on Autumn: how strong the fall colours are. Vivid: at full strength. Rich, Soft and Muted: each a step nearer grey, the trees as light as before.',
+t:['The fall colours as bright as they come','A little softer, nearer the grey of their own light','Softer again: the colours the map drew first','Softest: dusty reds and golds']},
+{k:'rcol',l:'Rock colour',c:[['map','The map’s'],['sand','Sandstone']],build:1,home:['nature','Ground'],i:'\ud83c\udfdc\ufe0f',md:'Every crag, cliff and bluff',
+d:'The map’s: its own orange-brown stone. Sandstone: every crag, cliff and bluff in the Canyon Railway’s sandstone.',
+t:['The map’s own orange-brown stone','Every crag, cliff and bluff in the Canyon Railway’s sandstone']},
+{k:'water',l:'Lakes & rivers',c:[['map','The map’s'],['river','Canyon river']],build:1,home:['nature','Water'],i:'\ud83c\udfde\ufe0f',md:'How the fresh water is drawn',
+d:'The map’s: bright, half-clear water. Canyon river: every lake and river in the Canyon Railway river’s deep, clear teal. The sea stays the sea.',
+t:['Bright, half-clear water','Every lake and river in the Canyon Railway river’s deep, clear teal; the sea stays the sea']}
 ];
 var _D3_GFX_TIER={trees:{few:0,some:1,all:2},traffic:{light:0,some:1,busy:2},people:{few:0,some:1,many:2},detail:{low:0,normal:1,high:2}};
 function _d3gfxDef(S){return (S&&S.def!=null)?S.def:S.c[0][0];}
@@ -46188,10 +46203,12 @@ try{if(_D3._gfxBT)clearTimeout(_D3._gfxBT);}catch(_bt){}
 _D3._gfxBT=setTimeout(function(){_D3._gfxBT=0;if(typeof _d3build==='function'&&_D3.inited&&_D3.scene)_d3build();},700);}
 }catch(_ga){}
 }
-function _d3gfxReset(){
-var G=_d3gfxGet(),i;
-try{__LS.removeItem('rcgGfx');__LS.removeItem('rcg_d3shadow');__LS.setItem('rcgSharp','0');}catch(_r){}
-for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i],k=S.k;if(G[k]!==_d3gfxDef(S)||k==='shadow'||k==='res')_d3gfxApply(k,_d3gfxDef(S));}
+function _d3gfxReset(only){
+var G=_d3gfxGet(),N={},all=true,i,k;for(k in G)N[k]=G[k];
+var ok=function(k){return !only||only.indexOf(k)>=0;};
+for(i=0;i<_D3_GFX.length;i++){k=_D3_GFX[i].k;if(ok(k))N[k]=_d3gfxDef(_D3_GFX[i]);else if(N[k]!==_d3gfxDef(_D3_GFX[i]))all=false;}
+try{if(all)__LS.removeItem('rcgGfx');else __LS.setItem('rcgGfx',JSON.stringify(N));if(ok('shadow'))__LS.removeItem('rcg_d3shadow');if(ok('res'))__LS.setItem('rcgSharp','0');}catch(_r){}
+for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i];k=S.k;if(ok(k)&&(G[k]!==_d3gfxDef(S)||k==='shadow'||k==='res'))_d3gfxApply(k,_d3gfxDef(S));}
 }
 function _d3gfxRaised(G,t){var o=[],k;for(k in _D3_GFX_TIER){var x=_d3gfxTierOf(G,k);if(x!=null&&x>t)o.push(k);}return o;}
 function _d3gfxArm(){try{if(_d3gfxRaised(_d3gfxGet(),_d3tier()).length)__LS.setItem('rcgGfxRaise','1');else __LS.removeItem('rcgGfxRaise');}catch(_a){}}
@@ -59164,7 +59181,7 @@ menu:(function(){return function(){drift3DDrive(ix);};})()});
 if(!out.length)out.push({i:'\ud83c\udfce\ufe0f',l:'Drive it yourself',d:'Take a car out on the map',menu:function(){drift3DDrive();}});
 return out;})()},
 };
-var C=CATS[cat];if(!C)return;var d=document.createElement('div');d.id='grpOpMenu';d.setAttribute('data-cat',cat);
+var C=CATS[cat];if(!C)return;if(typeof _d3gfxHomeRows==='function')C={t:C.t,rows:_d3gfxHomeRows(cat,C.rows)};var d=document.createElement('div'); d.id='grpOpMenu';d.setAttribute('data-cat',cat);
 d.style.cssText='position:fixed;z-index:100000;background:#191d2b;border:1px solid #313856;border-radius:12px;padding:8px;width:262px;max-height:64vh;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,.5)';
 var html='<div data-shtop style="font:700 11px system-ui;letter-spacing:.05em;color:#9fb0d8;text-transform:uppercase;margin:2px 3px 8px">'+C.t+'</div>',r;
 var _sec=0,_sg=0;
@@ -60142,12 +60159,20 @@ var T=_D3_GFX_TIER[k],i,S=null;for(i=0;i<_D3_GFX.length;i++)if(_D3_GFX[i].k===k)
 if(T&&S){for(var c in T)if(T[c]===t)for(i=0;i<S.c.length;i++)if(S.c[i][0]===c)return S.c[i][1];return '';}
 if(k==='shadow')return (q&&q.shadow)?(q.shSoft?'High':'Low'):'Off';
 if(k==='aa')return (q&&q.aa)?'On':'Off';
+if(k==='leaves')return (t>0)?'Full':'Simple';
 if(k==='res')return (pxr>0)?(Math.round(pxr*100)/100)+'×':'';
 return '';
 }
 function _d3gfxOnSays(S){var O=null,ol=S.on[1],j;for(j=0;j<_D3_GFX.length;j++)if(_D3_GFX[j].k===S.on[0])O=_D3_GFX[j];
 if(O)for(j=0;j<O.c.length;j++)if(O.c[j][0]===S.on[1])ol=O.c[j][1];return (S.orAutumn?'in autumn, or ':'')+'with '+(O?O.l:S.on[0])+' on '+ol;}
 function _d3gfxShown(k){if(k==='shadow')return _d3gfxShadowNow();if(k==='res')return _d3gfxResNow();return _d3gfxGet()[k];}
+function _d3gfxElsewhere(auto){
+var M={nature:'Land & Water',weather:'the Weather Station'},by={},o=[],i,c;
+for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i];if(!S.home||(auto&&S.c[0][0]!=='auto'))continue;c=S.home[0];if(!by[c]){by[c]=[];o.push(c);}by[c].push(S.l);}
+var js=function(L){return L.length>1?L.slice(0,-1).join(', ')+' and '+L[L.length-1]:L[0];};
+if(auto)return o.length?', and '+o.map(function(c){return js(by[c])+' in '+(M[c]||c);}).join(', '):'';
+return o.length?o.map(function(c){return js(by[c])+' are in '+(M[c]||c);}).join('; ')+'. ':'';
+}
 function _d3gfxPanelClose(){
 var d=document.getElementById(_D3_GFXP_ID);if(d&&d.parentNode)d.parentNode.removeChild(d);
 try{if(_D3._gfxPT)clearInterval(_D3._gfxPT);}catch(_c){}_D3._gfxPT=0;
@@ -60191,8 +60216,9 @@ var h='<div data-shtop style="display:flex;align-items:center;gap:8px"><b style=
 '<div id="d3GfxNow" data-shtop style="margin-top:8px;padding:7px 9px;border-radius:9px;background:#0d121c;color:#9fe0b4;font:600 12px ui-monospace,Menlo,Consolas,monospace">'+_d3gfxNowLine()+'</div>';
 h+='<div style="margin-top:12px"><div style="display:flex;gap:8px"><span style="flex:1">Preset</span><span style="color:#94a6c4;font-weight:400">'+_d3qualName()+' · '+devName+'</span></div>'+
 _d3gfxSeg('tier:',[['auto','Auto'],['2','Full'],['1','Fast'],['0','Faster']],(cur==='0'||cur==='1'||cur==='2')?cur:'auto')+
-'<div style="margin-top:4px;color:#94a6c4;font:400 11px system-ui">Sets every row below that is on Auto. Auto picks by device.</div></div>';
-for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i],v=_d3gfxShown(S.k),au=_d3gfxAutoSays(S.k,t,q0,pxr),off=!_d3gfxOn(_d3gfxGet(),S,_d3gfxSeason());
+'<div style="margin-top:4px;color:#94a6c4;font:400 11px system-ui">Sets every row below that is on Auto'+_d3gfxElsewhere(true)+'. Auto picks by device.</div></div>';
+for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i];if(S.home)continue;
+var v=_d3gfxShown(S.k),au=_d3gfxAutoSays(S.k,t,q0,pxr),off=!_d3gfxOn(_d3gfxGet(),S,_d3gfxSeason());
 var note=S.build?'rebuilds the map':(S.reload?'next time the map opens':'');
 if(S.k==='aa'&&_D3._aaOn!=null&&_d3qual().aa!==_D3._aaOn)note='on reload: '+(_d3qual().aa?'On':'Off');
 if(off)note=_d3gfxOnSays(S);
@@ -60202,13 +60228,13 @@ _d3gfxSeg('set:'+S.k+':',S.c,v)+
 '<div style="margin-top:4px;color:#94a6c4;font:400 11px system-ui">'+S.d+'</div></div>';}
 h+='<button type="button" data-act="reset" style="display:block;width:100%;margin-top:14px;padding:10px;border:0;border-radius:9px;'+
 'background:#232b40;color:#e8f2ff;font:700 13px system-ui;cursor:pointer">Every row back to Auto</button>'+
-'<div style="margin-top:8px;color:#94a6c4;font:400 11px system-ui">More ▸ Performance keeps the frame on screen, with a report to copy and a Measure of what each part costs.</div>';
+'<div style="margin-top:8px;color:#94a6c4;font:400 11px system-ui">'+_d3gfxElsewhere(false)+'More ▸ Performance keeps the frame on screen, with a report to copy and a Measure of what each part costs.</div>';
 d.innerHTML=h;
 }
 function _d3gfxPanelAct(a){
 var say=function(m){try{if(typeof showToast==='function')showToast(m);}catch(_t){}};
 if(a==='close'){_d3gfxPanelClose();return;}
-if(a==='reset'){_d3gfxReset();say('⚡ Graphics: every setting back to Auto');}
+if(a==='reset'){_d3gfxReset(_D3_GFX.filter(function(S){return !S.home;}).map(function(S){return S.k;}));say('⚡ Graphics: every setting here back to Auto');}
 else if(a.indexOf('tier:')===0){var nx=a.slice(5);if(nx==='auto')nx=null;
 if(nx==='2'&&_d3devTier()===0){var yes=false;
 try{yes=window.confirm('Full graphics on a phone\n\nA desktop’s detail, traffic and shadows. On a big map that can run a phone out of memory and close the page; if it does, the next load steps back down by itself.');}catch(_c){}
@@ -60216,11 +60242,51 @@ if(!yes){_d3gfxPanelFill();return;}}
 _d3qualSet(nx);}
 else if(a.indexOf('set:')===0){var p=a.split(':'),k=p[1],v=p.slice(2).join(':'),S=null,i;
 for(i=0;i<_D3_GFX.length;i++)if(_D3_GFX[i].k===k)S=_D3_GFX[i];
-if(S&&_d3gfxSet(k,v)){var lab=v;for(i=0;i<S.c.length;i++)if(S.c[i][0]===v)lab=S.c[i][1];
+if(S&&_d3gfxPick(k,v)){
 if(k==='glow'){var gb=document.getElementById('d3Bloom');if(gb)gb.classList.toggle('on',v==='on');}
-if(k==='res'){var sb=document.getElementById('d3Sharp');if(sb)sb.classList.toggle('on',v==='sharp');}
-say('⚡ '+S.l+': '+lab+(!_d3gfxOn(_d3gfxGet(),S,_d3gfxSeason())?' — '+_d3gfxOnSays(S):(S.build?' — the map rebuilds':(S.reload?' — next time the map opens':''))));}}
+if(k==='res'){var sb=document.getElementById('d3Sharp');if(sb)sb.classList.toggle('on',v==='sharp');}}}
 _d3gfxPanelFill();
+}
+function _d3gfxHomesOf(G,cat){var o=[],i;for(i=0;i<(G?G.length:0);i++){var h=G[i].home;if(h&&h[0]===cat)o.push({S:G[i],sec:h[1]});}return o;}
+function _d3gfxHomeRowsOf(rows,H,mk){
+var out=(rows||[]).slice(),i,j,e;
+for(i=0;i<H.length;i++){var R=mk(H[i].S),s=-1;
+for(j=0;j<out.length;j++)if(out[j].sec===H[i].sec){s=j;break;}
+if(s<0){var N={};for(var q in R)N[q]=R[q];N.sec=H[i].sec;N.grid=2;out.push(N);continue;}
+for(e=s+1;e<out.length&&!out[e].sec;e++);
+out.splice(e,0,R);}
+return out;
+}
+function _d3gfxHomeRow(S){return {i:S.i||'⚙️',l:S.l,d:(S.md||S.l)+(S.build?' · rebuilds the map':''),pick:'gfx:'+S.k,gfx:S.k};}
+function _d3gfxHomeRows(cat,rows){
+try{if(typeof _D3_GFX==='undefined')return rows;var H=_d3gfxHomesOf(_D3_GFX,cat);return H.length?_d3gfxHomeRowsOf(rows,H,_d3gfxHomeRow):rows;}catch(_h){return rows;}
+}
+function _d3gfxPickOf(S,G,auto,off){
+var o=[],t=[],cur=0,i;
+for(i=0;i<S.c.length;i++){o.push(S.c[i][1]);t.push((S.t&&S.t[i])||'');if(G&&S.c[i][0]===G[S.k])cur=i;}
+if(S.c[0][0]==='auto')t[0]='The preset decides'+(auto?': '+auto+' on this device now':'');
+return {k:'gfx:'+S.k,opts:o,tips:t,cur:cur,note:off?'Counts only '+off:''};
+}
+function _d3gfxHomeSet(k){
+if(typeof k!=='string'||k.indexOf('gfx:')!==0||typeof _D3_GFX==='undefined')return null;
+for(var i=0;i<_D3_GFX.length;i++)if('gfx:'+_D3_GFX[i].k===k&&_D3_GFX[i].home)return _D3_GFX[i];
+return null;
+}
+function _d3gfxPicks(k){
+var S=_d3gfxHomeSet(k);if(!S)return null;
+var G=_d3gfxGet(),au='';
+if(S.c[0][0]==='auto')try{var t=_d3tier();au=_d3gfxAutoSays(S.k,t,_d3qual(t),_D3.ren?_D3.ren.getPixelRatio():0);}catch(_a){}
+var P=_d3gfxPickOf(S,G,au,_d3gfxOn(G,S,_d3gfxSeason())?'':_d3gfxOnSays(S));
+P.set=function(i){var c=S.c[Math.max(0,Math.min(S.c.length-1,i|0))];_d3gfxPick(S.k,c[0]);};
+return P;
+}
+function _d3gfxPick(k,v){
+var S=null,i,lab=v;for(i=0;i<_D3_GFX.length;i++)if(_D3_GFX[i].k===k)S=_D3_GFX[i];
+if(!S||!_d3gfxSet(k,v))return false;
+for(i=0;i<S.c.length;i++)if(S.c[i][0]===v)lab=S.c[i][1];
+try{if(typeof showToast==='function')showToast('⚡ '+S.l+': '+lab+(!_d3gfxOn(_d3gfxGet(),S,_d3gfxSeason())?' — '+_d3gfxOnSays(S):(S.build?' — the map rebuilds':(S.reload?' — next time the map opens':''))));}catch(_t){}
+try{if(typeof drift3DMenuRefresh==='function')drift3DMenuRefresh();}catch(_r){}
+return true;
 }
 var _D3_MAPS_ID='d3MapsPanel',_D3_BSH_ID='d3BuildSheet';
 var _D3_HWP=':is(#d3MapsPanel,#d3BuildSheet,#d3TunePanel)';
@@ -60387,6 +60453,7 @@ function _d3pickOf(k){
 var P=null;
 try{if(typeof _d3wxPicks==='function')P=_d3wxPicks(k);}catch(_w){}
 if(!P)try{P=_d3morePicks(k);}catch(_m){}
+if(!P)try{if(typeof _d3gfxPicks==='function')P=_d3gfxPicks(k);}catch(_g){}
 return P;
 }
 function _d3pickSet(k,i){var P=_d3pickOf(k);if(!P||!P.set)return;P.set(Math.max(0,Math.min(P.opts.length-1,i|0)));}
@@ -60418,7 +60485,8 @@ var _D3_PICK_CSS=
 '#grpOpMenu [data-pick]{display:inline-flex;align-items:center;font:600 11.5px system-ui;color:#dfe5f5;background:#1b2033;border:1px solid #39406090;border-radius:7px;padding:4px 9px;cursor:pointer}'+
 '#grpOpMenu [data-pick][data-on]{color:#fff;background:#2f6fb0;border-color:#4f93dd}'+
 '#grpOpMenu [data-pick]:hover{border-color:#6f8fc8}'+
-'#grpOpMenu.d3-compact button[data-row]:has([data-pickbox][data-wide]){grid-column:1/-1}'+
+'#grpOpMenu.d3-compact button[data-row]:has([data-pickbox]){grid-column:1/-1;flex-direction:row !important;flex-wrap:wrap;align-items:center !important;justify-content:flex-start !important;column-gap:10px}'+
+'#grpOpMenu.d3-compact button[data-row] [data-pickbox]{width:auto !important;flex:1 1 auto;margin-top:0 !important}'+
 '#grpOpMenu.d3-compact [data-pick-tip]{display:none !important}'+
 '@media (pointer:coarse){#grpOpMenu [data-pick]{font-size:13px;min-height:40px;padding:0 12px}#grpOpMenu.d3-compact [data-pick]{font-size:12px;min-height:34px;padding:0 9px}}';
 function _d3pickCss(){
