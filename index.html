@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='9557920';
+var RCG_BUILD='990db55';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -46271,7 +46271,8 @@ if(S.geometry)S.geometry.dispose();S.geometry=g;S.userData.R=R;}
 if(S){if(S.parent!==D.scene)D.scene.add(S);if(S.visible!==on)S.visible=on;}
 return S;
 }
-function _d3lookStep(){var S=_d3lookSea();try{if(typeof _d3groundStep==='function')_d3groundStep();}catch(_g){}return S;}
+function _d3lookStep(){var S=_d3lookSea();try{if(typeof _d3groundStep==='function')_d3groundStep();}catch(_g){}
+try{if(typeof _d3treeLookStep==='function')_d3treeLookStep();}catch(_t){}return S;}
 function _d3lookApply(){
 var D=_D3;if(!D||!D.ren)return;_d3lookRen(D.ren);
 try{if(D.scene)D.scene.traverse(function(o){var m=o.material;if(!m)return;if(Array.isArray(m)){for(var i=0;i<m.length;i++)if(m[i])m[i].needsUpdate=true;}else m.needsUpdate=true;});}catch(_t){}
@@ -54624,7 +54625,8 @@ sh.fragmentShader='uniform float uLeafK;\nvarying vec3 vLeafP;\n'+
 'mix(mix(cnpH(i+vec3(0,0,1)),cnpH(i+vec3(1,0,1)),f.x),mix(cnpH(i+vec3(0,1,1)),cnpH(i+vec3(1,1,1)),f.x),f.y),f.z);}\n'+
 sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n'+
 '  float _lf=uLeafK*(1.0-smoothstep(0.35,0.8,length(fwidth(vLeafP))));\n'+
-'  if(_lf>0.003){float _l=smoothstep(0.3,0.72,cnpN(vLeafP)*0.62+cnpN(vLeafP*2.31+7.1)*0.38);diffuseColor.rgb*=mix(1.0,0.55+0.6*_l,_lf);}');};
+'  if(_lf>0.003){float _l=smoothstep(0.3,0.72,cnpN(vLeafP)*0.62+cnpN(vLeafP*2.31+7.1)*0.38);diffuseColor.rgb*=mix(1.0,0.55+0.6*_l,_lf);}');
+try{if(typeof _d3treeLookSh==='function')_d3treeLookSh(sh);}catch(_tl){}};
 mat.customProgramCacheKey=function(){return near?'rcgSwayLeafNear':'rcgSwayLeaf';};
 mat.needsUpdate=true;
 }
@@ -55066,6 +55068,40 @@ mat.needsUpdate=true;return true;
 function _d3groundStep(){
 var U=_d3groundU(),on=(typeof _d3look==='function')&&_d3look()==='real'&&!(typeof _D3!=='undefined'&&_D3&&_D3._noGroundLook);
 U.uGndOn.value=on?1:0;return on;
+}
+var _D3_TREELOOK={keep:0.32,sc:0.035,edge:0.06,mixG:0.4,green:[0.24,0.44,0.13],jit:0.07,br0:0.98,br1:1.04,bb0:0.965,bb1:1.005};
+var _D3_TREELOOK_U=null;
+function _d3treeLookU(){return _D3_TREELOOK_U||(_D3_TREELOOK_U={uTreeReal:{value:0}});}
+function _d3treeBlossom(c,K){K=K||_D3_TREELOOK;var ss=function(a,b,x){var t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);},g=Math.max(c[1],1e-4);
+return ss(K.br0,K.br1,c[0]/g)*ss(K.bb0,K.bb1,c[2]/g);}
+function _d3treeKeepAt(n,K){K=K||_D3_TREELOOK;var a=1-K.keep-K.edge/2,b=1-K.keep+K.edge/2,t=Math.max(0,Math.min(1,(n-a)/(b-a)));return t*t*(3-2*t);}
+function _d3treeLum(c){return _d3lumaLerp(c[0],c[1],c[2],0)[0];}
+function _d3treeShade(c,bl,keep,j,K){K=K||_D3_TREELOOK;var L=_d3treeLum(c),o=[0,0,0],i;
+var gL=_d3treeLum(K.green),gs=Math.min(1.6,L/Math.max(gL,1e-4))*0.62;
+for(i=0;i<3;i++){var g=K.green[i]*gs,kept=c[i]+(g-c[i])*K.mixG,x=g+(kept-g)*keep;o[i]=(c[i]+(x-c[i])*bl)*(1+j*K.jit);}
+return o;}
+function _d3treeV3(a){return 'vec3('+a.map(function(v){return (+v).toFixed(4);}).join(',')+')';}
+function _d3treeLookGlsl(K){K=K||_D3_TREELOOK;var f=function(v){return (+v).toFixed(4);},gL=_d3treeLum(K.green);
+return {vsPre:'varying vec3 vTreeI;\n',
+vsBody:'#ifdef USE_INSTANCING\n  vTreeI=(modelMatrix*vec4(instanceMatrix[3].xyz,1.0)).xyz;\n#else\n  vTreeI=(modelMatrix*vec4(0.0,0.0,0.0,1.0)).xyz;\n#endif\n',
+fsPre:'uniform float uTreeReal;\nvarying vec3 vTreeI;\n'+
+'float trH(vec2 p){ return fract(sin(p.x*127.1+p.y*311.7)*43758.5453); }\n'+
+'float trN(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(trH(i),trH(i+vec2(1.0,0.0)),f.x),mix(trH(i+vec2(0.0,1.0)),trH(i+vec2(1.0,1.0)),f.x),f.y); }\n',
+fsBody:'  if(uTreeReal>0.5){ vec3 tc=diffuseColor.rgb; float tg=max(tc.g,1e-4);\n'+
+'    float tb=smoothstep('+f(K.br0)+','+f(K.br1)+',tc.r/tg)*smoothstep('+f(K.bb0)+','+f(K.bb1)+',tc.b/tg);\n'+
+'    float tk=smoothstep('+f(1-K.keep-K.edge/2)+','+f(1-K.keep+K.edge/2)+',trN(vTreeI.xz*'+f(K.sc)+'));\n'+
+'    float tL=dot(tc,vec3(0.2126,0.7152,0.0722)); vec3 tgn='+_d3treeV3(K.green)+'*min(1.6,tL/'+f(gL)+')*0.62;\n'+
+'    vec3 tx=mix(tgn,mix(tc,tgn,'+f(K.mixG)+'),tk); float tj=trH(floor(vTreeI.xz*1.7))*2.0-1.0;\n'+
+'    diffuseColor.rgb=mix(tc,tx,tb)*(1.0+tj*'+f(K.jit)+'); }\n'};}
+function _d3treeLookSh(sh){
+if(!sh||sh.uniforms.uTreeReal)return false;var G=_d3treeLookGlsl();sh.uniforms.uTreeReal=_d3treeLookU().uTreeReal;
+sh.vertexShader=G.vsPre+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody);
+sh.fragmentShader=G.fsPre+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n'+G.fsBody);
+return true;
+}
+function _d3treeLookStep(){
+var U=_d3treeLookU(),on=(typeof _d3look==='function')&&_d3look()==='real'&&!(typeof _D3!=='undefined'&&_D3&&_D3._noTreeLook);
+U.uTreeReal.value=on?1:0;return on;
 }
 function _d3parkScatter(g,m,pts,half){var it=_d3parkScatterSteps(g,m,pts,half),r;do{r=it.next();}while(!r.done);return r.value;}
 var _d3parkScatterSteps0=function*(g,m,pts,half){
