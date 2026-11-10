@@ -2432,23 +2432,73 @@ html,body{margin:0;height:100%;background:#0b0d0b;overscroll-behavior:none}
   #driftWelcome .dw-head{margin-bottom:10px}
   #driftWelcome .dw-sub{display:none}
   #driftWelcome .dw-sk{width:120px;height:80px}}
-#driftWelcome .dw-shot{position:absolute;inset:0;overflow:hidden;opacity:0;
-  transform:translate(calc(var(--hw-px)*-14px),calc(var(--hw-py)*-8px)) scale(1.04);
-  transition:opacity 1.4s ease,transform 1.1s cubic-bezier(.2,.7,.2,1)}
-#driftWelcome .dw-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
-  filter:brightness(var(--hw-shot-dim,1)) saturate(calc(.7 + var(--hw-shot-dim,1)*.3));
-  transform-origin:50% 55%;animation:hwShotPan 70s ease-in-out infinite alternate}
-#driftWelcome .dw-shot::after{content:'';position:absolute;inset:0;background:var(--hw-tint);opacity:var(--hw-shot-tint,0);
-  mix-blend-mode:multiply}
-#driftWelcome.has-shot .dw-shot{opacity:1}
-#driftWelcome.shot-on #hwScene{display:none}
-@keyframes hwShotPan{from{transform:scale(1.02) translate(-1.2%,.6%)}to{transform:scale(1.12) translate(1.2%,-.8%)}}
-#driftWelcome img.dw-sk,#driftWelcome img.dw-sk-s{object-fit:cover}
-#driftWelcome .dw-shothint{font:600 11.5px/1.35 system-ui,sans-serif;color:#a9d4ff}
-#driftWelcome img[hidden]{display:none !important}
-@media (prefers-reduced-motion:reduce){
-  #driftWelcome .dw-shot img{animation:none}
-  #driftWelcome .dw-shot{transition:none}}
+#driftWelcome .dw-card{width:min(460px,100%);margin:0;padding-right:calc(48px + env(safe-area-inset-right,0px));
+  background:linear-gradient(90deg,rgba(3,7,12,.88) 0%,rgba(3,7,12,.74) 62%,rgba(3,7,12,0) 100%)}
+#driftWelcome .dw-card:not(.dw-home){width:min(820px,100%)}
+#driftWelcome .dw-head{margin:6px 0 0;padding-bottom:20px}
+#driftWelcome .dw-brand{display:flex;align-items:center;gap:14px;margin:0}
+#driftWelcome .dw-mark{flex:0 0 auto;width:clamp(44px,6vw,62px);height:auto;filter:drop-shadow(0 2px 10px rgba(0,0,0,.6))}
+#driftWelcome .dw-card:not(.dw-home) .dw-mark{display:none}
+#driftWelcome.dw-in .dw-card.dw-home h1,#driftWelcome .dw-card.dw-home h1{font:900 clamp(40px,5.4vw,68px)/.92 system-ui,-apple-system,"Segoe UI",sans-serif;
+  letter-spacing:.015em;text-transform:uppercase;color:#fff;
+  background:linear-gradient(180deg,#ffffff 0%,#fff1cf 46%,#f2b552 78%,#c9822a 100%);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 3px 14px rgba(0,0,0,.65)) drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+#driftWelcome .dw-tag{display:flex;align-items:center;gap:10px;margin:12px 0 0;color:#f2b552;letter-spacing:.42em;font-size:clamp(11px,1.2vw,13px)}
+#driftWelcome .dw-tag::after{content:'';flex:1 1 auto;max-width:120px;height:1px;background:linear-gradient(90deg,rgba(242,181,82,.8),rgba(242,181,82,0))}
+#driftWelcome .dw-sub{margin:12px 0 0;color:#dfe8f2;font-size:clamp(14px,1.4vw,16px)}
+#driftWelcome #dwGrid{grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+#driftWelcome #dwGrid>.dw-tile{grid-column:span 2}
+#driftWelcome #dwGrid>.dw-tile.dw-util{grid-column:span 1}
+#driftWelcome #dwGrid .dw-tile:not(.dw-primary){display:grid;grid-template-columns:34px 1fr;grid-template-rows:auto auto;column-gap:12px;row-gap:1px;
+  align-items:center;justify-items:start;text-align:left;min-height:0;padding:10px 14px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.045);-webkit-backdrop-filter:none;backdrop-filter:none}
+#driftWelcome #dwGrid .dw-tile:not(.dw-primary) .dw-i{grid-row:1/3;justify-self:center;font-size:22px}
+#driftWelcome #dwGrid .dw-tile:not(.dw-primary) b{font:700 15px/1.2 system-ui,sans-serif;letter-spacing:.01em}
+#driftWelcome #dwGrid .dw-tile:not(.dw-primary) i{display:block;max-width:none;font-size:11.5px;line-height:1.3;color:#98abba}
+#driftWelcome #dwGrid .dw-tile:not(.dw-primary):hover,#driftWelcome #dwGrid .dw-tile:not(.dw-primary):focus-visible{
+  background:rgba(255,255,255,.1);border-color:rgba(242,181,82,.7);transform:translateX(3px)}
+#driftWelcome #dwGrid .dw-tile.dw-util{grid-template-columns:24px 1fr;padding:8px 12px}
+#driftWelcome #dwGrid .dw-tile.dw-util .dw-i{font-size:16px}
+#driftWelcome #dwGrid .dw-tile.dw-util b{font-size:13px}
+#driftWelcome #dwGrid .dw-tile.dw-util i{display:none}
+#driftWelcome .dw-tile.dw-primary{grid-column:span 2;padding:12px 16px 12px 12px;border-radius:16px;border:1px solid rgba(242,181,82,.55);
+  background:linear-gradient(115deg,rgba(120,78,24,.62),rgba(30,26,18,.72) 60%,rgba(12,18,26,.72));box-shadow:0 12px 30px rgba(0,0,0,.45)}
+#driftWelcome .dw-tile.dw-primary:hover,#driftWelcome .dw-tile.dw-primary:focus-visible{border-color:#f2b552;
+  background:linear-gradient(115deg,rgba(150,98,30,.72),rgba(40,34,22,.8) 60%,rgba(14,22,30,.8))}
+#driftWelcome .dw-sk{width:104px;height:70px}
+#driftWelcome .dw-tile.dw-primary b{color:#f2b552}
+#driftWelcome .dw-foot{margin-top:14px;align-items:center}
+#driftWelcome .dw-refresh{margin-left:auto;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(10,14,20,.6);
+  color:#eaf3ff;font:600 11px/1.2 system-ui,sans-serif;cursor:pointer}
+#driftWelcome .dw-refresh:hover{border-color:#f2b552}
+@media (max-width:999px){
+  #driftWelcome .dw-card,#driftWelcome .dw-card:not(.dw-home){width:100%;margin:auto;padding-right:calc(16px + env(safe-area-inset-right,0px));
+    background:linear-gradient(180deg,rgba(3,7,12,.62) 0%,rgba(3,7,12,0) 26%,rgba(3,7,12,0) 44%,rgba(3,7,12,.84) 66%,rgba(3,7,12,.92) 100%)}
+  #driftWelcome #dwGrid{grid-template-columns:repeat(6,1fr);gap:8px;max-width:640px;width:100%;margin-left:auto;margin-right:auto}
+  #driftWelcome #dwGrid>.dw-tile{grid-column:span 2}
+  #driftWelcome #dwGrid>.dw-tile.dw-primary{grid-column:1/-1}
+  #driftWelcome #dwGrid>#dwGuide,#driftWelcome #dwGrid>#dwNew,#driftWelcome #dwGrid>.dw-tile.dw-util{grid-column:span 3}
+  #driftWelcome #dwGrid .dw-tile:not(.dw-primary){grid-template-columns:1fr;grid-template-rows:auto auto;justify-items:center;text-align:center;
+    padding:10px 6px;row-gap:3px;min-height:68px}
+  #driftWelcome #dwGrid .dw-tile:not(.dw-primary) .dw-i{grid-row:auto}
+  #driftWelcome #dwGrid .dw-tile:not(.dw-primary) i{display:none}
+  #driftWelcome #dwGrid .dw-tile:not(.dw-primary):hover{transform:translateY(-2px)}
+  #driftWelcome #dwGrid .dw-tile.dw-util{grid-template-columns:auto auto;justify-content:center;column-gap:8px;min-height:0;padding:9px 8px}
+  #driftWelcome #dwGrid .dw-tile.dw-util .dw-i{grid-row:auto}
+  #driftWelcome .dw-head{max-width:640px;width:100%;margin-left:auto;margin-right:auto}
+  #driftWelcome .dw-foot{max-width:640px;width:100%;margin-left:auto;margin-right:auto}}
+@media (max-width:560px){
+  #driftWelcome .dw-card.dw-home h1{font-size:clamp(34px,11vw,48px)}
+  #driftWelcome .dw-mark{width:40px}
+  #driftWelcome .dw-sk{width:96px;height:66px}
+  #driftWelcome #dwGrid .dw-tile:not(.dw-primary) b{font-size:13px}}
+body.hw-live #driftApp{visibility:hidden}
+body.hw-live #trk3d{visibility:visible}
+body.hw-live #d3RpgBar{visibility:hidden}
+body.hw-live #driftWelcome,body.hw-live #driftWelcome .dw-bg{background:transparent}
+#driftWelcome #hwScene{transition:opacity 1.4s ease}
+body.hw-live #driftWelcome #hwScene{opacity:0}
+body.hw-live #driftWelcome #hwScene *{animation-play-state:paused}
 #anatomyOverlay{z-index:2147481750}
 #topActions #rcgAppRefresh{background:#111418;color:#fff;border:1px solid rgba(255,255,255,.22);
   border-radius:999px;padding:6px 12px;font:700 12px system-ui,sans-serif;cursor:pointer;
@@ -2766,24 +2816,24 @@ html,body{margin:0;height:100%;background:#0b0d0b;overscroll-behavior:none}
   </g>
 </svg>
 
-    
-    <div class="dw-shot" id="dwShot"><img id="dwShotImg" alt="" decoding="async"></div>
   </div>
   <div class="dw-card dw-home" id="dwCard">
     <header class="dw-head">
       <p class="dw-eyebrow" id="dwHour" aria-live="polite"><span id="dwHourIcon">🌅</span> <span id="dwHourTxt">Dawn on the island</span></p>
-      <h1 id="dwTitle">HighWall</h1>
+      <div class="dw-brand"><svg class="dw-mark" viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="hwMarkG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1cf"/><stop offset="1" stop-color="#d48a2c"/></linearGradient></defs>
+        <path d="M4 46 L22 12 L28 20 L34 8 L60 46 Z" fill="url(#hwMarkG)"/><path d="M15 32h28M11 39h40M19 25h18" stroke="#3a2a14" stroke-width="2.2" stroke-linecap="round" opacity=".55"/>
+        <path d="M2 52 C16 44 30 54 44 48 S58 44 63 47" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
+      <h1 id="dwTitle">HighWall</h1></div>
       <p class="dw-tag" id="dwTag">Seam to Slide</p>
       <p class="dw-sub" id="dwSub">Cut the mountain. Spend what it pays.</p>
     </header>
     <div class="dw-grid" id="dwGrid">
       
       <button type="button" class="dw-tile dw-primary" id="dwMap" onclick="driftLaunch('map')">
-        <canvas class="dw-sk" id="dwMapSk" width="168" height="112" aria-hidden="true"></canvas><img class="dw-sk" id="dwMapShot" alt="" hidden>
+        <canvas class="dw-sk" id="dwMapSk" width="168" height="112" aria-hidden="true"></canvas>
         <span class="dw-pw"><b>Map</b><span class="dw-name" id="dwMapName">Open the map</span>
           <i id="dwMapSub">Terrain, water, weather, a town, a railway — and a car you drive</i>
-          <span class="dw-stat" id="dwCareer"></span>
-          <span class="dw-shothint" id="dwShotHint" hidden>📷 Play it a few seconds and this screen becomes a picture of it</span></span>
+          <span class="dw-stat" id="dwCareer"></span></span>
         <span class="dw-go" aria-hidden="true">▸</span></button>
       
       <button type="button" class="dw-tile" id="dwGuide" onclick="driftLaunch('guide')">
@@ -2798,10 +2848,10 @@ html,body{margin:0;height:100%;background:#0b0d0b;overscroll-behavior:none}
       <button type="button" class="dw-tile" id="dwLearn" onclick="driftLaunch('learn')">
         <span class="dw-i">📐</span><b>Drift 101</b><i>Diagram, anatomy, theory and technique</i></button>
       
-      <button type="button" class="dw-tile" id="dwBackup" onclick="driftBackupMenu()">
+      <button type="button" class="dw-tile dw-util" id="dwBackup" onclick="driftBackupMenu()">
         <span class="dw-i">📦</span><b>Backup</b><i id="dwBackupSub">Save every map, studio and career to a file — or restore one</i></button>
       
-      <button type="button" class="dw-tile" id="dwSync" onclick="if(typeof rcgSyncClick==='function')rcgSyncClick();">
+      <button type="button" class="dw-tile dw-util" id="dwSync" onclick="if(typeof rcgSyncClick==='function')rcgSyncClick();">
         <span class="dw-i">☁️</span><b>Sync</b><i id="dwSyncSub">Share every map and your career across your devices</i></button>
     </div>
     
@@ -2829,7 +2879,8 @@ html,body{margin:0;height:100%;background:#0b0d0b;overscroll-behavior:none}
       <button type="button" class="dw-tile" id="dwStudioBack" onclick="driftWelcomeHome()">
         <span class="dw-i">←</span><b>Back</b><i>The ways in</i></button>
     </div>
-    <p class="dw-foot" id="dwFoot"><span id="dwDevice"></span><span id="dwBuild"></span><button id="hg-signout" class="hg-so" type="button" title="Off this device: the next one to play here signs in again">Sign out</button></p>
+    <p class="dw-foot" id="dwFoot"><span id="dwDevice"></span>
+    <button type="button" class="dw-refresh" id="dwRefresh" onclick="var r=document.getElementById('rcgAppRefresh');if(r)r.click();else location.reload();">⟳ Refresh</button><span id="dwBuild"></span><button id="hg-signout" class="hg-so" type="button" title="Off this device: the next one to play here signs in again">Sign out</button></p>
   </div>
 </div>
 
@@ -2911,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='c95939b';
+var RCG_BUILD='cbf7719';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -85850,7 +85901,8 @@ var _cv3=(_D3.cv3&&_D3.cv3.isConnected)?_D3.cv3:(_D3.cv3=document.getElementById
 if(!window._da||!_da.view3d||!_cv3||_cv3.offsetParent===null){if(window._da&&_da.view3d&&window.console&&console.log)console.log('[RC Garage] _d3loop self-terminated: cv3='+(!!_cv3)+' offsetParent='+(_cv3?_cv3.offsetParent:'(no cv3)')+' view3d='+(_da&&_da.view3d));_D3.raf=0;return;}
 _D3.raf=requestAnimationFrame(_d3loop);
 if(_D3._building){_D3._lt=now;return;}
-if(typeof _d3preOn==='function'&&_d3preOn()){_D3._lt=now;return;}
+if(typeof _d3preOn==='function'&&_d3preOn()){_D3._lt=now;try{if(typeof hwLiveFrame==='function')hwLiveFrame(now);}catch(_hl9){}return;}
+if(_D3._hwlT0!=null&&typeof hwLiveEnd==='function')hwLiveEnd();
 if(typeof _d3gfxPaced==='function'&&_d3gfxPaced(now))return;
 _d3handleScale();
 try{if(typeof _d3shadowFollow==='function')_d3shadowFollow();}catch(_sf9){}
@@ -86102,7 +86154,6 @@ if(typeof _d3fhdFrame==='function'){try{_d3fhdFrame((typeof _d3camNow==='functio
 var _rt0=performance.now();var _pfr9=!!_D3._pendingFirstRender;if(_pfr9&&window._rcgCrumb)_rcgCrumb('render-BEFORE');
 var _jn9=!_pfr9&&typeof _d3jnCovers==='function'&&_d3jnCovers();_D3._jnHeld=_jn9;
 _D3._renderLoop=1;try{if(!_jn9)_D3.ren.render(_D3.scene,(typeof _d3camNow==='function')?_d3camNow():_D3.cam);}finally{_D3._renderLoop=0;}if(_D3._matHold&&_D3._matHold.length)_d3matRelease();if(_pfr9){_D3._pendingFirstRender=false;if(window._rcgCrumb)_rcgCrumb('render-AFTER '+Math.round(performance.now()-_rt0)+'ms');}_D3._rms=(_D3._rms||0)*0.9+(performance.now()-_rt0)*0.1;_D3._lms=(_D3._lms||0)*0.9+(performance.now()-_L0)*0.1;
-if(!_jn9&&typeof hwShotFrame==='function'){try{hwShotFrame(now);}catch(_hs9){}}
 }
 function driftShadowApply(on){_D3._shadows=on;if(_D3.parkTrunks)_D3.parkTrunks.castShadow=on;if(_D3.parkBlobs)_D3.parkBlobs.castShadow=on;try{_d3forestShadow(on);}catch(_fs){}
 try{var _r=_D3.ren;if(!_r)return;
@@ -89539,7 +89590,6 @@ h+='<button type="button" class="dw-tile" onclick="driftWelcomeHome()">'+
 '<span class="dw-i">←</span><b>Back</b><i>The ways in</i></button>';
 g.innerHTML=h;
 hwTitleSketchAll(g);
-try{if(typeof hwShotTiles==='function')hwShotTiles(g);}catch(_st){}
 }
 function hwTitleSketchAll(g){
 var draw=function(){try{var cs=g.querySelectorAll('canvas[data-map]'),i;for(i=0;i<cs.length;i++)hwSketchCanvas(cs[i],cs[i].getAttribute('data-map'));}catch(_d){}};
@@ -89693,7 +89743,6 @@ if(bd){var b='';try{b=(typeof RCG_BUILD!=='undefined'&&RCG_BUILD)?('build '+Stri
 var cv=document.getElementById('dwMapSk');
 if(cv){var draw=function(){try{if(id)hwSketchCanvas(cv,id);else{var c2=cv.getContext('2d');if(c2){c2.clearRect(0,0,cv.width,cv.height);}cv.setAttribute('data-sketch','none');}}catch(_d){}};
 if(typeof requestAnimationFrame==='function')requestAnimationFrame(draw);else draw();}
-try{if(typeof hwShotCard==='function')hwShotCard(id);}catch(_sc){}
 }
 function driftWelcomeHome(){
 driftWelcomePage('');
@@ -89709,7 +89758,6 @@ for(k in V)if(Object.prototype.hasOwnProperty.call(V,k))w.style.setProperty(k,St
 w.setAttribute('data-band',S.band);
 var ic=document.getElementById('dwHourIcon'),tx=document.getElementById('dwHourTxt');
 if(ic)ic.textContent=S.icon;if(tx)tx.textContent=S.label+' on the island';
-try{if(typeof hwShotTint==='function')hwShotTint(S.hour);}catch(_st){}
 return S;
 }
 function hwTitleFrame(){
@@ -89735,147 +89783,42 @@ setInterval(function(){try{if(w.style.display!=='none')hwTitleApply();}catch(_t)
 }catch(_w){}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hwTitleStart);else hwTitleStart();
-var _HW_SHOT={db:'highwall-shots',first:3000,soon:30000,every:90000,leave:5000,full:1600,thumb:480,q:0.8,maps:8};
-function hwShotDue(st,now,K){K=K||_HW_SHOT;if(!st||!(st.up>0)||!(now>0))return false;
-if(!(st.last>0))return now-st.up>=K.first;
-return now-st.last>=(((st.k|0)<2)?K.soon:K.every);}
-function hwShotFit(w,h,m){w=+w||0;h=+h||0;var s=Math.min(1,(+m||1)/Math.max(w,h,1));
-return {w:Math.max(1,Math.round(w*s)),h:Math.max(1,Math.round(h*s))};}
-function hwShotLive(px,step){step=Math.max(1,step|0||1);var n=0,s=0,s2=0,i;
-for(i=0;i+2<(px?px.length:0);i+=4*step){var l=0.299*px[i]+0.587*px[i+1]+0.114*px[i+2];s+=l;s2+=l*l;n++;}
-if(!n)return {mean:0,sd:0,live:false};
-var m=s/n,sd=Math.sqrt(Math.max(0,s2/n-m*m));return {mean:+m.toFixed(1),sd:+sd.toFixed(1),live:sd>=6&&m>=4};}
-function hwShotKey(id,band){return String(id)+'|'+String(band);}
-function hwShotPick(M,id,band){var same=null,any=null,i;if(!id||!M)return null;
-for(i=0;i<M.length;i++){var m=M[i];if(!m||m.map!==id)continue;
-if(!any||m.t>any.t)any=m;if(m.band===band&&(!same||m.t>same.t))same=m;}
-return same||any;}
-function hwShotLook(now,then){
-var bn=hwTitleSky(now).bright,bt=hwTitleSky(then).bright,d=(bt>0)?Math.min(1,bn/bt):1;d=Math.max(0.5,d);
-return {dim:+d.toFixed(3),tint:+((1-d)*0.7).toFixed(3)};}
-function hwShotPrune(M,k){var last={},i,ids;M=M||[];
-for(i=0;i<M.length;i++){var m=M[i];if(m&&m.map!=null&&(!(m.map in last)||m.t>last[m.map]))last[m.map]=m.t||0;}
-ids=Object.keys(last).sort(function(a,b){return last[b]-last[a];});var keep={};
-for(i=0;i<Math.min(ids.length,Math.max(0,k|0));i++)keep[ids[i]]=1;
-return M.filter(function(m){return m&&!keep[m.map];}).map(function(m){return m.key;});}
-var _hwShotDbP=null;
-function _hwShotDb(){
-if(_hwShotDbP)return _hwShotDbP;
-_hwShotDbP=new Promise(function(res){
-try{if(typeof indexedDB==='undefined'){res(null);return;}
-var r=indexedDB.open(_HW_SHOT.db,1);
-r.onupgradeneeded=function(){var d=r.result;['meta','full','thumb'].forEach(function(s){if(!d.objectStoreNames.contains(s))d.createObjectStore(s);});};
-r.onsuccess=function(){res(r.result);};r.onerror=function(){res(null);};r.onblocked=function(){res(null);};
-}catch(_e){res(null);}});
-return _hwShotDbP;
-}
-function hwShotMetas(){return _hwShotDb().then(function(d){if(!d)return [];return new Promise(function(res){
-try{var q=d.transaction('meta','readonly').objectStore('meta').getAll();q.onsuccess=function(){res(q.result||[]);};q.onerror=function(){res([]);};}
-catch(_e){res([]);}});});}
-function hwShotGet(store,key){return _hwShotDb().then(function(d){if(!d)return null;return new Promise(function(res){
-try{var q=d.transaction(store,'readonly').objectStore(store).get(key);q.onsuccess=function(){res(q.result||null);};q.onerror=function(){res(null);};}
-catch(_e){res(null);}});});}
-function hwShotPut(meta,full,thumb,drop){return _hwShotDb().then(function(d){if(!d)return false;return new Promise(function(res){
-try{var tx=d.transaction(['meta','full','thumb'],'readwrite'),S=['meta','full','thumb'],i,j;
-for(i=0;i<(drop||[]).length;i++)if(drop[i]!==meta.key)for(j=0;j<3;j++)tx.objectStore(S[j]).delete(drop[i]);
-tx.objectStore('meta').put(meta,meta.key);tx.objectStore('full').put(full,meta.key);tx.objectStore('thumb').put(thumb,meta.key);
-tx.oncomplete=function(){res(true);};tx.onerror=tx.onabort=function(){res(false);};}
-catch(_e){res(false);}});});}
-var _hwShotSt={id:'',up:0,last:0,busy:false,n:0,why:''};
-function hwShotMapId(){var p=(typeof _da!=='undefined'&&_da)?_da.pattern:'';if(!p||p==='__build')return '';
-try{if(typeof _nsOf==='function')p=_nsOf(p);}catch(_n){}return String(p||'');}
-function hwShotSceneHour(){var D=(typeof _D3!=='undefined')?_D3:null;
-if(typeof _da!=='undefined'&&_da&&_da.biome===10)return 0;
-if(D&&D.dusk)return 19;if(D&&D.hourW&&typeof D.hour==='number'&&isFinite(D.hour))return D.hour;return 13;}
-function _hwShotBlob(c,q){return new Promise(function(res){try{c.toBlob(function(b){res(b||null);},'image/jpeg',q);}catch(_e){res(null);}});}
-function _hwShotBuf(b){if(!b)return Promise.resolve(null);if(typeof b.arrayBuffer==='function')return b.arrayBuffer();
-return new Promise(function(res){try{var r=new FileReader();r.onload=function(){res(r.result);};r.onerror=function(){res(null);};r.readAsArrayBuffer(b);}catch(_e){res(null);}});}
-function hwShotTake(id){
-var D=_D3,src=D&&D.ren&&D.ren.domElement,K=_HW_SHOT;if(!src||!(src.width>8)||!(src.height>8))return false;
-var F=hwShotFit(src.width,src.height,K.full),T=hwShotFit(src.width,src.height,K.thumb);
-var c=document.createElement('canvas'),t=document.createElement('canvas');c.width=F.w;c.height=F.h;t.width=T.w;t.height=T.h;
-var x=c.getContext('2d'),y=t.getContext('2d');if(!x||!y)return false;
-x.drawImage(src,0,0,F.w,F.h);y.drawImage(c,0,0,T.w,T.h);
-var L=hwShotLive(y.getImageData(0,0,T.w,T.h).data,7);_hwShotSt.live=L;
-if(!L.live){c.width=c.height=t.width=t.height=0;_hwShotSt.why='flat';return false;}
-var hr=hwShotSceneHour(),band=hwTitleBand(hr).k,meta={key:hwShotKey(id,band),map:id,band:band,hour:+hr.toFixed(2),t:Date.now(),w:F.w,h:F.h};
-_hwShotSt.busy=true;
-Promise.all([_hwShotBlob(c,K.q),_hwShotBlob(t,K.q)]).then(function(B){c.width=c.height=t.width=t.height=0;
-return Promise.all([_hwShotBuf(B[0]),_hwShotBuf(B[1])]);})
-.then(function(A){if(!A[0]||!A[1]){_hwShotSt.why='encode';return false;}
-return hwShotMetas().then(function(M){return hwShotPut(meta,A[0],A[1],hwShotPrune(M.concat([meta]),K.maps));});})
-.then(function(ok){if(ok){_hwShotSt.n++;_hwShotSt.key=meta.key;_hwShotSt.why='';}})
-.catch(function(){_hwShotSt.why='store';}).then(function(){_hwShotSt.busy=false;});
+var _HW_LIVE={fov:34,turn:360,dist:1.55,rise:0.62,look:0.1,fps:30,fogN:0.7,fogF:3.2};
+function hwLiveCam(t,R,K,asp){K=K||_HW_LIVE;R=(R>0)?R:60;t=(t>0)?t:0;
+var far=(asp>0&&asp<1)?Math.min(1.9,0.9/asp):1;
+var a=0.691+t*2*Math.PI/K.turn,d=R*K.dist*far,h=R*K.rise*far*(1+0.06*Math.sin(t*2*Math.PI/(K.turn*0.41)));
+return {x:Math.sin(a)*d,y:h,z:Math.cos(a)*d,lx:-Math.sin(a)*R*K.look,ly:R*0.02,lz:-Math.cos(a)*R*K.look,d:Math.sqrt(d*d+h*h)};}
+function hwLiveMay(){
+if(window._HW_NO_LIVE)return false;
+var D=(typeof _D3!=='undefined')?_D3:null;if(!D||!D.ren||!D.scene||!D._pre||D._pre.done==null)return false;
+if(typeof _d3preOn==='function'&&!_d3preOn())return false;
+if(D._building||D._buildPending||(D._settleQ|0)>0)return false;
+var w=document.getElementById('driftWelcome');if(!w||w.style.display==='none')return false;
+if(document.hidden||document.querySelector('.st-listbtn'))return false;
 return true;
 }
-function hwShotFrame(now){
-if(window._HW_NO_SHOTS)return false;var S=_hwShotSt,D=(typeof _D3!=='undefined')?_D3:null;
-if(S.busy||!window._driftMapUp||!D||!D.ren)return false;
-if(typeof document!=='undefined'&&document.visibilityState&&document.visibilityState!=='visible')return false;
-var w=document.getElementById('driftWelcome');if(w&&w.style.display!=='none')return false;
-if(D._building||D._pendingFirstRender||(typeof _d3buildBusy==='function'&&_d3buildBusy()))return false;
-var id=hwShotMapId();if(!id)return false;
-if(id!==S.id){S.id=id;S.up=now;S.last=0;S.k=0;return false;}
-if(!hwShotDue(S,now,_HW_SHOT))return false;
-S.last=now;S.k=(S.k|0)+1;return hwShotTake(id);
+function hwLiveFrame(now){
+if(!hwLiveMay())return false;
+var D=_D3,K=_HW_LIVE,T=window.THREE;if(!T)return false;
+if(K.fps&&D._hwlT&&now-D._hwlT<1000/K.fps-3)return false;
+var dt=D._hwlT?Math.min(0.2,(now-D._hwlT)/1000):0;D._hwlT=now;
+var cv=D.ren.domElement,w=cv.clientWidth||cv.width,h=cv.clientHeight||cv.height;if(!(w>0&&h>0))return false;
+var C=D._hwlCam||(D._hwlCam=new T.PerspectiveCamera(K.fov,w/h,0.5,6000));
+if(Math.abs(C.aspect-w/h)>1e-3){C.aspect=w/h;C.updateProjectionMatrix();}
+if(D._hwlT0==null)D._hwlT0=now;
+var p=hwLiveCam((now-D._hwlT0)/1000,D.worldR,K,w/h);C.position.set(p.x,p.y,p.z);C.lookAt(p.lx,p.ly,p.lz);C.updateMatrixWorld(true);
+try{if(typeof _d3wfxStep==='function')_d3wfxStep(now);}catch(_w){}
+try{if(typeof _d3cloudStep==='function')_d3cloudStep(now,dt);}catch(_c){}
+var F=D.scene.fog,fn=F?F.near:0,ff=F?F.far:0;if(F&&F.isFog){F.near=p.d*K.fogN;F.far=p.d*K.fogF;}
+try{D.ren.render(D.scene,C);}finally{if(F&&F.isFog){F.near=fn;F.far=ff;}}
+D._hwlN=(D._hwlN|0)+1;
+if(!document.body.classList.contains('hw-live'))document.body.classList.add('hw-live');
+return true;
 }
-function hwShotLeave(){
-if(window._HW_NO_SHOTS)return false;var S=_hwShotSt,D=(typeof _D3!=='undefined')?_D3:null,now=performance.now();
-if(S.busy||!window._driftMapUp||!D||!D.ren||!D.scene)return false;
-var w=document.getElementById('driftWelcome');if(w&&w.style.display!=='none')return false;
-if(D._building||D._pendingFirstRender||(typeof _d3buildBusy==='function'&&_d3buildBusy()))return false;
-if(typeof _d3jnCovers==='function'&&_d3jnCovers())return false;
-var id=hwShotMapId();if(!id||(S.id===id&&S.last>0&&now-S.last<_HW_SHOT.leave))return false;
-try{D.ren.render(D.scene,(typeof _d3camNow==='function')?_d3camNow():D.cam);}catch(_r){return false;}
-if(S.id!==id){S.id=id;S.k=0;}if(!S.up)S.up=now;S.last=now;S.k=(S.k|0)+1;S.left=(S.left|0)+1;return hwShotTake(id);
-}
-try{document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')try{hwShotLeave();}catch(_l){}});
-window.addEventListener('pagehide',function(){try{hwShotLeave();}catch(_p){}});}catch(_ev){}
-var _hwShotUrls={};
-function _hwShotUrl(slot,buf){if(_hwShotUrls[slot]){try{URL.revokeObjectURL(_hwShotUrls[slot]);}catch(_r){}}
-var u='';try{if(buf)u=URL.createObjectURL(new Blob([buf],{type:'image/jpeg'}));}catch(_u){}_hwShotUrls[slot]=u;return u;}
-function hwShotBack(m,buf,hour){
-var w=document.getElementById('driftWelcome'),im=document.getElementById('dwShotImg');if(!w||!im)return;
-clearTimeout(w._hwShotOn);
-if(!m||!buf){w.classList.remove('has-shot','shot-on');w.removeAttribute('data-shot');im.removeAttribute('src');_hwShotUrl('back',null);return;}
-w._hwShotHour=m.hour;hwShotTint(hour);
-im.onload=function(){w.classList.add('has-shot');w.setAttribute('data-shot',m.key);
-w._hwShotOn=setTimeout(function(){if(w.classList.contains('has-shot'))w.classList.add('shot-on');},1600);};
-im.onerror=function(){hwShotBack(null);};
-im.src=_hwShotUrl('back',buf);
-}
-function hwShotTint(hour){var w=document.getElementById('driftWelcome');if(!w||typeof w._hwShotHour!=='number')return null;
-var L=hwShotLook((typeof hour==='number')?hour:hwTitleHour(),w._hwShotHour);
-w.style.setProperty('--hw-shot-dim',String(L.dim));w.style.setProperty('--hw-shot-tint',String(L.tint));return L;}
-function hwShotOver(cv,im,slot,buf){if(!cv||!im)return;
-if(!buf){im.hidden=true;im.removeAttribute('src');cv.style.display='';_hwShotUrl(slot,null);return;}
-im.onload=function(){im.hidden=false;cv.style.display='none';};im.onerror=function(){im.hidden=true;cv.style.display='';};
-im.src=_hwShotUrl(slot,buf);}
-function hwShotCard(id){
-var w=document.getElementById('driftWelcome');if(!w)return Promise.resolve(null);
-var tok=w._hwShotTok=(w._hwShotTok||0)+1,cv=document.getElementById('dwMapSk'),im=document.getElementById('dwMapShot');
-var hint=document.getElementById('dwShotHint'),say=function(on){if(hint)hint.hidden=!on;};
-var none=function(){hwShotBack(null);hwShotOver(cv,im,'card',null);return null;};
-if(window._HW_NO_SHOTS||!id){say(false);return Promise.resolve(none());}
-return hwShotMetas().then(function(M){if(w._hwShotTok!==tok)return null;
-hwShotCount(M);var hr=hwTitleHour(),m=hwShotPick(M,id,hwTitleBand(hr).k);say(!m);if(!m)return none();
-return Promise.all([hwShotGet('full',m.key),hwShotGet('thumb',m.key)]).then(function(B){if(w._hwShotTok!==tok)return null;
-if(!B[0])return none();hwShotBack(m,B[0],hr);hwShotOver(cv,im,'card',B[1]);return m;});
-}).catch(function(){return null;});
-}
-function hwShotMaps(M){var o={},i;for(i=0;i<(M||[]).length;i++)if(M[i]&&M[i].map!=null)o[M[i].map]=1;return Object.keys(o).length;}
-function hwShotCount(M){var dv=document.getElementById('dwDevice');if(!dv)return;var n=hwShotMaps(M),t=dv.textContent.replace(/ · \d+ pictured$/,'');
-dv.textContent=t+(n?(' · '+n+' pictured'):'');}
-function hwShotTiles(g){
-if(!g||window._HW_NO_SHOTS)return Promise.resolve(0);
-return hwShotMetas().then(function(M){var cs=g.querySelectorAll('canvas[data-map]'),band=hwTitleBand(hwTitleHour()).k,P=[],i;
-for(i=0;i<cs.length;i++)(function(cv){var m=hwShotPick(M,cv.getAttribute('data-map'),band);if(!m)return;
-P.push(hwShotGet('thumb',m.key).then(function(buf){if(!buf||!cv.parentNode)return 0;
-var im=document.createElement('img');im.className='dw-sk-s';im.alt='';im.hidden=true;im.setAttribute('data-shot',m.key);
-cv.parentNode.insertBefore(im,cv);hwShotOver(cv,im,'tile:'+m.key,buf);return 1;}));})(cs[i]);
-return Promise.all(P).then(function(r){return r.reduce(function(a,b){return a+b;},0);});
-}).catch(function(){return 0;});
-}
+function hwLiveEnd(){try{document.body.classList.remove('hw-live');}catch(_b){}
+try{if(typeof _D3!=='undefined'&&_D3){_D3._hwlT=0;_D3._hwlT0=null;}}catch(_d){}}
+try{if(typeof indexedDB!=='undefined'&&indexedDB.deleteDatabase&&!(typeof __LS!=='undefined'&&__LS.getItem('hwShotsGone'))){
+indexedDB.deleteDatabase('highwall-shots');if(typeof __LS!=='undefined')__LS.setItem('hwShotsGone','1');}}catch(_g){}
 var _HW_NEW_FLAG='hwNewGame';
 function hwNewIslandName(names){
 var have={},i;for(i=0;i<(names||[]).length;i++)have[String(names[i]).trim().toLowerCase()]=1;
