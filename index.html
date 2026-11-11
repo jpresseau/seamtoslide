@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='450b8b0';
+var RCG_BUILD='1dc1dd1';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -17160,18 +17160,21 @@ if(seen.has(key))continue;seen.add(key);ni.push(a,b,d);}
 var nv=np.length/3;
 return {pos:new Float32Array(np),idx:(nv>65535)?new Uint32Array(ni):new Uint16Array(ni),src:new Uint32Array(src)};
 }
-function _d3carWheelShadow(root,rec){
+function _d3carWheelShadow(root,rec){return _d3skinShadowJoin(root,rec,'wheelSkin','wheelShadow',_D3_SH_CLUSTER);}
+function _d3skinShadowJoin(root,rec,from,to,cell){
 var T=window.THREE,n=0,grp={},keys=[];
 root.traverse(function(o){
-if(!o.isSkinnedMesh||o.name!=='wheelSkin'||!o.castShadow||!o.skeleton||o.userData._shadowProxy)return;
+if(!o.isSkinnedMesh||o.name!==from||!o.castShadow||!o.skeleton||o.userData._shadowProxy)return;
 var g=o.geometry,pa=g.attributes.position,si=g.attributes.skinIndex,sw=g.attributes.skinWeight;if(!pa||!si||!sw)return;
 var ix=g.index?g.index.array:null,idx=ix;if(!idx){idx=new Uint32Array(pa.count);for(var q=0;q<pa.count;q++)idx[q]=q;}
 var e=o.matrixWorld.elements,s=Math.max(Math.hypot(e[0],e[1],e[2]),Math.hypot(e[4],e[5],e[6]),Math.hypot(e[8],e[9],e[10]))||1;
-var k=_d3shadowCluster(pa.array,idx,_D3_SH_CLUSTER/s),m=k.src.length,SI=new Uint16Array(m*4),SW=new Float32Array(m*4),j,c;
+var k=_d3shadowCluster(pa.array,idx,cell>0?cell/s:0),m=k.src.length,SI=new Uint16Array(m*4),SW=new Float32Array(m*4),j,c;
 for(j=0;j<m;j++)for(c=0;c<4;c++){SI[j*4+c]=si.array[k.src[j]*4+c];SW[j*4+c]=sw.array[k.src[j]*4+c];}
 var sd=(o.material&&o.material.side)||0;o.updateMatrix();
 var gk=(_D3._noWheelShadowJoin?o.uuid:sd+'|'+(o.parent?o.parent.uuid:'')+'|'+Array.prototype.join.call(o.matrix.elements,',')+'|'+Array.prototype.join.call(o.bindMatrix.elements,','));
-var G=grp[gk];if(!G){G=grp[gk]={o:o,sd:sd,parts:[],nv:0,ni:0,sph:null,bones:[],inv:[],bi:new Map()};keys.push(gk);}
+var G=grp[gk],sb0=o.skeleton.bones,cap=(typeof _d3skinCap==='function')?_d3skinCap():1e9,c9=0,gb=gk;
+while(G&&G.bones.length+sb0.filter(function(b){return !G.bi.has(b);}).length>cap){gk=gb+'#'+(++c9);G=grp[gk];}
+if(!G){G=grp[gk]={o:o,sd:sd,parts:[],nv:0,ni:0,sph:null,bones:[],inv:[],bi:new Map()};keys.push(gk);}
 var sb=o.skeleton.bones,sv=o.skeleton.boneInverses,map=[];
 for(j=0;j<sb.length;j++){var at=G.bi.get(sb[j]);if(at===undefined){at=G.bones.length;G.bi.set(sb[j],at);G.bones.push(sb[j]);G.inv.push(sv[j].clone());}map[j]=at;}
 for(j=0;j<SI.length;j++)SI[j]=map[SI[j]]|0;
@@ -17188,7 +17191,7 @@ bg.setAttribute('skinIndex',new T.Uint16BufferAttribute(SI,4));bg.setAttribute('
 bg.setIndex(new T.BufferAttribute(I,1));bg.boundingSphere=G.sph;
 var key='skin'+G.sd,pm=_D3SHPSIDE[key];
 if(!pm){pm=new T.MeshBasicMaterial({side:+G.sd,colorWrite:false,depthWrite:false});pm.skinning=true;pm.visible=false;_D3SHPMAT.push(pm);_D3SHPSIDE[key]=pm;}
-var sm=new T.SkinnedMesh(bg,pm);sm.name='wheelShadow';sm.castShadow=true;sm.receiveShadow=false;
+var sm=new T.SkinnedMesh(bg,pm);sm.name=to;sm.castShadow=true;sm.receiveShadow=false;
 sm.userData._shadowProxy=1;sm.userData._glbFitSkip=1;sm.userData._noB=1;sm.userData.noMerge=true;sm.userData.joined=G.parts.length;
 sm.position.copy(o.position);sm.quaternion.copy(o.quaternion);sm.scale.copy(o.scale);
 o.parent.add(sm);sm.updateMatrixWorld(true);sm.bind(G.parts.length>1?new T.Skeleton(G.bones,G.inv):o.skeleton,o.bindMatrix);n++;});
@@ -43847,7 +43850,10 @@ for(var i=0;i<o.children.length;i++)walk(o.children[i],bone,hook);
 })(m,null,false);
 if(items.length<2)return 0;
 var made=_d3skinParts(m,items,{name:'boatSkin',pad:1.3});
-try{(_D3._boatSkin=_D3._boatSkin||[]).push({parts:items.length,meshes:made.length});}catch(_r){}
+var rec={parts:items.length,meshes:made.length,shadow:0};
+try{if(made.length>1&&typeof _d3skinShadowJoin==='function'&&!_D3._noBoatSkinShadow&&!_D3._noShadowProxy&&!window.__noShadowProxy
+&&!(typeof _d3shadowWanted==='function'&&!_d3shadowWanted()))rec.shadow=_d3skinShadowJoin(m,rec,'boatSkin','boatSkinShadow',0);}catch(_sj){}
+try{(_D3._boatSkin=_D3._boatSkin||[]).push(rec);}catch(_r){}
 return made.length;
 }catch(_bs){return 0;}
 }
