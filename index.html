@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='de412ba';
+var RCG_BUILD='f4c0d2e';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -66209,7 +66209,7 @@ var cd=(typeof D3_CARS!=='undefined'&&D3_CARS[D.idx])||null;
 D.obj=cd?cd.build():new T.Mesh(new T.BoxGeometry(0.7,0.3,0.35),_mat(0xd23b3b));
 _d3drvLamps(D.obj);
 try{if(typeof _d3sfxDriveOffer==='function')_d3sfxDriveOffer();}catch(_so){}
-D.roll=0;D.pitch=0;D._pvf=null;D.shake=0;D._hitWas=false;D.stv=0;D.held=0;D.pad=null;D._brk=null;
+D.roll=0;D.pitch=0;D._pvf=null;D.shake=0;D.camK=1;D._hitWas=false;D.stv=0;D.held=0;D.pad=null;D._brk=null;
 var sc=(typeof _dsc==='function'?_dsc('car'):1)*((typeof _d3carScale==='function')?_d3carScale(D.idx):1)*((_D3.mapM?_D3.mapM.s:0.018)/(12/660));
 D.obj.scale.setScalar(sc);
 D.obj.traverse(function(o){if(o.isMesh){o.userData.noMerge=true;o.castShadow=true;}});
@@ -66447,7 +66447,7 @@ var M=D.obj.userData;if(M._rideY==null){var rm=_d3drvRideMeasure(D.obj);M._rideY
 D.obj.position.set(S.x,gy+M._rideY+M._rollZ*Math.abs(Math.sin(D.roll)),S.z);
 D.obj.rotation.set(D.roll,-S.h,D.pitch,'YXZ');
 var cam=_d3drvCamera();
-var back=2.6*wk,up=1.15*wk,lag=D._lag||(D._lag=new T.Vector3(S.x,gy+up,S.z));
+var ck=(D.camK>0)?D.camK:1,back=2.6*wk*ck,up=1.15*wk*ck,lag=D._lag||(D._lag=new T.Vector3(S.x,gy+up,S.z));
 var want=new T.Vector3(S.x-Math.cos(S.h)*back,gy+up,S.z-Math.sin(S.h)*back);
 lag.lerp(want,(dt>0)?_d3drvChaseK(dt,F.chase):1);
 try{if(typeof _d3drawnTri==='function'){var cg=_d3drawnTri(lag.x,lag.z);if(isFinite(cg)&&lag.y<cg+0.45*wk)lag.y=cg+0.45*wk;}}catch(_cg){}
@@ -66456,7 +66456,7 @@ if(D.shake>0){D.shake-=dt;var sa=Math.max(0,D.shake/F.shake)*F.shakeAmp*wk;cam.p
 var P=D.P||{},fov=_d3drvFov(S.spd||0,P.top||1,F.fov0,F.fov1);
 if(Math.abs(cam.fov-fov)>0.05){cam.fov=fov;cam.updateProjectionMatrix();}
 var beta=Math.atan2(S.vl||0,Math.abs(S.vf)||0.001),la=S.h+_d3drvLookMix(S.ang||0)*beta;
-cam.lookAt(S.x+Math.cos(la)*1.6*wk,gy+0.34*wk,S.z+Math.sin(la)*1.6*wk);
+cam.lookAt(S.x+Math.cos(la)*1.6*wk*ck,gy+0.34*wk*ck,S.z+Math.sin(la)*1.6*wk*ck);
 }
 function _d3drvStepFrame(dt,t){
 var D=_D3&&_D3.drive;if(!D||!D.on)return;
@@ -68216,7 +68216,7 @@ var _D3_STAT_KEYS=['fish','dive','helm','fly','ride','chest','me','walk','emote'
 'fests',
 'storms','dogsFound','merchantSales',
 'races','wins','podiums',
-'firesOut','arrests','livesSaved','chasesWon','rebuilt',
+'firesOut','arrests','livesSaved','chasesWon','rebuilt','emgYou',
 'projects',
 'gifts','giftFav',
 'letters',
@@ -68327,6 +68327,8 @@ count('emg_save','town','\ud83d\ude91','A life saved','An ambulance there in tim
 count('emg_save10','town','\u2764\ufe0f','Ten lives saved','Ten patients saved',1500,10,st('livesSaved'));
 count('emg_chase','town','\ud83d\ude94','Hot pursuit','Catch a getaway car - the robber ran for it and the police ran them down',400,1,st('chasesWon'));
 count('emg_rebuild','town','\ud83c\udfd7\ufe0f','From the ashes','Rebuild a building a fire burnt out',300,1,st('rebuilt'));
+count('emg_you','town','\ud83d\udea8','First responder','Answer a call yourself, at the wheel of the station\'s own engine, police car or ambulance',400,1,st('emgYou'));
+count('emg_you10','town','\ud83d\ude92','Blue lights','Ten calls answered at the wheel yourself',2000,10,st('emgYou'));
 count('proj_1','town','\ud83e\uddf1','A stone laid','Build one of the town\u2019s works',300,1,st('projects'));
 count('proj_all','town','\ud83c\udfd7\ufe0f','The town built','Build every one of the town\u2019s works',6000,function(){return (typeof _D3_PROJECTS!=='undefined')?_D3_PROJECTS.length:7;},st('projects'),true);
 count('gift_1','town','\ud83c\udf81','A kind thought','Give someone in town a gift',60,1,st('gifts'));
@@ -71062,7 +71064,7 @@ v.go={id:v.go?v.go.id:0,R:{edges:R.edges,k:0},goal:{e:dp.re,s:dp.rs},home:true,u
 function _d3emgEnd(c,grade){
 var S=_d3emgState(),K=_D3_EMG_BY[c.k];if(c.state==='done')return;c.state='done';c.grade=grade;c.tEnd=S.t;
 try{var P=_d3rpgLoad();P.emg=_d3emgRecord(P.emg,c.k,grade,c.tArr!=null?(c.tArr-c.t0):Infinity);
-if(grade.ok){_d3rpgEarn(P,grade.cash,grade.xp);P.stats=P.stats||{};P.stats[K.stat]=(P.stats[K.stat]||0)+1;if(grade.chase)P.stats.chasesWon=(P.stats.chasesWon||0)+1;}
+if(grade.ok){_d3rpgEarn(P,grade.cash,grade.xp);P.stats=P.stats||{};P.stats[K.stat]=(P.stats[K.stat]||0)+1;if(grade.chase)P.stats.chasesWon=(P.stats.chasesWon||0)+1;if(grade.you)P.stats.emgYou=(P.stats.emgYou||0)+1;}
 _D3._carBusy=true;try{_d3rpgSave(P);}finally{_D3._carBusy=false;}}catch(_p){}
 S.done.unshift({k:c.k,who:c.who,place:c.place,grade:grade.g,lbl:grade.lbl,ok:grade.ok,t:c.tArr!=null?Math.round(c.tArr-c.t0):null,cash:grade.cash});S.done.length=Math.min(S.done.length,12);
 try{if(typeof _d3emgSay==='function')_d3emgSay(c,'end');}catch(_s){}
@@ -71091,11 +71093,12 @@ var v=c.v,lost=!!v&&(D.traffic||[]).indexOf(v)<0,moved=c.rg!==D.roadGraph;
 var gGone=!!c.g&&(D.traffic||[]).indexOf(c.g)<0;
 if((c.state==='chase'||c.state==='arrest')&&(lost||moved||gGone)){
 if(c.g&&!gGone)_d3emgRelease(c.g);c.g=null;if(v&&!lost)_d3emgHome(v);_d3emgEnd(c,c.state==='arrest'?_d3emgCaughtGrade(c.grade0):(c.grade0||_d3emgGrade(c.k,Infinity)));continue;}
-if(c.state!=='wait'&&(lost||moved)){
+if(!c.you&&c.state!=='wait'&&(lost||moved)){
 if(v&&!lost){v.go=null;v.siren=false;if(v.mode==='scene')v.mode='road';v.roam=5;}
 if(c.state==='transport'){_d3emgEnd(c,c.grade0);continue;}c.v=null;c.state='wait';}
 if(moved){c.rg=D.roadGraph;var ni=(c.bid!=null&&typeof _d3emgBldIdx==='function')?_d3emgBldIdx(c.bid):c.i;
 if(ni<0){_d3emgDrop(c);continue;}c.i=ni;var at=_d3emgPlace(c.i);if(at)c.at=at;}
+if(c.you){try{_d3emgYouStep(c,dts,playing);}catch(_y){D._emgErr=String(_y&&_y.message||_y);}}
 if(c.state==='wait'){if(!c.tTry||S.t-c.tTry>2){c.tTry=S.t;_d3emgDispatch(c);}}
 if(c.state==='enroute'){v=c.v;
 if(v.go&&v.go.lost){var w=_d3emgWayFor(c,{v:{mode:'road',e:v.e,fdir:v.fdir,s:v.s},dp:D.depots[v.dep]});v.go.lost=0;if(w)v.go.R={edges:w.R.edges,k:0};}
@@ -71106,10 +71109,10 @@ if(c.state==='chase'||c.state==='arrest'){_d3emgChaseStep(c,dts,playing);continu
 if(c.state==='scene'){v=c.v;if(playing)v.tScene=(v.tScene||0)+dts;
 if(v.tScene>=K.scene){if(c.k==='medical'&&c.grade0.ok){c.state='transport';_d3emgHome(v,true);}else{_d3emgEnd(c,c.grade0);_d3emgHome(v);}}}
 if(c.state==='transport'&&c.v&&c.v.mode!=='road')_d3emgEnd(c,c.grade0);
-if((c.state==='wait'||c.state==='enroute')&&S.t-c.t0>K.late){
+if((c.state==='wait'||c.state==='enroute'||c.state==='you')&&S.t-c.t0>K.late){
 if(c.v&&c.v.go&&!c.v.go.home)_d3emgHome(c.v);_d3emgEnd(c,_d3emgGrade(c.k,Infinity));}
-if(c.k==='fire'&&playing){var dtc=dts;if(c.state==='scene')c.fire=Math.max(0,c.fire-dtc/K.scene);else if(c.state!=='done')c.fire=Math.min(1,c.fire+dtc/K.grow);
-if(c.fire>=1&&(c.state==='wait'||c.state==='enroute')){c.blaze=(c.blaze||0)+dtc;if(c.blaze>=K.spreadAt&&!c.spread){c.spread=1;try{c.spreadTo=_d3emgSpread(c);}catch(_sp){}}}}}
+if(c.k==='fire'&&playing){var dtc=dts;if(c.state==='scene'||c.state==='youScene')c.fire=Math.max(0,c.fire-dtc/K.scene);else if(c.state!=='done')c.fire=Math.min(1,c.fire+dtc/K.grow);
+if(c.fire>=1&&(c.state==='wait'||c.state==='enroute'||c.state==='you')){c.blaze=(c.blaze||0)+dtc;if(c.blaze>=K.spreadAt&&!c.spread){c.spread=1;try{c.spreadTo=_d3emgSpread(c);}catch(_sp){}}}}}
 var Tr=D.traffic||[];for(j=0;j<Tr.length;j++){var u=Tr[j];if(!u||!u.go||!u.go.home||u.mode!=='road')continue;
 if(u.go.lost){_d3emgHome(u,u.go.urgent);if(!u.go)continue;}
 if(u.go.over||_d3emgAt(u,u.go.goal,rw*0.6)){u.mode='in';u.t=0;u.siren=false;u.go=null;u.roam=15+Math.random()*20;}}
@@ -71123,15 +71126,19 @@ for(j=0;j<T.length;j++){var v=T[j];if(!v||v.dep!=null||v.go||!v.obj||!v.obj.posi
 var d=Math.hypot(v.obj.position.x-x,v.obj.position.z-z);if(d<bd){bd=d;best=j;}}
 return best;
 }
-function _d3emgFlee(c){
-var D=_D3,RG=D.roadGraph,E=RG&&RG.E,K=_D3_EMG_BY.robbery.flee,rw=D.roadW||0.3,road=c.at.road,Ed=E&&E[road.e],v=c.v;if(!Ed||!v||!v.obj)return false;
+function _d3emgFleeCar(c,p){
+var D=_D3,RG=D.roadGraph,E=RG&&RG.E,K=_D3_EMG_BY.robbery.flee,rw=D.roadW||0.3,road=c.at.road,Ed=E&&E[road.e];if(!Ed||!p)return false;
 var gi=_d3emgGetaway(D.traffic,E,road.x,road.z,_d3emgSkip);if(gi<0)return false;var g=D.traffic[gi];
-var fd=1;if(!Ed.ow){var a1=_d3pathAt(Ed.pts,Ed.cum,Math.min(Ed.len,road.s+1)),a0=_d3pathAt(Ed.pts,Ed.cum,Math.max(0,road.s-1)),p=v.obj.position;
+var fd=1;if(!Ed.ow){var a1=_d3pathAt(Ed.pts,Ed.cum,Math.min(Ed.len,road.s+1)),a0=_d3pathAt(Ed.pts,Ed.cum,Math.max(0,road.s-1));
 fd=(Math.hypot(a1.x-p.x,a1.z-p.z)>=Math.hypot(a0.x-p.x,a0.z-p.z))?1:-1;}
 var s0=Math.max(0,Math.min(Ed.len,road.s+fd*rw*K.head));
 g.flee0={spd:g.spd};g.e=road.e;g.fdir=fd;g.s=(fd>0)?s0:Math.max(0,Ed.len-s0);g.lcK=0;g.go={flee:c.id};g.spd=rw*K.spd*(D._emgSpd||1);
 c.g=g;c.gSpd=g.spd;c.fled=true;c.tFlee=c.tNow;c.state='chase';
 if(c.tArr==null){c.tArr=c.tNow;c.grade0=_d3emgGrade(c.k,c.tArr-c.t0);}
+return true;
+}
+function _d3emgFlee(c){
+var D=_D3,rw=D.roadW||0.3,v=c.v;if(!v||!v.obj||!_d3emgFleeCar(c,v.obj.position))return false;var g=c.g,road=c.at.road;
 if(v.mode==='scene')v.mode='road';v.siren=true;v.spd=rw*_D3_EMG_SPD.go*(D._emgSpd||1);v.go={id:c.id,chase:1,R:{edges:[],k:0},goal:{e:g.e,s:road.s}};v.tWay=-1;
 try{if(typeof _d3emgSay==='function')_d3emgSay(c,'flee');}catch(_s){}
 return true;
@@ -71215,6 +71222,85 @@ var cut=v.y+(top-v.y)/3;for(var j=0;j<all.length;j++)if(all[j].max.y>cut)bb.unio
 B.rotation.y=ry;B.updateMatrixWorld(true);if(bb.isEmpty())bb=_d3solidBB(B,T);return bb;
 }
 function _d3emgRuinFree(g){g.traverse(function(o){if(o.isMesh&&o.geometry)o.geometry.dispose();if(o.isSprite&&o.material)o.material.dispose();});}
+var _D3_EMG_YOU={reach:2.5,stop:0.5,stay:4,pay:1.25,xp:10,catchK:1.3};
+var _D3_EMG_ARROWS=['↑','↗','→','↘','↓','↙','←','↖'],_D3_EMG_YOU_ICON={fire:'🚒',robbery:'🚓',medical:'🚑'};
+function _d3emgYouGrade(g0,K){K=K||_D3_EMG_YOU;if(!g0||!g0.ok)return g0;
+return {g:g0.g,lbl:g0.lbl+' · at the wheel yourself',ok:true,cash:Math.round(g0.cash*K.pay),xp:g0.xp+K.xp,chase:!!g0.chase,you:true};}
+function _d3emgArrow(dx,dz,h){var fx=Math.cos(h),fz=Math.sin(h),a=Math.atan2(dx*(-fz)+dz*fx,dx*fx+dz*fz),k=Math.round(a/(Math.PI/4));return _D3_EMG_ARROWS[((k%8)+8)%8];}
+function _d3emgYouThere(px,pz,q,spd,rw,K){K=K||_D3_EMG_YOU;return Math.hypot(px-q.x,pz-q.z)<rw*K.reach&&Math.abs(spd||0)<K.stop;}
+function _d3emgYouStatus(c,S){var Dr=_D3.drive,q=(c.state==='youTrans')?c.hosp:(c.state==='youChase'&&c.g)?_d3emgPosOf(c.g):c.at.road,m=(Dr&&Dr.S&&q)?Math.round(Math.hypot(q.x-Dr.S.x,q.z-Dr.S.z)*(typeof WORLD_M!=='undefined'?WORLD_M:10)):0;
+return c.state==='you'?'You are on your way · '+m+' m':c.state==='youScene'?'You are on the scene':c.state==='youTrans'?'You are taking the patient to hospital · '+m+' m':
+c.state==='youChase'?'You are chasing the getaway car · '+_d3emgClock(S.t-(c.tFlee||S.t)):'You are making the arrest';}
+function _d3emgYouCall(){var S=_d3emgState(),j;for(j=0;j<S.calls.length;j++)if(S.calls[j].you&&S.calls[j].state!=='done')return S.calls[j];return null;}
+function _d3emgYouCan(c){
+if(!c||c.you||(c.state!=='wait'&&c.state!=='enroute')||_d3emgYouCall())return false;
+return _d3emgCrews(_D3_EMG_BY[c.k].svc).length>0;
+}
+var _D3_EMG_YOU_KIND={fire:'firetruck',robbery:'police',medical:'ambulance'};
+function _d3emgYouCar(src,k){
+var T=window.THREE,len=function(o){var p=o.position.clone(),r=o.rotation.clone(),sc=o.scale.clone();o.position.set(0,0,0);o.rotation.set(0,0,0);o.scale.set(1,1,1);o.updateMatrixWorld(true);
+var b=_d3solidBB(o,T),x=b.max.x-b.min.x;o.position.copy(p);o.rotation.copy(r);o.scale.copy(sc);o.updateMatrixWorld(true);return x;};
+var kind=_D3_EMG_YOU_KIND[k],L=len(src)/Math.max(1e-6,len(_d3vehicle(kind,0xf2f4f6,1))),o=_d3vehicle(kind,0xf2f4f6,(isFinite(L)&&L>0)?L:1);o.scale.copy(src.scale);
+var sb=(o.userData.sirenBar||[]).map(function(x){x.material=x.material.clone();return x;});
+o.userData.sirenBar=sb;o.userData.emgYou=1;o.traverse(function(x){x.userData.noMerge=true;x.castShadow=!!x.isMesh;});return o;
+}
+function _d3emgTake(id){
+var D=_D3,S=_d3emgState(),c=null,j;for(j=0;j<S.calls.length;j++)if(S.calls[j].id===id)c=S.calls[j];
+if(!_d3emgYouCan(c)||typeof drift3DDrive!=='function')return false;
+var crews=_d3emgCrews(_D3_EMG_BY[c.k].svc),cr=null,bd=Infinity;
+for(j=0;j<crews.length;j++){var dp=crews[j].dp,d=Math.hypot(dp.rx-c.at.x,dp.rz-c.at.z);if(c.v&&crews[j].v===c.v){cr=crews[j];break;}if(d<bd){bd=d;cr=crews[j];}}
+if(!cr||!cr.v.obj)return false;
+if(c.v){var v0=c.v,dp0=D.depots[v0.dep];if(v0.mode==='out'&&dp0){v0.mode='in';v0.t=Math.max(0,dp0.len-v0.t);v0.go=null;v0.siren=false;}else _d3emgHome(v0);c.v=null;}
+if(D.drive&&D.drive.on)_d3drvEnd();
+drift3DDrive();var Dr=D.drive;if(!Dr||!Dr.on)return false;
+var car=_d3emgYouCar(cr.v.obj,c.k),T=window.THREE,lenOf=function(o){o.updateMatrixWorld(true);var b=_d3solidBB(o,T);return Math.max(b.max.x-b.min.x,b.max.z-b.min.z);},l0=Dr.obj?lenOf(Dr.obj):0;
+if(Dr.obj&&Dr.obj.parent)Dr.obj.parent.remove(Dr.obj);
+D.scene.add(car);Dr.obj=car;Dr.name=_D3_EMG_BY[c.k].crew;
+var l1=lenOf(car);Dr.camK=(l0>0&&isFinite(l1))?Math.max(1,Math.min(2.5,l1/l0)):1;
+var Ed=D.roadGraph.E[cr.dp.re],a=_d3pathAt(Ed.pts,Ed.cum,Math.min(Ed.len,cr.dp.rs+0.5)),b=_d3pathAt(Ed.pts,Ed.cum,Math.max(0,cr.dp.rs-0.5)),h=Math.atan2(a.z-b.z,a.x-b.x);
+if(Math.cos(h)*(c.at.x-cr.dp.rx)+Math.sin(h)*(c.at.z-cr.dp.rz)<0&&!Ed.ow)h+=Math.PI;
+var Sv=Dr.S;Sv.x=cr.dp.rx;Sv.z=cr.dp.rz;Sv.h=h;Sv.vf=0;Sv.vl=0;Sv.w=0;Sv.spd=0;Dr._lag=null;_d3drvPlace(0);
+c.you=true;c.state='you';c.tGo=c.tNow;c.youObj=car;c.youDep=cr.v.dep;Dr.emg=c.id;D._emgFollow=0;
+try{if(typeof showToast==='function')showToast(_D3_EMG_BY[c.k].i+' You are at the wheel of the '+_D3_EMG_BY[c.k].crew.toLowerCase()+' — drive to '+_d3emgWhere(c)+'. The bar shows the way; stop by the pin.',5200);}catch(_t){}
+return true;
+}
+function _d3emgYouGuide(Dr,txt,q){var dx=q.x-Dr.S.x,dz=q.z-Dr.S.z,m=Math.round(Math.hypot(dx,dz)*(typeof WORLD_M!=='undefined'?WORLD_M:10));
+Dr.msg=txt+' · '+m+' m '+_d3emgArrow(dx,dz,Dr.S.h);Dr.msgT=0.4;}
+function _d3emgYouLeft(c){
+var g0=c.grade0;c.you=false;try{c.youObj&&c.youObj.userData.sirenBar.forEach(function(x){x.material.dispose();});}catch(_d){}c.youObj=null;
+if(c.state==='you'){c.state='wait';c.tTry=0;return;}
+if(c.state==='youChase'||c.state==='youArrest'){_d3emgRelease(c.g);c.g=null;_d3emgEnd(c,c.state==='youArrest'?_d3emgCaughtGrade(g0):_d3emgGrade(c.k,Infinity));return;}
+_d3emgEnd(c,g0||_d3emgGrade(c.k,Infinity));
+}
+function _d3emgYouFlee(c){var Dr=_D3.drive;if(!_d3emgFleeCar(c,{x:Dr.S.x,z:Dr.S.z}))return false;c.state='youChase';try{_d3emgSay(c,'flee');}catch(_s){}return true;}
+function _d3emgYouHosp(x,z){var Cr=_d3emgCrews('hospital'),b=null,j;for(j=0;j<Cr.length;j++){var dp=Cr[j].dp,d=Math.hypot(dp.rx-x,dp.rz-z);if(!b||d<b.d)b={d:d,x:dp.rx,z:dp.rz};}return b;}
+function _d3emgYouStep(c,dts,playing){
+var D=_D3,Dr=D.drive,S=_d3emgState(),K=_D3_EMG_BY[c.k],Y=_D3_EMG_YOU,rw=D.roadW||0.3;
+if(!Dr||!Dr.on||Dr.obj!==c.youObj){_d3emgYouLeft(c);return;}
+var sb=c.youObj.userData.sirenBar||[],fl=Math.floor(performance.now()*0.006)%2===0;for(var j=0;j<sb.length;j++)sb[j].material.emissiveIntensity=((j%2===0)===fl)?2.4:0.06;
+var X=Dr.S.x,Z=Dr.S.z,sp=Dr.S.spd||Math.hypot(Dr.S.vf||0,Dr.S.vl||0),q=c.at.road,where=_d3emgWhere(c);
+if(c.state==='you'){_d3emgYouGuide(Dr,K.i+' To '+where,q);
+if(c.willFlee&&!c.fled&&Math.hypot(X-q.x,Z-q.z)<rw*K.flee.near){if(_d3emgYouFlee(c))return;c.willFlee=false;}
+if(_d3emgYouThere(X,Z,q,sp,rw,Y)){c.state='youScene';c.tArr=S.t;c.tScene=0;c.grade0=_d3emgGrade(c.k,c.tArr-c.t0);try{_d3emgSay(c,'arrive');}catch(_s){}}
+return;}
+if(c.state==='youScene'){var near=Math.hypot(X-q.x,Z-q.z)<rw*Y.reach*Y.stay;
+Dr.msg=K.i+' On the scene'+(near?' · '+Math.max(0,Math.ceil(K.scene-c.tScene))+' s':' · back to the pin');Dr.msgT=0.4;
+if(playing&&near)c.tScene+=dts;
+if(c.tScene>=K.scene){
+if(c.k==='medical'&&c.grade0.ok){var hp=_d3emgYouHosp(X,Z);if(hp){c.state='youTrans';c.hosp=hp;try{if(typeof showToast==='function')showToast('🚑 The patient is aboard — drive them to the hospital.',4200);}catch(_t){}return;}}
+_d3emgEnd(c,_d3emgYouGrade(c.grade0));}
+return;}
+if(c.state==='youTrans'){_d3emgYouGuide(Dr,'🚑 To the hospital',c.hosp);
+if(_d3emgYouThere(X,Z,c.hosp,sp,rw,Y))_d3emgEnd(c,_d3emgYouGrade(c.grade0));
+return;}
+if(c.state==='youChase'){var g=c.g;if(!g||(D.traffic||[]).indexOf(g)<0){c.g=null;_d3emgEnd(c,c.grade0);return;}
+var pg=_d3emgPosOf(g),dg=Math.hypot(X-pg.x,Z-pg.z);_d3emgYouGuide(Dr,'🚓 Catch the getaway car',pg);
+if(dg<rw*K.flee.catchW*Y.catchK&&S.t-c.tFlee>=K.flee.min){g.spd=0;c.state='youArrest';c.tCatch=S.t;c.tScene=0;c.chased=true;try{_d3emgSay(c,'caught');}catch(_s){}return;}
+if(S.t-c.tFlee>K.flee.chase){_d3emgRelease(g);c.g=null;_d3emgEnd(c,_d3emgGrade(c.k,Infinity));}
+return;}
+if(c.state==='youArrest'){Dr.msg='🚓 Making the arrest';Dr.msgT=0.4;if(playing)c.tScene+=dts;
+if(c.tScene>=K.scene){_d3emgRelease(c.g);c.g=null;_d3emgEnd(c,_d3emgYouGrade(_d3emgCaughtGrade(c.grade0)));}}
+}
 var _D3_EMG_DRESS={pinPx:44,flamePx:26,flames:16,smoke:10,water:22};
 function _d3emgTex(){
 var D=_D3,T=window.THREE;if(D._emgTex)return D._emgTex;var mk=function(w,h,f){var c=document.createElement('canvas');c.width=w;c.height=h;f(c.getContext('2d'),w,h);var t=new T.CanvasTexture(c);try{t.encoding=T.sRGBEncoding;}catch(_e){}return t;};
@@ -71263,7 +71349,7 @@ var F=(c.k==='fire')?Math.max(0,c.fire)*fade:0,h=0,sz=0;
 if(c.k==='fire'){h=Math.max(0.3,Math.min(a.half*1.1,(a.top-a.y)*0.75));h*=Math.max(1,_D3_EMG_DRESS.flamePx/Math.max(1e-6,h*px));sz=F>0.01?(0.45+0.55*Math.min(1,F)):0;}
 var pul=(c.state==='scene'||c.state==='done')?1:(1+0.12*Math.sin(t*6));pin.scale.setScalar(_D3_EMG_DRESS.pinPx*pul/px);
 pin.position.set(a.x,a.top+h*sz+(_D3_EMG_DRESS.pinPx*0.9)/px,a.z);pin.material.opacity=fade;pin.visible=fade>0.02;
-if(c.g&&c.g.obj&&(c.state==='chase'||c.state==='arrest')){var gp=c.g.obj.position,gx=_d3emgPxAt(gp.x,gp.y,gp.z);
+if(c.g&&c.g.obj&&(c.state==='chase'||c.state==='arrest'||c.state==='youChase'||c.state==='youArrest')){var gp=c.g.obj.position,gx=_d3emgPxAt(gp.x,gp.y,gp.z);
 pin.scale.setScalar(_D3_EMG_DRESS.pinPx*pul/gx);pin.position.set(gp.x,gp.y+0.25+(_D3_EMG_DRESS.pinPx*0.9)/gx,gp.z);}
 if(c.k==='fire'){var fl=R.userData.fl,fo=Math.min(1,0.65+F);
 for(var q=0;q<fl.length;q++){var f=fl[q],ph=f.userData.ph,fk=0.75+0.25*Math.sin(t*9+ph)+0.12*Math.sin(t*23+ph*2.1);
@@ -71272,12 +71358,12 @@ var gl=R.userData.gl;gl.position.set(a.x,a.top+h*0.25*sz,a.z);gl.scale.setScalar
 var sm=R.userData.sm,sh=c.state==='done'?0.35:Math.max(0.3,F);
 for(q=0;q<sm.length;q++){var s=sm[q];s.userData.t=(s.userData.t+(dt||0)*0.12)%1;var u=s.userData.t;
 s.position.set(a.x+Math.sin(u*5+q)*h*0.25,a.top+h*0.5+u*h*4,a.z+Math.cos(u*4+q)*h*0.25);s.scale.setScalar(h*(0.6+u*2.2));s.material.opacity=0.85*sh*(1-u)*fade;s.visible=fade>0.02&&sh>0.02;}
-var wa=R.userData.wa,v=c.v,spray=(c.state==='scene'&&v&&v.obj);
-for(q=0;q<wa.length;q++){var w=wa[q];if(!spray){w.visible=false;continue;}w.userData.t=(w.userData.t+(dt||0)*1.4)%1;var p=w.userData.t,vp=v.obj.position;
+var wa=R.userData.wa,v=c.v,ho=(c.state==='youScene'&&c.youObj)?c.youObj:(c.state==='scene'&&v&&v.obj)?v.obj:null,spray=!!ho;
+for(q=0;q<wa.length;q++){var w=wa[q];if(!spray){w.visible=false;continue;}w.userData.t=(w.userData.t+(dt||0)*1.4)%1;var p=w.userData.t,vp=ho.position;
 w.position.set(vp.x+(a.x-vp.x)*p,vp.y+0.15+(a.top-vp.y)*p+Math.sin(p*Math.PI)*h*0.8,vp.z+(a.z-vp.z)*p);w.scale.setScalar(Math.max(0.05,h*0.16)*(0.7+0.6*p));w.material.opacity=0.95;w.visible=true;}}
 else if(c.k==='robbery'){var al=R.userData.al,on=c.state!=='done'&&!c.fled,fl2=Math.floor(t*4)%2;
 for(var r=0;r<2;r++){var A=al[r];A.position.set(a.x+(a.road.x-a.x)*0.3+(r?0.12:-0.12),a.top*0.5+a.y*0.5,a.z+(a.road.z-a.z)*0.3);A.scale.setScalar(Math.max(0.3,a.half*0.9));A.visible=on&&(fl2===r);A.material.opacity=0.9*fade;}}
-else if(c.k==='medical'&&R.userData.pt){R.userData.pt.visible=(c.state==='wait'||c.state==='enroute'||c.state==='scene');}}
+else if(c.k==='medical'&&R.userData.pt){R.userData.pt.visible=(c.state==='wait'||c.state==='enroute'||c.state==='scene'||c.state==='you'||c.state==='youScene');}}
 for(j=G.children.length-1;j>=0;j--){var ch=G.children[j],id=+String(ch.name).split('-').pop();if(have[id])continue;G.remove(ch);
 ch.traverse(function(o){if(o.isSprite&&o.material)o.material.dispose();});}
 try{if(typeof _d3emgRuinDress==='function')_d3emgRuinDress(now);}catch(_r){D._emgErr='ruin: '+((_r&&_r.message)||_r);}
@@ -71295,9 +71381,9 @@ if(what==='call'){msg=K.i+' '+K.lbl+' at '+_d3emgWhere(c)+'. ';
 if(c.state==='enroute')msg+=_d3emgCrewName(c)+' on its way, '+_d3emgClock(c.eta)+' out.';
 else if(!c.nCrews)msg+='No '+_d3emgSvcName(K.svc)+' on this map — build one (Town › Civic & Services).';
 else msg+='Every '+_d3emgCrewName(c).toLowerCase()+' is busy — one will go when it can.';}
-else if(what==='arrive'){var g=c.grade0;msg=_d3emgCrewName(c)+' on the scene in '+_d3emgClock(c.tArr-c.t0)+(g?(' — '+g.lbl):'')+'.';}
+else if(what==='arrive'){var g=c.grade0;msg=(c.you?'You are':_d3emgCrewName(c))+' on the scene in '+_d3emgClock(c.tArr-c.t0)+(g?(' — '+g.lbl):'')+'.';}
 else if(what==='end'){var G=c.grade;msg=K.i+' '+(G&&G.ok?K.ok:K.bad)+' at '+_d3emgWhere(c)+(G&&G.chase?' after a chase':'')+(G&&G.ok?(' — +$'+G.cash.toLocaleString()+', +'+G.xp+' xp'):'')+'.';}
-else if(what==='flee')msg='🚓 The robber is making a getaway from '+_d3emgWhere(c)+' — the police are in pursuit!';
+else if(what==='flee')msg='🚓 The robber is making a getaway from '+_d3emgWhere(c)+(c.you?' — after them!':' — the police are in pursuit!');
 else if(what==='caught')msg='🚓 Got them! The getaway car is stopped after a chase of '+_d3emgClock((c.tCatch||0)-(c.tFlee||0))+'.';
 else if(what==='spread')msg='🔥 The fire has spread to '+_d3emgWhere(c)+'! '+(c.state==='enroute'?('A second engine is on its way, '+_d3emgClock(c.eta)+' out.'):'Every engine is busy.');
 else if(what==='ruin')msg='🏚️ '+_d3emgWhere(c).replace(/^./,function(ch){return ch.toUpperCase();})+' burnt out. Rebuild it from the Journal’s Calls tab.';
@@ -71308,6 +71394,7 @@ function _d3emgStatus(c){
 var S=_d3emgState(),K=_D3_EMG_BY[c.k];
 if(c.state==='enroute'){var left=Math.max(0,(c.eta||0)-(S.t-(c.tGo||c.t0)));return K.crew+' on its way · '+_d3emgClock(left);}
 if(c.state==='scene')return K.crew+' on the scene';
+if(c.you&&c.state!=='done')return _d3emgYouStatus(c,S);
 if(c.state==='transport')return 'Taking the patient to hospital';
 if(c.state==='chase')return 'In pursuit of the getaway car · '+_d3emgClock(S.t-(c.tFlee||S.t));
 if(c.state==='arrest')return 'Making the arrest';
@@ -71320,11 +71407,13 @@ if(!open.length){if(el)el.style.display='none';if(D._emgFollow)D._emgFollow=0;re
 var now=performance.now();if(el&&D._emgCardT&&now-D._emgCardT<250)return;D._emgCardT=now;
 if(!el){el=document.createElement('div');el.id='d3EmgCard';el.style.cssText='position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top, 0px) + 54px);z-index:60;'+
 'background:rgba(20,22,28,0.88);color:#fff;border-radius:12px;padding:6px 10px;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,0.35);max-width:min(92vw,460px);pointer-events:auto';
-el.addEventListener('click',function(ev){var b=ev.target.closest&&ev.target.closest('[data-emg-follow]');if(!b)return;ev.stopPropagation();var id=+b.getAttribute('data-emg-follow');D._emgFollow=(D._emgFollow===id)?0:id;D._emgCardT=0;});
+el.addEventListener('click',function(ev){var tk=ev.target.closest&&ev.target.closest('[data-emg-take]');if(tk){ev.stopPropagation();_d3emgTake(+tk.getAttribute('data-emg-take'));D._emgCardT=0;return;}
+var b=ev.target.closest&&ev.target.closest('[data-emg-follow]');if(!b)return;ev.stopPropagation();var id=+b.getAttribute('data-emg-follow');D._emgFollow=(D._emgFollow===id)?0:id;D._emgCardT=0;});
 document.body.appendChild(el);}
 var h=open.map(function(c){var K=_D3_EMG_BY[c.k],f=D._emgFollow===c.id;return '<div class="emg-row" data-emg="'+c.id+'" style="display:flex;gap:8px;align-items:center;padding:3px 0">'+
 '<span style="font-size:18px">'+K.i+'</span><span style="flex:1;min-width:0"><b>'+K.lbl+'</b> · '+_d3emgEsc(_d3emgWhere(c))+'<br><span style="font-weight:500;opacity:0.85">'+_d3emgStatus(c)+'</span></span>'+
-(c.state!=='done'?'<button data-emg-follow="'+c.id+'" style="border:0;border-radius:8px;padding:5px 9px;font:600 12px system-ui;background:'+(f?'#f5c542':'#3b82f6')+';color:'+(f?'#222':'#fff')+'">'+(f?'Following':'Follow')+'</button>':'')+'</div>';}).join('');
+(_d3emgYouCan(c)?'<button data-emg-take="'+c.id+'" style="border:0;border-radius:8px;padding:5px 9px;font:600 12px system-ui;background:#dc2626;color:#fff">'+_D3_EMG_YOU_ICON[c.k]+' Drive</button>':'')+
+(c.state!=='done'&&!c.you?'<button data-emg-follow="'+c.id+'" style="border:0;border-radius:8px;padding:5px 9px;font:600 12px system-ui;background:'+(f?'#f5c542':'#3b82f6')+';color:'+(f?'#222':'#fff')+'">'+(f?'Following':'Follow')+'</button>':'')+'</div>';}).join('');
 if(el.innerHTML!==h)el.innerHTML=h;el.style.display='';
 _d3emgFollowStep(S);
 }
@@ -71347,7 +71436,7 @@ for(j=0;j<open.length;j++){var c=open[j],K=_D3_EMG_BY[c.k];h+=_d3rpgRow(K.i+' <b
 h+=_d3rpgHead('Your record');
 h+=_d3rpgRow('Calls <b>'+R.n+'</b> · answered in time <b>'+R.ok+'</b> · lost <b>'+R.lost+'</b>'+_d3rpgSub('Average answer '+(R.nT?_d3emgClock(_d3emgAvg(R)):'—')+' · fastest '+(R.best?_d3emgClock(R.best):'—')+' · fast responses '+R.great));
 for(j=0;j<_D3_EMG.kinds.length;j++){var Kk=_D3_EMG.kinds[j],b=R.by[Kk.k]||{ok:0,lost:0};h+=_d3rpgRow(Kk.i+' '+Kk.lbl+_d3rpgSub(b.ok+' answered · '+b.lost+' lost'));}
-var st=(P&&P.stats)||{};if(st.chasesWon||st.rebuilt)h+=_d3rpgRow('🚓 Getaways caught <b>'+(st.chasesWon||0)+'</b> · 🏗️ buildings rebuilt <b>'+(st.rebuilt||0)+'</b>');
+var st=(P&&P.stats)||{};if(st.chasesWon||st.rebuilt||st.emgYou)h+=_d3rpgRow('🚓 Getaways caught <b>'+(st.chasesWon||0)+'</b> · 🏗️ buildings rebuilt <b>'+(st.rebuilt||0)+'</b> · 🚨 answered at the wheel <b>'+(st.emgYou||0)+'</b>');
 if(S.done&&S.done.length){h+=_d3rpgHead('This visit');for(j=0;j<Math.min(6,S.done.length);j++){var d=S.done[j],Kd=_D3_EMG_BY[d.k];
 h+=_d3rpgRow(Kd.i+' '+(d.ok?Kd.ok:Kd.bad)+_d3rpgSub(_d3emgEsc((d.who||'')+(d.place?(' — '+d.place):''))+(d.t!=null?(' · '+_d3emgClock(d.t)):'')+(d.ok?(' · +$'+d.cash):'')),!d.ok);}}
 var RU=_d3emgRuins(),rid=Object.keys(RU);
