@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='f4c0d2e';
+var RCG_BUILD='d8a811d';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -55119,7 +55119,7 @@ function _d3treeV3(a){return 'vec3('+a.map(function(v){return (+v).toFixed(4);})
 function _d3treeLookGlsl(K){K=K||_D3_TREELOOK;var f=function(v){return (+v).toFixed(4);},gL=_d3treeLum(K.green);
 return {vsPre:'varying vec3 vTreeI;\n',
 vsBody:'#ifdef USE_INSTANCING\n  vTreeI=(modelMatrix*vec4(instanceMatrix[3].xyz,1.0)).xyz;\n#else\n  vTreeI=(modelMatrix*vec4(0.0,0.0,0.0,1.0)).xyz;\n#endif\n',
-fsPre:'uniform float uTreeReal;\nuniform float uTreeSnow;\nuniform float uTreeSnowH;\nvarying vec3 vTreeI;\nfloat tsTwig=1.0;\n'+
+fsPre:'uniform float uTreeReal;\nuniform float uTreeSnow;\nuniform float uTreeSnowH;\nvarying vec3 vTreeI;\n'+
 'float trH(vec2 p){ return fract(sin(p.x*127.1+p.y*311.7)*43758.5453); }\n'+
 'float trN(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(trH(i),trH(i+vec2(1.0,0.0)),f.x),mix(trH(i+vec2(0.0,1.0)),trH(i+vec2(1.0,1.0)),f.x),f.y); }\n',
 fsBody:'  if(uTreeReal>0.5){ vec3 tc=diffuseColor.rgb; float tg=max(tc.g,1e-4);\n'+
@@ -55132,7 +55132,7 @@ fsSnow:_d3treeSnowGlsl()};}
 function _d3treeSnowGlsl(S){S=S||_D3_TREESNOW;var f=function(v){return (+v).toFixed(4);};
 return '  if(uTreeSnow>0.001){ vec3 tsUp=normalize((viewMatrix*vec4(0.0,1.0,0.0,0.0)).xyz);\n'+
 '    float tsU=dot(normal,tsUp)+(trN(vLeafP.xz*'+f(S.ns)+'+vec2(vLeafP.y*0.7,0.0))-0.5)*'+f(S.n)+'+'+f(S.a0)+'+clamp(vTreeI.y/max(uTreeSnowH,1.0),0.0,1.0)*'+f(S.alt)+';\n'+
-'    float tsK=smoothstep('+f(S.s0)+','+f(S.s1)+',tsU)*uTreeSnow*tsTwig; diffuseColor.rgb=mix(diffuseColor.rgb,'+_d3treeV3(S.col)+',tsK); }\n';}
+'    float tsK=smoothstep('+f(S.s0)+','+f(S.s1)+',tsU)*uTreeSnow; diffuseColor.rgb=mix(diffuseColor.rgb,'+_d3treeV3(S.col)+',tsK); }\n';}
 function _d3treeLookSh(sh){
 if(!sh||sh.uniforms.uTreeReal)return false;var G=_d3treeLookGlsl();sh.uniforms.uTreeReal=_d3treeLookU().uTreeReal;
 sh.vertexShader=G.vsPre+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody);
@@ -55236,7 +55236,7 @@ var t=new T.CanvasTexture(c);t.anisotropy=1;return (_D3_BARE_TEX=t);
 var _D3_BARE_NEAR={cap:[0,1600,4000],devCap:[1200,2500,4000],lod0:[0,120,300],devL0:[120,200,300],px:18,ts:0.24,rise:0.36,bush:0.74,
 snow:[0.86,0.89,0.94],bark:0.85,twig:0.95,frost:0.85};
 var _D3_BARE_U=null;
-function _d3bareU(){if(!_D3_BARE_U)_D3_BARE_U={uBareR:{value:new window.THREE.Vector4(0,0,0,0)}};return _D3_BARE_U;}
+function _d3bareU(){if(!_D3_BARE_U)_D3_BARE_U={uBareR:{value:new window.THREE.Vector4(0,0,0,0)},uBareStub:{value:0}};return _D3_BARE_U;}
 function _d3bareReach(o){
 if(!(o.Hr>0)||!(o.hPx>0)||!(o.r0>0)||!(o.minPx>0))return 0;
 if(!o.persp)return (o.wh>0&&o.r0*o.hPx/o.wh>=o.minPx)?o.Hr:0;
@@ -55318,7 +55318,9 @@ return cut.n;
 }
 function _d3barePick(cs,cam){
 var D=_D3,U=_d3bareU().uBareR.value,G=D._bareG,on=false,H=D._canopyHi;
-try{on=!D._noBareTree&&!_d3leafOff()&&_d3leafU().uLeafC.value<1+_D3_LEAFFALL.T-1e-3&&!!(H&&H.on&&H.r>0)&&!!cs&&cs.length>0&&_d3treeShape()!=='pines';}catch(_o){on=false;}
+var bare=false;try{bare=!D._noBareTree&&!_d3leafOff()&&_d3leafU().uLeafC.value<1+_D3_LEAFFALL.T-1e-3&&!!cs&&cs.length>0&&_d3treeShape()!=='pines';}catch(_o){bare=false;}
+try{if(typeof _d3bareFarPick==='function')_d3bareFarPick(cs,bare);}catch(_bf){D._bareFarErr=(_bf&&_bf.message)||String(_bf);}
+on=bare&&!D._noBareNear&&!!(H&&H.on&&H.r>0);
 var rb=0;if(on){var ren=D.ren,ps=!!(cam&&cam.isPerspectiveCamera),up=0;
 if(ps){var ce=cam.matrixWorld.elements,gh=NaN;try{gh=_d3drawnH(ce[12],ce[14]);}catch(_g){}if(isFinite(gh))up=ce[13]-gh;}
 rb=_d3bareReach({persp:ps,fov:cam&&cam.fov,hPx:(ren&&ren.domElement)?ren.domElement.height:0,wh:(cam&&cam.isOrthographicCamera)?(cam.top-cam.bottom)/(cam.zoom||1):0,
@@ -55334,10 +55336,117 @@ return (D._bare={on:true,n:G.userData.n,inside:G.userData.inside,r:+(G.userData.
 }
 function _d3bareTrunkHook(mat){
 if(!mat||mat.userData._bareTrunk)return;mat.userData._bareTrunk=1;var ob=mat.onBeforeCompile,ck=mat.customProgramCacheKey;
-mat.onBeforeCompile=function(sh,r){if(ob)ob.call(this,sh,r);sh.uniforms.uBareR=_d3bareU().uBareR;
+mat.onBeforeCompile=function(sh,r){if(ob)ob.call(this,sh,r);sh.uniforms.uBareR=_d3bareU().uBareR;sh.uniforms.uBareStub=_d3bareU().uBareStub;
 sh.vertexShader='varying vec2 vBareT;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n  vBareT=(modelMatrix*vec4(transformed,1.0)).xz;');
-sh.fragmentShader='uniform vec4 uBareR;\nvarying vec2 vBareT;\n'+sh.fragmentShader.replace('void main() {','void main() {\n  if(uBareR.w>0.5){ vec2 bq=vBareT-uBareR.xy; if(dot(bq,bq)<uBareR.z*uBareR.z) discard; }');};
+sh.fragmentShader='uniform vec4 uBareR;\nuniform float uBareStub;\nvarying vec2 vBareT;\n'+sh.fragmentShader.replace('void main() {','void main() {\n  if(uBareStub>0.5) discard;\n  if(uBareR.w>0.5){ vec2 bq=vBareT-uBareR.xy; if(dot(bq,bq)<uBareR.z*uBareR.z) discard; }');};
 mat.customProgramCacheKey=function(){return (ck?ck.call(this):'')+'bare';};mat.needsUpdate=true;
+}
+var _D3_BARE_FAR={cols:4,rows:2,cw:256,ch:512,pad:6,shade:[0.66,0.76,0.86,0.94],twig:1.32,snow:[0.86,0.89,0.94],snowK:0.45,rime:0.12,tilt:0.6,a0:0.2};
+function _d3bareFarProj(S,K,cs){
+K=K||_D3_BARE;var segs=[],tips=[],xh=0,y1=0,R=_d3bareRnd(7),cl=K.lod[0].card,b,k;
+for(var bi=0;bi<S.length;bi++){b=S[bi];
+for(k=0;k<b.pts.length-1;k++){var P=b.pts[k],Q=b.pts[k+1];segs.push({x0:P[0],y0:P[1],x1:Q[0],y1:Q[1],w0:2*b.rad[k],w1:2*b.rad[k+1],lvl:b.lvl});
+xh=Math.max(xh,Math.abs(P[0])+b.rad[k],Math.abs(Q[0])+b.rad[k+1]);y1=Math.max(y1,P[1],Q[1]);}}
+for(bi=0;bi<S.length;bi++){b=S[bi];if(b.lvl!==cl)continue;
+var tip=b.pts[b.pts.length-1],pr=b.pts[b.pts.length-2],dx=tip[0]-pr[0],dy=tip[1]-pr[1],l=Math.hypot(dx,dy)||1,sz=(K.card.size[0]+(K.card.size[1]-K.card.size[0])*R())*(cs||1);R();
+tips.push({x:tip[0],y:tip[1],dx:dx/l,dy:dy/l,sz:sz});xh=Math.max(xh,Math.abs(tip[0])+sz);y1=Math.max(y1,tip[1]+sz);}
+return {segs:segs,tips:tips,xh:xh,y1:y1};
+}
+function _d3bareFarCell(pr,v,F){F=F||_D3_BARE_FAR;var sc=Math.min((F.cw/2-F.pad)/Math.max(1e-3,pr.xh),(F.ch-2*F.pad)/Math.max(1e-3,pr.y1));
+return [F.cw/2/sc,-F.pad/sc,(F.ch-F.pad)/sc,v,sc];}
+var _D3_BARE_FAR_ATLAS=null;
+function _d3bareFarAtlas(){
+if(_D3_BARE_FAR_ATLAS)return _D3_BARE_FAR_ATLAS;var T=window.THREE,F=_D3_BARE_FAR,K=_D3_BARE,V=K.variants,W=F.cols*F.cw,H=F.rows*F.ch,cv=[],i,v;
+for(i=0;i<4;i++){var c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');g.fillStyle='#000';g.fillRect(0,0,W,H);g.lineCap='round';cv.push(g);}
+var A=cv[0],Sh=cv[1],Tw=cv[2],Sn=cv[3],img=_d3bareTwigTex().image,cells=[];
+for(v=0;v<V.length&&v<F.cols*F.rows;v++){var shrub=V[v][0]==='shrub',pr=_d3bareFarProj(_d3bareSkel(V[v][0],V[v][1]),K,shrub?K.card.shrub:1),C=_d3bareFarCell(pr,v,F),sc=C[4];cells.push(C.slice(0,4));
+var ox=(v%F.cols)*F.cw+F.cw/2,oy=Math.floor(v/F.cols)*F.ch+F.ch-F.pad,X=function(x){return ox+x*sc;},Y=function(y){return oy-y*sc;};
+pr.tips.forEach(function(t){var w=t.sz*K.card.wide*sc,h=t.sz*sc,bx=X(t.x-t.dx*t.sz*K.card.back),by=Y(t.y-t.dy*t.sz*K.card.back),a=Math.atan2(t.dx,t.dy);
+[A,Sh,Tw,Sn].forEach(function(g,j){g.save();g.globalAlpha=(j===3)?F.rime:1;g.translate(bx,by);g.rotate(a);g.drawImage(img,-w/2,-h,w,h);g.restore();});});
+for(var lv=3;lv>=0;lv--)pr.segs.forEach(function(s){if(s.lvl!==lv)return;var w=(s.w0+s.w1)/2*sc,a=Math.min(1,w),lw=Math.max(1,w),x0=X(s.x0),y0=Y(s.y0),x1=X(s.x1),y1=Y(s.y1);
+var sh=Math.round(255*F.shade[lv]);
+[[A,'#fff'],[Sh,'rgb('+sh+','+sh+','+sh+')'],[Tw,'#000']].forEach(function(p){var g=p[0];g.globalAlpha=a;g.strokeStyle=p[1];g.lineWidth=lw;g.beginPath();g.moveTo(x0,y0);g.lineTo(x1,y1);g.stroke();});
+if(w>=1.5){var dx=x1-x0,dy=y1-y0,l=Math.hypot(dx,dy)||1,fl=Math.pow(Math.abs(dx)/l,2),nx=dy/l,ny=-dx/l;if(ny>0){nx=-nx;ny=-ny;}
+var off=w*0.32;[[Sn,1],[A,1]].forEach(function(p){var g=p[0];g.globalAlpha=fl;g.strokeStyle='#fff';g.lineWidth=Math.max(1,w*0.42);g.beginPath();g.moveTo(x0+nx*off,y0+ny*off);g.lineTo(x1+nx*off,y1+ny*off);g.stroke();});}});
+[A,Sh,Tw,Sn].forEach(function(g){g.globalAlpha=1;});}
+var dA=A.getImageData(0,0,W,H),dS=Sh.getImageData(0,0,W,H).data,dT=Tw.getImageData(0,0,W,H).data,dN=Sn.getImageData(0,0,W,H).data,d=dA.data;
+for(i=0;i<d.length;i+=4){var al=d[i];if(al<2){d[i]=220;d[i+1]=0;d[i+2]=128;d[i+3]=0;continue;}var k2=255/al;
+d[i]=Math.min(255,Math.round(dS[i]*k2));d[i+1]=Math.min(255,Math.round(dN[i]*k2));d[i+2]=Math.min(255,Math.round(dT[i]*k2));d[i+3]=al;}
+A.putImageData(dA,0,0);
+var tex=new T.CanvasTexture(A.canvas);tex.premultiplyAlpha=false;tex.anisotropy=2;tex.generateMipmaps=true;tex.minFilter=T.LinearMipmapLinearFilter;tex.magFilter=T.LinearFilter;
+return (_D3_BARE_FAR_ATLAS={tex:tex,cells:cells});
+}
+function _d3bareFarList(a,u0,u1,e,ph,mix,pn){
+var P=[],Vr=[],j;
+for(j=0;j<u1;j++){var q=j*16,fr=Math.max(Math.hypot(a[q],a[q+1],a[q+2]),Math.hypot(a[q+8],a[q+9],a[q+10]));if(!(fr>1e-6))continue;
+if(mix&&ph&&(ph[j*2+1]&1))continue;
+var lx=a[q+12],ly=a[q+13],lz=a[q+14],wx=e?e[0]*lx+e[4]*ly+e[8]*lz+e[12]:lx,wy=e?e[1]*lx+e[5]*ly+e[9]*lz+e[13]:ly,wz=e?e[2]*lx+e[6]*ly+e[10]*lz+e[14]:lz;
+var rank=j<u0?0:1,R=_d3bareRoot(wy,fr,rank),v=_d3bareVariant(wx,wz,rank===1),h0=Math.abs(Math.sin(wx*91.7+wz*47.3)*1e4)%1,h1=Math.abs(Math.sin(wx*13.1+wz*71.9)*1e4)%1;
+P.push(wx,R.gy,wz,R.s);Vr.push(v+(h0<0.5?8:0)+16*(pn>0?Math.floor(h1*pn)%pn:0));}
+return {pos:new Float32Array(P),vr:new Float32Array(Vr),n:Vr.length};
+}
+function _d3bareFarVs(){var F=_D3_BARE_FAR,f=function(v){return (+v).toFixed(4);};
+return {pre:'attribute vec4 bpos;\nattribute float bvar;\nuniform vec4 uBV[8];\nuniform vec3 uBPal[8];\nvarying vec2 vBUv;\nvarying vec2 vBBase;\nvarying vec3 vBCol;\n',
+body:'  float bfP=floor(bvar/16.0),bfR=bvar-bfP*16.0,bfM=step(7.5,bfR); vec4 bfV=uBV[int(bfR-bfM*8.0+0.5)];\n'+
+'  vec3 bfC=bpos.xyz,bfE=cameraPosition-bfC; vec3 bfF=normalize(vec3(bfE.x,0.0,bfE.z)+vec3(1e-5,0.0,0.0)),bfRt=vec3(bfF.z,0.0,-bfF.x);\n'+
+'  float bfT=max(0.0,asin(clamp(normalize(bfE).y,-1.0,1.0)))*'+f(F.tilt)+'; vec3 bfU=vec3(0.0,cos(bfT),0.0)-bfF*sin(bfT);\n'+
+'  vec3 transformed=bfC+(bfRt*(position.x*2.0-1.0)*bfV.x+bfU*mix(bfV.y,bfV.z,position.y))*bpos.w;\n'+
+'  float bfU0=mix(position.x,1.0-position.x,bfM); vBUv=vec2((mod(bfV.w,'+f(F.cols)+')+bfU0)/'+f(F.cols)+',('+f(F.rows-1)+'-floor(bfV.w/'+f(F.cols)+')+position.y)/'+f(F.rows)+');\n'+
+'  vBBase=bfC.xz; vBCol=uBPal[int(bfP+0.5)];\n'};}
+var _D3_BARE_FAR_U=null;
+function _d3bareFarU(){
+if(_D3_BARE_FAR_U)return _D3_BARE_FAR_U;var T=window.THREE,At=_d3bareFarAtlas(),bv=[],pl=[],i;
+for(i=0;i<8;i++){var c=At.cells[Math.min(i,At.cells.length-1)];bv.push(new T.Vector4(c[0],c[1],c[2],c[3]));pl.push(new T.Vector3(0.35,0.29,0.24));}
+return (_D3_BARE_FAR_U={uBV:{value:bv},uBPal:{value:pl},uBFarTex:{value:At.tex}});
+}
+function _d3bareFarPal(){var U=_d3bareFarU(),pal=null,k=_D3_BARE_NEAR.bark,n=0;try{pal=_d3barkPal((typeof _da!=='undefined'&&_da)?(_da.biome||0):0);}catch(_p){}
+if(pal&&pal.length){n=Math.min(8,pal.length);for(var i=0;i<n;i++){var hx=pal[i];U.uBPal.value[i].set(((hx>>16)&255)/255*k,((hx>>8)&255)/255*k,(hx&255)/255*k);}}return n;}
+function _d3bareFarMats(){
+var D=_D3;if(D._bareFarM)return D._bareFarM;var T=window.THREE,F=_D3_BARE_FAR,U=_d3bareFarU(),TL=_d3treeLookU(),B=_d3bareU(),vs=_d3bareFarVs(),f=function(v){return (+v).toFixed(4);};
+var fsPre='uniform sampler2D uBFarTex;\nuniform vec4 uBareR;\nvarying vec2 vBUv;\nvarying vec2 vBBase;\n',
+cut='  vec4 bfT=texture2D(uBFarTex,vBUv); vec2 bfQ=vBBase-uBareR.xy; if(uBareR.w>0.5&&dot(bfQ,bfQ)<uBareR.z*uBareR.z) discard;\n';
+var hook=function(sh,depth){sh.uniforms.uBV=U.uBV;sh.uniforms.uBPal=U.uBPal;sh.uniforms.uBFarTex=U.uBFarTex;sh.uniforms.uBareR=B.uBareR;sh.uniforms.uTreeSnow=TL.uTreeSnow;
+sh.vertexShader=vs.pre+sh.vertexShader.replace('#include <begin_vertex>',vs.body);
+sh.fragmentShader=fsPre+(depth?'':'uniform float uTreeSnow;\nvarying vec3 vBCol;\n')+sh.fragmentShader;
+if(depth){sh.fragmentShader=sh.fragmentShader.replace('void main() {','void main() {\n'+cut+'  if(bfT.a<0.5) discard;\n');return;}
+sh.fragmentShader=sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n'+cut+
+'  float bfD=fract(52.9829189*fract(dot(gl_FragCoord.xy,vec2(0.06711056,0.00583715))));\n'+
+'  if(bfT.a<max('+f(F.a0)+',bfD)) discard;\n'+
+'  diffuseColor.rgb=mix(vBCol*bfT.r,vBCol*'+f(F.twig)+',clamp(bfT.b,0.0,1.0));\n'+
+'  diffuseColor.rgb=mix(diffuseColor.rgb,vec3('+F.snow.map(f).join(',')+'),clamp(bfT.g,0.0,1.0)*uTreeSnow*'+f(F.snowK)+');\n')
+.replace('#include <normal_fragment_begin>','#include <normal_fragment_begin>\n  normal=normalize((viewMatrix*vec4(0.0,1.0,0.0,0.0)).xyz*0.75+vec3(0.0,0.0,0.45));');};
+var m=new T.MeshStandardMaterial({color:0xffffff,roughness:0.95,metalness:0,side:T.DoubleSide});m.onBeforeCompile=function(sh){hook(sh,false);};m.customProgramCacheKey=function(){return 'rcgBareFar';};
+var dm=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking,side:T.DoubleSide});dm.onBeforeCompile=function(sh){hook(sh,true);};dm.customProgramCacheKey=function(){return 'rcgBareFarDepth';};
+return (D._bareFarM={m:m,dm:dm});
+}
+function _d3bareFarBuild(cs){
+var D=_D3,T=window.THREE,M=_d3bareFarMats(),pn=_d3bareFarPal(),mix=_d3treeShape()==='mixed',G=D._bareFarG,i,n=0;
+if(G){for(i=G.children.length-1;i>=0;i--){var o=G.children[i];G.remove(o);o.geometry.dispose();}}
+else{G=D._bareFarG=new T.Group();G.name='bareFar';G.userData.noMerge=true;G.userData._noB=1;}
+if(G.parent!==D.scene)D.scene.add(G);
+var q=D._bareFarQ;if(!q){q=D._bareFarQ={p:new T.BufferAttribute(new Float32Array([0,0,0,1,0,0,1,1,0,0,1,0]),3),n:new T.BufferAttribute(new Float32Array([0,0,1,0,0,1,0,0,1,0,0,1]),3),i:new T.BufferAttribute(new Uint16Array([0,1,2,0,2,3]),1)};}
+for(i=0;i<cs.length;i++){var c=cs[i],f=c.userData.forestCell,me=c.matrixWorld.elements,id=me[0]===1&&me[5]===1&&me[10]===1&&me[12]===0&&me[13]===0&&me[14]===0,sw=c.geometry.attributes.swayAP;
+var L=_d3bareFarList(c.instanceMatrix.array,Math.min(f.upto[0],f.n),Math.min(f.upto[1],f.n),id?null:me,sw?sw.array:null,mix,pn);if(!L.n)continue;
+var g=new T.InstancedBufferGeometry();g.setAttribute('position',q.p);g.setAttribute('normal',q.n);g.setIndex(q.i);
+g.setAttribute('bpos',new T.InstancedBufferAttribute(L.pos,4));g.setAttribute('bvar',new T.InstancedBufferAttribute(L.vr,1));g.instanceCount=L.n;
+var lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity],top=0;
+for(var k=0;k<L.n;k++){for(var d=0;d<3;d++){var v=L.pos[k*4+d];if(v<lo[d])lo[d]=v;if(v>hi[d])hi[d]=v;}if(L.pos[k*4+3]>top)top=L.pos[k*4+3];}
+var ext=top*1.2;lo[0]-=ext;lo[2]-=ext;hi[0]+=ext;hi[2]+=ext;hi[1]+=ext;
+g.boundingSphere=_d3forestSphere(T,lo,hi);g.boundingBox=new T.Box3(new T.Vector3(lo[0],lo[1],lo[2]),new T.Vector3(hi[0],hi[1],hi[2]));g.computeBoundingSphere=function(){};g.computeBoundingBox=function(){};
+var mesh=new T.Mesh(g,M.m);mesh.customDepthMaterial=M.dm;mesh.castShadow=(D._shadows!==false);mesh.receiveShadow=false;mesh.frustumCulled=true;mesh.matrixAutoUpdate=false;
+mesh.raycast=function(){};mesh.userData.noMerge=true;mesh.userData._noB=1;mesh.userData.bareFar=L.n;G.add(mesh);n+=L.n;}
+G.userData.n=n;G.userData.builds=(G.userData.builds|0)+1;return n;
+}
+function _d3bareFarPick(cs,on){
+var D=_D3,G=D._bareFarG;
+var stubs=!(on&&!D._noBareFar&&_d3treeShape()==='round');
+_d3bareU().uBareStub.value=stubs?0:1;
+if(!on||D._noBareFar||!cs||!cs.length){if(G)G.visible=false;return (D._bareFar={on:false,n:0});}
+var key=(D.parkBlobs?D.parkBlobs.uuid:'')+':'+cs.length+':'+_d3treeShape()+':'+((typeof _da!=='undefined'&&_da)?(_da.biome||0):0);
+if(!G||G.userData.key!==key){_d3bareFarBuild(cs);G=D._bareFarG;G.userData.key=key;}
+if(G.parent!==D.scene)D.scene.add(G);
+var cast=(D._shadows!==false);if(G.userData.cast!==cast){G.userData.cast=cast;G.children.forEach(function(o){o.castShadow=cast;});}
+G.visible=G.userData.n>0;return (D._bareFar={on:true,n:G.userData.n,meshes:G.children.length,builds:G.userData.builds});
 }
 function _d3parkScatter(g,m,pts,half){var it=_d3parkScatterSteps(g,m,pts,half),r;do{r=it.next();}while(!r.done);return r.value;}
 var _d3parkScatterSteps0=function*(g,m,pts,half){
@@ -62108,8 +62217,6 @@ D.scene.add(m);D._snowMesh=m;D._snowArr=pos;D._snowAttr=geo.attributes.position;
 return m;
 }
 var _D3_LEAFFALL={a0:0.3,kEnd:0.12,sp0:0.15,sp1:0.45,T:0.4,f1:0.9,f2:2.2,
-br:{n:20,w:0.06,top:0.6,hz:0.13,ax:0.3,warp:0.55,ws:1.6,cut:0.3,col:[0.25,0.21,0.17],snow:0.2,k0:1.2,
-tw:{k:1,a:0.7,w:0.04,r0:0.5,ws:3.2,warp:0.6,cs:7,cut:0.62,col:[0.31,0.27,0.25]}},
 fall:{n:640,a0:0.3,ramp:0.3,spd:0.16,wob:[0.09,1.7],spin:[2.2,5.5],size:0.075,min:3,max:10,px:3,R:16,cand:420,rest:3,op:0.95},
 litter:{col:[0.36,0.22,0.11],a:0.62,win:0.4},
 dorm:{dn0:0.35,dMax:0.7,win:0.85,sp1:0.5,straw:[0.6,0.53,0.33]}};
@@ -62159,37 +62266,20 @@ a.sort(function(p,q){return p-q;});return (_D3_LEAFQ=_D3_LEAFQK.map(function(k){
 }
 var _D3_LEAF_U=null;
 function _d3leafU(){return _D3_LEAF_U||(_D3_LEAF_U={uLeafC:{value:1+_D3_LEAFFALL.T}});}
-function _d3leafGlsl(K){K=K||_D3_LEAFFALL;var f=function(v){return (+v).toFixed(4);},B=K.br,W=B.tw,Q=_d3leafQs(),c=B.col,c2=W.col,u='',a=f(B.n/6.2832);
+function _d3leafGlsl(K){K=K||_D3_LEAFFALL;var f=function(v){return (+v).toFixed(4);},Q=_d3leafQs(),u='';
 for(var i=0;i<4;i++)u+=(i?'+':'')+'clamp((lfN-'+f(Q[i])+')/'+f(Math.max(1e-4,Q[i+1]-Q[i]))+',0.0,1.0)';
-var pre='  if(uLeafC<'+f(1+K.T-0.001)+'){ float lfQr=max(length(vLeafQ.xy),0.05), lfQc=length(vLeafQ.zw);\n'+
-'    float lfW=(fwidth(vLeafQ.x)+fwidth(vLeafQ.y))*'+a+'/lfQr, lfD=clamp((uLeafC-vLeafHb)/'+f(K.T)+',0.0,1.0);\n'+
+var pre='  if(uLeafC<'+f(1+K.T-0.001)+'){ float lfD=clamp((uLeafC-vLeafHb)/'+f(K.T)+',0.0,1.0);\n'+
 '    float lfN=(lfD>0.001&&lfD<0.999)?cnpN(vLeafP*'+f(K.f1)+')*0.6+cnpN(vLeafP*'+f(K.f2)+'+vec3(3.1,7.7,1.3))*0.4:0.0;\n'+
-'    if(vLeafEv<0.5&&lfD<0.999&&(lfD<0.001||0.25*('+u+')>=lfD)){\n'+
-'      vec2 lfQ=vLeafW-uBareR.xy; if(uBareR.w>0.5&&dot(lfQ,lfQ)<uBareR.z*uBareR.z) discard;\n'+
-'      float lfA=atan(vLeafQ.x,vLeafQ.y)*'+a+';\n'+
-'      float lfS=lfA+(cnpN(vec3(vLeafQ.zw*'+f(B.ws)+',vLeafHb*17.0))-0.5)*'+f(B.warp)+';\n'+
-'      float lfL=clamp(0.5*lfW,'+f(B.w)+'*(1.0-'+f(B.top)+'*clamp(lfQc,0.0,1.0)),'+f(B.hz*0.5)+');\n'+
-'      float lfTo=log(lfQr)*'+f(W.k*B.n/6.2832*Math.tan(W.a))+', lfTn=(cnpN(vec3(vLeafQ.zw*'+f(W.ws)+',vLeafHb*13.0+5.0))-0.5)*'+f(W.warp)+';\n'+
-'      float lfT=lfA*'+f(W.k)+'+lfTo+lfTn, lfT2=lfA*'+f(W.k)+'-lfTo-lfTn+0.5;\n'+
-'      float lfTL=clamp(0.5*lfW*'+f(W.k/Math.cos(W.a))+','+f(W.w)+','+f(B.hz*0.5)+');\n'+
-'      bool lfB=abs(fract(lfS)-0.5)<=lfL&&lfQr>='+f(B.ax)+'&&cnpN(vec3(vLeafQ.zw*3.1,vLeafHb*7.0+31.0))>='+f(B.cut)+';\n'+
-'      bool lfTw=min(abs(fract(lfT)-0.5),abs(fract(lfT2)-0.5))<=lfTL&&lfQc>='+f(W.r0)+'&&cnpN(vec3(vLeafQ.zw*'+f(W.cs)+',vLeafHb*11.0+57.0))>='+f(W.cut)+';\n'+
-'      if(!lfB&&!lfTw) discard;\n';
-return {vsPre:'varying float vLeafEv;\nvarying float vLeafHb;\nvarying vec2 vLeafW;\nvarying vec4 vLeafQ;\n',
-vsBody:'#ifdef CANOPY_MIX\n  vLeafEv=cpart;\n#else\n  vLeafEv=0.0;\n#endif\n  vLeafHb=swayAP.y;\n'+
-'#ifdef USE_INSTANCING\n  vLeafW=(modelMatrix*vec4(instanceMatrix[3].xyz,1.0)).xz;\n#else\n  vLeafW=(modelMatrix*vec4(position,1.0)).xz;\n#endif\n',
-vsProj:'\n#ifdef USE_INSTANCING\n  { vec3 lfC=(modelViewMatrix*vec4(instanceMatrix[3].xyz,1.0)).xyz; float lfRad=max(length(instanceMatrix[0].xyz),length(instanceMatrix[2].xyz))*length(modelViewMatrix[0].xyz);\n'+
-'#else\n  { vec3 lfC=(modelViewMatrix*vec4(0.0,0.0,0.0,1.0)).xyz; float lfRad=length(modelViewMatrix[0].xyz);\n#endif\n'+
-'    vec3 lfUp=(viewMatrix*vec4(0.0,1.0,0.0,0.0)).xyz; vec2 lfM=(mvPosition.xy-lfC.xy)/max(lfRad,1e-4); vLeafQ=vec4(lfM+lfUp.xy*'+f(B.k0)+',lfM); }\n',
-fsPre:'uniform float uLeafC;\nuniform vec4 uBareR;\nvarying float vLeafEv;\nvarying float vLeafHb;\nvarying vec2 vLeafW;\nvarying vec4 vLeafQ;\n',
-fsBody:pre+'      diffuseColor.rgb=lfB?vec3('+f(c[0])+','+f(c[1])+','+f(c[2])+'):vec3('+f(c2[0])+','+f(c2[1])+','+f(c2[2])+'); tsTwig='+f(B.snow)+'; } }\n',
-fsDepth:pre+'    } }\n'};}
-function _d3leafBareR(){return (typeof _d3bareU==='function')?_d3bareU().uBareR:{value:new window.THREE.Vector4(0,0,0,0)};}
+'    if(vLeafEv<0.5&&lfD<0.999&&(lfD<0.001||0.25*('+u+')>=lfD)) discard; }\n';
+return {vsPre:'varying float vLeafEv;\nvarying float vLeafHb;\n',
+vsBody:'#ifdef CANOPY_MIX\n  vLeafEv=cpart;\n#else\n  vLeafEv=0.0;\n#endif\n  vLeafHb=swayAP.y;\n',
+fsPre:'uniform float uLeafC;\nvarying float vLeafEv;\nvarying float vLeafHb;\n',
+fsBody:pre,fsDepth:pre};}
 function _d3leafSwayDecl(vs){return (vs.indexOf('attribute vec2 swayAP')<0?'attribute vec2 swayAP;\n':'')+vs;}
 function _d3leafSh(sh){
 if(!sh||sh.uniforms.uLeafC)return false;var G=_d3leafGlsl(),U=_d3leafU();
-sh.uniforms.uLeafC=U.uLeafC;sh.uniforms.uBareR=_d3leafBareR();
-sh.vertexShader=_d3leafSwayDecl(G.vsPre+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody).replace('#include <project_vertex>','#include <project_vertex>'+G.vsProj));
+sh.uniforms.uLeafC=U.uLeafC;
+sh.vertexShader=_d3leafSwayDecl(G.vsPre+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody));
 sh.fragmentShader=G.fsPre+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n'+G.fsBody);
 return true;
 }
@@ -62197,10 +62287,10 @@ var _D3_LEAF_DEPTH={};
 function _d3leafDepth(mix){
 var k=mix?'m':'r';if(_D3_LEAF_DEPTH[k])return _D3_LEAF_DEPTH[k];var T=window.THREE,U=_d3leafU(),G=_d3leafGlsl(),lf=(typeof _D3_CANOPY!=='undefined')?_D3_CANOPY.leafF:6;
 var m=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking});if(mix)m.defines={CANOPY_MIX:''};m.extensions={derivatives:true};
-m.onBeforeCompile=function(sh){sh.uniforms.uLeafC=U.uLeafC;sh.uniforms.uBareR=_d3leafBareR();
+m.onBeforeCompile=function(sh){sh.uniforms.uLeafC=U.uLeafC;
 sh.vertexShader=_d3leafSwayDecl('varying vec3 vLeafP;\n'+G.vsPre+((typeof _D3_MIX_VS==='string')?_D3_MIX_VS:'')+sh.vertexShader
 .replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody+'#ifdef USE_INSTANCING\n  vLeafP=position*'+lf.toFixed(1)+'+instanceMatrix[3].xyz*1.7;\n#else\n  vLeafP=position*'+lf.toFixed(1)+';\n#endif\n')
-.replace('#include <project_vertex>','#include <project_vertex>'+G.vsProj+((mix&&typeof _D3_MIX_CULL==='string')?_D3_MIX_CULL:'')));
+.replace('#include <project_vertex>','#include <project_vertex>'+((mix&&typeof _D3_MIX_CULL==='string')?_D3_MIX_CULL:'')));
 sh.fragmentShader=G.fsPre+'varying vec3 vLeafP;\nfloat cnpH(vec3 p){p=fract(p*0.3183099+0.1);p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}\n'+
 'float cnpN(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.0-2.0*f);return mix(mix(mix(cnpH(i),cnpH(i+vec3(1,0,0)),f.x),mix(cnpH(i+vec3(0,1,0)),cnpH(i+vec3(1,1,0)),f.x),f.y),'+
 'mix(mix(cnpH(i+vec3(0,0,1)),cnpH(i+vec3(1,0,1)),f.x),mix(cnpH(i+vec3(0,1,1)),cnpH(i+vec3(1,1,1)),f.x),f.y),f.z);}\n'+
