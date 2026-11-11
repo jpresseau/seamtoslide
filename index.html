@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='7476d39';
+var RCG_BUILD='0a45e19';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -70015,10 +70015,12 @@ for(i=0;i<M.length;i++){if(!M[i]||!M[i].parent)continue;M[i].getWorldPosition(v)
 try{M[i].updateMatrixWorld(true);bb=_d3solidBB(M[i],T);}catch(_b){}var ok=bb&&isFinite(bb.max.y)&&bb.max.x>bb.min.x;
 P.push({x:ok?(bb.min.x+bb.max.x)/2:v.x,y:v.y,z:ok?(bb.min.z+bb.max.z)/2:v.z,hx:ok?(bb.max.x-bb.min.x)/2:fw,hz:ok?(bb.max.z-bb.min.z)/2:fw,top:ok?bb.max.y:v.y+0.6});}
 var G=new T.Group();G.name=opt.name||'town-dress';G.userData.noMerge=true;G.userData._noB=1;G.userData._glbFitSkip=1;
-var lg=new T.SphereGeometry(0.035,12,8),lm=new T.MeshBasicMaterial({color:opt.lan||0xffe08a}),n=0,flags=0;
+var lg=new T.SphereGeometry(0.035,12,8),lm=new T.MeshBasicMaterial({color:opt.lan||0xffe08a}),n=0,flags=0,LP=[];
 for(i=0;i<P.length&&opt.lanterns;i++){var p=P[i];
-[[p.hx+0.3,0],[-p.hx-0.3,0],[0,p.hz+0.3],[0,-p.hz-0.3]].forEach(function(o){if(_d3townDressIn(P,p.x+o[0],p.z+o[1]))return; var m=new T.Mesh(lg,lm);m.position.set(p.x+o[0],p.y+0.22,p.z+o[1]);m.userData._shared=1;m.userData.noMerge=true;m.userData._noB=1;G.add(m);n++;
+[[p.hx+0.3,0],[-p.hx-0.3,0],[0,p.hz+0.3],[0,-p.hz-0.3]].forEach(function(o){if(_d3townDressIn(P,p.x+o[0],p.z+o[1]))return; LP.push(p.x+o[0],p.y+0.22,p.z+o[1]);n++;
 if(opt.glow)try{_d3glow(G,p.x+o[0],p.y+0.22,p.z+o[1],0xffb347,0.5,0.8);}catch(_g){}});}
+if(n){var li=new T.InstancedMesh(lg,lm,n),lmt=new T.Matrix4();for(i=0;i<n;i++){lmt.makeTranslation(LP[i*3],LP[i*3+1],LP[i*3+2]);li.setMatrixAt(i,lmt);}
+li.instanceMatrix.needsUpdate=true;li.frustumCulled=false;li.name='lanterns';li.userData.noMerge=true;li.userData._noB=1;li.userData.lanPts=LP;li.castShadow=false;li.receiveShadow=false;G.add(li);}
 var segs=[],spans=[],fm=new T.MeshBasicMaterial({side:T.DoubleSide}),fg=new T.PlaneGeometry(0.06,0.05),FP=[];
 for(i=0;i<P.length;i++)for(j=i+1;j<P.length;j++){var a=P[i],b=P[j],d=Math.hypot(a.x-b.x,a.z-b.z);if(d>_D3_FEST_NEAR||d<0.5)continue;
 var ha=a.top+0.05,hb=b.top+0.05;segs.push(a.x,ha,a.z,b.x,hb,b.z);spans.push(+d.toFixed(3));
