@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='df90a75';
+var RCG_BUILD='de412ba';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -55119,7 +55119,7 @@ function _d3treeV3(a){return 'vec3('+a.map(function(v){return (+v).toFixed(4);})
 function _d3treeLookGlsl(K){K=K||_D3_TREELOOK;var f=function(v){return (+v).toFixed(4);},gL=_d3treeLum(K.green);
 return {vsPre:'varying vec3 vTreeI;\n',
 vsBody:'#ifdef USE_INSTANCING\n  vTreeI=(modelMatrix*vec4(instanceMatrix[3].xyz,1.0)).xyz;\n#else\n  vTreeI=(modelMatrix*vec4(0.0,0.0,0.0,1.0)).xyz;\n#endif\n',
-fsPre:'uniform float uTreeReal;\nuniform float uTreeSnow;\nuniform float uTreeSnowH;\nvarying vec3 vTreeI;\n'+
+fsPre:'uniform float uTreeReal;\nuniform float uTreeSnow;\nuniform float uTreeSnowH;\nvarying vec3 vTreeI;\nfloat tsTwig=1.0;\n'+
 'float trH(vec2 p){ return fract(sin(p.x*127.1+p.y*311.7)*43758.5453); }\n'+
 'float trN(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(trH(i),trH(i+vec2(1.0,0.0)),f.x),mix(trH(i+vec2(0.0,1.0)),trH(i+vec2(1.0,1.0)),f.x),f.y); }\n',
 fsBody:'  if(uTreeReal>0.5){ vec3 tc=diffuseColor.rgb; float tg=max(tc.g,1e-4);\n'+
@@ -55132,7 +55132,7 @@ fsSnow:_d3treeSnowGlsl()};}
 function _d3treeSnowGlsl(S){S=S||_D3_TREESNOW;var f=function(v){return (+v).toFixed(4);};
 return '  if(uTreeSnow>0.001){ vec3 tsUp=normalize((viewMatrix*vec4(0.0,1.0,0.0,0.0)).xyz);\n'+
 '    float tsU=dot(normal,tsUp)+(trN(vLeafP.xz*'+f(S.ns)+'+vec2(vLeafP.y*0.7,0.0))-0.5)*'+f(S.n)+'+'+f(S.a0)+'+clamp(vTreeI.y/max(uTreeSnowH,1.0),0.0,1.0)*'+f(S.alt)+';\n'+
-'    float tsK=smoothstep('+f(S.s0)+','+f(S.s1)+',tsU)*uTreeSnow; diffuseColor.rgb=mix(diffuseColor.rgb,'+_d3treeV3(S.col)+',tsK); }\n';}
+'    float tsK=smoothstep('+f(S.s0)+','+f(S.s1)+',tsU)*uTreeSnow*tsTwig; diffuseColor.rgb=mix(diffuseColor.rgb,'+_d3treeV3(S.col)+',tsK); }\n';}
 function _d3treeLookSh(sh){
 if(!sh||sh.uniforms.uTreeReal)return false;var G=_d3treeLookGlsl();sh.uniforms.uTreeReal=_d3treeLookU().uTreeReal;
 sh.vertexShader=G.vsPre+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody);
@@ -62108,7 +62108,8 @@ D.scene.add(m);D._snowMesh=m;D._snowArr=pos;D._snowAttr=geo.attributes.position;
 return m;
 }
 var _D3_LEAFFALL={a0:0.3,kEnd:0.12,sp0:0.15,sp1:0.45,T:0.4,f1:0.9,f2:2.2,
-br:{n:7,w:0.04,top:0.6,hz:0.24,ax:0.3,warp:0.85,ws:1.8,cut:0.42,col:[0.25,0.21,0.17]},
+br:{n:20,w:0.06,top:0.6,hz:0.13,ax:0.3,warp:0.55,ws:1.6,cut:0.3,col:[0.25,0.21,0.17],snow:0.2,k0:1.2,
+tw:{k:1,a:0.7,w:0.04,r0:0.5,ws:3.2,warp:0.6,cs:7,cut:0.62,col:[0.31,0.27,0.25]}},
 fall:{n:640,a0:0.3,ramp:0.3,spd:0.16,wob:[0.09,1.7],spin:[2.2,5.5],size:0.075,min:3,max:10,px:3,R:16,cand:420,rest:3,op:0.95},
 litter:{col:[0.36,0.22,0.11],a:0.62,win:0.4},
 dorm:{dn0:0.35,dMax:0.7,win:0.85,sp1:0.5,straw:[0.6,0.53,0.33]}};
@@ -62158,28 +62159,37 @@ a.sort(function(p,q){return p-q;});return (_D3_LEAFQ=_D3_LEAFQK.map(function(k){
 }
 var _D3_LEAF_U=null;
 function _d3leafU(){return _D3_LEAF_U||(_D3_LEAF_U={uLeafC:{value:1+_D3_LEAFFALL.T}});}
-function _d3leafGlsl(K){K=K||_D3_LEAFFALL;var f=function(v){return (+v).toFixed(4);},B=K.br,Q=_d3leafQs(),c=B.col,u='';
+function _d3leafGlsl(K){K=K||_D3_LEAFFALL;var f=function(v){return (+v).toFixed(4);},B=K.br,W=B.tw,Q=_d3leafQs(),c=B.col,c2=W.col,u='',a=f(B.n/6.2832);
 for(var i=0;i<4;i++)u+=(i?'+':'')+'clamp((lfN-'+f(Q[i])+')/'+f(Math.max(1e-4,Q[i+1]-Q[i]))+',0.0,1.0)';
-var pre='  if(uLeafC<'+f(1+K.T-0.001)+'){ vec3 lfP=normalize(vLeafL+vec3(0.0,1e-5,0.0)); float lfR=max(length(lfP.xz),0.05);\n'+
-'    float lfW=(fwidth(lfP.x)+fwidth(lfP.z))*'+f(B.n/6.2832)+'/lfR, lfD=clamp((uLeafC-vLeafHb)/'+f(K.T)+',0.0,1.0);\n'+
+var pre='  if(uLeafC<'+f(1+K.T-0.001)+'){ float lfQr=max(length(vLeafQ.xy),0.05), lfQc=length(vLeafQ.zw);\n'+
+'    float lfW=(fwidth(vLeafQ.x)+fwidth(vLeafQ.y))*'+a+'/lfQr, lfD=clamp((uLeafC-vLeafHb)/'+f(K.T)+',0.0,1.0);\n'+
 '    float lfN=(lfD>0.001&&lfD<0.999)?cnpN(vLeafP*'+f(K.f1)+')*0.6+cnpN(vLeafP*'+f(K.f2)+'+vec3(3.1,7.7,1.3))*0.4:0.0;\n'+
 '    if(vLeafEv<0.5&&lfD<0.999&&(lfD<0.001||0.25*('+u+')>=lfD)){\n'+
 '      vec2 lfQ=vLeafW-uBareR.xy; if(uBareR.w>0.5&&dot(lfQ,lfQ)<uBareR.z*uBareR.z) discard;\n'+
-'      float lfS=atan(lfP.z,lfP.x+1e-5)*'+f(B.n/6.2832)+'+(cnpN(lfP*'+f(B.ws)+'+vec3(vLeafHb*17.0))-0.5)*'+f(B.warp)+';\n'+
-'      float lfL=clamp(0.5*lfW,'+f(B.w)+'*(1.0-'+f(B.top)+'*clamp(lfP.y*0.5+0.5,0.0,1.0)),'+f(B.hz*0.5)+');\n'+
-'      if(abs(fract(lfS)-0.5)>lfL||lfR<'+f(B.ax)+'||cnpN(lfP*3.1+vec3(31.0))<'+f(B.cut)+') discard;\n';
-return {vsPre:'varying float vLeafEv;\nvarying vec3 vLeafL;\nvarying float vLeafHb;\nvarying vec2 vLeafW;\n',
-vsBody:'#ifdef CANOPY_MIX\n  vLeafEv=cpart;\n#else\n  vLeafEv=0.0;\n#endif\n  vLeafL=position;\n  vLeafHb=swayAP.y;\n'+
+'      float lfA=atan(vLeafQ.x,vLeafQ.y)*'+a+';\n'+
+'      float lfS=lfA+(cnpN(vec3(vLeafQ.zw*'+f(B.ws)+',vLeafHb*17.0))-0.5)*'+f(B.warp)+';\n'+
+'      float lfL=clamp(0.5*lfW,'+f(B.w)+'*(1.0-'+f(B.top)+'*clamp(lfQc,0.0,1.0)),'+f(B.hz*0.5)+');\n'+
+'      float lfTo=log(lfQr)*'+f(W.k*B.n/6.2832*Math.tan(W.a))+', lfTn=(cnpN(vec3(vLeafQ.zw*'+f(W.ws)+',vLeafHb*13.0+5.0))-0.5)*'+f(W.warp)+';\n'+
+'      float lfT=lfA*'+f(W.k)+'+lfTo+lfTn, lfT2=lfA*'+f(W.k)+'-lfTo-lfTn+0.5;\n'+
+'      float lfTL=clamp(0.5*lfW*'+f(W.k/Math.cos(W.a))+','+f(W.w)+','+f(B.hz*0.5)+');\n'+
+'      bool lfB=abs(fract(lfS)-0.5)<=lfL&&lfQr>='+f(B.ax)+'&&cnpN(vec3(vLeafQ.zw*3.1,vLeafHb*7.0+31.0))>='+f(B.cut)+';\n'+
+'      bool lfTw=min(abs(fract(lfT)-0.5),abs(fract(lfT2)-0.5))<=lfTL&&lfQc>='+f(W.r0)+'&&cnpN(vec3(vLeafQ.zw*'+f(W.cs)+',vLeafHb*11.0+57.0))>='+f(W.cut)+';\n'+
+'      if(!lfB&&!lfTw) discard;\n';
+return {vsPre:'varying float vLeafEv;\nvarying float vLeafHb;\nvarying vec2 vLeafW;\nvarying vec4 vLeafQ;\n',
+vsBody:'#ifdef CANOPY_MIX\n  vLeafEv=cpart;\n#else\n  vLeafEv=0.0;\n#endif\n  vLeafHb=swayAP.y;\n'+
 '#ifdef USE_INSTANCING\n  vLeafW=(modelMatrix*vec4(instanceMatrix[3].xyz,1.0)).xz;\n#else\n  vLeafW=(modelMatrix*vec4(position,1.0)).xz;\n#endif\n',
-fsPre:'uniform float uLeafC;\nuniform vec4 uBareR;\nvarying float vLeafEv;\nvarying vec3 vLeafL;\nvarying float vLeafHb;\nvarying vec2 vLeafW;\n',
-fsBody:pre+'      diffuseColor.rgb=vec3('+f(c[0])+','+f(c[1])+','+f(c[2])+'); } }\n',
+vsProj:'\n#ifdef USE_INSTANCING\n  { vec3 lfC=(modelViewMatrix*vec4(instanceMatrix[3].xyz,1.0)).xyz; float lfRad=max(length(instanceMatrix[0].xyz),length(instanceMatrix[2].xyz))*length(modelViewMatrix[0].xyz);\n'+
+'#else\n  { vec3 lfC=(modelViewMatrix*vec4(0.0,0.0,0.0,1.0)).xyz; float lfRad=length(modelViewMatrix[0].xyz);\n#endif\n'+
+'    vec3 lfUp=(viewMatrix*vec4(0.0,1.0,0.0,0.0)).xyz; vec2 lfM=(mvPosition.xy-lfC.xy)/max(lfRad,1e-4); vLeafQ=vec4(lfM+lfUp.xy*'+f(B.k0)+',lfM); }\n',
+fsPre:'uniform float uLeafC;\nuniform vec4 uBareR;\nvarying float vLeafEv;\nvarying float vLeafHb;\nvarying vec2 vLeafW;\nvarying vec4 vLeafQ;\n',
+fsBody:pre+'      diffuseColor.rgb=lfB?vec3('+f(c[0])+','+f(c[1])+','+f(c[2])+'):vec3('+f(c2[0])+','+f(c2[1])+','+f(c2[2])+'); tsTwig='+f(B.snow)+'; } }\n',
 fsDepth:pre+'    } }\n'};}
 function _d3leafBareR(){return (typeof _d3bareU==='function')?_d3bareU().uBareR:{value:new window.THREE.Vector4(0,0,0,0)};}
 function _d3leafSwayDecl(vs){return (vs.indexOf('attribute vec2 swayAP')<0?'attribute vec2 swayAP;\n':'')+vs;}
 function _d3leafSh(sh){
 if(!sh||sh.uniforms.uLeafC)return false;var G=_d3leafGlsl(),U=_d3leafU();
 sh.uniforms.uLeafC=U.uLeafC;sh.uniforms.uBareR=_d3leafBareR();
-sh.vertexShader=_d3leafSwayDecl(G.vsPre+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody));
+sh.vertexShader=_d3leafSwayDecl(G.vsPre+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody).replace('#include <project_vertex>','#include <project_vertex>'+G.vsProj));
 sh.fragmentShader=G.fsPre+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n'+G.fsBody);
 return true;
 }
@@ -62190,7 +62200,7 @@ var m=new T.MeshDepthMaterial({depthPacking:T.RGBADepthPacking});if(mix)m.define
 m.onBeforeCompile=function(sh){sh.uniforms.uLeafC=U.uLeafC;sh.uniforms.uBareR=_d3leafBareR();
 sh.vertexShader=_d3leafSwayDecl('varying vec3 vLeafP;\n'+G.vsPre+((typeof _D3_MIX_VS==='string')?_D3_MIX_VS:'')+sh.vertexShader
 .replace('#include <begin_vertex>','#include <begin_vertex>\n'+G.vsBody+'#ifdef USE_INSTANCING\n  vLeafP=position*'+lf.toFixed(1)+'+instanceMatrix[3].xyz*1.7;\n#else\n  vLeafP=position*'+lf.toFixed(1)+';\n#endif\n')
-.replace('#include <project_vertex>','#include <project_vertex>'+((mix&&typeof _D3_MIX_CULL==='string')?_D3_MIX_CULL:'')));
+.replace('#include <project_vertex>','#include <project_vertex>'+G.vsProj+((mix&&typeof _D3_MIX_CULL==='string')?_D3_MIX_CULL:'')));
 sh.fragmentShader=G.fsPre+'varying vec3 vLeafP;\nfloat cnpH(vec3 p){p=fract(p*0.3183099+0.1);p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}\n'+
 'float cnpN(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.0-2.0*f);return mix(mix(mix(cnpH(i),cnpH(i+vec3(1,0,0)),f.x),mix(cnpH(i+vec3(0,1,0)),cnpH(i+vec3(1,1,0)),f.x),f.y),'+
 'mix(mix(cnpH(i+vec3(0,0,1)),cnpH(i+vec3(1,0,1)),f.x),mix(cnpH(i+vec3(0,1,1)),cnpH(i+vec3(1,1,1)),f.x),f.y),f.z);}\n'+
