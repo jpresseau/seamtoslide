@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='bd4e610';
+var RCG_BUILD='bce3d47';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -13887,6 +13887,7 @@ if(n.indexOf('buildings/')===0&&typeof _d3bldGlbSkin==='function'){try{_d3bldGlb
 if((n.indexOf('aircraft/')===0||n.indexOf('airfield/')===0||n.indexOf('harbour/')===0)&&typeof _d3airGlbMerge==='function'){try{_d3airGlbMerge(sc,n);}catch(_ag9){}}
 if((n.indexOf('aircraft/')===0||n.indexOf('airfield/')===0||n.indexOf('harbour/')===0)&&typeof _d3glbFinishFold==='function'){try{_d3glbFinishFold(sc,n,_d3glbMoves);}catch(_gf9){}}
 if(n.indexOf('boats/')===0&&typeof _d3boatGlbMerge==='function'){try{_d3boatGlbMerge(sc,n);}catch(_bg9){}}
+if(n.indexOf('boats/')===0&&typeof _d3glbShadowFor==='function'){try{_d3glbShadowFor(sc,n);}catch(_bsh9){}}
 if(n.indexOf('buildings/')===0&&typeof _d3bldGlbShadow==='function'){try{_d3bldGlbShadow(sc,n.slice(10));}catch(_gsh){}}
 if((n.indexOf('aircraft/')===0||n.indexOf('airfield/')===0||n.indexOf('harbour/')===0)&&typeof _d3glbShadowFor==='function'){try{_d3glbShadowFor(sc,n);}catch(_gsh2){}}
 var w=(_D3GLB[n]&&_D3GLB[n].waiting)||[];sc.traverse(function(o){if(o.geometry){o.geometry.userData=o.geometry.userData||{};o.geometry.userData._shared=1;}});
@@ -17103,7 +17104,8 @@ try{(_D3._glbShadow=_D3._glbShadow||{})[n]=rec;}catch(_r0){}
 if(!window.THREE||!sc){rec.skip='no three';return rec;}
 if((typeof _D3!=='undefined'&&_D3._noShadowProxy)||window.__noShadowProxy){rec.skip='off';return rec;}
 if(typeof _d3shadowWanted==='function'&&!_d3shadowWanted()){rec.skip='no shadows';return rec;}
-return _d3shadowStandIn(sc,rec,_d3glbMoves);
+var held=(n.indexOf('boats/')===0&&typeof _d3boatHeld==='function')?function(o){return _d3glbMoves(o)||_d3boatHeld(o);}:_d3glbMoves;
+return _d3shadowStandIn(sc,rec,held);
 }
 function _d3glbMoves(o){return /prop|rotor|^anim[_-]/i.test(o.name||'')||!!(o.userData&&(o.userData.hwAnim||o.userData.rotorDisc));}
 var _D3SHPSIDE={};
@@ -43513,7 +43515,7 @@ var e=(typeof _D3GLB!=='undefined')?_D3GLB[key||bt.glb]:null;
 if(!e||e.state!=='ok'||!e.scene)return false;
 while(gp.children.length)gp.remove(gp.children[0]);
 var m=_d3boatGlbFit(e.scene.clone(true),bt);gp.userData.boatHooks=(typeof _d3boatHooks==='function')?_d3boatHooks(m):null;
-m.traverse(function(o){if(o.isMesh){o.userData.noMerge=true;o.castShadow=_d3boatCasts(o);o.receiveShadow=false;}});
+m.traverse(function(o){if(o.isMesh){o.userData.noMerge=true;o.castShadow=!!(o.userData._shadowProxy||(!o.userData._shProxy&&_d3boatCasts(o)));o.receiveShadow=false;}});
 gp.add(m);if(e.clips&&e.clips.length&&typeof _d3glbMixMake==='function')try{_d3glbMixMake(m,e.clips,gp,1);}catch(_bm){}try{if(!gp.userData.boatRaw&&typeof _d3boatVcol==='function')_d3boatVcol(m,e.clips);}catch(_bv){}try{if(!gp.userData.boatRaw&&typeof _d3boatSkin==='function')_d3boatSkin(m,e.clips);}catch(_bk){}
 gp.userData.glbReady=true;
 return true;
