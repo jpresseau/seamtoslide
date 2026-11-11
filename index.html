@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='a779c3a';
+var RCG_BUILD='e763bb6';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -53390,7 +53390,8 @@ if(mm.emissive&&mm.emissiveIntensity){var ei=Math.min(1,mm.emissiveIntensity);cr
 var fast=!!(na&&pa.itemSize===3&&!pa.normalized&&!pa.isInterleavedBufferAttribute&&pa.array
 &&na.itemSize===3&&!na.normalized&&!na.isInterleavedBufferAttribute&&na.array
 &&(!ix||ix.array));
-plan.push({o:o,n:n,nv:pa.count,f:fast,r:cr,g:cg,b:cb});total+=n;totalV+=pa.count;}catch(_ge){}}
+plan.push({o:o,n:n,nv:pa.count,f:fast,r:cr,g:cg,b:cb,s:(o.userData&&o.userData.snowy)|0});total+=n;totalV+=pa.count;}catch(_ge){}}
+plan.sn=(typeof _d3rockSnowOn==='function')?_d3rockSnowOn():null;
 var _ln=!_D3._noLeanMerge;
 if(!total)return;
 if(!_D3._noMergeIndex){var out=_d3mergeIndexed(plan,total,totalV,_ln,T);if(out){_d3mergeFinish(g,objs,out,T);return;}}
@@ -53412,7 +53413,7 @@ if(p)pos.set(p.array,off*3);if(nrm){if(_ln){var _na=nrm.array;for(v=0;v<_na.leng
 var _c3=_ln?[_d3c8(pl.r),_d3c8(pl.g),_d3c8(pl.b)]:[pl.r,pl.g,pl.b];
 for(v=0;v<pl.n;v++){colA[(off+v)*3]=_c3[0];colA[(off+v)*3+1]=_c3[1];colA[(off+v)*3+2]=_c3[2];}
 if(geo!==c0&&geo.dispose)geo.dispose();if(c0.dispose)c0.dispose();
-}}catch(_ge2){}
+}if(pl.s&&plan.sn)_d3rockSnowPart(plan.sn,pl,pos,nor,colA,off,pl.n);}catch(_ge2){}
 off+=pl.n;}
 var out=new T.BufferGeometry();out.setAttribute('position',new T.BufferAttribute(pos,3));out.setAttribute('normal',new T.BufferAttribute(nor,3,_ln));out.setAttribute('color',new T.BufferAttribute(colA,3,_ln));
 _d3mergeFinish(g,objs,out,T);
@@ -53444,6 +53445,7 @@ var _c3=_ln?[_d3c8(pl.r),_d3c8(pl.g),_d3c8(pl.b)]:[pl.r,pl.g,pl.b];
 for(v=0;v<pl.nv;v++){colA[(vo+v)*3]=_c3[0];colA[(vo+v)*3+1]=_c3[1];colA[(vo+v)*3+2]=_c3[2];}
 if(geo.dispose)geo.dispose();
 }
+if(pl.s&&plan.sn)_d3rockSnowPart(plan.sn,pl,pos,nor,colA,vo,pl.nv);
 for(j=0;j<pl.n;j++)IX[io+j]=vo+(src?src[j]:j);
 }catch(_mi){return null;}
 vo+=pl.nv;io+=pl.n;}
@@ -53717,6 +53719,35 @@ var M=null,s=[0,0,0],i;try{M=_d3rockMats();}catch(_m){return null;}
 for(i=0;i<M.length;i++){s[0]+=M[i].color.r;s[1]+=M[i].color.g;s[2]+=M[i].color.b;try{M[i].dispose();}catch(_d){}}
 return M.length?[s[0]/M.length,s[1]/M.length,s[2]/M.length]:null;
 }
+var _D3_ROCKSNOW={s0:0.05,s1:0.5,n:0.5,a0:-0.4,alt:0.6,col:[0.8,0.84,0.88],dorm:0.85};
+function _d3rockSnowK(ny,a,n,K){K=K||_D3_ROCKSNOW;var al=Math.max(0,Math.min(1,+a||0)),
+t=Math.max(0,Math.min(1,((+ny||0)+((+n||0)-0.5)*K.n+K.a0+al*K.alt-K.s0)/(K.s1-K.s0)));return t*t*(3-2*t);}
+function _d3rockSnowN(x,y,z){var h=Math.sin(x*12.9898+y*4.1414+z*78.233)*43758.5453;return h-Math.floor(h);}
+function _d3rockSnowOn(){
+var D=(typeof _D3!=='undefined')?_D3:null;if(!D||D._noRockSnow)return null;
+var se=0;try{se=(typeof _d3season==='function')?_d3season():0;}catch(_s){se=0;}if(se!==2)return null;
+var ref=16;try{if(typeof _d3snowAltRef==='function')ref=+_d3snowAltRef()||16;}catch(_r){ref=16;}
+if(D._noSnowAlt)ref=1e6;
+return {K:_D3_ROCKSNOW,ref:Math.max(1,ref)};
+}
+function _d3rockSnowCol(c,k,plant,K){K=K||_D3_ROCKSNOW;var o=c;
+if(plant&&K.dorm>0&&typeof _d3grassDormMix==='function')o=_d3grassDormMix(c,K.dorm);
+return [o[0]+(K.col[0]-o[0])*k,o[1]+(K.col[1]-o[1])*k,o[2]+(K.col[2]-o[2])*k];}
+function _d3rockSnowBake(pos,nor,col,v0,n,kind,S){
+if(!S||!(n>0))return 0;var qn=(nor.BYTES_PER_ELEMENT===1)?1/127:1,q8=(col.BYTES_PER_ELEMENT===1),cs=q8?1/255:1,i,j,b,c3=[0,0,0],sum=0;
+for(i=0;i<n;i++){b=(v0+i)*3;
+var k=_d3rockSnowK(nor[b+1]*qn,pos[b+1]/S.ref,_d3rockSnowN(pos[b],pos[b+1],pos[b+2]),S.K);
+if(k<=0&&kind!==2)continue;
+c3[0]=col[b]*cs;c3[1]=col[b+1]*cs;c3[2]=col[b+2]*cs;
+var o=_d3rockSnowCol(c3,k,kind===2,S.K);
+for(j=0;j<3;j++)col[b+j]=q8?Math.max(0,Math.min(255,Math.round(o[j]*255))):o[j];
+sum+=k;}
+return sum;
+}
+function _d3rockSnowPart(S,pl,pos,nor,col,v0,n){
+var D=_D3,R=D._rockSnow;if(!R||R.bc!==D.buildCount)R=D._rockSnow={bc:D.buildCount,parts:0,plants:0,verts:0,k:0};
+var k=_d3rockSnowBake(pos,nor,col,v0,n,pl.s,S);R.parts++;if(pl.s===2)R.plants++;R.verts+=n;R.k+=k;return k;
+}
 var _D3_RF_CELL=[0.5,0.36];
 var _D3_RF_RISE=0.8;
 var _D3_RF_KMAX=32;
@@ -53889,7 +53920,7 @@ geo.setAttribute('position',new T.Float32BufferAttribute(P,3));
 geo.setIndex(IX);geo.computeVertexNormals();
 var NM=geo.attributes.normal,CL=new Float32Array(nv*3),C3=[0,0,0],Rv=[0,0,0,0];
 var sh=(typeof _d3rockShade==='function')?_d3rockShade():1;
-var sc=_d3rockTone(0.686,0.32,0.137);
+var sc=_d3rockTone(0.686,0.32,0.137),SN=(typeof _d3rockSnowOn==='function')?_d3rockSnowOn():null;
 for(k9=0;k9<nv;k9++){
 var px=P[k9*3],py=P[k9*3+1],pz=P[k9*3+2];Rv[1]=RR[k9*3];Rv[2]=RR[k9*3+1];Rv[3]=RR[k9*3+2];
 _d3rfColour(px,py,pz,Rv,NM.getY(k9),LF[k9],sc,C3);
@@ -53902,6 +53933,7 @@ var bw=function(A){return (A[0]*(1-fx9)*(1-fz9)+A[1]*fx9*(1-fz9)+A[2]*(1-fx9)*fz
 var m9=e9<=0.3?1:(0.75-e9)/0.45;m9=m9*m9*(3-2*m9);
 cr+=(bw(tr9)-cr)*m9;cg+=(bw(tg9)-cg)*m9;cb+=(bw(tb9)-cb)*m9;
 }
+if(SN){var sk9=_d3rockSnowK(NM.getY(k9),py/SN.ref,_d3rockSnowN(px,py,pz),SN.K),SC9=SN.K.col;cr+=(SC9[0]-cr)*sk9;cg+=(SC9[1]-cg)*sk9;cb+=(SC9[2]-cb)*sk9;}
 CL[k9*3]=cr>1?1:cr;CL[k9*3+1]=cg>1?1:cg;CL[k9*3+2]=cb>1?1:cb;
 }
 geo.setAttribute('color',new T.BufferAttribute(CL,3));
@@ -54102,7 +54134,7 @@ var mh=new T.Mesh(_hg,mats[_mi9]);
 mh.position.set(x,_foot,z);
 mh.rotation.set(_rx,_ry,_rz);
 mh.scale.set(_wj9,_bh9,_wk9);
-mh.castShadow=true;mh.receiveShadow=true;
+mh.castShadow=true;mh.receiveShadow=true;mh.userData.snowy=1;
 g.add(mh);placed++;_RJ9.built++;
 if(window.__PARKSIG)(_D3._rockPts||(_D3._rockPts=[])).push(x,z);
 if(_B9>1&&rr()<0.17){
@@ -54112,12 +54144,12 @@ var _ivw=_wj9*(0.42+rr()*0.30),_ivh=_BANDH*(0.55+rr()*0.65);
 _ivy.position.set(x+_ivx*_wj9*0.62,top-_bh9-_ivh,z+_ivz*_wk9*0.62);
 _ivy.rotation.set(0,_ry,0);
 _ivy.scale.set(_ivw,_ivh,_ivw*0.72);
-_ivy.receiveShadow=true;
+_ivy.receiveShadow=true;_ivy.userData.snowy=2;
 g.add(_ivy);placed++;
 }
 var _grs9=(_slp9<0.34)?(0.2+_sp9*0.55):0.94;
 if(rr()>0.2){
-var _cp=new T.Mesh(_rockHull(_hullS[_hi],1,0),(rr()<_grs9)?mats[_mi9]:gmats[(rr()*gmats.length)|0]);
+var _cp=new T.Mesh(_rockHull(_hullS[_hi],1,0),(rr()<_grs9)?mats[_mi9]:gmats[(rr()*gmats.length)|0]);_cp.userData.snowy=(gmats.indexOf(_cp.material)>=0)?2:1;
 var _tv=new T.Vector3(0,_B9*_bh9,0).applyEuler(new T.Euler(_rx,_ry,_rz));
 _cp.position.set(x+_tv.x,_foot+_tv.y-0.02,z+_tv.z);
 _cp.rotation.set(_rx,_ry,_rz);
@@ -56309,7 +56341,7 @@ _d3tp('lattice');
 var hg=new T.PlaneGeometry(2*_bx9,2*_bx9,seg,seg);hg.rotateX(-Math.PI/2);
 var hp=hg.attributes.position,hn9=hp.count,hc=new Uint8Array(hn9*3),_nat9=new Float32Array(hn9),vi9,any=false;
 var _seaG9=null;
-try{if(typeof _d3seasonGround==='function'&&typeof _d3season==='function'&&_d3season())_seaG9=_d3seasonGround;}catch(_sg8){}
+try{if(typeof _d3seasonGround==='function'&&typeof _d3season==='function'&&_d3season())_seaG9=_d3seasonGround;}catch(_sg8){}var _rsn9=(typeof _d3rockSnowOn==='function')?_d3rockSnowOn():null;
 var _rsh8=(typeof _d3rockShade==='function')?_d3rockShade():1;
 for(vi9=0;vi9<hn9;vi9++){
 var vx=hp.getX(vi9),vz=hp.getZ(vi9);
@@ -56486,7 +56518,8 @@ var _rr8=(0.686+_gr+_bv8)*_rsh8,_rg8=(0.32+_gr*0.96+_bv8*0.8)*_rsh8,_rb8=(0.137+
 var _rt8=_d3rockTone(_rr8,_rg8,_rb8);_rr8=_rt8[0];_rg8=_rt8[1];_rb8=_rt8[2];if(_rr8>1)_rr8=1;if(_rg8>1)_rg8=1;if(_rb8>1)_rb8=1;
 var _mo=(1-_rk)*0.5;
 _rr8-=_mo*0.05;_rg8+=_mo*0.03;_rb8-=_mo*0.04;
-vr+=(_rr8-vr)*_rk;vg+=(_rg8-vg)*_rk;vb+=(_rb8-vb)*_rk;
+var _rkc8=_rk*(1-(_rsn9?_d3rockSnowK(1/Math.sqrt(1+_slA[_i8]*_slA[_i8]),vy8/_rsn9.ref,_d3rockSnowN(vx8,vy8,vz8),_rsn9.K):0));
+vr+=(_rr8-vr)*_rkc8;vg+=(_rg8-vg)*_rkc8;vb+=(_rb8-vb)*_rkc8;
 }
 if(typeof _d3pitPaint==='function'){
 var _pp7=_d3pitPaint(vx8,vz8);
@@ -64946,7 +64979,7 @@ var gy=_d3drawnH(x,z);
 var top=gy+h*(1-_D3_COVE_BLUFF_SINK);
 var bd=_d3coveBands(top,h,_D3_COVE_BAND,_D3_COVE_BAND_MAX);
 var sd=(s&1)?5:4;
-var m=new T.Mesh(_d3rockHull(T,sd,bd.n,bd.ph,hc),mats[(s+b.i)%mats.length]);
+var m=new T.Mesh(_d3rockHull(T,sd,bd.n,bd.ph,hc),mats[(s+b.i)%mats.length]);m.userData.snowy=1;
 m.position.set(x,bd.foot,z);
 m.scale.set(w*0.5,_D3_COVE_BAND,dp*0.5);
 m.rotation.y=-ang+Math.PI/sd+(j1-0.5)*0.22;
@@ -64959,7 +64992,7 @@ var d2=d+0.9+j2*1.1,x2=b.x+ca*d2,z2=b.z+sa*d2;
 var h2=h*(0.5+j0*0.5),w2=w*(0.7+j1*0.5);
 var g2=_d3drawnH(x2,z2),t2=g2+h2*(1-_D3_COVE_BLUFF_SINK);
 var b2=_d3coveBands(t2,h2,_D3_COVE_BAND,_D3_COVE_BAND_MAX);
-var m2=new T.Mesh(_d3rockHull(T,(s&1)?4:5,b2.n,b2.ph,hc),mats[(s+2+b.i)%mats.length]);
+var m2=new T.Mesh(_d3rockHull(T,(s&1)?4:5,b2.n,b2.ph,hc),mats[(s+2+b.i)%mats.length]);m2.userData.snowy=1;
 m2.position.set(x2,b2.foot,z2);
 m2.scale.set(w2*0.5,_D3_COVE_BAND,dp*0.4);
 m2.rotation.y=-ang+Math.PI/((s&1)?4:5)+(j0-0.5)*0.3;
@@ -64970,7 +65003,7 @@ g.add(m2);made++;
 if(j2>0.28){
 var bd=sh-0.2-j1*0.7,br=0.16+j0*0.30;
 var bx=b.x+ca*bd,bz=b.z+sa*bd;
-var bm=new T.Mesh(new T.SphereGeometry(br,7,5),mats[(s+3)%mats.length]);
+var bm=new T.Mesh(new T.SphereGeometry(br,7,5),mats[(s+3)%mats.length]);bm.userData.snowy=1;
 bm.position.set(bx,_d3drawnH(bx,bz)+br*0.25,bz);
 bm.scale.set(1.3,0.55+j1*0.3,1.1);
 bm.rotation.y=j0*3.1;
