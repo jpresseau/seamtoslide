@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='0a45e19';
+var RCG_BUILD='1a45a4d';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -13879,6 +13879,7 @@ sc.traverse(function(o){if(o.isMesh){o.castShadow=true;o.receiveShadow=false;}})
 if(_d3glbKeepsQuant(sc))_d3glbQuantBounds(sc);else _d3carGlbDequant(sc);
 _d3carGlbMats(sc);
 if(n.indexOf('/')<0&&typeof _rcgSmallDevice==='function'&&_rcgSmallDevice())_d3carGlbTexCap(sc);
+if(n.indexOf('/')<0&&typeof _d3carDecalAtlas==='function'){try{_d3carDecalAtlas(sc,n);}catch(_da9){}}
 var _cl9=(gltf.animations&&gltf.animations.length)?gltf.animations:null;if(_cl9&&typeof _d3glbAnimMark==='function')try{_d3glbAnimMark(_cl9,sc);}catch(_am){}
 if(n.indexOf('buildings/')===0&&typeof _d3glbTranslucentClean==='function'){try{_d3glbTranslucentClean(sc,n.slice(10));}catch(_gc9){}}
 if(n.indexOf('buildings/')===0&&typeof _d3bldGlbMerge==='function'){try{_d3bldGlbMerge(sc,n.slice(10));}catch(_gm){}}
@@ -14030,6 +14031,74 @@ root.position.x-=c.x;root.position.z-=c.z;root.position.y-=bb.min.y;
 if(C.glbFlip)root.rotation.y+=Math.PI;
 root.updateMatrixWorld(true);
 return root;
+}
+var _D3_DECAL={min:3,pad:2,max:4096,maxSmall:2048,re:/decal|sticker|livery_mark/i,moves:/wheel|door|steer|anim[_-]|hood_open|boot_open/i};
+var _D3_DECAL_ATLAS={};
+function _d3decalPack(S,pad,W){
+var idx=S.map(function(_,i){return i;}).sort(function(a,b){return S[b][1]-S[a][1]||S[b][0]-S[a][0]||a-b;}),at=[],x=0,y=0,rowH=0,w=0,i;
+for(i=0;i<idx.length;i++){var k=idx[i],cw=S[k][0]+pad*2,ch=S[k][1]+pad*2;
+if(x>0&&x+cw>W){x=0;y+=rowH;rowH=0;}
+at[k]=[x+pad,y+pad];x+=cw;if(ch>rowH)rowH=ch;if(x>w)w=x;}
+return {w:w,h:y+rowH,at:at};
+}
+function _d3decalWidth(S,pad){var a=0,mw=0,i;for(i=0;i<S.length;i++){var cw=S[i][0]+pad*2;a+=cw*(S[i][1]+pad*2);if(cw>mw)mw=cw;}return Math.max(mw,Math.ceil(Math.sqrt(a)*1.1));}
+function _d3decalKey(m){
+return [m.type,m.transparent?1:0,m.alphaTest||0,m.side,m.depthWrite?1:0,m.depthTest?1:0,m.polygonOffset?(m.polygonOffsetFactor+'/'+m.polygonOffsetUnits):'',
+(m.roughness!=null?+m.roughness.toFixed(3):''),(m.metalness!=null?+m.metalness.toFixed(3):''),m.color?m.color.getHex():'',+(m.opacity!=null?m.opacity:1).toFixed(3),
+m.emissive?m.emissive.getHex():'',m.blending,m.map.encoding,m.map.flipY?1:0,m.envMapIntensity!=null?+m.envMapIntensity.toFixed(3):'',m.vertexColors?1:0].join('|');
+}
+function _d3decalUv(g,tex){
+var uv=g.attributes.uv;if(!uv)return null;var n=uv.count,o=new Float32Array(n*2),i,m=null;
+try{if(tex.matrixAutoUpdate)tex.updateMatrix();m=tex.matrix.elements;}catch(_m){m=null;}
+for(i=0;i<n;i++){var u=uv.getX(i),v=uv.getY(i);if(m){var u2=m[0]*u+m[3]*v+m[6],v2=m[1]*u+m[4]*v+m[7];u=u2;v=v2;}
+if(!(u>=-0.002&&u<=1.002&&v>=-0.002&&v<=1.002))return null;o[i*2]=Math.max(0,Math.min(1,u));o[i*2+1]=Math.max(0,Math.min(1,v));}
+return o;
+}
+function _d3carDecalAtlas(sc,key){
+var T=window.THREE,K=_D3_DECAL,rec={key:key,parts:0,groups:0,left:0,w:0,h:0};_D3_DECAL_ATLAS[key]=rec;
+if(!sc||!T||window.__noDecalAtlas||(typeof _D3!=='undefined'&&_D3&&_D3._noDecalAtlas)){rec.skip='off';return rec;}
+sc.updateMatrixWorld(true);var G={},inv=new T.Matrix4().copy(sc.matrixWorld).invert();
+sc.traverse(function(o){
+if(!o.isMesh||o.isSkinnedMesh||o.isInstancedMesh||o.visible===false)return;var m=o.material,g=o.geometry;
+if(!m||Array.isArray(m)||!m.map||!m.map.image||!K.re.test(String(m.name||'')+' '+String(o.name||''))||!g||!g.attributes||!g.attributes.position||!g.attributes.normal)return;
+if(m.normalMap||m.roughnessMap||m.metalnessMap||m.aoMap||m.emissiveMap||m.alphaMap||m.bumpMap||(g.morphAttributes&&Object.keys(g.morphAttributes).length)){rec.left++;return;}
+for(var p=o;p&&p!==sc;p=p.parent){if(K.moves.test(String(p.name||''))||(p.userData&&(p.userData.hwAnim||p.userData.noDecalAtlas))){rec.left++;return;}}
+var uv=_d3decalUv(g,m.map);if(!uv){rec.left++;return;}
+var k=_d3decalKey(m);(G[k]=G[k]||[]).push({o:o,uv:uv});});
+Object.keys(G).forEach(function(k){
+var A=G[k];if(A.length<K.min){rec.left+=A.length;return;}
+try{
+var small=(typeof _rcgSmallDevice==='function'&&_rcgSmallDevice()),cap=small?K.maxSmall:K.max,S=A.map(function(e){var im=e.o.material.map.image;return [im.width|0,im.height|0];});
+if(S.some(function(s){return !(s[0]>0&&s[1]>0);})){rec.left+=A.length;return;}
+var P=_d3decalPack(S,K.pad,_d3decalWidth(S,K.pad)),a0=S.reduce(function(a,q){return a+q[0]*q[1];},0),sc1=Math.min(1,cap/Math.max(P.w,P.h),Math.sqrt(a0/(P.w*P.h))*0.985);
+if(sc1<1){S=S.map(function(s){return [Math.max(1,Math.floor(s[0]*sc1)),Math.max(1,Math.floor(s[1]*sc1))];});P=_d3decalPack(S,K.pad,_d3decalWidth(S,K.pad));}
+var cv=document.createElement('canvas');cv.width=P.w;cv.height=P.h;var cx=cv.getContext('2d'),i,j,nv=0,ni=0;
+for(i=0;i<A.length;i++){var im=A[i].o.material.map.image,x=P.at[i][0],y=P.at[i][1],w=S[i][0],h=S[i][1];
+cx.drawImage(im,x-K.pad,y-K.pad,w+K.pad*2,h+K.pad*2);
+cx.clearRect(x,y,w,h);cx.drawImage(im,x,y,w,h);
+var g=A[i].o.geometry;nv+=g.attributes.position.count;ni+=g.index?g.index.count:g.attributes.position.count;}
+var pos=new Float32Array(nv*3),nor=new Float32Array(nv*3),uvs=new Float32Array(nv*2),IX=(nv>65535)?new Uint32Array(ni):new Uint16Array(ni),vo=0,io=0,v=new T.Vector3(),m4=new T.Matrix4(),n3=new T.Matrix3(),flip=!!A[0].o.material.map.flipY;
+for(i=0;i<A.length;i++){var o=A[i].o,g2=o.geometry,pa=g2.attributes.position,na=g2.attributes.normal,n=pa.count,U=A[i].uv,ax=P.at[i][0],ay=P.at[i][1],aw=S[i][0],ah=S[i][1];
+m4.multiplyMatrices(inv,o.matrixWorld);n3.getNormalMatrix(m4);
+for(j=0;j<n;j++){v.fromBufferAttribute(pa,j).applyMatrix4(m4);pos[(vo+j)*3]=v.x;pos[(vo+j)*3+1]=v.y;pos[(vo+j)*3+2]=v.z;
+v.fromBufferAttribute(na,j).applyMatrix3(n3).normalize();nor[(vo+j)*3]=v.x;nor[(vo+j)*3+1]=v.y;nor[(vo+j)*3+2]=v.z;
+var tu=U[j*2],tv=flip?(1-U[j*2+1]):U[j*2+1],px=ax+tu*aw,py=ay+tv*ah;
+uvs[(vo+j)*2]=px/P.w;uvs[(vo+j)*2+1]=flip?(1-py/P.h):(py/P.h);}
+if(g2.index){var ia=g2.index;for(j=0;j<ia.count;j++)IX[io+j]=vo+ia.getX(j);io+=ia.count;}else{for(j=0;j<n;j++)IX[io+j]=vo+j;io+=n;}
+vo+=n;}
+var src=A[0].o.material,tex=new T.CanvasTexture(cv);tex.flipY=src.map.flipY;tex.encoding=src.map.encoding;tex.anisotropy=src.map.anisotropy;tex.wrapS=tex.wrapT=T.ClampToEdgeWrapping;
+tex.minFilter=src.map.minFilter;tex.magFilter=src.map.magFilter;tex.generateMipmaps=src.map.generateMipmaps;tex.premultiplyAlpha=src.map.premultiplyAlpha;tex.needsUpdate=true;
+var mat=src.clone();mat.map=tex;mat.name='sticker_atlas';
+var geo=new T.BufferGeometry();geo.setAttribute('position',new T.BufferAttribute(pos,3));geo.setAttribute('normal',new T.BufferAttribute(nor,3));geo.setAttribute('uv',new T.BufferAttribute(uvs,2));geo.setIndex(new T.BufferAttribute(IX,1));
+var mesh=new T.Mesh(geo,mat);mesh.name='stickerAtlas';mesh.castShadow=false;mesh.receiveShadow=A[0].o.receiveShadow;mesh.renderOrder=A[0].o.renderOrder;mesh.userData.noMerge=true;mesh.userData.stickers=A.length;
+sc.add(mesh);
+A.forEach(function(e){var o=e.o;if(o.parent)o.parent.remove(o);try{o.geometry.dispose();}catch(_g){}});
+var kept={};sc.traverse(function(q){if(q.isMesh&&q.material)(Array.isArray(q.material)?q.material:[q.material]).forEach(function(qm){if(qm&&qm.map)kept[qm.map.uuid]=1;});});
+A.forEach(function(e){var mm=e.o.material;try{if(!kept[mm.map.uuid]){var im2=mm.map.image;mm.map.dispose();if(im2&&im2.close)im2.close();}mm.dispose();}catch(_t){}});
+rec.parts+=A.length;rec.groups++;rec.w=Math.max(rec.w,P.w);rec.h=Math.max(rec.h,P.h);
+}catch(_e){rec.err=String(_e&&_e.message||_e);rec.left+=A.length;}
+});
+return rec;
 }
 var _D3SKIN={},_D3SKINTRY={};
 var _D3_SKIN_MAT=/carpaint|body_paint/i;
