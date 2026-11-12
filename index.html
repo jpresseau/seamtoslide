@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='32873aa';
+var RCG_BUILD='73d4fca';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -66170,7 +66170,7 @@ return st;
 }
 function _d3derbyAppeal(P,L,st,bed){
 var like=P.lure[L.kind]||0;if(!(like>0))return 0;
-var fr=(bed>0)?st.dep/bed:0,dk=_d3dbBand(fr,P.dep[0],P.dep[1],0.25);
+var fr=(bed>0)?st.dep/bed:0,dk=_d3dbBand(fr,P.dep[0],P.dep[1],0.5);
 var sp=_d3dbBand(st.spd,P.spd[0],P.spd[1],0.3),paused=(st.still>0.15&&st.still<2.2)?P.pause:0;
 var life=Math.max(st.act||0,paused);
 return _d3dbClamp(like*dk*Math.max(sp,paused)*(0.35+0.65*life),0,1);
@@ -66178,12 +66178,13 @@ return _d3dbClamp(like*dk*Math.max(sp,paused)*(0.35+0.65*life),0,1);
 function _d3derbyFishMind(F,a,dt,rnd){
 var wary=1-0.45*(F.q||0),near=F.dist<=_D3_DERBY.sense,ev='';
 if(F.mode==='flee'){F.t=(F.t||0)+dt;if(F.t>4){F.mode='hold';F.int=0;}return '';}
-if(!near){if(F.mode!=='hold'){F.mode='hold';ev='lost';}F.int=Math.max(0,(F.int||0)-dt*0.5);return ev;}
+if(!near){if(F.mode!=='hold'){F.mode='hold';ev='lost';}F.rush=0;F.int=Math.max(0,(F.int||0)-dt*0.5);return ev;}
 F.int=_d3dbClamp((F.int||0)+(a*1.15*wary-0.22)*dt,0,1);
 if(F.mode==='hold'&&F.int>0.2){F.mode='look';ev='look';}
 else if(F.mode==='look'&&F.int>0.45){F.mode='follow';ev='follow';}
-else if((F.mode==='look'||F.mode==='follow')&&F.int<0.08){F.mode='hold';ev='lost';}
-else if(F.mode==='follow'&&F.int>=0.92&&F.dist<0.3&&a>0.25){F.mode='strike';ev='hit';}
+else if((F.mode==='look'||F.mode==='follow')&&F.int<0.08){F.mode='hold';F.rush=0;ev='lost';}
+else if(F.mode==='follow'&&F.int>=0.92&&a>0.25){if(F.dist<0.35){F.mode='strike';F.rush=0;ev='hit';}else F.rush=1;}
+if(F.rush&&F.int<0.8)F.rush=0;
 return ev;
 }
 function _d3derbyWeight(P,q){var a=P.kg[0],b=P.kg[1];return Math.round((a+(b-a)*Math.pow(_d3dbClamp(q,0,1),2.2))*100)/100;}
@@ -66239,11 +66240,12 @@ return {book:o,beat:beat};
 }
 function _d3derbyKg(w){return (Math.round((+w||0)*100)/100).toFixed(2)+' kg';}
 function _d3derbyClock(s){s=Math.max(0,Math.ceil(+s||0));return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2);}
-function _d3derbyStock(n,c,yaw,depthAt,rnd){
+function _d3derbyStock(n,c,yaw,depthAt,rnd,reach){
 var out=[],tries=0,C=_D3_DERBY.cast;
 while(out.length<n&&tries++<n*30){
 var r=1.4+rnd()*(C.min+C.span-0.6),a=yaw+(rnd()-0.5)*2.1,x=c.x+Math.cos(a)*r,z=c.z+Math.sin(a)*r,dep=depthAt(x,z);
 if(!(dep>0.3))continue;
+if(reach&&r>reach(a))continue;
 var q=Math.pow(rnd(),1.7)*_d3dbClamp(0.55+dep*0.3,0.55,1);
 out.push({x:x,z:z,q:q,dep:dep});
 }
@@ -66354,7 +66356,7 @@ return F;
 }
 function _d3derbyStockSpot(S,db,n){
 _d3derbyFishClear(db);
-var rnd=db.rnd,c={x:S.c0.x,z:S.c0.z},L=_d3derbyStock(n,c,S.yaw,function(x,z){return _d3derbyDepthAt(S,x,z);},rnd),i;
+var rnd=db.rnd,c={x:S.c0.x,z:S.c0.z},L=_d3derbyStock(n,c,S.yaw,function(x,z){return _d3derbyDepthAt(S,x,z);},rnd,_D3._noDerbyReach?null:function(a){return _d3derbyRunAt(db.runs,a)-0.25;}),i;
 db.fish=[];for(i=0;i<L.length;i++)db.fish.push(_d3derbyFishNew(S,L[i],rnd));
 return db.fish.length;
 }
@@ -66375,7 +66377,8 @@ var out=[],i,t=db.t,surf=S.surf;
 for(i=0;i<db.fish.length;i++){var F=db.fish[i];if(!F.obj||F===db.hooked)continue;
 var bed=_d3derbyDepthAt(S,F.x,F.z)||0.5,ev='';
 if(lure&&lure.on){F.dist=Math.hypot(lure.x-F.x,lure.y-F.y,lure.z-F.z);
-var ap=_d3derbyActAppeal(F.k,F.P,lure.L,lure.st,lure.bed,_D3._noDerbyAct?'':lure.act);if(!db.free&&!_D3._noDerbyHour)ap=Math.min(1,ap*_d3derbyHourK(db.ri,lure.L.kind));
+var hr=!db.free&&!_D3._noDerbyHour;if(hr&&F._hpR!==db.ri){F._hp=_d3derbyHourP(db.ri,F.P);F._hpR=db.ri;}
+var ap=_d3derbyActAppeal(F.k,hr?F._hp:F.P,lure.L,lure.st,lure.bed,_D3._noDerbyAct?'':lure.act);if(hr)ap=Math.min(1,ap*_d3derbyHourK(db.ri,lure.L.kind));
 ev=_d3derbyFishMind(F,ap,dt,db.rnd);
 if(F.mode==='hold')F.favT=0;else if(_d3derbyIsFav(F.k,lure.act))F.favT=(F.favT||0)+dt;
 if(ev==='hit'&&db.hooked){F.mode='follow';F.int=0.8;ev='';}
@@ -66385,8 +66388,8 @@ if(F.mode==='flee'){F.t+=dt;var a=Math.atan2(F.z-S.c0.z,F.x-S.c0.x);
 _d3derbyFishGo(F,F.x+Math.cos(a)*2,surf-Math.min(bed-0.05,bed*0.8),F.z+Math.sin(a)*2,1.7,dt,t);
 if(F.t>3.2){F.mode='hold';F.int=0;F.t=0;}}
 else if(F.mode==='follow'||F.mode==='strike'){
-var k=(F.mode==='strike')?0:0.2;
-_d3derbyFishGo(F,lure.x+db.dir.x*k,Math.min(surf-0.03,lure.y-0.01),lure.z+db.dir.z*k,(F.mode==='strike')?2.4:1.35,dt,t);}
+var k=(F.mode==='strike'||F.rush)?0:0.2;
+_d3derbyFishGo(F,lure.x+db.dir.x*k,Math.min(surf-0.03,lure.y-0.01),lure.z+db.dir.z*k,(F.mode==='strike')?2.4:(F.rush?2.8:1.35),dt,t);}
 else if(F.mode==='look')_d3derbyFishGo(F,F.x+(lure.x-F.x)*0.3,F.y+(lure.y-F.y)*0.2,F.z+(lure.z-F.z)*0.3,0.22,dt,t);
 else{var wa=t*0.22+F.ph;_d3derbyFishGo(F,F.hx+Math.cos(wa)*0.35,F.hy+Math.sin(wa*1.3)*0.03,F.hz+Math.sin(wa*0.8)*0.35,0.16,dt,t);
 F.rise-=dt;if(F.rise<=0){F.rise=_D3_DERBY.rise[0]+db.rnd()*_D3_DERBY.rise[1];_d3derbyRing(db,F.x,F.z,surf);}}
@@ -66501,7 +66504,7 @@ var S=_D3&&_D3.fishing,db=S&&S.db;if(!db)return false;
 if(db.st==='card'){
 if(db.card==='records'){if(down&&(act==='back'||act==='cast'||act==='go')){db.card='start';_d3derbyHUD(S,true);}return true;}
 if(act==='records'){if(down&&db.card==='start'){db.card='records';_d3derbyHUD(S,true);}return true;}
-if(down&&(act==='cast'||act==='go'||act==='practice'))_d3derbyGo(S,act);return true;}
+if(down&&(act==='cast'||act==='go'||act==='practice')&&!(db.t-(db.cardT==null?-9:db.cardT)<0.9))_d3derbyGo(S,act);return true;}
 if(act==='reel'){db.inp.reel=!!down;if(down&&db.st==='hit')_d3derbyHook(S);return true;}
 if(act==='left'||act==='right'){var v=(act==='left')?-1:1;if(down)db.inp.rod=v;else if(db.inp.rod===v)db.inp.rod=0;return true;}
 if(act!=='cast')return false;
@@ -66565,7 +66568,7 @@ _d3derbyCall(db,F.name+' \u00b7 '+_d3derbyKg(F.w)+'  +'+b+' s',2.6,'good');_d3de
 try{var got=_d3derbyLifeAdd(F.w/(db.wk*(F.big||1)));if(got.length){db.callQ='New lure: '+got.map(function(l){return l.name;}).join(', ');_d3derbyFx(db,'new');}}catch(_lf){}
 try{if(typeof _d3rpgAdd==='function'){var P=_d3rpgLoad();_d3rpgAdd(P,'fish',1);var sk=(typeof _d3skillFish==='function')?_d3skillFish(P):null;if(sk&&sk.up)try{showToast(sk.up);}catch(_t){}_d3rpgSave();_d3rpgHUD();}}catch(_rp){}
 try{if(typeof _d3careerStat==='function')_d3careerStat('fish',1);}catch(_cs){}
-try{var L=_d3derbyStock(1,{x:S.c0.x,z:S.c0.z},S.yaw,function(x,z){return _d3derbyDepthAt(S,x,z);},db.rnd);if(L.length)db.fish.push(_d3derbyFishNew(S,L[0],db.rnd));}catch(_n){}
+try{var L=_d3derbyStock(1,{x:S.c0.x,z:S.c0.z},S.yaw,function(x,z){return _d3derbyDepthAt(S,x,z);},db.rnd,function(a){return _d3derbyRunAt(db.runs,a)-0.25;});if(L.length)db.fish.push(_d3derbyFishNew(S,L[0],db.rnd));}catch(_n){}
 return b;
 }
 function _d3derbyLost(S,why){
@@ -66640,7 +66643,7 @@ else if(evs[i].ev==='follow'){_d3derbySfx('look');var fs=_d3derbySize(evs[i].F.w
 if(fs==='big'||fs==='huge'){_d3derbyCall(db,(fs==='huge')?'A MONSTER is on it!':'A big one is on it!',1.4,'warn');_d3derbySay(fs);}
 else if(db.callT<=0)_d3derbyCall(db,'Something is following\u2026',1.2,'');}
 }
-db.watch=_d3derbyWatch(db.fish,db.A.k,db.wk);
+db.watch=_d3derbyWatch(db.fish,db.A.k,db.wk,db.pos.y);
 }else _d3derbyFishStep(S,db,(db.st==='hit'||db.st==='fight')?{on:false}:null,dt);
 if(db.lureObj&&db.lureObj.visible){db.lureObj.position.copy(db.pos);
 db.lureObj.rotation.set(0,-Math.atan2(-db.dir.z,-db.dir.x),(db.st==='cast')?db.t*9:Math.sin(db.t*18)*0.25*((db.lureSt&&db.lureSt.act)||0));
@@ -66655,7 +66658,7 @@ if(!over&&db.R.time<=10&&Math.ceil(db.R.time)!==Math.ceil(t9)){_d3derbySfx('tick
 if(over&&db.st!=='land'&&db.st!=='fight'&&db.st!=='hit'){
 var last=(db.ri>=_D3_DERBY.rounds.length-1);
 if(over==='clear')db.day.rounds=db.ri+1;
-db.card=(over==='clear'&&!last)?'clear':'over';db.won=(over==='clear');db.st='card';
+db.card=(over==='clear'&&!last)?'clear':'over';db.won=(over==='clear');db.st='card';db.cardT=db.t;
 if(db.lureObj)db.lureObj.visible=false;if(db.line)db.line.visible=false;db.lureSt=null;
 if(db.card==='over')try{_d3derbySave(db.day,db.sea);}catch(_sv){}
 _d3derbyFx(db,(over==='clear')?'clear':'over');_d3derbySay((over!=='clear')?'over':(last?'won':'clear'));
@@ -66823,7 +66826,7 @@ h+='<div class="top g"><span class="rn" id="dbRn"></span><span class="ck" id="db
 '<span class="wt"><span id="dbWt"></span><span class="bar"><i id="dbWb"></i></span></span><span class="pt"><span id="dbN"></span><span class="sm" id="dbPt"></span></span></div>'+
 '<div class="call" id="dbCall" style="display:none"></div>'+
 '<div class="ten g" id="dbTen" style="display:none"><span class="sm">Line</span><div class="tk"><div class="red" id="dbRed"></div><div class="bd" id="dbBd"></div><div class="mk" id="dbMk"></div></div><span class="sm" id="dbOut"></span></div>'+
-'<div class="find g" id="dbFind" style="display:none"><span class="sm">Finder</span><canvas id="dbFc" width="224" height="200"></canvas></div>'+
+'<div class="find g" id="dbFind" style="display:none"><span class="sm">Finder</span><canvas id="dbFc" width="224" height="200"></canvas><span class="sm">\u25cf up \u00b7 \u25cb deep</span></div>'+
 '<div class="dep g" id="dbDep" style="display:none"><span class="sm">Depth</span><div class="tk"><div class="mk" id="dbDm"></div></div><span class="sm" id="dbDn"></span></div>'+
 '<div class="low2"><div class="pow" id="dbPow" style="display:none"><i id="dbPw"></i></div>'+
 '<div class="chips" id="dbChips">'+_d3derbyTackle(life).map(function(L){return '<button class="chip'+(L.k===db.lure?' on':'')+'" data-db="lure" data-k="'+L.k+'" title="'+_htmlAttr(L.d)+'">'+escapeHtml(L.name)+'</button>';}).join('')+
@@ -66998,17 +67001,18 @@ else a=_d3derbyAppeal(P,L,st,bed);
 return Math.min(1,a*(fav?_D3_DERBY_FAVK:1));
 }
 function _d3derbySize(w,wk){w=(+w||0)/(wk||1);return (w>=4)?'huge':((w>=1.8)?'big':((w>=0.6)?'good':'small'));}
-function _d3derbyWatch(fish,act,wk){
+function _d3derbyWatch(fish,act,wk,ly){
 var b=null,i;
 for(i=0;i<(fish||[]).length;i++){var F=fish[i];if(F.mode!=='look'&&F.mode!=='follow'&&F.mode!=='strike')continue;
 if(!b||(F.int||0)>(b.int||0))b=F;}
 if(!b)return null;
-return {F:b,int:Math.max(0,Math.min(1,b.int||0)),size:_d3derbySize(b.w,wk),on:b.mode!=='look',fav:_d3derbyIsFav(b.k,act),near:(b.dist||9)<0.7};
+return {F:b,int:Math.max(0,Math.min(1,b.int||0)),size:_d3derbySize(b.w,wk),on:b.mode!=='look',fav:_d3derbyIsFav(b.k,act),near:(b.dist||9)<0.7,
+dy:(ly==null||b.y==null)?0:(b.y-ly)};
 }
 function _d3derbyWatchWords(W){
 if(!W)return '';
 var who=(W.size==='huge')?'A monster':((W.size==='big')?'A big one':((W.size==='good')?'A good fish':'A small one'));
-return who+(W.on?' is following':' is looking');
+return who+(W.on?' is following':' is looking')+((W.dy<-0.3)?' \u25bc from below':((W.dy>0.3)?' \u25b2 from above':''));
 }
 function _d3derbyGrade(q){q=+q||0;return (q>=0.8)?'S':((q>=0.55)?'A':((q>=0.25)?'B':'C'));}
 var _D3_DERBY_GRADEK={S:2,A:1.5,B:1.2,C:1};
@@ -67280,6 +67284,11 @@ g.children[0].children[0].geometry.dispose();g.children[0].children[0].material.
 }
 var _D3_DERBY_HOURS=[6.4,13,19.4];
 function _d3derbyHourK(ri,kind){var low=(ri!==1);return (kind==='top')?(low?1.25:0.8):((kind==='jig'||kind==='diver')?(low?1:1.15):1);}
+function _d3derbyHourP(ri,P){
+if(ri===1)return P;
+var o={},k;for(k in P)o[k]=P[k];o.dep=[Math.max(0,P.dep[0]-0.3),P.dep[1]];
+return o;
+}
 function _d3derbyHourWord(ri){return (ri===1)?'High sun: the fish are down — lures that dive draw best':'Low light: the fish are up — top-water lures draw best';}
 function _d3derbySpots(C,need,n,apart){
 var out=[],i,j;if(!C||!C.length)return out;out.push(C[0]);
@@ -67288,10 +67297,10 @@ for(i=1;i<C.length;i++){if(!(C[i].run>=need))continue;var d=1e9;for(j=0;j<out.le
 if(!best)break;out.push(best);}
 return out;
 }
-function _d3derbyFinder(fish,c0,yaw,range,wk){
+function _d3derbyFinder(fish,c0,yaw,range,wk,surf,col){
 var out=[],i,cx=Math.cos(yaw),cz=Math.sin(yaw);
 for(i=0;i<(fish||[]).length;i++){var F=fish[i],dx=F.x-c0.x,dz=F.z-c0.z,fw=dx*cx+dz*cz,rt=-dx*cz+dz*cx,d=Math.hypot(dx,dz);
-if(d>range||fw<=0||Math.abs(Math.atan2(rt,fw))>1.31)continue;out.push({x:rt/range,y:fw/range,s:_d3derbySize(F.w,wk)});}
+if(d>range||fw<=0||Math.abs(Math.atan2(rt,fw))>1.31)continue;out.push({x:rt/range,y:fw/range,s:_d3derbySize(F.w,wk),deep:(surf!=null&&F.y!=null)?((surf-F.y)>(col||2.4)*0.5):false});}
 return out;
 }
 function _d3derbyTopAdd(top,day,date){
@@ -67346,8 +67355,8 @@ x.fillStyle='rgba(20,70,80,0.55)';x.beginPath();x.moveTo(ox,oy);x.arc(ox,oy,R*sc
 x.strokeStyle='rgba(190,240,255,0.35)';x.lineWidth=1;for(i=1;i<=3;i++){x.beginPath();x.arc(ox,oy,R*sc*i/3,-Math.PI/2-1.31,-Math.PI/2+1.31);x.stroke();}
 var reach=_d3derbyReach((db.st==='power')?_d3derbyPower(db.pw):1,_d3derbyRunAt(db.runs,S.yaw));
 x.strokeStyle='#f2c21c';x.lineWidth=2;x.beginPath();x.moveTo(ox,oy);x.lineTo(ox,oy-reach*sc);x.stroke();x.beginPath();x.arc(ox,oy-reach*sc,3,0,6.2832);x.stroke();
-var M=_d3derbyFinder(db.fish,S.c0,S.yaw,R,db.wk),r={small:2,good:3,big:4.5,huge:6};
-for(i=0;i<M.length;i++){x.fillStyle=(M[i].s==='big'||M[i].s==='huge')?'#ffb14a':'#dff6ff';x.beginPath();x.arc(ox+M[i].x*R*sc,oy-M[i].y*R*sc,r[M[i].s],0,6.2832);x.fill();}
+var M=_d3derbyFinder(db.fish,S.c0,S.yaw,R,db.wk,S.surf,Math.min(_D3_DERBY.col,S.maxDep||_D3_DERBY.col)),r={small:2,good:3,big:4.5,huge:6};
+for(i=0;i<M.length;i++){x.fillStyle=x.strokeStyle=(M[i].s==='big'||M[i].s==='huge')?'#ffb14a':'#dff6ff';x.lineWidth=1.6;x.beginPath();x.arc(ox+M[i].x*R*sc,oy-M[i].y*R*sc,r[M[i].s]+(M[i].deep?0.8:0),0,6.2832);if(M[i].deep)x.stroke();else x.fill();}
 x.fillStyle='#fff';x.beginPath();x.moveTo(ox,oy-5);x.lineTo(ox-4,oy+4);x.lineTo(ox+4,oy+4);x.closePath();x.fill();
 return M.length;
 }
