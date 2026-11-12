@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='26463b2';
+var RCG_BUILD='32873aa';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -66348,7 +66348,7 @@ var obj=_d3derbyFishModel(sp.k),k=sp.sc*(1.0+1.3*p.q);
 obj.scale.setScalar(k);obj.traverse(function(o){if(o.isMesh){o.userData.noMerge=true;o.castShadow=false;}});obj.userData.noMerge=true;obj.userData.derby=1;
 _D3.scene.add(obj);
 var fr=(P.dep[0]+P.dep[1])*0.5,y=S.surf-Math.max(0.08,Math.min(p.dep-0.06,p.dep*fr));
-var F={obj:obj,k:sp.k,name:sp.name,P:P,q:p.q,w:w,hx:p.x,hz:p.z,x:p.x,y:y,z:p.z,hy:y,hd:rnd()*6.283,sp:0,ph:rnd()*6.283,mode:'hold',int:0,dist:99,t:0,rise:rnd()*(_D3_DERBY.rise[0]+_D3_DERBY.rise[1])};
+var F={obj:obj,k:sp.k,name:sp.name,P:P,q:p.q,w:w,hx:p.x,hz:p.z,x:p.x,y:y,z:p.z,hy:y,hd:rnd()*6.283,sp:0,ph:rnd()*6.283,mode:'hold',int:0,dist:99,t:0,rise:rnd()*(_D3_DERBY.rise[0]+_D3_DERBY.rise[1]),big:sp.big||0};
 obj.position.set(F.x,F.y,F.z);
 return F;
 }
@@ -66443,7 +66443,7 @@ S.db={st:'card',card:'start',sea:!!S.sea,wk:S.sea?_D3_DERBY_SEAK:1,free:false,ri
 pw:0,ct:0,t:0,runs:runs,dir:{x:Math.cos(S.yaw),z:Math.sin(S.yaw)},pos:new window.THREE.Vector3(),day:{kg:0,best:null,rounds:0,fish:0,pts:0},call:'',callT:0,rnd:rnd,ui:0,
 A:_d3derbyActNew(),streak:0,zoom:0,watch:null};
 S.db.spots=_D3._noDerbySpots?[{x:S.c0.x,z:S.c0.z}]:_d3derbySpots(_d3derbyPlaces(S),_D3_DERBY.cast.need+1.6,_D3_DERBY.rounds.length,4.5);
-_d3derbyWorld(S,S.db);
+_d3derbyWorld(S,S.db);_d3derbyGulls(S,S.db);
 _d3derbyRoundSet(S,0);
 _d3derbyHUD(S,true);
 return true;
@@ -66472,7 +66472,7 @@ var k;for(k in (db._lures||{}))if(db._lures[k].parent)db._lures[k].parent.remove
 if(db._spl&&db._spl.parent){db._spl.parent.remove(db._spl);db._spl.geometry.dispose();db._spl.material.dispose();}
 if(db.line&&db.line.parent)db.line.parent.remove(db.line);
 _d3derbyTrophyDrop(db.landObj);
-_d3derbyWorldDrop(db);_d3derbyFishKitDrop();
+_d3derbyWorldDrop(db);_d3derbyGullsDrop(db);_d3derbyFishKitDrop();
 _d3derbyHUD(S,false);S.db=null;S.mode='boat';S.sea=false;
 }
 function _d3derbyCall(db,txt,secs,tone){db.call=txt;db.callT=secs||1.6;db.callTone=tone||'';db.ui=0;}
@@ -66545,11 +66545,11 @@ return true;
 }
 function _d3derbyHook(S){
 var db=S.db,F=db.hooked;if(db.st!=='hit'||!F)return false;
-db.fight=_d3derbyFightNew(F.P,F.w/db.wk,Math.max(1,Math.hypot(F.x-S.c0.x,F.z-S.c0.z)));db.st='fight';db.swing=0;
+db.fight=_d3derbyFightNew(F.P,F.w/(db.wk*(F.big||1)),Math.max(1,Math.hypot(F.x-S.c0.x,F.z-S.c0.z)));db.st='fight';db.swing=0;
 if(db.lureObj)db.lureObj.visible=false;
 db.fish.forEach(function(o){if(o!==F&&o.mode!=='hold'){o.mode='flee';o.t=0;o.int=0;}});
 db.hookFav=(F.favT||0)>=1;var sz=_d3derbySize(F.w,db.wk),big=(sz==='big'||sz==='huge');
-_d3derbyCall(db,big?((sz==='huge')?'FISH ON \u2014 A MONSTER!':'FISH ON \u2014 A BIG ONE!'):'FISH ON!',1.6,'good');_d3derbyFx(db,'hook');_d3derbySay(big?sz:'hook');
+_d3derbyCall(db,F.big?'FISH ON \u2014 BIG GAME!':(big?((sz==='huge')?'FISH ON \u2014 A MONSTER!':'FISH ON \u2014 A BIG ONE!'):'FISH ON!'),1.6,'good');_d3derbyFx(db,'hook');_d3derbySay(big?sz:'hook');
 return true;
 }
 function _d3derbyLanded(S){
@@ -66562,7 +66562,7 @@ db.catch={name:F.name,kg:F.w,grade:gr,pts:pts,fav:!!db.hookFav,streak:db.streak,
 db.streak++;db.day.pts=(db.day.pts|0)+pts;db.landLen=0;
 try{db.catch.isNew=_d3derbyCatchNote(F.k,F.w,gr);}catch(_cb){}
 _d3derbyCall(db,F.name+' \u00b7 '+_d3derbyKg(F.w)+'  +'+b+' s',2.6,'good');_d3derbyFx(db,'land');_d3derbySay('land'+gr);_d3derbySplash(db,F.x,F.z,S.surf,0.9);
-try{var got=_d3derbyLifeAdd(F.w/db.wk);if(got.length){db.callQ='New lure: '+got.map(function(l){return l.name;}).join(', ');_d3derbyFx(db,'new');}}catch(_lf){}
+try{var got=_d3derbyLifeAdd(F.w/(db.wk*(F.big||1)));if(got.length){db.callQ='New lure: '+got.map(function(l){return l.name;}).join(', ');_d3derbyFx(db,'new');}}catch(_lf){}
 try{if(typeof _d3rpgAdd==='function'){var P=_d3rpgLoad();_d3rpgAdd(P,'fish',1);var sk=(typeof _d3skillFish==='function')?_d3skillFish(P):null;if(sk&&sk.up)try{showToast(sk.up);}catch(_t){}_d3rpgSave();_d3rpgHUD();}}catch(_rp){}
 try{if(typeof _d3careerStat==='function')_d3careerStat('fish',1);}catch(_cs){}
 try{var L=_d3derbyStock(1,{x:S.c0.x,z:S.c0.z},S.yaw,function(x,z){return _d3derbyDepthAt(S,x,z);},db.rnd);if(L.length)db.fish.push(_d3derbyFishNew(S,L[0],db.rnd));}catch(_n){}
@@ -66664,7 +66664,7 @@ _d3derbyHUD(S,true);
 }
 S.rig.rotation.y=-S.yaw;S.cam.rotation.order='YXZ';S.cam.rotation.set(S.pitch,-Math.PI/2,0);
 _d3derbyCam(S,db,uw,dt);
-_d3derbyWorldStep(S,db,dt);
+_d3derbyWorldStep(S,db,dt);_d3derbyGullsStep(S,db,dt);
 _d3derbyHUDTick(S);
 }
 function _d3derbyCamPose(p,dir,surf,bed,d,zoom){
@@ -66760,7 +66760,7 @@ o.title=(W&&W.sea)?'Sea derby':'Fishing derby';
 o.lines=['Three rounds against the clock. Land the round\u2019s weight before the time runs out \u2014 every fish puts seconds back.',
 'Hold Cast for power and let go. Reel and twitch to work the lure; when a fish hits, set the hook. In the fight keep the line in the green: ease off when it runs, reel when it rests, and turn the rod with it to ease the line.'];
 o.lines.push('Work the lure five ways: steady, stop & go, twitch, sweep (the rod to a side as you reel) and shake (the rod side to side). Every fish has a way it cannot leave alone \u2014 the strip over the buttons says when you have found it.');
-if(W&&W.sea)o.lines.push('At sea the fish are the sea\u2019s and the tackle is heavier: each round asks '+wk+' times the lake\u2019s weight.');
+if(W&&W.sea)o.lines.push('At sea the fish are the sea\u2019s and the tackle is heavier: each round asks '+wk+' times the lake\u2019s weight. Gulls work over the heaviest fish in reach \u2014 cast under them. There is big game out here: sailfish, marlin, a mako.');
 o.rows=rounds.map(function(r,i){return ['Round '+(i+1)+' \u00b7 '+r.name,_d3derbyKg(r.goal*wk)+' in '+_d3derbyClock(r.time),false];});
 if(book&&(book.kg>0||book.fish))o.rows.push(['Your best here',_d3derbyKg(book.kg)+(book.fish?' \u00b7 '+book.fish.name+' '+_d3derbyKg(book.fish.kg):'')+((book.pts|0)>0?' \u00b7 '+(book.pts|0)+' pts':''),false]);
 if(W&&W.box)o.rows.push(['Tackle box',W.box.map(function(l){return l.name;}).join(', '),false]);
@@ -66968,7 +66968,7 @@ rainbow:['steady'],brook:['twitch'],brown:['sweep'],lmbass:['twitch','stopgo'],s
 perch:['shake'],pike:['steady','sweep'],walleye:['stopgo'],catfish:['stopgo'],laketrout:['steady'],cutthroat:['twitch'],kokanee:['steady'],
 whitefish:['shake'],grayling:['twitch'],sucker:['stopgo'],burbot:['shake'],chub:['shake'],
 seamack:['steady'],bonito:['steady'],snapper:['stopgo'],barra:['sweep','twitch'],dorado:['twitch'],amberjack:['shake'],kingfish:['sweep'],
-grouper:['stopgo'],wahoo:['steady'],trevally:['twitch','sweep'],tuna:['steady']};
+grouper:['stopgo'],wahoo:['steady'],trevally:['twitch','sweep'],tuna:['steady'],sailfish:['sweep','twitch'],marlin:['steady'],mako:['stopgo']};
 var _D3_DERBY_FAVK=1.6;
 function _d3derbyFavOf(k){return _D3_DERBY_FAV[k]||['steady'];}
 function _d3derbyIsFav(k,act){return !!act&&_d3derbyFavOf(k).indexOf(act)>=0;}
@@ -67073,19 +67073,20 @@ var T=window.THREE,P=[],C=[],I=[],col=new T.Color(sp.f),A=function(u){return _d3
 var top=function(u){var B=A(u);return B.y0+B.h*0.90;},bot=function(u){var B=A(u);return B.y0-B.h*1.04;};
 var fan=function(pts){var b=P.length/3,i;for(i=0;i<pts.length;i++){var sh=(i===0)?1.25:(pts[i][3]||0.85);P.push(pts[i][0],pts[i][1],pts[i][2]);C.push(col.r*sh,col.g*sh,col.b*sh);}
 for(i=1;i<pts.length-1;i++)I.push(b,b+i,b+i+1);};
-var x0=E.x,y1=E.y0,hp=E.h,L1=Lf*0.25,sp1=Math.max(Hd*1.05,hp*3.2),fk=sp.barbel?0.12:0.55;
-fan([[x0+Lf*0.02,y1,0],[x0,y1+hp,0],[x0-L1*0.55,y1+sp1*0.78,0],[x0-L1,y1+sp1,0,0.6],[x0-L1*0.86,y1+sp1*0.45,0,0.7],[x0-L1*(1-fk*0.6),y1,0,0.75],
-[x0-L1*0.86,y1-sp1*0.45,0,0.7],[x0-L1,y1-sp1,0,0.6],[x0-L1*0.55,y1-sp1*0.78,0],[x0,y1-hp,0]]);
+var x0=E.x,y1=E.y0,hp=E.h,L1=Lf*0.25,sp1=Math.max(Hd*1.05,hp*3.2)*(sp.bill?1.5:1),fk=sp.barbel?0.12:((sp.bill||sp.shark)?0.9:0.55),up=sp.shark?1.35:1,lo=sp.shark?0.7:1;
+fan([[x0+Lf*0.02,y1,0],[x0,y1+hp,0],[x0-L1*0.55*up,y1+sp1*0.78*up,0],[x0-L1*up,y1+sp1*up,0,0.6],[x0-L1*0.86*up,y1+sp1*0.45*up,0,0.7],[x0-L1*(1-fk*0.6),y1,0,0.75],
+[x0-L1*0.86*lo,y1-sp1*0.45*lo,0,0.7],[x0-L1*lo,y1-sp1*lo,0,0.6],[x0-L1*0.55*lo,y1-sp1*0.78*lo,0],[x0,y1-hp,0]]);
 var dors=function(a,b,ht,sg){var f=function(u){return sg>0?top(u):bot(u);},m=(a+b)/2;
 fan([[A(a).x,f(a),0],[A(a+(b-a)*0.22).x,f(a)+sg*ht,0,0.7],[A(m).x,f(m)+sg*ht*0.82,0,0.7],[A(b).x-Lf*0.02,f(b)+sg*ht*0.36,0,0.65],[A(b).x,f(b),0],[A(m).x,f(m)-sg*Hd*0.04,0]]);};
-if(sp.sail)dors(0.30,0.68,Hd*2.0,1);else if(sp.k==='pike'||sp.k==='barra')dors(0.70,0.86,Hd*0.95,1);else dors(0.36,0.60,Hd*0.80,1);
+if(sp.sail)dors(sp.bill?0.20:0.30,sp.bill?0.74:0.68,Hd*(sp.bill?2.7:2.0),1);else if(sp.shark){dors(0.36,0.52,Hd*1.3,1);dors(0.76,0.82,Hd*0.32,1);}
+else if(sp.k==='pike'||sp.k==='barra')dors(0.70,0.86,Hd*0.95,1);else dors(sp.bill?0.26:0.36,sp.bill?0.42:0.60,Hd*(sp.bill?1.1:0.80),1);
 if(sp.k==='walleye'||sp.k==='perch'||sp.k==='lmbass'||sp.k==='smbass')dors(0.62,0.80,Hd*0.62,1);
 if(/trout|brook|brown|verm|slash|silver|sail/.test(sp.m||''))dors(0.84,0.895,Hd*0.26,1);
 dors((sp.k==='pike'||sp.k==='barra')?0.72:0.66,0.84,Hd*0.66,-1);
 [1,-1].forEach(function(sg){
 var B=A(0.50),pz=sg*B.w*0.30;fan([[B.x,bot(0.50)+Hd*0.05,pz],[B.x-Lf*0.13,bot(0.50)-Hd*0.36,pz+sg*Hd*0.22,0.65],[B.x-Lf*0.08,bot(0.50)-Hd*0.02,pz,0.8]]);
-var G=A(0.27),gz=sg*G.w*0.93,gy=G.y0-G.h*0.38;
-fan([[G.x,gy,gz],[G.x-Lf*0.18,gy-Hd*0.08,gz+sg*Hd*0.46,0.65],[G.x-Lf*0.15,gy-Hd*0.38,gz+sg*Hd*0.30,0.65],[G.x-Lf*0.02,gy-Hd*0.20,gz,0.85]]);
+var G=A(0.27),gz=sg*G.w*0.93,gy=G.y0-G.h*0.38,pk=(sp.shark||sp.bill)?1.7:1;
+fan([[G.x,gy,gz],[G.x-Lf*0.18,gy-Hd*0.08*pk,gz+sg*Hd*0.46*pk,0.65],[G.x-Lf*0.15,gy-Hd*0.38*pk,gz+sg*Hd*0.30*pk,0.65],[G.x-Lf*0.02,gy-Hd*0.20,gz,0.85]]);
 });
 var g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(P,3));g.setAttribute('color',new T.Float32BufferAttribute(C,3));g.setIndex(I);g.computeVertexNormals();
 return g;
@@ -67110,12 +67111,18 @@ var E=_d3derbyBodyAt(sp,0.13),er=E.Hd*((sp.k==='walleye')?0.24:0.17),M=_d3derbyB
 [1,-1].forEach(function(sg){var ez=sg*E.w*0.84,ey=E.y0+E.h*0.24;
 ball(E.x,ey,ez,er,er,er*0.55,sp.eye||0xb39a52);ball(E.x,ey,ez+sg*er*0.36,er*0.56,er*0.56,er*0.30,0x07090b);
 if(sp.barbel){ball(M.x+E.Lf*0.03,M.y0-M.h*0.9,sg*M.w*0.7,E.Lf*0.10,er*0.10,er*0.10,0x4a4034);ball(M.x+E.Lf*0.01,M.y0-M.h*1.3,sg*M.w*0.4,E.Lf*0.06,er*0.09,er*0.09,0x4a4034);}});
+if(sp.bill){var T0=_d3derbyBodyAt(sp,0.02),bl=E.Lf*sp.bill;ball(E.Lf*0.5+bl*0.42,T0.y0+T0.h*0.5,0,bl*0.5,E.Hd*0.085,E.Hd*0.075,sp.b);}
 unit.dispose();
 var g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(P,3));g.setAttribute('normal',new T.Float32BufferAttribute(N,3));g.setAttribute('color',new T.Float32BufferAttribute(C,3));g.setIndex(I);
 return g;
 }
 function _d3derbyFishInk(x,sp,W,H){
 var yy,xx,row=0;x.lineWidth=0.3;x.strokeStyle='rgba(0,0,0,0.16)';
+if(sp.shark){
+x.lineWidth=0.7;x.strokeStyle='rgba(0,0,0,0.5)';
+for(row=0;row<5;row++){xx=W*(0.115+row*0.012);x.beginPath();x.moveTo(W*0.5-xx,H*0.40);x.lineTo(W*0.5-xx,H*0.60);x.moveTo(W*0.5+xx,H*0.40);x.lineTo(W*0.5+xx,H*0.60);x.stroke();}
+x.fillStyle='rgba(58,14,16,0.96)';x.fillRect(W*0.5-W*0.49*_D3_DERBY_JAWU*0.86,H*0.74,W*0.98*_D3_DERBY_JAWU*0.86,H*0.26);
+return;}
 for(yy=H*0.08;yy<H*0.84;yy+=2.1,row++)for(xx=(row%2)*1.3;xx<W;xx+=2.6){if(Math.abs(xx-W/2)<W*0.085)continue;x.beginPath();x.arc(xx,yy,1.45,-1.0,1.0);x.stroke();}
 x.strokeStyle='rgba(255,255,255,0.07)';for(yy=H*0.08,row=0;yy<H*0.84;yy+=2.1,row++)for(xx=(row%2)*1.3+0.5;xx<W;xx+=2.6){if(Math.abs(xx-W/2)<W*0.085)continue;x.beginPath();x.arc(xx,yy,1.45,-0.5,0.5);x.stroke();}
 x.fillStyle='rgba(0,0,0,0.22)';x.fillRect(0,H*0.465,W*0.41,0.5);x.fillRect(W*0.59,H*0.465,W*0.41,0.5);
@@ -67245,6 +67252,32 @@ function _d3derbyWorldDrop(db){
 _d3derbyCoverDrop(db);var W=db&&db.world;if(!W)return;
 W.g.traverse(function(o){if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();});if(W.g.parent)W.g.parent.remove(W.g);db.world=null;
 }
+function _d3derbyGulls(S,db){
+if(!S.sea||_D3._noDerbyWorld||db.gulls)return db.gulls||null;
+var T=window.THREE,g=db.gulls=new T.Group(),wing=new T.BufferGeometry(),i;g.userData.derby=1;g.userData.noMerge=true;
+wing.setAttribute('position',new T.Float32BufferAttribute([0,0,-0.03,0.19,0,0.005,0,0,0.05],3));
+var m=new T.MeshBasicMaterial({color:0xf2f4f6,side:T.DoubleSide});
+for(i=0;i<6;i++){var b=new T.Group(),l=new T.Mesh(wing,m),r=new T.Mesh(wing,m);r.scale.x=-1;b.add(l);b.add(r);b.userData={a:i*1.047,r:0.7+(i%3)*0.35,h:1.5+(i%4)*0.3,sp:0.6+(i%2)*0.25};g.add(b);}
+_D3.scene.add(g);
+return g;
+}
+function _d3derbyGullFish(fish,hooked){
+var b=null,i;for(i=0;i<(fish||[]).length;i++){var F=fish[i];if(F===hooked||F.mode==='flee')continue;if(!b||F.w>b.w)b=F;}
+return b;
+}
+function _d3derbyGullsStep(S,db,dt){
+var g=db.gulls;if(!g)return;
+var F=_d3derbyGullFish(db.fish,db.hooked),at=db.gullAt,k=Math.min(1,dt*0.6),i;g.visible=!!F&&!S.uwOn;if(!F)return;
+if(!at)at=db.gullAt={x:F.hx,z:F.hz};at.x+=(F.hx-at.x)*k;at.z+=(F.hz-at.z)*k;
+var c=0.35+0.65*_d3derbyDay();g.children[0].children[0].material.color.setRGB(c*0.95,c*0.96,c*0.97);
+for(i=0;i<g.children.length;i++){var b=g.children[i],u=b.userData,f=0.2+0.55*Math.sin(db.t*8+i*1.3);u.a+=dt*u.sp;
+b.position.set(at.x+Math.cos(u.a)*u.r,S.surf+u.h+Math.sin(db.t*0.7+i)*0.15,at.z+Math.sin(u.a)*u.r);b.rotation.y=-u.a;
+b.children[0].rotation.z=f;b.children[1].rotation.z=-f;}
+}
+function _d3derbyGullsDrop(db){
+var g=db&&db.gulls;if(!g)return;
+g.children[0].children[0].geometry.dispose();g.children[0].children[0].material.dispose();if(g.parent)g.parent.remove(g);db.gulls=null;
+}
 var _D3_DERBY_HOURS=[6.4,13,19.4];
 function _d3derbyHourK(ri,kind){var low=(ri!==1);return (kind==='top')?(low?1.25:0.8):((kind==='jig'||kind==='diver')?(low?1:1.15):1);}
 function _d3derbyHourWord(ri){return (ri===1)?'High sun: the fish are down — lures that dive draw best':'Low light: the fish are up — top-water lures draw best';}
@@ -67341,11 +67374,18 @@ P:{lure:{top:0.5,diver:1.0,spinner:0.8,jig:0.2},dep:[0.00,0.45],spd:[0.65,1.10],
 {k:'trevally',name:'Giant trevally',L:1.15,d:0.46,w:0.20,tp:0.36,b:0x2a3034,s:0x9ca4a6,y:0xe0e4e2,f:0x30383c,m:'silver',stripe:0,spot:0,sc:1.60,lo:0.10,hi:0.80,
 P:{lure:{top:1.0,diver:0.6,spinner:0.7,jig:0.7},dep:[0.05,0.80],spd:[0.30,1.00],pause:0.4,kg:[5,40],str:1.30,jump:0.1}},
 {k:'tuna', name:'Yellowfin tuna',L:1.35,d:0.38,w:0.24,tp:0.38,b:0x101c34,s:0x8a94a4,y:0xe6e2c0,f:0xc9a41e,m:'silver',stripe:0xc9a41e,spot:0,sc:1.75,lo:0.20,hi:0.90,
-P:{lure:{top:0.4,diver:0.9,spinner:0.8,jig:0.8},dep:[0.20,0.90],spd:[0.45,1.10],pause:0.1,kg:[8,60],str:1.30,jump:0.0}}
+P:{lure:{top:0.4,diver:0.9,spinner:0.8,jig:0.8},dep:[0.20,0.90],spd:[0.45,1.10],pause:0.1,kg:[8,60],str:1.30,jump:0.0}},
+{k:'sailfish',name:'Sailfish', L:2.50,d:0.26,w:0.15,tp:0.28,b:0x14244a,s:0x7f93b4,y:0xe2e6ea,f:0x1c2f6a,m:'bars', stripe:0x9fb4d8,spot:0,sc:1.70,lo:0.00,hi:0.45,bill:0.26,sail:1,big:3,
+P:{lure:{top:0.9,diver:0.8,spinner:0.9,jig:0.2},dep:[0.00,0.45],spd:[0.55,1.10],pause:0.1,kg:[18,60],str:1.25,jump:1.0}},
+{k:'marlin', name:'Blue marlin', L:3.00,d:0.34,w:0.22,tp:0.30,b:0x0e1c40,s:0x6f86ac,y:0xdfe4ea,f:0x162858,m:'bars', stripe:0x8ea6cc,spot:0,sc:1.80,lo:0.05,hi:0.60,bill:0.22,big:8,
+P:{lure:{top:0.7,diver:0.9,spinner:0.9,jig:0.3},dep:[0.05,0.60],spd:[0.55,1.10],pause:0.0,kg:[60,320],str:1.30,jump:0.9}},
+{k:'mako', name:'Mako shark', L:2.70,d:0.36,w:0.28,tp:0.32,b:0x1c2c44,s:0x5d7896,y:0xe6e8ea,f:0x22344e,m:'plain', stripe:0,spot:0,sc:1.80,lo:0.10,hi:0.90,shark:1,down:1,eye:0x0a0c0e,big:6,
+P:{lure:{top:0.4,diver:0.8,spinner:0.7,jig:0.8},dep:[0.10,0.90],spd:[0.30,1.05],pause:0.3,kg:[40,220],str:1.35,jump:0.5}}
 ];
 function _d3derbySeaPick(share,rnd){
 var L=_D3_DERBY_SEA,pool=[],i,k;share=Math.max(0,Math.min(1,+share||0));
 for(i=0;i<L.length;i++){var sp=L[i];if(share<sp.lo-0.1||share>sp.hi+0.1)continue;
+if(sp.big&&rnd()>0.34)continue;
 var w=(sp.P.kg[1]<=10)?3:((sp.P.kg[1]<=30)?2:1);for(k=0;k<w;k++)pool.push(sp);}
 if(!pool.length)pool=L.slice();
 return pool[(rnd()*pool.length)|0];
