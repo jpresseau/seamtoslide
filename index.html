@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='b88ba1a';
+var RCG_BUILD='988fade';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -48515,6 +48515,7 @@ var ppu=_d3tinyOrthoPpu(hPx,cam.top,cam.bottom,cam.zoom),K=S.K;
 if(!K||K.ppu!==ppu||K.ver!==S.ver){var I=[];for(i=0;i<n;i++)if(_d3tinyIs(R[i],th,ppu,0,0))I.push(i);K=S.K={ppu:ppu,ver:S.ver,I:I};}
 var J=K.I;for(i=0;i<J.length;i++){o=L[J[i]];if(o.visible){o.visible=false;H.push(o);}}
 D._tinyN={listed:n,hid:H.length,ortho:true};
+if(typeof _d3meshLodIn==='function')H.sw=_d3meshLodIn(S,K,ppu,D);
 }else if(cam.isPerspectiveCamera){
 var k=_d3tinyPerspK(hPx,cam.fov,cam.zoom),ce=cam.matrixWorld.elements,ex=ce[12],ey=ce[13],ez=ce[14],C=S.C;
 for(i=0;i<n;i++){o=L[i];if(!o.visible)continue;
@@ -48522,16 +48523,53 @@ var m=o.matrixWorld.elements,j=i*3,cx=C[j],cy=C[j+1],cz=C[j+2],
 x=m[0]*cx+m[4]*cy+m[8]*cz+m[12]-ex,y=m[1]*cx+m[5]*cy+m[9]*cz+m[13]-ey,z=m[2]*cx+m[6]*cy+m[10]*cz+m[14]-ez;
 if(_d3tinyIs(R[i],th,0,k,Math.sqrt(x*x+y*y+z*z))){o.visible=false;H.push(o);}}
 D._tinyN={listed:n,hid:H.length,ortho:false};
+D._meshLod=null;
 }else D._tinyN=null;
 return H;
 }
-function _d3tinyShow(H){for(var i=0;i<H.length;i++)H[i].visible=true;H.length=0;}
+function _d3tinyShow(H){if(H.sw){_d3meshLodOut(H.sw);H.sw=null;}for(var i=0;i<H.length;i++)H[i].visible=true;H.length=0;}
 function _d3tinyArm(ren){
 if(!ren||ren._tinyWrap||typeof ren.render!=='function')return false;
 var r0=ren.render;ren._tinyWrap=r0;
 ren.render=function(scene,cam){var H=_d3tinyHide(ren,scene,cam);try{return r0.apply(this,arguments);}finally{_d3tinyShow(H);}};
 return true;
 }
+var _D3_MESH_LOD_MIN=300;
+var _D3_MESH_LOD_PER=2;
+var _D3_MLOD=(typeof WeakMap!=='undefined')?new WeakMap():null;
+function _d3meshLodTris(g){var p=g&&g.attributes&&g.attributes.position;return g?((g.index?g.index.count:(p?p.count:0))/3):0;}
+function _d3meshLodOk(o,g){
+if(!o||!g||!o.isMesh||Array.isArray(o.material)||(g.groups&&g.groups.length)||g.isInstancedBufferGeometry||!g.boundingSphere)return false;
+var dr=g.drawRange;if(dr&&(dr.start!==0||isFinite(dr.count)))return false;
+if(_d3meshLodTris(g)<_D3_MESH_LOD_MIN)return false;
+for(var k in g.attributes){var a=g.attributes[k];if(!a||!a.array||a.array.length<a.count*a.itemSize)return false;}
+if(g.index&&g.index.array.length<g.index.count)return false;
+return true;
+}
+function _d3meshLodCopy(o,g,lv,T,bud){
+var E=_D3_MLOD.get(g);
+if(!E){E={no:!_d3meshLodOk(o,g),c:[]};_D3_MLOD.set(g,E);
+if(!E.no&&g.addEventListener)g.addEventListener('dispose',function(){for(var i=0;i<E.c.length;i++){try{if(E.c[i])E.c[i].dispose();}catch(_d){}}E.c=[];E.no=true;});}
+if(E.no)return null;
+if(E.c[lv]===undefined){
+if(!(bud.n>0))return null;
+bud.n--;bud.made++;
+try{E.c[lv]=_d3poolLodGeo(g,g.boundingSphere.radius/_D3_POOL_LOD[lv-1].div,T)||null;}catch(_c){E.c[lv]=null;}
+if(E.c[lv])E.c[lv].userData._meshLod=1;}
+return E.c[lv]||((lv>1&&E.c[1])?E.c[1]:null);
+}
+function _d3meshLodIn(S,K,ppu,D){
+var T=window.THREE,sw=[],i,L=S.L,R=S.R;
+if(!_D3_MLOD||D._noMeshLod||window._RCG_NO_MESHLOD||!T||typeof _d3poolLodGeo!=='function'){D._meshLod=null;return sw;}
+if(!K.G){var G=[];for(i=0;i<S.n;i++){if(!L[i].isMesh)continue;var lv=_d3poolLodLevel(2*R[i]*ppu,_D3_POOL_LOD);if(lv>0)G.push(i,lv);}K.G=G;}
+var Gk=K.G,bud={n:_D3_MESH_LOD_PER,made:0},t0=0,t1=0,nl=0;
+for(i=0;i<Gk.length;i+=2){var o=L[Gk[i]];if(!o.visible)continue;
+var g=o.geometry,c=_d3meshLodCopy(o,g,Gk[i+1],T,bud);if(!c)continue;
+sw.push(o,g);o.geometry=c;nl++;t0+=_d3meshLodTris(g);t1+=_d3meshLodTris(c);}
+D._meshLod={asked:Gk.length/2,lod:nl,made:bud.made,tris0:Math.round(t0),tris:Math.round(t1)};
+return sw;
+}
+function _d3meshLodOut(sw){for(var i=0;i<sw.length;i+=2)sw[i].geometry=sw[i+1];sw.length=0;}
 var _D3_SHK_STILL=2;
 var _D3_SHK_ABSORB=60;
 var _D3_SHK_AGAIN=300;
