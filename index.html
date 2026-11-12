@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='9b914fd';
+var RCG_BUILD='b7fc821';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -43328,11 +43328,11 @@ stripe:0,spot:0,sc:0.86,n:[2,5],lo:0.20,hi:0.80,name:'Northern chub'}
 var _D3_FISH_BY={};
 (function(){for(var i=0;i<_D3_FISH.length;i++)_D3_FISH_BY[_D3_FISH[i].k]=_D3_FISH[i];})();
 function _d3fishSpec(k){return _D3_FISH_BY[k]||_D3_FISH_BY.rainbow;}
-function _d3fishTex(sp){
-_D3._fishTex=_D3._fishTex||{};
-if(_D3._fishTex[sp.k])return _D3._fishTex[sp.k];
-var W=128,H=64,c=document.createElement('canvas');c.width=W;c.height=H;
-var x=c.getContext('2d'),hx=function(v){return '#'+('000000'+(v>>>0).toString(16)).slice(-6);};
+function _d3fishTex(sp,K){
+_D3._fishTex=_D3._fishTex||{};K=(K>1)?K:1;var _tk=sp.k+(K>1?'@'+K:'');
+if(_D3._fishTex[_tk])return _D3._fishTex[_tk];
+var W=128,H=64,c=document.createElement('canvas');c.width=W*K;c.height=H*K;
+var x=c.getContext('2d'),hx=function(v){return '#'+('000000'+(v>>>0).toString(16)).slice(-6);};x.scale(K,K);
 var g=x.createLinearGradient(0,0,0,H);
 g.addColorStop(0,hx(sp.b));g.addColorStop(0.42,hx(sp.s));
 g.addColorStop(0.72,hx(sp.s));g.addColorStop(1,hx(sp.y));
@@ -43434,10 +43434,10 @@ x.globalAlpha=0.7;x.fillStyle=hx(sp.spot);
 for(i=0;i<95;i++){var mx=rr()*W,my=rr()*H*0.78,mw=2.5+rr()*7;
 x.beginPath();x.ellipse(mx,my,mw,mw*0.5,rr()*3,0,6.2832);x.fill();}
 }
-x.globalAlpha=1;
+x.globalAlpha=1;if(K>1&&typeof _d3derbyFishInk==='function')_d3derbyFishInk(x,sp,W,H);
 var t=new window.THREE.CanvasTexture(c);
-t.anisotropy=1;
-_D3._fishTex[sp.k]=t;return t;
+t.anisotropy=(K>1)?4:1;
+_D3._fishTex[_tk]=t;return t;
 }
 function _d3fishMesh(kind){
 var T=window.THREE,sp=_d3fishSpec(kind||'rainbow'),f=new T.Group(),U=0.22;
@@ -66344,7 +66344,7 @@ return out;
 function _d3derbyFishNew(S,p,rnd){
 var sea=S.sea?_d3derbySeaPick(rnd(),rnd):null,real=S.sea?0:(S.surf-((typeof _d3drawnH==='function')?_d3drawnH(p.x,p.z):S.surf-p.dep));
 var sp=sea||_d3fishPick((real>_D3_DERBY.col+0.01)?rnd()*S.maxDep:real,S.maxDep,rnd)||_d3fishSpec('lmbass'),P=sea?sea.P:_d3derbyPref(sp.k),w=_d3derbyWeight(P,p.q);
-var obj=_d3fishMesh(sp.k),k=sp.sc*(1.0+1.3*p.q);
+var obj=_d3derbyFishModel(sp.k),k=sp.sc*(1.0+1.3*p.q);
 obj.scale.setScalar(k);obj.traverse(function(o){if(o.isMesh){o.userData.noMerge=true;o.castShadow=false;}});obj.userData.noMerge=true;obj.userData.derby=1;
 _D3.scene.add(obj);
 var fr=(P.dep[0]+P.dep[1])*0.5,y=S.surf-Math.max(0.08,Math.min(p.dep-0.06,p.dep*fr));
@@ -66358,7 +66358,7 @@ var rnd=db.rnd,c={x:S.c0.x,z:S.c0.z},L=_d3derbyStock(n,c,S.yaw,function(x,z){ret
 db.fish=[];for(i=0;i<L.length;i++)db.fish.push(_d3derbyFishNew(S,L[i],rnd));
 return db.fish.length;
 }
-function _d3derbyFishDrop(F){if(F&&F.obj&&F.obj.parent)F.obj.parent.remove(F.obj);if(F)F.obj=null;}
+function _d3derbyFishDrop(F){if(F&&F.obj)_d3derbyTrophyDrop(F.obj);if(F)F.obj=null;}
 function _d3derbyFishClear(db){var i;for(i=0;i<(db.fish||[]).length;i++)_d3derbyFishDrop(db.fish[i]);db.fish=[];}
 function _d3derbyFishGo(F,tx,ty,tz,v,dt,t){
 var dx=tx-F.x,dz=tz-F.z,d=Math.hypot(dx,dz);
@@ -66366,8 +66366,9 @@ if(d>1e-4){var want=Math.atan2(dz,dx),dh=want-F.hd;while(dh>Math.PI)dh-=6.283185
 F.hd+=dh*Math.min(1,dt*(3+v*3));}
 var sp=Math.min(v,d/Math.max(dt,1e-4));F.sp+=(sp-F.sp)*Math.min(1,dt*4);
 F.x+=Math.cos(F.hd)*F.sp*dt;F.z+=Math.sin(F.hd)*F.sp*dt;F.y+=(ty-F.y)*Math.min(1,dt*(1.5+v));
-if(F.obj){F.obj.position.set(F.x,F.y,F.z);
-F.obj.rotation.set(0,-F.hd+Math.sin(t*(5+F.sp*9)+F.ph)*(0.10+0.22*Math.min(1,F.sp)),0);}
+if(F.obj){F.obj.position.set(F.x,F.y,F.z);var hero=F.obj.userData.hero;
+F.obj.rotation.set(0,-F.hd+(hero?0:Math.sin(t*(5+F.sp*9)+F.ph)*(0.10+0.22*Math.min(1,F.sp))),0);
+if(hero)_d3derbyFishPose(F.obj,dt,F.sp/1.4,(F.mode==='strike')?1:0);}
 }
 function _d3derbyFishStep(S,db,lure,dt){
 var out=[],i,t=db.t,surf=S.surf;
@@ -66399,18 +66400,22 @@ var deep=Math.min(bedHere-0.06,f.run?bedHere*0.7:bedHere*0.35),y=S.surf-Math.max
 if(f.jump>0){var u=1-f.jump/0.8;y=S.surf+Math.sin(u*Math.PI)*0.42;}
 F.x+=(x-F.x)*Math.min(1,dt*5);F.z+=(z-F.z)*Math.min(1,dt*5);F.y+=(y-F.y)*Math.min(1,dt*(f.jump>0?12:3));
 var away=f.run?a:(a+Math.PI),shake=Math.sin(t*(f.run?11:6)+F.ph)*(f.run?0.5:0.25);
-if(F.obj){F.obj.position.set(F.x,F.y,F.z);F.obj.rotation.set((f.jump>0)?Math.sin(t*14)*0.5:0,-(away+f.side*0.6)+shake,(f.jump>0)?0.7:Math.sin(t*8)*0.15);}
+if(F.obj){F.obj.position.set(F.x,F.y,F.z);var hero=F.obj.userData.hero;if(hero)shake*=0.35;
+F.obj.rotation.set((f.jump>0)?Math.sin(t*14)*0.5:0,-(away+f.side*0.6)+shake,(f.jump>0)?0.7:Math.sin(t*8)*0.15);
+if(hero)_d3derbyFishPose(F.obj,dt,f.run?1:0.55,0.55+0.45*Math.sin(t*5+F.ph));}
 return F;
 }
 function _d3derbyTrophyLit(o){
 if(_D3._noDerbyFill)return;
+var k=1-0.8*_d3derbyDay();k=Math.max(0.2,k);
 o.traverse(function(m){if(!m.isMesh||!m.material||!m.material.color)return;
-var c=m.material.clone();if(c.emissive){c.emissive.copy(c.color).multiplyScalar(0.42);if(c.vertexColors)c.emissive.setRGB(0.30,0.33,0.36);}
+var c=m.material.userData.sw?m.material:m.material.clone();
+if(c.emissive){c.emissive.copy(c.color).multiplyScalar(0.42*k);if(c.vertexColors||c.map)c.emissive.setRGB(0.30*k,0.33*k,0.36*k);if(c.map)c.emissiveMap=c.map;c.needsUpdate=true;}
 m.material=c;m.userData.dbLit=1;});
 }
 function _d3derbyTrophyDrop(o){
 if(!o)return;
-o.traverse(function(m){if(m.isMesh&&m.userData.dbLit&&m.material){m.material.dispose();}});
+o.traverse(function(m){if(m.isMesh&&m.material&&(m.userData.dbLit||m.material.userData.sw))m.material.dispose();});
 if(o.parent)o.parent.remove(o);
 }
 function drift3DDerby(where){
@@ -66436,6 +66441,7 @@ var rnd=(typeof _D3._derbyRnd==='function')?_D3._derbyRnd:Math.random;
 S.db={st:'card',card:'start',sea:!!S.sea,wk:S.sea?_D3_DERBY_SEAK:1,free:false,ri:0,R:null,lure:'crank',lureSt:null,fish:[],hooked:null,fight:null,inp:{reel:false,rod:0,twitch:false},
 pw:0,ct:0,t:0,runs:runs,dir:{x:Math.cos(S.yaw),z:Math.sin(S.yaw)},pos:new window.THREE.Vector3(),day:{kg:0,best:null,rounds:0,fish:0,pts:0},call:'',callT:0,rnd:rnd,ui:0,
 A:_d3derbyActNew(),streak:0,zoom:0,watch:null};
+_d3derbyWorld(S,S.db);
 _d3derbyRoundSet(S,0);
 _d3derbyHUD(S,true);
 return true;
@@ -66444,6 +66450,7 @@ function _d3derbyRoundSet(S,i){
 var db=S.db;db.ri=i;db.R=_d3derbyRoundNew(i,db.wk);db.hooked=null;db.fight=null;db.lureSt=null;
 if(db.lureObj)db.lureObj.visible=false;if(db.line)db.line.visible=false;
 _d3derbyStockSpot(S,db,_D3_DERBY.stock[0]+i*_D3_DERBY.stock[1]);
+_d3derbyCover(S,db);
 }
 function _d3derbyGo(S,how){var db=S.db;if(db.st!=='card')return;
 db.free=(how==='practice');
@@ -66459,6 +66466,7 @@ var k;for(k in (db._lures||{}))if(db._lures[k].parent)db._lures[k].parent.remove
 if(db._spl&&db._spl.parent){db._spl.parent.remove(db._spl);db._spl.geometry.dispose();db._spl.material.dispose();}
 if(db.line&&db.line.parent)db.line.parent.remove(db.line);
 _d3derbyTrophyDrop(db.landObj);
+_d3derbyWorldDrop(db);_d3derbyFishKitDrop();
 _d3derbyHUD(S,false);S.db=null;S.mode='boat';S.sea=false;
 }
 function _d3derbyCall(db,txt,secs,tone){db.call=txt;db.callT=secs||1.6;db.callTone=tone||'';db.ui=0;}
@@ -66580,7 +66588,7 @@ else uw={x:db.pos.x,y:db.pos.y,z:db.pos.z,kind:'lure'};
 break;
 case 'hit':
 db.hitT+=dt;bend=0.45;
-if(db.hooked){db.pos.set(db.hooked.x,db.hooked.y,db.hooked.z);uw={x:db.pos.x,y:db.pos.y,z:db.pos.z,kind:'lure'};}
+if(db.hooked){db.pos.set(db.hooked.x,db.hooked.y,db.hooked.z);uw={x:db.pos.x,y:db.pos.y,z:db.pos.z,kind:'lure'};_d3derbyFishPose(db.hooked.obj,dt,1,1);}
 if(db.hitT>=_d3derbyHookWin(db.hooked?db.hooked.q:0)){var G=db.hooked;if(G){G.mode='flee';G.t=0;G.int=0;}db.hooked=null;db.st='work';db.streak=0;_d3derbyCall(db,'Missed it!',1.6,'bad');_d3derbyFx(db,'miss');_d3derbySay('miss');}
 break;
 case 'fight':
@@ -66601,8 +66609,9 @@ db.lt+=dt;var lu=Math.min(1,db.lt*1.6);bend=0.30;
 if(db.landObj){var o=db.landObj,cp=db._cp||(db._cp=new T.Vector3()),cd=db._cd||(db._cd=new T.Vector3());
 if(!db.landLen){o.rotation.set(0,0,0);o.updateMatrixWorld(true);var bb=new T.Box3().setFromObject(o),sz=bb.getSize(new T.Vector3());db.landLen=Math.max(0.02,sz.x,sz.z);_d3derbyTrophyLit(o);}
 S.cam.updateMatrixWorld(true);S.cam.getWorldPosition(cp);S.cam.getWorldDirection(cd);
-var D=_d3derbyTrophyDist(db.landLen,S.cam.aspect||1,S.cam.fov||58);
-o.position.set(cp.x+cd.x*D,cp.y+cd.y*D-(1-lu)*D*0.6,cp.z+cd.z*D);o.rotation.set(0,-(S.yaw+Math.PI/2)+Math.sin(db.lt*1.1)*0.45,Math.sin(db.lt*9)*0.08*(1-lu));}
+var D=_d3derbyTrophyDist(db.landLen,S.cam.aspect||1,S.cam.fov||58,_d3derbyTrophyShare(((db.catch&&db.catch.kg)||0)/db.wk));
+o.position.set(cp.x+cd.x*D,cp.y+cd.y*D-(1-lu)*D*0.6,cp.z+cd.z*D);o.rotation.set(0,-(S.yaw+Math.PI/2)+Math.sin(db.lt*1.1)*0.45,Math.sin(db.lt*9)*0.08*(1-lu));
+_d3derbyFishPose(o,dt,0.3*(1-lu)+0.08,0.5+0.5*Math.sin(db.lt*4));}
 if(db.lt>3.2){db.catch=null;_d3derbyTrophyDrop(db.landObj);db.landObj=null;db.st='ready';
 if(db.callQ){_d3derbyCall(db,db.callQ,2.6,'good');db.callQ='';_d3derbyHUD(S,true);}}
 break;
@@ -66639,6 +66648,7 @@ _d3derbyHUD(S,true);
 }
 S.rig.rotation.y=-S.yaw;S.cam.rotation.order='YXZ';S.cam.rotation.set(S.pitch,-Math.PI/2,0);
 _d3derbyCam(S,db,uw,dt);
+_d3derbyWorldStep(S,db,dt);
 _d3derbyHUDTick(S);
 }
 function _d3derbyCamPose(p,dir,surf,bed,d,zoom){
@@ -66976,10 +66986,11 @@ var p=100*(+w||0)/(wk||1)*(_D3_DERBY_GRADEK[grade]||1)*(fav?1.2:1)*(1+0.1*Math.m
 return Math.max(10,Math.round(p/10)*10);
 }
 function _d3derbyCountUp(w,t){return Math.round((+w||0)*Math.max(0,Math.min(1,(+t||0)/0.9))*100)/100;}
-function _d3derbyTrophyDist(len,aspect,fov){
+function _d3derbyTrophyDist(len,aspect,fov,share){
 var w=2*Math.tan((+fov||58)*Math.PI/360)*Math.max(0.2,+aspect||1);
-return Math.max(0.12,Math.min(1.6,(+len||0.1)/(0.6*w)));
+return Math.max(0.12,Math.min(1.6,(+len||0.1)/((+share||0.6)*w)));
 }
+function _d3derbyTrophyShare(w){return 0.34+0.32*Math.max(0,Math.min(1,(+w||0)/4));}
 function _d3derbyCue(f,reel,top){
 if(!f)return {txt:'',tone:''};
 if(f.ten>1)return {txt:'EASE OFF!',tone:'bad'};
@@ -67002,6 +67013,206 @@ var u=new window.SpeechSynthesisUtterance(t);u.rate=1.15;u.pitch=1.05;u.volume=M
 try{SS.cancel();}catch(_c){}
 SS.speak(u);return true;
 }catch(_e){return false;}
+}
+function _d3derbyBodyAt(sp,u){
+var U=0.22,Lf=U*sp.L,k=Math.max(0.35,sp.tp+0.45),Hd=0.5*U*sp.d/k,Hw=0.5*U*sp.w/k;
+var e=_d3dbClamp(0.45+1.1*(sp.d/sp.L),0.5,0.95),p=Math.pow(Math.max(0,Math.sin(Math.PI*Math.pow(u,0.70))),e);
+var q=Math.pow(Math.max(0,Math.sin(Math.PI*Math.pow(u,0.62))),0.8),u3=u*u*u;
+var hd=(u<0.22)?Math.pow(u/0.22,0.6):1,hw=(u<0.22)?Math.pow(u/0.22,0.45):1;
+var h=Hd*(0.20*u3+(1-0.20*u3)*p)*hd,w=Hw*(0.13*u3+(1-0.13*u3)*q)*hw,y0=-0.08*Hd*p+0.05*Hd*u*u;
+if(sp.snout&&u<0.3){var f=u/0.3;h*=0.60+0.40*f;w*=0.85+0.15*f;}
+if(sp.down&&u<0.3)y0-=Hd*0.22*(1-u/0.3);
+return {x:Lf*0.5-u*Lf*0.93,y0:y0,h:h,w:w,Lf:Lf,Hd:Hd};
+}
+function _d3derbyBodyGeo(sp){
+var T=window.THREE,N=26,M=8,pos=[],uv=[],idx=[],i,j,s;
+for(s=0;s<2;s++){var sg=s?-1:1,base=pos.length/3;
+for(i=0;i<=N;i++){var u=i/N,B=_d3derbyBodyAt(sp,u);
+for(j=0;j<=M;j++){var th=Math.PI/2-j/M*Math.PI,sn=Math.sin(th),cs=Math.cos(th);
+pos.push(B.x,B.y0+B.h*sn*(sn>0?0.92:1.08),sg*B.w*cs*(1-0.22*Math.max(0,sn)));
+uv.push(0.5-sg*0.49*u,0.5+0.5*sn);}}
+for(i=0;i<N;i++)for(j=0;j<M;j++){var a=base+i*(M+1)+j,b=a+M+1;
+if(sg>0)idx.push(a,b,a+1,b,b+1,a+1);else idx.push(a,a+1,b,b,a+1,b+1);}}
+var g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();
+var nr=g.attributes.normal;for(i=0;i<nr.count;i++){j=i%(M+1);if(j===0||j===M){var nx=nr.getX(i),ny=nr.getY(i),l=Math.hypot(nx,ny)||1;nr.setXYZ(i,nx/l,ny/l,0);}}
+return g;
+}
+function _d3derbyFinGeo(sp){
+var T=window.THREE,P=[],C=[],I=[],col=new T.Color(sp.f),A=function(u){return _d3derbyBodyAt(sp,u);},E=A(1),Lf=E.Lf,Hd=E.Hd;
+var top=function(u){var B=A(u);return B.y0+B.h*0.90;},bot=function(u){var B=A(u);return B.y0-B.h*1.04;};
+var fan=function(pts){var b=P.length/3,i;for(i=0;i<pts.length;i++){var sh=(i===0)?1.25:(pts[i][3]||0.85);P.push(pts[i][0],pts[i][1],pts[i][2]);C.push(col.r*sh,col.g*sh,col.b*sh);}
+for(i=1;i<pts.length-1;i++)I.push(b,b+i,b+i+1);};
+var x0=E.x,y1=E.y0,hp=E.h,L1=Lf*0.25,sp1=Math.max(Hd*1.05,hp*3.2),fk=sp.barbel?0.12:0.55;
+fan([[x0+Lf*0.02,y1,0],[x0,y1+hp,0],[x0-L1*0.55,y1+sp1*0.78,0],[x0-L1,y1+sp1,0,0.6],[x0-L1*0.86,y1+sp1*0.45,0,0.7],[x0-L1*(1-fk*0.6),y1,0,0.75],
+[x0-L1*0.86,y1-sp1*0.45,0,0.7],[x0-L1,y1-sp1,0,0.6],[x0-L1*0.55,y1-sp1*0.78,0],[x0,y1-hp,0]]);
+var dors=function(a,b,ht,sg){var f=function(u){return sg>0?top(u):bot(u);},m=(a+b)/2;
+fan([[A(a).x,f(a),0],[A(a+(b-a)*0.22).x,f(a)+sg*ht,0,0.7],[A(m).x,f(m)+sg*ht*0.82,0,0.7],[A(b).x-Lf*0.02,f(b)+sg*ht*0.36,0,0.65],[A(b).x,f(b),0],[A(m).x,f(m)-sg*Hd*0.04,0]]);};
+if(sp.sail)dors(0.30,0.68,Hd*2.0,1);else if(sp.k==='pike'||sp.k==='barra')dors(0.70,0.86,Hd*0.95,1);else dors(0.36,0.60,Hd*0.80,1);
+if(sp.k==='walleye'||sp.k==='perch'||sp.k==='lmbass'||sp.k==='smbass')dors(0.62,0.80,Hd*0.62,1);
+if(/trout|brook|brown|verm|slash|silver|sail/.test(sp.m||''))dors(0.84,0.895,Hd*0.26,1);
+dors((sp.k==='pike'||sp.k==='barra')?0.72:0.66,0.84,Hd*0.66,-1);
+[1,-1].forEach(function(sg){
+var B=A(0.50),pz=sg*B.w*0.30;fan([[B.x,bot(0.50)+Hd*0.05,pz],[B.x-Lf*0.13,bot(0.50)-Hd*0.36,pz+sg*Hd*0.22,0.65],[B.x-Lf*0.08,bot(0.50)-Hd*0.02,pz,0.8]]);
+var G=A(0.27),gz=sg*G.w*0.93,gy=G.y0-G.h*0.38;
+fan([[G.x,gy,gz],[G.x-Lf*0.18,gy-Hd*0.08,gz+sg*Hd*0.46,0.65],[G.x-Lf*0.15,gy-Hd*0.38,gz+sg*Hd*0.30,0.65],[G.x-Lf*0.02,gy-Hd*0.20,gz,0.85]]);
+});
+var g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(P,3));g.setAttribute('color',new T.Float32BufferAttribute(C,3));g.setIndex(I);g.computeVertexNormals();
+return g;
+}
+var _D3_DERBY_JAWU=0.17;
+function _d3derbyJawGeo(sp){
+var T=window.THREE,N=7,J=4,pos=[],idx=[],i,j,H=_d3derbyBodyAt(sp,_D3_DERBY_JAWU),py=H.y0-H.h*0.55;
+for(i=0;i<=N;i++){var B=_d3derbyBodyAt(sp,i/N*_D3_DERBY_JAWU);
+for(j=-J;j<=J;j++){var th=-Math.PI/2+Math.abs(j)/J*1.2,sg=(j<0)?-1:1;
+pos.push(B.x-H.x,B.y0+B.h*Math.sin(th)*1.14-py-H.h*0.03,sg*B.w*Math.cos(th)*1.06);}}
+for(i=0;i<N;i++)for(j=0;j<2*J;j++){var a=i*(2*J+1)+j,b=a+2*J+1;idx.push(a,a+1,b,b,a+1,b+1);}
+var g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();
+g.userData.piv=[H.x,py];
+return g;
+}
+function _d3derbyTrimGeo(sp){
+var T=window.THREE,P=[],C=[],N=[],I=[],unit=new T.SphereGeometry(1,20,14),up=unit.attributes.position,ui=unit.index.array,c=new T.Color();
+var ball=function(cx,cy,cz,rx,ry,rz,hex){var b=P.length/3,i;c.setHex(hex);
+for(i=0;i<up.count;i++){var x=up.getX(i),y=up.getY(i),z=up.getZ(i);P.push(cx+x*rx,cy+y*ry,cz+z*rz);N.push(x,y,z);C.push(c.r,c.g,c.b);}
+for(i=0;i<ui.length;i++)I.push(b+ui[i]);};
+var E=_d3derbyBodyAt(sp,0.13),er=E.Hd*((sp.k==='walleye')?0.24:0.17),M=_d3derbyBodyAt(sp,0.08);
+[1,-1].forEach(function(sg){var ez=sg*E.w*0.84,ey=E.y0+E.h*0.24;
+ball(E.x,ey,ez,er,er,er*0.55,sp.eye||0xb39a52);ball(E.x,ey,ez+sg*er*0.36,er*0.56,er*0.56,er*0.30,0x07090b);
+if(sp.barbel){ball(M.x+E.Lf*0.03,M.y0-M.h*0.9,sg*M.w*0.7,E.Lf*0.10,er*0.10,er*0.10,0x4a4034);ball(M.x+E.Lf*0.01,M.y0-M.h*1.3,sg*M.w*0.4,E.Lf*0.06,er*0.09,er*0.09,0x4a4034);}});
+unit.dispose();
+var g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(P,3));g.setAttribute('normal',new T.Float32BufferAttribute(N,3));g.setAttribute('color',new T.Float32BufferAttribute(C,3));g.setIndex(I);
+return g;
+}
+function _d3derbyFishInk(x,sp,W,H){
+var yy,xx,row=0;x.lineWidth=0.3;x.strokeStyle='rgba(0,0,0,0.16)';
+for(yy=H*0.08;yy<H*0.84;yy+=2.1,row++)for(xx=(row%2)*1.3;xx<W;xx+=2.6){if(Math.abs(xx-W/2)<W*0.085)continue;x.beginPath();x.arc(xx,yy,1.45,-1.0,1.0);x.stroke();}
+x.strokeStyle='rgba(255,255,255,0.07)';for(yy=H*0.08,row=0;yy<H*0.84;yy+=2.1,row++)for(xx=(row%2)*1.3+0.5;xx<W;xx+=2.6){if(Math.abs(xx-W/2)<W*0.085)continue;x.beginPath();x.arc(xx,yy,1.45,-0.5,0.5);x.stroke();}
+x.fillStyle='rgba(0,0,0,0.22)';x.fillRect(0,H*0.465,W*0.41,0.5);x.fillRect(W*0.59,H*0.465,W*0.41,0.5);
+x.fillStyle='rgba(255,255,255,0.10)';x.fillRect(0,H*0.60,W,H*0.14);
+x.lineWidth=0.9;x.strokeStyle='rgba(0,0,0,0.42)';
+x.beginPath();x.arc(W*0.5-W*0.035,H*0.52,W*0.062,Math.PI-1.15,Math.PI+1.15);x.stroke();
+x.beginPath();x.arc(W*0.5+W*0.035,H*0.52,W*0.062,-1.15,1.15);x.stroke();
+x.fillStyle='rgba(58,14,16,0.96)';x.fillRect(W*0.5-W*0.49*_D3_DERBY_JAWU*0.86,H*0.74,W*0.98*_D3_DERBY_JAWU*0.86,H*0.26);
+}
+function _d3derbyBendHook(sh){
+sh.uniforms.uSw=this.userData.sw;
+sh.vertexShader='uniform vec4 uSw;\n'+sh.vertexShader.replace('#include <begin_vertex>',
+'#include <begin_vertex>\n float dbS=clamp((uSw.w-position.x)/(2.0*uSw.w),0.0,1.4);transformed.z+=sin(uSw.x-dbS*uSw.z)*uSw.y*dbS*dbS;');
+}
+function _d3derbyBendMat(m,sw){m.userData.sw=sw;m.onBeforeCompile=_d3derbyBendHook;m.customProgramCacheKey=function(){return 'dbBend';};return m;}
+function _d3derbyFishKit(sp){
+var K=_D3._dbFishKit||(_D3._dbFishKit={}),T=window.THREE;
+if(!K[sp.k])K[sp.k]={body:_d3derbyBodyGeo(sp),fins:_d3derbyFinGeo(sp),trim:_d3derbyTrimGeo(sp),jaw:_d3derbyJawGeo(sp),
+trimM:new T.MeshStandardMaterial({vertexColors:true,roughness:0.22,metalness:0.1}),
+jawM:new T.MeshStandardMaterial({color:new T.Color(sp.s).lerp(new T.Color(sp.y),0.7).multiplyScalar(0.86),roughness:0.45,metalness:0.12,side:T.DoubleSide})};
+return K[sp.k];
+}
+function _d3derbyFishKitDrop(){
+var K=_D3._dbFishKit||{},k,X=_D3._fishTex||{};
+for(k in K){K[k].body.dispose();K[k].fins.dispose();K[k].trim.dispose();K[k].jaw.dispose();K[k].trimM.dispose();K[k].jawM.dispose();}
+_D3._dbFishKit={};
+for(k in X)if(k.indexOf('@')>0){X[k].dispose();delete X[k];}
+}
+function _d3derbyFishModel(kind){
+var sp=_d3fishSpec(kind);
+if(_D3._noDerbyHero)return _d3fishMesh(sp.k);
+try{
+var T=window.THREE,K=_d3derbyFishKit(sp),f=new T.Group(),sw={value:new T.Vector4(0,0,4.4,0.11*sp.L)};
+f.add(new T.Mesh(K.body,_d3derbyBendMat(new T.MeshStandardMaterial({map:_d3fishTex(sp,4),roughness:0.34,metalness:0.18}),sw)));
+f.add(new T.Mesh(K.fins,_d3derbyBendMat(new T.MeshStandardMaterial({vertexColors:true,roughness:0.6,transparent:true,opacity:0.86,side:T.DoubleSide,depthWrite:false}),sw)));
+f.add(new T.Mesh(K.trim,K.trimM));
+var piv=new T.Group(),pv=K.jaw.userData.piv,E=_d3derbyBodyAt(sp,0.2);piv.position.set(pv[0],pv[1],0);piv.add(new T.Mesh(K.jaw,K.jawM));f.add(piv);
+f.userData.fish=sp.k;f.userData.hero=1;f.userData.sw=sw;f.userData.jaw=piv;f.userData.amp=E.Lf*0.13;
+return f;
+}catch(_e){try{if(window.console&&console.warn)console.warn('[HighWall] derby fish model failed:',_e&&_e.message);}catch(_){}return _d3fishMesh(sp.k);}
+}
+function _d3derbyFishPose(o,dt,sp,open){
+var ud=o&&o.userData;if(!ud||!ud.sw)return;
+var v=ud.sw.value,s=Math.max(0,Math.min(1,+sp||0));
+v.x+=dt*(3.5+s*13);v.y+=(ud.amp*(0.22+0.78*s)-v.y)*Math.min(1,dt*5);
+if(ud.jaw)ud.jaw.rotation.z+=(-0.42*Math.max(0,Math.min(1,+open||0))-ud.jaw.rotation.z)*Math.min(1,dt*10);
+}
+function _d3derbyDay(){var n=(_D3&&typeof _D3.night==='number')?Math.max(0,Math.min(1,_D3.night)):0;return (_D3&&_D3.dusk)?0.45:(1-0.8*n);}
+function _d3derbyCaustic(x,z,t){
+var a=Math.sin(x+Math.sin(z*1.3+t*0.7)*1.6+t*0.5),b=Math.sin(z*1.1+Math.sin(x*0.9-t*0.6)*1.7-t*0.4),c=Math.sin((x+z)*0.8+Math.sin((x-z)*1.2+t*0.5)*1.4);
+return Math.pow(1-Math.abs((a+b+c)/3),6);
+}
+function _d3derbyWorld(S,db){
+if(db.world||_D3._noDerbyWorld)return db.world||null;
+var T=window.THREE,W=db.world={g:new T.Group(),shafts:[],t:0},tex=_d3diveTex(),i,n=_D3.lite?5:9;
+W.g.userData.derby=1;W.g.userData.noMerge=true;W.g.visible=false;
+for(i=0;i<n;i++){var m=new T.Mesh(new T.PlaneGeometry(1,1),new T.MeshBasicMaterial({map:tex,transparent:true,opacity:0.3,depthWrite:false,fog:false,blending:T.AdditiveBlending,color:0xeafaff,side:T.DoubleSide}));
+m.userData={a:i*2.399,r:1.3+(i%4)*0.8,w:0.22+((i*7)%5)*0.05,lean:((i%3)-1)*0.17};m.renderOrder=880;W.g.add(m);W.shafts.push(m);}
+var N=_D3.lite?130:320,pos=new Float32Array(N*3),sd=7717,rr=function(){sd=(sd*9301+49297)%233280;return sd/233280;};
+for(i=0;i<N;i++){pos[i*3]=rr()*8;pos[i*3+1]=rr()*2.6;pos[i*3+2]=rr()*8;}
+var pg=new T.BufferGeometry();pg.setAttribute('position',new T.Float32BufferAttribute(pos,3));
+var pm=new T.PointsMaterial({map:tex,size:0.045,transparent:true,opacity:0.55,depthWrite:false,color:0xd8f0f4,sizeAttenuation:true,fog:false});
+W.mo={value:new T.Vector4(0,0,0,0)};pm.userData.mo=W.mo;
+pm.onBeforeCompile=function(sh){sh.uniforms.uMo=this.userData.mo;
+sh.vertexShader='uniform vec4 uMo;\n'+sh.vertexShader.replace('#include <begin_vertex>',
+'vec3 transformed=vec3(mod(position.x+uMo.z*0.03-uMo.x+4.0,8.0)-4.0+uMo.x,uMo.w-0.05-mod(position.y+uMo.z*0.012,2.6),mod(position.z+uMo.z*0.02-uMo.y+4.0,8.0)-4.0+uMo.y);');};
+pm.customProgramCacheKey=function(){return 'dbMotes';};
+W.motes=new T.Points(pg,pm);W.motes.frustumCulled=false;W.motes.renderOrder=881;W.g.add(W.motes);
+W.win=new T.Mesh(new T.CircleGeometry(1,28),new T.MeshBasicMaterial({map:tex,transparent:true,opacity:0.6,depthWrite:false,fog:false,blending:T.AdditiveBlending,color:0xbdf0ff,side:T.DoubleSide}));
+W.win.rotation.x=Math.PI/2;W.win.renderOrder=879;W.g.add(W.win);
+W.top=new T.Mesh(new T.CircleGeometry(70,32),new T.MeshBasicMaterial({color:0x9be0d6,side:T.DoubleSide}));W.top.rotation.x=Math.PI/2;W.g.add(W.top);
+var R=_D3_DERBY.cast.min+_D3_DERBY.cast.span+1.6,st=0.34,nn=Math.ceil(2*R/st),P=[],A=[],I=[],ix,iz,any=0;
+for(iz=0;iz<=nn;iz++)for(ix=0;ix<=nn;ix++){var x=S.c0.x-R+ix*st,z=S.c0.z-R+iz*st,dep=S.sea?_d3derbySeaDepth(x,z):((typeof _d3inLake==='function'&&_d3inLake(x,z))?S.surf-_d3drawnH(x,z):0);
+var ok=(dep>0.12&&dep<5)?1:0;any+=ok;P.push(x,S.surf-Math.max(0,Math.min(5,dep))+0.014,z);A.push(ok);}
+for(iz=0;iz<nn;iz++)for(ix=0;ix<nn;ix++){var a=iz*(nn+1)+ix,b=a+nn+1;I.push(a,b,a+1,b,b+1,a+1);}
+if(any>8){var cg=new T.BufferGeometry();cg.setAttribute('position',new T.Float32BufferAttribute(P,3));cg.setAttribute('aOn',new T.Float32BufferAttribute(A,1));cg.setIndex(I);cg.computeVertexNormals();
+W.cu={uT:{value:0},uSurf:{value:S.surf},uAmt:{value:0.7},uFog:{value:0.2},uCol:{value:new T.Color(0xcdf3ff)}};
+W.caus=new T.Mesh(cg,new T.ShaderMaterial({uniforms:W.cu,transparent:true,depthWrite:false,blending:T.AdditiveBlending,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2,
+vertexShader:'attribute float aOn;varying vec3 vP;varying float vOn;varying float vD;void main(){vP=position;vOn=aOn*smoothstep(0.80,0.96,normal.y);vec4 mv=modelViewMatrix*vec4(position,1.0);vD=length(mv.xyz);gl_Position=projectionMatrix*mv;}',
+fragmentShader:'uniform float uT;uniform float uSurf;uniform float uAmt;uniform float uFog;uniform vec3 uCol;varying vec3 vP;varying float vOn;varying float vD;void main(){'+
+'float x=vP.x*9.0,z=vP.z*9.0,t=uT;float a=sin(x+sin(z*1.3+t*0.7)*1.6+t*0.5),b=sin(z*1.1+sin(x*0.9-t*0.6)*1.7-t*0.4),c=sin((x+z)*0.8+sin((x-z)*1.2+t*0.5)*1.4);'+
+'float v=pow(1.0-abs((a+b+c)/3.0),6.0),dep=uSurf-vP.y;float f=smoothstep(0.1,0.45,dep)*exp(-dep*0.32)*exp(-vD*uFog*1.15);gl_FragColor=vec4(uCol*v*f*uAmt*vOn,1.0);}'}));
+W.caus.frustumCulled=false;W.caus.renderOrder=878;W.g.add(W.caus);}
+_D3.scene.add(W.g);
+return W;
+}
+function _d3derbyWorldStep(S,db,dt){
+var W=db.world;if(!W)return;
+var on=!!S.uwOn&&!!_D3._uwCam;W.g.visible=on;if(!on)return;
+var c=_D3._uwCam.position,day=_d3derbyDay(),col=Math.max(0.6,Math.min(_D3_DERBY.col,_d3derbyDepthAt(S,c.x,c.z)||_D3_DERBY.col)),i;W.t+=dt;
+for(i=0;i<W.shafts.length;i++){var s=W.shafts[i],u=s.userData,dx=Math.cos(u.a)*u.r+Math.sin(W.t*0.11+i)*0.5,dz=Math.sin(u.a)*u.r+Math.cos(W.t*0.09+i*1.7)*0.5,d=Math.hypot(dx,dz);
+s.position.set(c.x+dx,S.surf-col*0.5,c.z+dz);s.scale.set(u.w*col,col,1);s.rotation.set(0,Math.atan2(-dx,-dz),u.lean);
+var far=1-Math.min(1,d/5.2);s.material.opacity=0.9*day*Math.pow(far,1.3)*Math.max(0,Math.min(1,(d-0.5)/1.2))*(0.75+0.25*Math.sin(W.t*0.8+i*2.1));s.visible=s.material.opacity>0.006;}
+W.mo.value.set(c.x,c.z,W.t,S.surf);W.motes.material.opacity=0.25+0.3*day;
+W.top.position.set(c.x,S.surf-0.006,c.z);W.top.material.color.setRGB(0.05+0.42*day,0.16+0.64*day,0.20+0.60*day);
+var up=Math.max(0.15,S.surf-c.y);W.win.scale.setScalar(Math.max(0.55,up*1.7+0.35));W.win.position.set(c.x,S.surf-0.03,c.z);W.win.material.opacity=0.55*day;
+if(W.caus){W.cu.uT.value=W.t*1.35;W.cu.uAmt.value=0.72*day;W.cu.uFog.value=(_D3.diveFog&&_D3.diveFog.density)||0.2;}
+}
+function _d3derbyCover(S,db){
+_d3derbyCoverDrop(db);if(_D3._noDerbyWorld)return 0;
+var T=window.THREE,g=db.cover=new T.Group(),n=0,wood=_mat(0x3a2e22,{r:0.92}),bark=_mat(0x2a221a,{r:0.95}),rock=_mat(0x58625c,{r:0.9,flat:true}),moss=_mat(0x3f5a34,{r:0.95,flat:true});
+g.userData.derby=1;g.userData.noMerge=true;
+db.fish.slice().sort(function(a,b){return b.q-a.q;}).forEach(function(F){
+if(n>=7||!(F.q>0.33))return;
+var real=S.sea?_d3derbySeaDepth(F.hx,F.hz):(S.surf-_d3drawnH(F.hx,F.hz));if(!(real>0.35&&real<=_D3_DERBY.col+0.4))return;
+var h=Math.abs(Math.sin(F.hx*12.9898+F.hz*78.233)*43758.5453)%1,a=h*6.2832,bx=F.hx+Math.cos(a)*0.28,bz=F.hz+Math.sin(a)*0.28,p=new T.Group(),k=0.8+h*0.5,m;
+if(!S.sea&&!_d3inLake(bx,bz)){bx=F.hx;bz=F.hz;}
+var by=S.sea?(S.surf-_d3derbySeaDepth(bx,bz)):_d3drawnH(bx,bz);
+if(h<0.4){
+m=new T.Mesh(new T.CylinderGeometry(0.075*k,0.10*k,1.5*k,16),wood);m.rotation.set(0,0,1.42);m.position.y=0.10*k;p.add(m);
+m=new T.Mesh(new T.CylinderGeometry(0.03*k,0.05*k,0.55*k,16),bark);m.rotation.set(0.5,0,0.6);m.position.set(0.3*k,0.3*k,0.08*k);p.add(m);
+m=new T.Mesh(new T.CylinderGeometry(0.025*k,0.04*k,0.4*k,16),bark);m.rotation.set(-0.7,0,-0.4);m.position.set(-0.35*k,0.24*k,-0.1*k);p.add(m);
+}else if(h<0.7){
+m=new T.Mesh(new T.CylinderGeometry(0.13*k,0.19*k,0.34*k,16),wood);m.position.y=0.17*k;p.add(m);
+for(var r=0;r<5;r++){m=new T.Mesh(new T.CylinderGeometry(0.02*k,0.055*k,0.42*k,16),bark);m.rotation.set(0,0,1.25);var ra=r*1.2566+h;m.position.set(Math.cos(ra)*0.26*k,0.05*k,Math.sin(ra)*0.26*k);m.rotation.y=-ra;p.add(m);}
+}else for(var q=0;q<3;q++){
+m=new T.Mesh(new T.IcosahedronGeometry((0.16-q*0.035)*k,1),q===1?moss:rock);m.scale.set(1.2,0.75,1);m.rotation.set(q*1.1,h*5+q,0);m.position.set((q-1)*0.24*k,(0.09-q*0.02)*k,(q%2?0.12:-0.08)*k);p.add(m);}
+p.position.set(bx,by,bz);p.rotation.y=a*2.7;p.traverse(function(o){if(o.isMesh){o.castShadow=false;o.userData.noMerge=true;}});g.add(p);n++;});
+_D3.scene.add(g);
+return n;
+}
+function _d3derbyCoverDrop(db){
+var g=db&&db.cover;if(!g)return;
+g.traverse(function(o){if(o.isMesh&&o.geometry)o.geometry.dispose();});if(g.parent)g.parent.remove(g);db.cover=null;
+}
+function _d3derbyWorldDrop(db){
+_d3derbyCoverDrop(db);var W=db&&db.world;if(!W)return;
+W.g.traverse(function(o){if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();});if(W.g.parent)W.g.parent.remove(W.g);db.world=null;
 }
 var _D3_DERBY_SEAK=6;
 var _D3_DERBY_SEA=[
