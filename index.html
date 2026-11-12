@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='860446c';
+var RCG_BUILD='496766e';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -59647,7 +59647,8 @@ weather:{t:'Weather Station',rows:[
 {i:'\ud83c\udf00',l:'Natural disaster',d:'A tornado that crosses the map, or a hurricane with an eye that passes over you',pick:'event'}]},
 fish:{t:'Fish',rows:[
 {i:'\u26f5',l:'From a boat',d:'On the lake \u2014 cast, watch the float, set the hook and play it',menu:function(){drift3DFish();}},
-{i:'\u3030\ufe0f',l:'On the stream',d:'From the bank of a creek \u2014 a lure, live bait or a fly; the trout in its pools rise to it',menu:function(){drift3DStreamFish();}}]},
+{i:'\u3030\ufe0f',l:'On the stream',d:'From the bank of a creek \u2014 a lure, live bait or a fly; the trout in its pools rise to it',menu:function(){drift3DStreamFish();}},
+{i:'\ud83c\udfc6',l:'Fishing derby',d:'Against the clock on the lake \u2014 cast a lure, work it, set the hook and fight the fish to the boat; three rounds, a weight to land in each',menu:function(){drift3DDerby();}}]},
 dive:{t:'Dive in',rows:[
 {i:'\ud83e\udd3f',l:'Deepest water',d:'Whatever is deepest on this map',menu:function(){driftDiveIn('auto');}},
 {i:'\ud83d\udca7',l:'Lake',d:_d3diveHas('lake'),menu:function(){driftDiveIn('lake');}},
@@ -61805,7 +61806,11 @@ var _D3_CPUFF_FS=[
 '  #include <tonemapping_fragment>',
 '  #include <encodings_fragment>',
 '  #ifdef USE_FOG',
+'  #ifdef FOG_EXP2',
+'  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,(1.0-exp(-fogDensity*fogDensity*fogDepth*fogDepth))*uFogK);',
+'  #else',
 '  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,smoothstep(fogNear,fogFar,fogDepth)*uFogK);',
+'  #endif',
 '  #endif',
 '}'].join('\n');
 function _d3cloudPuffArm(n,U){
@@ -61935,7 +61940,11 @@ var _D3_CSHEET_FS=[
 '  #include <tonemapping_fragment>',
 '  #include <encodings_fragment>',
 '  #ifdef USE_FOG',
+'  #ifdef FOG_EXP2',
+'  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,(1.0-exp(-fogDensity*fogDensity*fogDepth*fogDepth))*uFogK);',
+'  #else',
 '  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,smoothstep(fogNear,fogFar,uOrtho>0.5?fogDepth:vA.z)*uFogK);',
+'  #endif',
 '  #endif',
 '}'].join('\n');
 function _d3cloudSheetArm(U){
@@ -62355,7 +62364,11 @@ var _D3_RSHAFT_FS=[
 '  #include <tonemapping_fragment>',
 '  #include <encodings_fragment>',
 '  #ifdef USE_FOG',
+'  #ifdef FOG_EXP2',
+'  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,(1.0-exp(-fogDensity*fogDensity*fogDepth*fogDepth))*uFogK);',
+'  #else',
 '  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,smoothstep(fogNear,fogFar,fogDepth)*uFogK);',
+'  #endif',
 '  #endif',
 '}'].join('\n');
 function _d3rainShaftArm(n,U){
@@ -65729,6 +65742,7 @@ function _d3fishStep(dt){
 var S=_D3&&_D3.fishing;if(!S||!S.on)return;
 var T=window.THREE;
 if(dt>0.1)dt=0.1;
+if(S.mode==='derby'&&S.db){_d3derbyStep(S,dt);return;}
 S.t=(S.t||0)+dt;
 var surf=S.surf;
 var stream=(S.mode==='stream'),wl=stream?S.wl:surf;
@@ -65916,6 +65930,7 @@ try{_d3fishEnd();}catch(_){}}
 function _d3fishEnd(){
 var S=_D3&&_D3.fishing;if(!S||!S.on)return;
 S.on=false;S.state='idle';S.reel=false;
+try{if(S.db)_d3derbyEnd(S);}catch(_db){}
 try{if(typeof _d3fishUWSet==='function')_d3fishUWSet(false);}catch(_uw){}
 try{if(S.mode==='stream'&&typeof _d3sfRelease==='function')_d3sfRelease(S);}catch(_r){}
 if(S.rig)S.rig.visible=false;
@@ -65943,6 +65958,7 @@ _d3fishHUD();
 }
 function _d3fishStrike(){
 var S=_D3.fishing;if(!S||!S.on)return;
+if(S.mode==='derby'){if(S.db&&S.db.st==='hit')_d3derbyHook(S);return;}
 if(S.state==='idle'){_d3fishCast();return;}
 if(S.mode==='stream'&&typeof _d3sfStrike==='function'&&_d3sfStrike(S))return;
 if(S.state==='wait'){
@@ -65966,6 +65982,7 @@ S.reel=!!on;
 }
 function _d3fishKey(e,down){
 var S=_D3&&_D3.fishing;if(!S||!S.on)return false;
+if(S.mode==='derby')return _d3derbyKey(e,down);
 var k=(e.key||'').toLowerCase();
 if(k===' '||k==='enter'){if(down)_d3fishStrike();return true;}
 if(k==='r'||k==='arrowdown'){_d3fishReel(down);return true;}
@@ -65973,9 +65990,9 @@ if(S.mode==='stream'&&(k==='1'||k==='2'||k==='3')){if(down&&typeof _d3sfTackle==
 if(k==='escape'&&down){_d3fishEnd();return true;}
 return false;
 }
-function _d3fishDown(e){var S=_D3.fishing;S.lx=e.clientX;S.ly=e.clientY;S.look=true;S.moved=false;}
+function _d3fishDown(e){var S=_D3.fishing;if(S.mode==='derby'){_d3derbyDown(e);return;}S.lx=e.clientX;S.ly=e.clientY;S.look=true;S.moved=false;}
 function _d3fishMove(e){
-var S=_D3.fishing;if(!S.look)return;
+var S=_D3.fishing;if(S.mode==='derby'){_d3derbyMove(e);return;}if(!S.look)return;
 var dx=e.clientX-S.lx,dy=e.clientY-S.ly;S.lx=e.clientX;S.ly=e.clientY;
 if(Math.abs(dx)>2||Math.abs(dy)>2)S.moved=true;
 S.yaw+=dx*0.0045;
@@ -65983,12 +66000,13 @@ S.pitch=Math.max(-0.9,Math.min(0.55,S.pitch-dy*0.0040));
 }
 function _d3fishUp(){
 var S=_D3.fishing;if(!S)return;
+if(S.mode==='derby'){_d3derbyUp();return;}
 if(S.look&&!S.moved)_d3fishStrike();
 S.look=false;
 }
 function _d3fishHUD(on){
 var el=document.getElementById('d3FishHUD');
-if(on===false){if(el)el.style.display='none';return;}
+if(on===false||(_D3.fishing&&_D3.fishing.mode==='derby')){if(el)el.style.display='none';return;}
 if(!el){
 el=document.createElement('div');el.id='d3FishHUD';
 el.style.cssText='position:fixed;left:0;right:0;z-index:2147482000;display:flex;'+
@@ -66067,6 +66085,642 @@ f.style.background=(S.tension>0.72)?'#e0523a':((S.tension>0.42)?'#e0a83a':'#4fd0
 }
 var m=document.getElementById('d3FishMsg');
 if(m&&S.msgT<=0)m.textContent=S.run?'It is running - stop reeling!':'Reel it in';
+}
+var _D3_DERBY={
+cast:{min:2.2,span:4.6,sweep:1.1,flight:0.9,need:1.6},
+col:2.4,
+sense:2.1,
+hook:0.95,
+fight:{reel:0.62,land:0.45,max:9.5,over:0.55,slack:1.8,band:[0.25,0.78]},
+stock:[12,2],
+rise:[5,8],
+bonus:[[0.5,8],[1.5,14],[3,20],[1e9,28]],
+rounds:[{k:'dawn',name:'First light',time:90,goal:2.0},{k:'noon',name:'High sun',time:80,goal:4.5},{k:'dusk',name:'Last light',time:75,goal:8.0}]
+};
+var _D3_DERBY_LURES=[
+{k:'popper', name:'Popper', kind:'top', spd:0.75,sink:0, dive:0, steady:0.20,col:0xf2c21c,col2:0xd8371f,d:'Stays on top. Twitch it, then let it sit.'},
+{k:'crank', name:'Crankbait',kind:'diver', spd:0.95,sink:-0.22,dive:1.15,steady:0.75,col:0x3f8f4a,col2:0xe8e2c8,d:'Floats at rest, digs deeper the faster you reel.'},
+{k:'spinner',name:'Spinner', kind:'spinner',spd:0.90,sink:0.26,dive:0, steady:0.85,col:0xc8ccd0,col2:0xd0452c,d:'Sinks at rest. A steady reel holds its depth.'},
+{k:'jig', name:'Jig', kind:'jig', spd:0.70,sink:0.62,dive:0, steady:0.15,col:0x2a2420,col2:0x7a3fa0,d:'Drops to the bottom. Hop it with a twitch.'}
+];
+function _d3derbyLure(k){var L=_D3_DERBY_LURES,i;for(i=0;i<L.length;i++)if(L[i].k===k)return L[i];return L[1];}
+var _D3_DERBY_PREF={
+lmbass: {lure:{top:0.9,diver:0.8,spinner:0.7,jig:0.8},dep:[0.05,0.98],spd:[0.15,0.80],pause:0.7,kg:[0.4,4.6],str:1.00,jump:0.9},
+smbass: {lure:{top:0.6,diver:0.9,spinner:0.8,jig:0.7},dep:[0.25,0.90],spd:[0.30,0.95],pause:0.4,kg:[0.3,2.8],str:1.20,jump:1.0},
+pike: {lure:{top:0.5,diver:0.8,spinner:1.0,jig:0.3},dep:[0.05,0.60],spd:[0.45,1.00],pause:0.2,kg:[1.0,9.5],str:1.10,jump:0.4},
+walleye: {lure:{top:0.1,diver:0.7,spinner:0.6,jig:1.0},dep:[0.55,1.00],spd:[0.10,0.55],pause:0.6,kg:[0.5,4.2],str:0.80,jump:0.1},
+perch: {lure:{top:0.2,diver:0.5,spinner:0.9,jig:0.8},dep:[0.20,0.80],spd:[0.20,0.70],pause:0.4,kg:[0.1,0.8],str:0.70,jump:0.1},
+bluegill:{lure:{top:0.8,diver:0.3,spinner:0.7,jig:0.6},dep:[0.00,0.50],spd:[0.10,0.50],pause:0.8,kg:[0.08,0.5],str:0.70,jump:0.2},
+crappie: {lure:{top:0.2,diver:0.5,spinner:0.6,jig:0.9},dep:[0.25,0.80],spd:[0.10,0.50],pause:0.7,kg:[0.15,0.9],str:0.60,jump:0.1},
+rainbow: {lure:{top:0.5,diver:0.6,spinner:1.0,jig:0.4},dep:[0.10,0.80],spd:[0.35,0.95],pause:0.2,kg:[0.3,3.2],str:1.10,jump:1.0},
+brook: {lure:{top:0.5,diver:0.5,spinner:0.9,jig:0.4},dep:[0.20,0.90],spd:[0.30,0.85],pause:0.3,kg:[0.2,1.6],str:1.00,jump:0.7},
+brown: {lure:{top:0.4,diver:0.8,spinner:0.8,jig:0.5},dep:[0.25,0.95],spd:[0.25,0.85],pause:0.4,kg:[0.3,4.0],str:1.05,jump:0.6},
+catfish: {lure:{top:0.0,diver:0.3,spinner:0.3,jig:0.9},dep:[0.75,1.00],spd:[0.00,0.35],pause:0.9,kg:[0.5,5.5],str:0.90,jump:0.0},
+laketrout:{lure:{top:0.1,diver:0.9,spinner:0.7,jig:0.8},dep:[0.60,1.00],spd:[0.25,0.80],pause:0.3,kg:[0.8,8.0],str:1.05,jump:0.1},
+cutthroat:{lure:{top:0.6,diver:0.6,spinner:0.9,jig:0.4},dep:[0.10,0.75],spd:[0.30,0.90],pause:0.3,kg:[0.3,2.6],str:1.05,jump:0.8},
+kokanee: {lure:{top:0.2,diver:0.6,spinner:0.9,jig:0.5},dep:[0.25,0.80],spd:[0.35,0.95],pause:0.2,kg:[0.2,1.4],str:0.95,jump:0.8},
+whitefish:{lure:{top:0.1,diver:0.4,spinner:0.6,jig:0.9},dep:[0.50,1.00],spd:[0.10,0.55],pause:0.6,kg:[0.3,2.2],str:0.75,jump:0.1},
+grayling:{lure:{top:0.8,diver:0.4,spinner:0.8,jig:0.4},dep:[0.05,0.60],spd:[0.20,0.75],pause:0.5,kg:[0.2,1.3],str:0.90,jump:0.6},
+sucker: {lure:{top:0.0,diver:0.2,spinner:0.3,jig:0.8},dep:[0.75,1.00],spd:[0.00,0.35],pause:0.8,kg:[0.4,2.8],str:0.85,jump:0.0},
+burbot: {lure:{top:0.0,diver:0.3,spinner:0.2,jig:1.0},dep:[0.80,1.00],spd:[0.00,0.30],pause:0.9,kg:[0.6,6.0],str:0.85,jump:0.0},
+chub: {lure:{top:0.5,diver:0.5,spinner:0.8,jig:0.5},dep:[0.10,0.70],spd:[0.20,0.75],pause:0.4,kg:[0.15,1.2],str:0.75,jump:0.3}
+};
+var _D3_DERBY_ANY={lure:{top:0.4,diver:0.6,spinner:0.6,jig:0.5},dep:[0.1,0.9],spd:[0.2,0.8],pause:0.4,kg:[0.2,1.5],str:0.9,jump:0.3};
+function _d3derbyPref(k){return _D3_DERBY_PREF[k]||_D3_DERBY_ANY;}
+function _d3dbClamp(v,a,b){return v<a?a:(v>b?b:v);}
+function _d3dbBand(v,lo,hi,soft){if(v>=lo&&v<=hi)return 1;var d=(v<lo)?lo-v:v-hi;return _d3dbClamp(1-d/(soft||0.2),0,1);}
+function _d3derbyPower(t){var w=_D3_DERBY.cast.sweep,u=((t%(2*w))+2*w)%(2*w);return u<=w?u/w:2-u/w;}
+function _d3derbyReach(p,run){
+var C=_D3_DERBY.cast;if(!(run>=C.need))return 0;
+var hi=Math.min(C.min+C.span,run-0.25),lo=Math.min(C.min,hi*0.5);
+return lo+(hi-lo)*_d3dbClamp(+p||0,0,1);
+}
+function _d3derbyRunAt(runs,a){
+var n=runs?runs.length:0;if(!n)return 0;
+var i=Math.round(a/6.283185307*n)%n;if(i<0)i+=n;
+return runs[i];
+}
+function _d3derbyBestYaw(runs){
+var n=runs?runs.length:0,best=-1,bi=0,i,j,w=Math.max(1,Math.round(n*0.08));
+for(i=0;i<n;i++){var s=0;for(j=-w;j<=w;j++)s+=Math.min(_D3_DERBY.cast.min+_D3_DERBY.cast.span,runs[((i+j)%n+n)%n]);if(s>best){best=s;bi=i;}}
+return {yaw:n?bi/n*6.283185307:0,run:n?runs[bi]:0};
+}
+function _d3derbyLureStep(L,st,inp,dt,bed){
+var reel=_d3dbClamp(+inp.reel||0,0,1),tw=!!inp.twitch,v=reel*L.spd+(tw?0.5:0),dep=st.dep,d0=st.d;
+st.d=Math.max(0,st.d-v*dt);
+if(L.kind==='top')dep=0;
+else if(L.kind==='diver'){var want=L.dive*reel;dep+=(want>dep)?Math.min(want-dep,0.85*dt):-Math.min(dep-want,-L.sink*dt);}
+else if(L.kind==='spinner')dep+=L.sink*(1-reel*1.25)*dt;
+else{dep+=(L.sink-reel*0.45)*dt;if(tw)dep-=0.28;}
+dep=Math.min(dep,st.d*1.15+0.04);
+var floor=Math.max(0.02,(+bed||0)-0.03);st.bot=(L.kind!=='top'&&dep>=floor);
+st.dep=_d3dbClamp(dep,0,floor);
+st.spd=(d0-st.d)/Math.max(dt,1e-4);
+var steady=L.steady*_d3dbClamp(reel*1.4,0,1);
+st.act=tw?1:Math.max(steady,(st.act||0)-dt*0.9);
+st.still=(reel<0.05&&!tw)?(st.still||0)+dt:0;
+return st;
+}
+function _d3derbyAppeal(P,L,st,bed){
+var like=P.lure[L.kind]||0;if(!(like>0))return 0;
+var fr=(bed>0)?st.dep/bed:0,dk=_d3dbBand(fr,P.dep[0],P.dep[1],0.25);
+var sp=_d3dbBand(st.spd,P.spd[0],P.spd[1],0.3),paused=(st.still>0.15&&st.still<2.2)?P.pause:0;
+var life=Math.max(st.act||0,paused);
+return _d3dbClamp(like*dk*Math.max(sp,paused)*(0.35+0.65*life),0,1);
+}
+function _d3derbyFishMind(F,a,dt,rnd){
+var wary=1-0.45*(F.q||0),near=F.dist<=_D3_DERBY.sense,ev='';
+if(F.mode==='flee'){F.t=(F.t||0)+dt;if(F.t>4){F.mode='hold';F.int=0;}return '';}
+if(!near){if(F.mode!=='hold'){F.mode='hold';ev='lost';}F.int=Math.max(0,(F.int||0)-dt*0.5);return ev;}
+F.int=_d3dbClamp((F.int||0)+(a*1.15*wary-0.22)*dt,0,1);
+if(F.mode==='hold'&&F.int>0.2){F.mode='look';ev='look';}
+else if(F.mode==='look'&&F.int>0.45){F.mode='follow';ev='follow';}
+else if((F.mode==='look'||F.mode==='follow')&&F.int<0.08){F.mode='hold';ev='lost';}
+else if(F.mode==='follow'&&F.int>=0.92&&F.dist<0.3&&a>0.25){F.mode='strike';ev='hit';}
+return ev;
+}
+function _d3derbyWeight(P,q){var a=P.kg[0],b=P.kg[1];return Math.round((a+(b-a)*Math.pow(_d3dbClamp(q,0,1),2.2))*100)/100;}
+function _d3derbyHookWin(q){return _D3_DERBY.hook*(1-0.3*_d3dbClamp(q,0,1));}
+function _d3derbyBonus(w){var B=_D3_DERBY.bonus,i;for(i=0;i<B.length;i++)if(w<B[i][0])return B[i][1];return B[B.length-1][1];}
+function _d3derbyFightNew(P,w,dist){
+var pull=_d3dbClamp((0.34+0.11*Math.sqrt(w))*P.str,0.25,0.95);
+return {dist:Math.max(1,dist),ten:0.35,stam:1,pull:pull,w:w,run:true,rt:0,runFor:1.6+w*0.25,side:1,over:0,slackT:0,jump:0,jumpP:P.jump,t:0,out:''};
+}
+function _d3derbyFightStep(S,inp,dt,rnd){
+var K=_D3_DERBY.fight,reel=!!inp.reel,rod=(inp.rod>0)?1:((inp.rod<0)?-1:0),ev='';
+if(S.out)return S.out;
+S.t+=dt;S.rt+=dt;
+if(S.rt>=S.runFor){S.run=!S.run;S.rt=0;
+S.runFor=S.run?(0.9+1.6*S.stam+rnd()*0.8):(1.1+(1-S.stam)*2.2+rnd()*0.9);
+if(S.run&&rnd()<0.6)S.side=-S.side;ev=S.run?'run':'rest';}
+if(S.jump>0)S.jump=Math.max(0,S.jump-dt);
+else if(S.run&&S.stam>0.25&&S.dist<5&&rnd()<S.jumpP*0.22*dt){S.jump=0.8;ev='jump';}
+var fish=S.pull*(S.run?(0.55+0.45*S.stam):0.22*S.stam+0.06),withIt=(rod!==0&&rod===S.side),against=(rod!==0&&rod===-S.side);
+var want=fish+(reel?0.42:0)-(withIt?0.16:0)+(against?0.12:0)+(S.jump>0&&reel?0.35:0);
+S.ten+=(want-S.ten)*Math.min(1,dt*3.2);if(S.ten<0)S.ten=0;
+if(reel)S.dist-=K.reel*(S.run?0.18:1)*(S.ten>1?0.3:1)*(1-0.7*S.stam*_d3dbClamp(S.w/4,0.15,1))*dt;
+if(S.run&&!reel)S.dist+=(0.5+0.7*S.stam)*S.pull*dt;
+S.stam=Math.max(0,S.stam-dt*(0.022+0.085*Math.min(1,S.ten)+(against?0.05:0))/(0.5+0.6*Math.sqrt(S.w)));
+S.over=(S.ten>1)?S.over+dt:Math.max(0,S.over-dt*1.5);
+S.slackT=(S.ten<0.1)?S.slackT+dt:0;
+if(S.over>=K.over)S.out='break';
+else if(S.slackT>=K.slack)S.out='thrown';
+else if(S.dist>=K.max)S.out='spooled';
+else if(S.dist<=K.land)S.out='landed';
+return S.out||ev;
+}
+function _d3derbyRoundNew(i){var D=_D3_DERBY.rounds,r=D[Math.min(i,D.length-1)];return {i:i,k:r.k,name:r.name,time:r.time,goal:r.goal,kg:0,fish:[],best:null,over:''};}
+function _d3derbyLand(R,k,name,w){
+var b=_d3derbyBonus(w),f={k:k,name:name,kg:w};
+R.fish.push(f);R.kg=Math.round((R.kg+w)*100)/100;R.time+=b;if(!R.best||w>R.best.kg)R.best=f;
+return b;
+}
+function _d3derbyTick(R,dt,fighting){
+if(R.over)return R.over;
+if(R.kg>=R.goal)return (R.over='clear');
+if(!fighting)R.time=Math.max(0,R.time-dt);
+if(R.time<=0&&!fighting)return (R.over='time');
+return '';
+}
+function _d3derbyRecord(B,day){
+var o={kg:(B&&+B.kg)||0,fish:(B&&B.fish)||null,rounds:(B&&B.rounds|0)||0},beat=[];
+if(day.kg>o.kg){o.kg=day.kg;beat.push('total');}
+if(day.best&&(!o.fish||day.best.kg>o.fish.kg)){o.fish={name:day.best.name,kg:day.best.kg};beat.push('fish');}
+if((day.rounds|0)>o.rounds){o.rounds=day.rounds|0;beat.push('rounds');}
+return {book:o,beat:beat};
+}
+function _d3derbyKg(w){return (Math.round((+w||0)*100)/100).toFixed(2)+' kg';}
+function _d3derbyClock(s){s=Math.max(0,Math.ceil(+s||0));return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2);}
+function _d3derbyStock(n,c,yaw,depthAt,rnd){
+var out=[],tries=0,C=_D3_DERBY.cast;
+while(out.length<n&&tries++<n*30){
+var r=1.4+rnd()*(C.min+C.span-0.6),a=yaw+(rnd()-0.5)*2.1,x=c.x+Math.cos(a)*r,z=c.z+Math.sin(a)*r,dep=depthAt(x,z);
+if(!(dep>0.3))continue;
+var q=Math.pow(rnd(),1.7)*_d3dbClamp(0.55+dep*0.3,0.55,1);
+out.push({x:x,z:z,q:q,dep:dep});
+}
+return out;
+}
+function _d3derbyLureMesh(L){
+var T=window.THREE,g=new T.Group(),a=_mat(L.col,{r:0.35,m:0.25}),b=_mat(L.col2,{r:0.4,m:0.2}),steel=_mat(0xd8dde2,{r:0.25,m:0.85});
+var add=function(geo,m,x,y,z){var o=new T.Mesh(geo,m);o.position.set(x||0,y||0,z||0);g.add(o);return o;};
+if(L.kind==='top'){
+var body=add(new T.SphereGeometry(0.030,20,14),a);body.scale.set(1.5,0.9,0.9);
+var cup=add(new T.CylinderGeometry(0.026,0.020,0.014,18),b,0.044);cup.rotation.z=Math.PI/2;
+add(new T.ConeGeometry(0.014,0.05,16),b,-0.062).rotation.z=Math.PI/2;
+}else if(L.kind==='diver'){
+var bd=add(new T.SphereGeometry(0.030,20,14),a);bd.scale.set(1.7,1.0,0.62);
+var belly=add(new T.SphereGeometry(0.026,20,14),b,0,-0.008);belly.scale.set(1.5,0.7,0.6);
+var lip=add(new T.BoxGeometry(0.040,0.003,0.030),_mat(0xdff2f6,{t:true,op:0.55,r:0.1}),0.058,-0.016);lip.rotation.z=-0.6;
+add(new T.SphereGeometry(0.006,20,14),_mat(0x0c0c0c,{r:0.3}),0.030,0.008,0.016);add(new T.SphereGeometry(0.006,20,14),_mat(0x0c0c0c,{r:0.3}),0.030,0.008,-0.016);
+}else if(L.kind==='spinner'){
+add(new T.CylinderGeometry(0.0025,0.0025,0.11,16),steel).rotation.z=Math.PI/2;
+var wt=add(new T.SphereGeometry(0.012,20,14),b,-0.012);wt.scale.set(1.8,1,1);
+var bl=add(new T.SphereGeometry(0.022,20,14),steel,0.022,0.012);bl.scale.set(1.3,0.16,0.7);bl.name='dbBlade';
+add(new T.ConeGeometry(0.012,0.045,16),a,-0.056).rotation.z=Math.PI/2;
+}else{
+add(new T.SphereGeometry(0.018,20,14),a,0.016);
+var sk=add(new T.ConeGeometry(0.020,0.07,16),b,-0.03);sk.rotation.z=-Math.PI/2;
+add(new T.SphereGeometry(0.005,20,14),_mat(0xf2e9c8,{r:0.3}),0.026,0.008,0.012);add(new T.SphereGeometry(0.005,20,14),_mat(0xf2e9c8,{r:0.3}),0.026,0.008,-0.012);
+}
+var hook=add(new T.TorusGeometry(0.012,0.0018,8,16,4.2),steel,-0.05,-0.014);hook.rotation.z=1.2;
+g.traverse(function(o){if(o.isMesh){o.userData.noMerge=true;o.castShadow=false;o.receiveShadow=false;}});
+g.userData.noMerge=true;g.userData.derby=1;
+return g;
+}
+function _d3derbyLureObj(db){
+var L=_d3derbyLure(db.lure),c=db._lures||(db._lures={}),k;
+for(k in c)c[k].visible=false;
+if(!c[L.k]){c[L.k]=_d3derbyLureMesh(L);c[L.k].scale.setScalar(1.25);_D3.scene.add(c[L.k]);}
+return (db.lureObj=c[L.k]);
+}
+function _d3derbyRing(db,x,z,surf,big){
+var R=db._rings||(db._rings=[]),i,r=null;
+for(i=0;i<R.length;i++)if(!R[i].visible){r=R[i];break;}
+if(!r){if(R.length>=5)r=R[(db._ringI=((db._ringI|0)+1)%R.length)];else{r=_d3fishRing();r.userData.derby=1;_D3.scene.add(r);R.push(r);}}
+r.position.set(x,surf+0.004,z);r.visible=true;r.userData.t=0;r.userData.big=big?1.8:1;
+return r;
+}
+function _d3derbyRingsStep(db,dt){
+var R=db._rings||[],i;
+for(i=0;i<R.length;i++){var r=R[i];if(!r.visible)continue;r.userData.t+=dt;var u=Math.min(1,r.userData.t/1.3);
+r.scale.setScalar((1+u*5.5)*r.userData.big);if(r.material)r.material.opacity=0.55*(1-u);if(u>=1)r.visible=false;}
+}
+function _d3derbyLine(S,db,to,taut){
+var T=window.THREE;
+if(!db.line){var lg=new T.BufferGeometry();lg.setAttribute('position',new T.Float32BufferAttribute(new Float32Array(3*16),3));
+db.line=new T.Line(lg,new T.LineBasicMaterial({color:0xeaf4f8,transparent:true,opacity:0.8}));db.line.frustumCulled=false;db.line.userData.noMerge=true;db.line.userData.derby=1;_D3.scene.add(db.line);}
+var a=db._tip||(db._tip=new T.Vector3());S.rod.userData.tip.getWorldPosition(a);
+var pos=db.line.geometry.attributes.position,n=pos.count,i,sag=taut?0.015:0.10*Math.min(1,a.distanceTo(to)/2.2);
+for(i=0;i<n;i++){var t=i/(n-1);pos.setXYZ(i,a.x+(to.x-a.x)*t,a.y+(to.y-a.y)*t-Math.sin(t*Math.PI)*sag,a.z+(to.z-a.z)*t);}
+pos.needsUpdate=true;db.line.visible=true;
+}
+function _d3derbyDepthAt(S,x,z){
+if(typeof _d3inLake!=='function'||!_d3inLake(x,z))return 0;
+return Math.min(_D3_DERBY.col,S.surf-((typeof _d3drawnH==='function')?_d3drawnH(x,z):S.surf-1));
+}
+function _d3derbyRuns(S){
+var n=48,out=[],i,far=_D3_DERBY.cast.min+_D3_DERBY.cast.span+0.6;
+for(i=0;i<n;i++){var a=i/n*6.283185307,cx=Math.cos(a),cz=Math.sin(a),d=0;
+while(d<far&&_d3derbyDepthAt(S,S.c0.x+cx*(d+0.2),S.c0.z+cz*(d+0.2))>0.22)d+=0.2;
+out.push(d);}
+return out;
+}
+function _d3derbyFishNew(S,p,rnd){
+var sp=_d3fishPick(p.dep,S.maxDep)||_d3fishSpec('lmbass'),P=_d3derbyPref(sp.k),w=_d3derbyWeight(P,p.q);
+var obj=_d3fishMesh(sp.k),k=sp.sc*(1.0+1.3*p.q);
+obj.scale.setScalar(k);obj.traverse(function(o){if(o.isMesh){o.userData.noMerge=true;o.castShadow=false;}});obj.userData.noMerge=true;obj.userData.derby=1;
+_D3.scene.add(obj);
+var fr=(P.dep[0]+P.dep[1])*0.5,y=S.surf-Math.max(0.08,Math.min(p.dep-0.06,p.dep*fr));
+var F={obj:obj,k:sp.k,name:sp.name,P:P,q:p.q,w:w,hx:p.x,hz:p.z,x:p.x,y:y,z:p.z,hy:y,hd:rnd()*6.283,sp:0,ph:rnd()*6.283,mode:'hold',int:0,dist:99,t:0,rise:rnd()*(_D3_DERBY.rise[0]+_D3_DERBY.rise[1])};
+obj.position.set(F.x,F.y,F.z);
+return F;
+}
+function _d3derbyStockSpot(S,db,n){
+_d3derbyFishClear(db);
+var rnd=db.rnd,c={x:S.c0.x,z:S.c0.z},L=_d3derbyStock(n,c,S.yaw,function(x,z){return _d3derbyDepthAt(S,x,z);},rnd),i;
+db.fish=[];for(i=0;i<L.length;i++)db.fish.push(_d3derbyFishNew(S,L[i],rnd));
+return db.fish.length;
+}
+function _d3derbyFishDrop(F){if(F&&F.obj&&F.obj.parent)F.obj.parent.remove(F.obj);if(F)F.obj=null;}
+function _d3derbyFishClear(db){var i;for(i=0;i<(db.fish||[]).length;i++)_d3derbyFishDrop(db.fish[i]);db.fish=[];}
+function _d3derbyFishGo(F,tx,ty,tz,v,dt,t){
+var dx=tx-F.x,dz=tz-F.z,d=Math.hypot(dx,dz);
+if(d>1e-4){var want=Math.atan2(dz,dx),dh=want-F.hd;while(dh>Math.PI)dh-=6.283185;while(dh<-Math.PI)dh+=6.283185;
+F.hd+=dh*Math.min(1,dt*(3+v*3));}
+var sp=Math.min(v,d/Math.max(dt,1e-4));F.sp+=(sp-F.sp)*Math.min(1,dt*4);
+F.x+=Math.cos(F.hd)*F.sp*dt;F.z+=Math.sin(F.hd)*F.sp*dt;F.y+=(ty-F.y)*Math.min(1,dt*(1.5+v));
+if(F.obj){F.obj.position.set(F.x,F.y,F.z);
+F.obj.rotation.set(0,-F.hd+Math.sin(t*(5+F.sp*9)+F.ph)*(0.10+0.22*Math.min(1,F.sp)),0);}
+}
+function _d3derbyFishStep(S,db,lure,dt){
+var out=[],i,t=db.t,surf=S.surf;
+for(i=0;i<db.fish.length;i++){var F=db.fish[i];if(!F.obj||F===db.hooked)continue;
+var bed=_d3derbyDepthAt(S,F.x,F.z)||0.5,ev='';
+if(lure&&lure.on){F.dist=Math.hypot(lure.x-F.x,lure.y-F.y,lure.z-F.z);
+ev=_d3derbyFishMind(F,_d3derbyAppeal(F.P,lure.L,lure.st,lure.bed),dt,db.rnd);
+if(ev==='hit'&&db.hooked){F.mode='follow';F.int=0.8;ev='';}
+}else{F.dist=99;if(F.mode!=='hold'&&F.mode!=='flee'){F.mode='hold';}F.int=Math.max(0,F.int-dt*0.6);}
+if(ev)out.push({ev:ev,F:F});
+if(F.mode==='flee'){F.t+=dt;var a=Math.atan2(F.z-S.c0.z,F.x-S.c0.x);
+_d3derbyFishGo(F,F.x+Math.cos(a)*2,surf-Math.min(bed-0.05,bed*0.8),F.z+Math.sin(a)*2,1.7,dt,t);
+if(F.t>3.2){F.mode='hold';F.int=0;F.t=0;}}
+else if(F.mode==='follow'||F.mode==='strike'){
+var k=(F.mode==='strike')?0:0.2;
+_d3derbyFishGo(F,lure.x+db.dir.x*k,Math.min(surf-0.03,lure.y-0.01),lure.z+db.dir.z*k,(F.mode==='strike')?2.4:1.35,dt,t);}
+else if(F.mode==='look')_d3derbyFishGo(F,F.x+(lure.x-F.x)*0.3,F.y+(lure.y-F.y)*0.2,F.z+(lure.z-F.z)*0.3,0.22,dt,t);
+else{var wa=t*0.22+F.ph;_d3derbyFishGo(F,F.hx+Math.cos(wa)*0.35,F.hy+Math.sin(wa*1.3)*0.03,F.hz+Math.sin(wa*0.8)*0.35,0.16,dt,t);
+F.rise-=dt;if(F.rise<=0){F.rise=_D3_DERBY.rise[0]+db.rnd()*_D3_DERBY.rise[1];_d3derbyRing(db,F.x,F.z,surf);}}
+}
+return out;
+}
+function _d3derbyFishFight(S,db,F,dt){
+var f=db.fight,t=db.t,bedHere=_d3derbyDepthAt(S,F.x,F.z)||0.6;
+db.swing=(db.swing||0)+((f.side*0.42*(f.run?1:0.45))-(db.swing||0))*Math.min(1,dt*1.6);
+var a=S.yaw+db.swing,r=Math.min(f.dist,Math.max(0.4,_d3derbyRunAt(db.runs,a)-0.3)),x=S.c0.x+Math.cos(a)*r,z=S.c0.z+Math.sin(a)*r;
+var deep=Math.min(bedHere-0.06,f.run?bedHere*0.7:bedHere*0.35),y=S.surf-Math.max(0.06,deep);
+if(f.jump>0){var u=1-f.jump/0.8;y=S.surf+Math.sin(u*Math.PI)*0.42;}
+F.x+=(x-F.x)*Math.min(1,dt*5);F.z+=(z-F.z)*Math.min(1,dt*5);F.y+=(y-F.y)*Math.min(1,dt*(f.jump>0?12:3));
+var away=f.run?a:(a+Math.PI),shake=Math.sin(t*(f.run?11:6)+F.ph)*(f.run?0.5:0.25);
+if(F.obj){F.obj.position.set(F.x,F.y,F.z);F.obj.rotation.set((f.jump>0)?Math.sin(t*14)*0.5:0,-(away+f.side*0.6)+shake,(f.jump>0)?0.7:Math.sin(t*8)*0.15);}
+return F;
+}
+function drift3DDerby(){
+try{
+if(!_D3||!_D3.scene)return;
+var S=_D3.fishing;
+if(S&&S.on&&S.mode==='derby'){_d3fishEnd();return;}
+if(S&&S.on)_d3fishEnd();
+drift3DFish();S=_D3.fishing;
+if(!S||!S.on)return;
+_d3derbyBegin(S);
+}catch(_e){try{if(window.console&&console.warn)console.warn('[HighWall] derby failed:',_e&&_e.message);}catch(_){}
+try{_d3fishEnd();}catch(_){}}
+}
+function _d3derbyBegin(S){
+var runs=_d3derbyRuns(S),face=_d3derbyBestYaw(runs);
+if(!(face.run>=_D3_DERBY.cast.need)){_d3fishEnd();try{showToast('This water is too small for a derby \u2014 it needs a lake a few casts across');}catch(_t){}return false;}
+S.yaw=face.yaw;
+S.mode='derby';_d3fishHUD(false);S.bob.visible=false;S.line.visible=false;S.ring.visible=false;
+var rnd=(typeof _D3._derbyRnd==='function')?_D3._derbyRnd:Math.random;
+S.db={st:'card',card:'start',ri:0,R:null,lure:'crank',lureSt:null,fish:[],hooked:null,fight:null,inp:{reel:false,rod:0,twitch:false},
+pw:0,ct:0,t:0,runs:runs,dir:{x:Math.cos(S.yaw),z:Math.sin(S.yaw)},pos:new window.THREE.Vector3(),day:{kg:0,best:null,rounds:0,fish:0},call:'',callT:0,rnd:rnd,ui:0};
+_d3derbyRoundSet(S,0);
+_d3derbyHUD(S,true);
+return true;
+}
+function _d3derbyRoundSet(S,i){
+var db=S.db;db.ri=i;db.R=_d3derbyRoundNew(i);db.hooked=null;db.fight=null;db.lureSt=null;
+if(db.lureObj)db.lureObj.visible=false;if(db.line)db.line.visible=false;
+_d3derbyStockSpot(S,db,_D3_DERBY.stock[0]+i*_D3_DERBY.stock[1]);
+}
+function _d3derbyGo(S){var db=S.db;if(db.st!=='card')return;
+if(db.card==='clear')_d3derbyRoundSet(S,db.ri+1);
+else if(db.card==='over'){db.day={kg:0,best:null,rounds:0,fish:0};_d3derbyRoundSet(S,0);}
+db.st='ready';db.card='';_d3derbyHUD(S,true);}
+function _d3derbyEnd(S){
+var db=S&&S.db;if(!db)return;
+try{if(db.day&&(db.day.fish>0||db.day.rounds>0))_d3derbySave(db.day);}catch(_s){}
+_d3derbyFishClear(db);
+var k;for(k in (db._lures||{}))if(db._lures[k].parent)db._lures[k].parent.remove(db._lures[k]);
+(db._rings||[]).forEach(function(r){if(r.parent)r.parent.remove(r);});
+if(db.line&&db.line.parent)db.line.parent.remove(db.line);
+if(db.landObj&&db.landObj.parent)db.landObj.parent.remove(db.landObj);
+_d3derbyHUD(S,false);S.db=null;S.mode='boat';
+}
+function _d3derbyCall(db,txt,secs,tone){db.call=txt;db.callT=secs||1.6;db.callTone=tone||'';db.ui=0;}
+function _d3derbyBook(){try{var o=JSON.parse(__LS.getItem('rcgDerby')||'{}');return (o&&typeof o==='object')?o:{};}catch(_b){return {};}}
+function _d3derbySave(day){
+var all=_d3derbyBook(),id=(typeof _da!=='undefined'&&_da&&_da.pattern)||'map',r=_d3derbyRecord(all[id],day);
+all[id]=r.book;try{__LS.setItem('rcgDerby',JSON.stringify(all));}catch(_w){}
+_D3._derby={day:day,beat:r.beat,book:r.book};
+return r;
+}
+function _d3derbyPress(act,down){
+var S=_D3&&_D3.fishing,db=S&&S.db;if(!db)return false;
+if(db.st==='card'){if(down&&(act==='cast'||act==='go'))_d3derbyGo(S);return true;}
+if(act==='reel'){db.inp.reel=!!down;if(down&&db.st==='hit')_d3derbyHook(S);return true;}
+if(act==='left'||act==='right'){var v=(act==='left')?-1:1;if(down)db.inp.rod=v;else if(db.inp.rod===v)db.inp.rod=0;return true;}
+if(act!=='cast')return false;
+if(down){
+if(db.st==='ready'){db.st='power';db.pw=0;}
+else if(db.st==='work')db.inp.twitch=true;
+else if(db.st==='hit')_d3derbyHook(S);
+}else if(db.st==='power')_d3derbyCast(S,_d3derbyPower(db.pw));
+return true;
+}
+function _d3derbyLurePick(k){var S=_D3&&_D3.fishing,db=S&&S.db;if(!db||(db.st!=='ready'&&db.st!=='card'))return false;db.lure=_d3derbyLure(k).k;db.ui=0;_d3derbyHUD(S,true);return true;}
+function _d3derbyKey(e,down){
+var S=_D3&&_D3.fishing,db=S&&S.db;if(!db)return false;
+var k=(e.key||'').toLowerCase();
+if(k==='escape'){if(down)_d3fishEnd();return true;}
+if(k===' '||k==='enter'){if(!e.repeat)_d3derbyPress('cast',down);return true;}
+if(k==='r'||k==='s'||k==='arrowdown'||k==='shift'){_d3derbyPress('reel',down);return true;}
+if(k==='a'||k==='arrowleft'){_d3derbyPress('left',down);return true;}
+if(k==='d'||k==='arrowright'){_d3derbyPress('right',down);return true;}
+if(down&&k>='1'&&k<='9'){var L=_D3_DERBY_LURES[(+k)-1];if(L)_d3derbyLurePick(L.k);return true;}
+return false;
+}
+function _d3derbyDown(e){var S=_D3.fishing,db=S.db;db.px=e.clientX;db.py=e.clientY;db.pdown=true;db.pdx=0;
+if(db.st==='ready'||db.st==='work'||db.st==='hit'||db.st==='card')_d3derbyPress('cast',true);}
+function _d3derbyMove(e){var S=_D3.fishing,db=S.db;if(!db.pdown)return;
+var dx=e.clientX-db.px,dy=e.clientY-db.py;db.px=e.clientX;db.py=e.clientY;db.pdx+=dx;
+if(db.st==='ready'||db.st==='power'){S.yaw+=dx*0.0045;S.pitch=Math.max(-0.9,Math.min(0.55,S.pitch-dy*0.0040));}
+else if(db.st==='fight')db.inp.rod=(db.pdx>14)?1:((db.pdx<-14)?-1:0);}
+function _d3derbyUp(){var S=_D3.fishing,db=S&&S.db;if(!db||!db.pdown)return;db.pdown=false;
+if(db.st==='power')_d3derbyPress('cast',false);if(db.st==='fight')db.inp.rod=0;}
+function _d3derbyCast(S,p){
+var db=S.db,d=_d3derbyReach(p,_d3derbyRunAt(db.runs,S.yaw)),x,z;
+db.dir={x:Math.cos(S.yaw),z:Math.sin(S.yaw)};x=S.c0.x+db.dir.x*d;z=S.c0.z+db.dir.z*d;
+if(!(d>0)||!(_d3derbyDepthAt(S,x,z)>0.2)){db.st='ready';_d3derbyCall(db,'No water that way \u2014 turn the boat',2,'warn');return false;}
+db.st='cast';db.ct=0;db.castD=d;db.castP=p;db.tgt={x:x,z:z};
+_d3derbyLureObj(db).visible=true;
+return true;
+}
+function _d3derbyHook(S){
+var db=S.db,F=db.hooked;if(db.st!=='hit'||!F)return false;
+db.fight=_d3derbyFightNew(F.P,F.w,Math.max(1,Math.hypot(F.x-S.c0.x,F.z-S.c0.z)));db.st='fight';db.swing=0;
+if(db.lureObj)db.lureObj.visible=false;
+db.fish.forEach(function(o){if(o!==F&&o.mode!=='hold'){o.mode='flee';o.t=0;o.int=0;}});
+_d3derbyCall(db,'FISH ON!',1.4,'good');
+return true;
+}
+function _d3derbyLanded(S){
+var db=S.db,F=db.hooked,b=_d3derbyLand(db.R,F.k,F.name,F.w);
+db.day.kg=Math.round((db.day.kg+F.w)*100)/100;db.day.fish++;if(!db.day.best||F.w>db.day.best.kg)db.day.best={name:F.name,kg:F.w};
+db.st='land';db.lt=0;db.landObj=F.obj;F.obj=null;db.fish.splice(db.fish.indexOf(F),1);db.hooked=null;db.fight=null;
+if(db.line)db.line.visible=false;
+_d3derbyCall(db,F.name+' \u00b7 '+_d3derbyKg(F.w)+'  +'+b+' s',2.6,'good');
+try{if(typeof _d3rpgAdd==='function'){var P=_d3rpgLoad();_d3rpgAdd(P,'fish',1);var sk=(typeof _d3skillFish==='function')?_d3skillFish(P):null;if(sk&&sk.up)try{showToast(sk.up);}catch(_t){}_d3rpgSave();_d3rpgHUD();}}catch(_rp){}
+try{if(typeof _d3careerStat==='function')_d3careerStat('fish',1);}catch(_cs){}
+try{var L=_d3derbyStock(1,{x:S.c0.x,z:S.c0.z},S.yaw,function(x,z){return _d3derbyDepthAt(S,x,z);},db.rnd);if(L.length)db.fish.push(_d3derbyFishNew(S,L[0],db.rnd));}catch(_n){}
+return b;
+}
+function _d3derbyLost(S,why){
+var db=S.db,F=db.hooked;if(F){F.mode='flee';F.t=0;F.int=0;}
+db.hooked=null;db.fight=null;db.st='ready';if(db.line)db.line.visible=false;if(db.lureObj)db.lureObj.visible=false;
+_d3derbyCall(db,why,2.2,'bad');
+}
+function _d3derbyStep(S,dt){
+var db=S.db,T=window.THREE;if(!db)return;
+db.t+=dt;S.t=(S.t||0)+dt;
+var surf=S.surf,rock=Math.sin(S.t*0.9)*0.012+Math.sin(S.t*1.7+1.1)*0.006;
+S.rig.position.y=surf+rock;S.rig.rotation.z=Math.sin(S.t*0.8)*0.014;S.rig.rotation.x=Math.sin(S.t*1.3+0.7)*0.008;
+var bend=0.06,uw=null,L=_d3derbyLure(db.lure);
+switch(db.st){
+case 'ready':S.yaw+=db.inp.rod*dt*0.9;break;
+case 'power':db.pw+=dt;S.yaw+=db.inp.rod*dt*0.9;bend=0.10+0.25*_d3derbyPower(db.pw);break;
+case 'cast':
+db.ct+=dt;var u=Math.min(1,db.ct/_D3_DERBY.cast.flight),tip=db._tip||(db._tip=new T.Vector3());S.rod.userData.tip.getWorldPosition(tip);
+db.pos.set(tip.x+(db.tgt.x-tip.x)*u,tip.y+(surf-tip.y)*u+Math.sin(u*Math.PI)*(0.5+db.castD*0.14),tip.z+(db.tgt.z-tip.z)*u);
+bend=0.5*(1-u)+0.08;
+if(u>=1){db.st='work';db.lureSt={d:db.castD,dep:0,act:0,spd:0,still:0};_d3derbyRing(db,db.tgt.x,db.tgt.z,surf);}
+break;
+case 'work':
+var st=db.lureSt,bed=_d3derbyDepthAt(S,db.pos.x,db.pos.z)||0.3;
+_d3derbyLureStep(L,st,db.inp,dt,bed);
+if(db.inp.twitch&&L.kind==='top')_d3derbyRing(db,db.pos.x,db.pos.z,surf);
+db.inp.twitch=false;
+db.pos.set(S.c0.x+db.dir.x*st.d,surf-st.dep-(L.kind==='top'?0:0.012),S.c0.z+db.dir.z*st.d);
+bend=0.10+0.18*(db.inp.reel?1:0);
+if(st.d<=0.7){db.st='ready';db.lureObj.visible=false;if(db.line)db.line.visible=false;db.lureSt=null;}
+else uw={x:db.pos.x,y:db.pos.y,z:db.pos.z,kind:'lure'};
+break;
+case 'hit':
+db.hitT+=dt;bend=0.45;
+if(db.hooked){db.pos.set(db.hooked.x,db.hooked.y,db.hooked.z);uw={x:db.pos.x,y:db.pos.y,z:db.pos.z,kind:'lure'};}
+if(db.hitT>=_d3derbyHookWin(db.hooked?db.hooked.q:0)){var G=db.hooked;if(G){G.mode='flee';G.t=0;G.int=0;}db.hooked=null;db.st='work';_d3derbyCall(db,'Missed it!',1.6,'bad');}
+break;
+case 'fight':
+var f=db.fight,F=db.hooked,ev=_d3derbyFightStep(f,db.inp,dt,db.rnd);
+_d3derbyFishFight(S,db,F,dt);db.pos.set(F.x,F.y,F.z);
+bend=Math.min(1,0.25+0.7*f.ten);
+if(ev==='jump'){_d3derbyRing(db,F.x,F.z,surf,true);_d3derbyCall(db,'It jumps \u2014 ease off!',1.0,'warn');}
+else if(ev==='run')_d3derbyCall(db,'It runs!',0.9,'warn');
+if(f.out==='landed')_d3derbyLanded(S);
+else if(f.out==='break')_d3derbyLost(S,'The line broke');
+else if(f.out==='thrown')_d3derbyLost(S,'It threw the hook');
+else if(f.out==='spooled')_d3derbyLost(S,'It took all the line');
+else if(!(f.jump>0.25))uw={x:F.x,y:F.y,z:F.z,kind:'fish'};
+break;
+case 'land':
+db.lt+=dt;var lu=Math.min(1,db.lt*1.6);bend=0.30;
+if(db.landObj){var a=S.yaw+0.9;db.landObj.position.set(S.c0.x+Math.cos(a)*0.34,surf-0.10+lu*0.52,S.c0.z+Math.sin(a)*0.34);db.landObj.rotation.set(0.2,S.t*0.7,-1.15);}
+if(db.lt>2.6){if(db.landObj&&db.landObj.parent)db.landObj.parent.remove(db.landObj);db.landObj=null;db.st='ready';}
+break;
+}
+if(db.st==='work'){
+var evs=_d3derbyFishStep(S,db,{on:true,x:db.pos.x,y:db.pos.y,z:db.pos.z,st:db.lureSt,L:L,bed:_d3derbyDepthAt(S,db.pos.x,db.pos.z)||0.3},dt),i;
+for(i=0;i<evs.length;i++){
+if(evs[i].ev==='hit'&&!db.hooked){db.hooked=evs[i].F;db.st='hit';db.hitT=0;_d3derbyRing(db,db.pos.x,db.pos.z,surf);_d3derbyCall(db,'HIT! Set the hook!',1.0,'hit');}
+else if(evs[i].ev==='follow'&&db.callT<=0)_d3derbyCall(db,'Something is following\u2026',1.2,'');
+}
+}else _d3derbyFishStep(S,db,(db.st==='hit'||db.st==='fight')?{on:false}:null,dt);
+if(db.lureObj&&db.lureObj.visible){db.lureObj.position.copy(db.pos);
+db.lureObj.rotation.set(0,-Math.atan2(-db.dir.z,-db.dir.x),(db.st==='cast')?db.t*9:Math.sin(db.t*18)*0.25*((db.lureSt&&db.lureSt.act)||0));
+var bl=db.lureObj.getObjectByName('dbBlade');if(bl)bl.rotation.x=db.t*30*Math.min(1,(db.lureSt&&db.lureSt.spd)||0);}
+if(db.st==='cast'||db.st==='work'||db.st==='hit'||db.st==='fight')_d3derbyLine(S,db,db.pos,db.st==='fight'||db.st==='hit');
+_d3fishBend(bend);
+_d3derbyRingsStep(db,dt);
+if(db.callT>0){db.callT-=dt;if(db.callT<=0)db.ui=0;}
+if(db.st!=='card'){
+var over=_d3derbyTick(db.R,dt,db.st==='fight'||db.st==='land'||db.st==='hit');
+if(over&&db.st!=='land'&&db.st!=='fight'&&db.st!=='hit'){
+var last=(db.ri>=_D3_DERBY.rounds.length-1);
+if(over==='clear')db.day.rounds=db.ri+1;
+db.card=(over==='clear'&&!last)?'clear':'over';db.won=(over==='clear');db.st='card';
+if(db.lureObj)db.lureObj.visible=false;if(db.line)db.line.visible=false;db.lureSt=null;
+if(db.card==='over')try{_d3derbySave(db.day);}catch(_sv){}
+_d3derbyHUD(S,true);
+}
+}
+S.rig.rotation.y=-S.yaw;S.cam.rotation.order='YXZ';S.cam.rotation.set(S.pitch,-Math.PI/2,0);
+_d3derbyCam(S,db,uw,dt);
+_d3derbyHUDTick(S);
+}
+function _d3derbyCamPose(p,dir,surf,bed,d){
+var ax=-dir.x,az=-dir.z,sx=-az,sz=ax,room=(d==null)?1:_d3dbClamp((d-1.1)/1.2,0,1),ah=0.78*room,sd=0.36+0.62*(1-room);
+var y=Math.min(surf-0.05,Math.max(surf-Math.max(0.1,bed)+0.07,p.y+0.10));
+return {x:p.x+ax*ah+sx*sd,y:y,z:p.z+az*ah+sz*sd,lx:p.x+dir.x*0.3*room,ly:Math.min(surf-0.04,p.y),lz:p.z+dir.z*0.3*room,fov:56};
+}
+function _d3derbyCam(S,db,uw,dt){
+if(!uw){_d3fishUWSet(false);db.camP=null;return;}
+_d3fishUWSet(true);if(!S.uwOn)return;
+var cam=_d3fishCamUW(),P;
+if(uw.kind==='fish')P=_d3fishUWPose({x:uw.x,y:uw.y,z:uw.z,wl:S.surf,fight:true},null,db.t,Math.atan2(uw.z-S.c0.z,uw.x-S.c0.x)+Math.sin(db.t*0.35)*1.0);
+else P=_d3derbyCamPose(uw,db.dir,S.surf,_d3derbyDepthAt(S,uw.x,uw.z)||0.4,Math.hypot(uw.x-S.c0.x,uw.z-S.c0.z));
+var C=db.camP,k=C?Math.min(1,dt*4.5):1;if(!C)C=db.camP={x:P.x,y:P.y,z:P.z,lx:P.lx,ly:P.ly,lz:P.lz};
+C.x+=(P.x-C.x)*k;C.y+=(P.y-C.y)*k;C.z+=(P.z-C.z)*k;C.lx+=(P.lx-C.lx)*k;C.ly+=(P.ly-C.ly)*k;C.lz+=(P.lz-C.lz)*k;
+C.y=Math.min(C.y,S.surf-0.04);
+cam.position.set(C.x,C.y,C.z);cam.up.set(0,1,0);cam.lookAt(C.lx,C.ly,C.lz);
+if(cam.fov!==P.fov){cam.fov=P.fov;cam.updateProjectionMatrix();}
+}
+function _d3derbyCss(){
+if(document.getElementById('d3DerbyCss'))return;
+var s=document.createElement('style');s.id='d3DerbyCss';
+s.textContent='#d3Derby{position:fixed;inset:0;z-index:2147482000;pointer-events:none;font:600 14px system-ui,sans-serif;color:#dff6ff;'+
+'-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}'+
+'#d3Derby .g{background:rgba(8,34,48,.72);border:1px solid rgba(190,240,255,.28);border-radius:12px;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}'+
+'#d3Derby .top{position:absolute;left:50%;top:calc(var(--dbTop,10px) + env(safe-area-inset-top,0px));transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:7px 14px;white-space:nowrap}'+
+'#d3Derby .rn{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#9fd8e6}'+
+'#d3Derby .ck{font:700 22px ui-monospace,Menlo,monospace;min-width:64px;text-align:center}'+
+'#d3Derby .ck.low{color:#ff8a6a}'+
+'#d3Derby .wt{display:flex;flex-direction:column;gap:3px;min-width:132px}'+
+'#d3Derby .bar{height:7px;border-radius:4px;background:rgba(255,255,255,.14);overflow:hidden}'+
+'#d3Derby .bar i{display:block;height:100%;width:0;background:#7fe0c0;border-radius:4px}'+
+'#d3Derby .call{position:absolute;left:50%;top:max(27%,calc(var(--dbTop,10px) + 58px));transform:translateX(-50%);padding:9px 20px;font:800 26px system-ui,sans-serif;letter-spacing:.02em;text-align:center;max-width:86vw;text-shadow:0 2px 10px rgba(0,0,0,.55)}'+
+'#d3Derby .call.good{color:#9ff0c8}#d3Derby .call.bad{color:#ff9a80}#d3Derby .call.warn{color:#ffd77a}#d3Derby .call.hit{color:#fff;background:rgba(190,52,32,.86);border-radius:12px}'+
+'#d3Derby .ten{position:absolute;right:calc(14px + env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);width:54px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:6px}'+
+'#d3Derby .ten .tk{position:relative;width:16px;height:min(38vh,230px);border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden}'+
+'#d3Derby .ten .bd{position:absolute;left:0;right:0;background:rgba(127,224,192,.34)}'+
+'#d3Derby .ten .red{position:absolute;left:0;right:0;top:0;background:rgba(224,82,58,.5)}'+
+'#d3Derby .ten .mk{position:absolute;left:-2px;right:-2px;height:5px;margin-bottom:-2px;background:#fff;border-radius:3px;box-shadow:0 0 6px rgba(255,255,255,.8)}'+
+'#d3Derby .sm{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#9fd8e6;text-align:center}'+
+'#d3Derby .dep{position:absolute;left:calc(14px + env(safe-area-inset-left,0px));top:50%;transform:translateY(-50%);width:54px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:6px}'+
+'#d3Derby .dep .tk{position:relative;width:12px;height:min(30vh,170px);border-radius:6px;background:linear-gradient(#5ec9d6,#0d3444);overflow:hidden}'+
+'#d3Derby .dep .mk{position:absolute;left:-3px;right:-3px;height:6px;margin-top:-3px;background:#f2c21c;border-radius:3px}'+
+'#d3Derby .low2{position:absolute;left:0;right:0;bottom:calc(104px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:8px}'+
+'#d3Derby .pow{width:min(300px,70vw);height:12px;border-radius:6px;background:rgba(8,34,48,.72);overflow:hidden;border:1px solid rgba(190,240,255,.28)}'+
+'#d3Derby .pow i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7fe0c0,#f2c21c,#e0523a)}'+
+'#d3Derby .chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:94vw}'+
+'#d3Derby button{pointer-events:auto;font:600 14px system-ui,sans-serif;color:#dff6ff;background:rgba(8,34,48,.72);border:1px solid rgba(190,240,255,.35);border-radius:12px;'+
+'height:48px;min-width:64px;padding:0 12px;touch-action:none;-webkit-tap-highlight-color:transparent;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}'+
+'#d3Derby button.chip{height:36px;font-size:13px}#d3Derby button.on{outline:2px solid #7fe0c0;background:rgba(20,70,80,.85)}'+
+'#d3Derby button.act{min-width:128px;font-size:16px}#d3Derby button.hot{background:rgba(190,52,32,.9);border-color:#ffb9a6}'+
+'#d3Derby .btns{display:flex;gap:8px;align-items:center}'+
+'#d3Derby .hint{font-size:12px;color:#bfe6ee;padding:4px 10px;text-align:center;max-width:92vw}'+
+'#d3Derby .card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,90vw);max-height:84vh;overflow:auto;padding:18px 20px;pointer-events:auto;display:flex;flex-direction:column;gap:10px}'+
+'#d3Derby .card h2{margin:0;font:800 24px system-ui,sans-serif;letter-spacing:.01em}'+
+'#d3Derby .card p{margin:0;font-weight:500;line-height:1.4;color:#cfeef6}'+
+'#d3Derby .card .row{display:flex;justify-content:space-between;gap:10px;font-weight:500;border-top:1px solid rgba(190,240,255,.14);padding-top:6px}'+
+'#d3Derby .card .row b{font-weight:700;color:#fff}#d3Derby .card .new{color:#f2c21c}'+
+'#d3Derby .card .cb{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}'+
+'#d3Derby .card button.go{background:rgba(32,120,104,.92);border-color:#9ff0c8;min-width:120px}'+
+'@media (max-width:520px){#d3Derby .top{gap:8px;padding:6px 9px;font-size:12px}#d3Derby .rn{font-size:10px;letter-spacing:.04em}#d3Derby .ck{font-size:18px;min-width:46px}'+
+'#d3Derby .wt{min-width:98px}#d3Derby button{min-width:50px;padding:0 8px}#d3Derby button.act{min-width:92px}#d3Derby .btns{gap:6px}#d3Derby .call{font-size:20px}'+
+'#d3Derby .ten,#d3Derby .dep{width:46px}}'+
+'@media (max-height:460px){#d3Derby .low2{gap:5px}#d3Derby .call{top:calc(var(--dbTop,10px) + 50px);font-size:20px;padding:4px 14px}'+
+'#d3Derby .ten .tk{height:min(34vh,150px)}#d3Derby .dep .tk{height:min(28vh,120px)}#d3Derby .card{padding:12px 16px;gap:6px}#d3Derby .card h2{font-size:20px}#d3Derby .card p{font-size:12px}}';
+document.head.appendChild(s);
+}
+function _d3derbyCardText(kind,R,day,book,beat,won,rounds){
+var o={title:'',lines:[],rows:[],go:''},B=beat||[],has=function(k){return B.indexOf(k)>=0;};
+if(kind==='start'){
+o.title='Fishing derby';
+o.lines=['Three rounds against the clock. Land the round\u2019s weight before the time runs out \u2014 every fish puts seconds back.',
+'Hold Cast for power and let go. Reel and twitch to work the lure; when a fish hits, set the hook. In the fight keep the line in the green: ease off when it runs, reel when it rests, and turn the rod with it to ease the line.'];
+o.rows=rounds.map(function(r,i){return ['Round '+(i+1)+' \u00b7 '+r.name,_d3derbyKg(r.goal)+' in '+_d3derbyClock(r.time),false];});
+if(book&&(book.kg>0||book.fish))o.rows.push(['Your best here',_d3derbyKg(book.kg)+(book.fish?' \u00b7 '+book.fish.name+' '+_d3derbyKg(book.fish.kg):''),false]);
+o.go='Start';
+}else{
+o.title=(kind==='clear')?'Round '+(R.i+1)+' cleared':(won?'Derby won':'Time up');
+o.rows=[['This round',_d3derbyKg(R.kg)+' of '+_d3derbyKg(R.goal)+' \u00b7 '+R.fish.length+' fish',false]];
+if(R.best)o.rows.push(['Biggest this round',R.best.name+' \u00b7 '+_d3derbyKg(R.best.kg),false]);
+if(kind==='over'){
+o.rows.push(['The day',_d3derbyKg(day.kg)+' \u00b7 '+day.fish+' fish \u00b7 '+day.rounds+' of '+rounds.length+' rounds',has('total')]);
+if(day.best)o.rows.push(['Fish of the day',day.best.name+' \u00b7 '+_d3derbyKg(day.best.kg),has('fish')]);
+if(B.length)o.lines=['A new best on this map.'];
+o.go='Fish again';
+}else o.go='Round '+(R.i+2);
+}
+return o;
+}
+function _d3derbyHUD(S,on){
+var el=document.getElementById('d3Derby');
+if(on===false||!S||!S.db){if(el)el.style.display='none';return;}
+_d3derbyCss();
+if(!el){el=document.createElement('div');el.id='d3Derby';document.body.appendChild(el);
+var press=function(ev){
+var b=ev.target&&ev.target.closest?ev.target.closest('[data-db]'):null;if(!b)return;
+var a=b.getAttribute('data-db'),down=(ev.type==='pointerdown');
+if(a==='lure'){if(down)_d3derbyLurePick(b.getAttribute('data-k'));}
+else if(a==='done'){if(down)_d3fishEnd();}
+else if(a==='go'){if(down)_d3derbyPress('go',true);}
+else{_d3derbyPress(a,down);if(down)try{b.setPointerCapture(ev.pointerId);}catch(_){}}
+if(ev.preventDefault)ev.preventDefault();if(ev.stopPropagation)ev.stopPropagation();
+};
+el.addEventListener('pointerdown',press);el.addEventListener('pointerup',press);el.addEventListener('pointercancel',press);
+window.addEventListener('resize',function(){try{var S9=_D3&&_D3.fishing;if(S9&&S9.on&&S9.db)_d3derbyHUD(S9,true);}catch(_rz){}});}
+el.style.display='block';
+try{var tb=document.getElementById('trkTools'),tr=tb&&tb.getBoundingClientRect();el.style.setProperty('--dbTop',((tr&&tr.height>0&&tr.top<70&&tr.bottom<160)?Math.round(tr.bottom+6):10)+'px');}catch(_tb){}
+var db=S.db,h='';
+if(db.st==='card'){
+var bk=_d3derbyBook()[(typeof _da!=='undefined'&&_da&&_da.pattern)||'map']||null,last=_D3._derby||{};
+var C=_d3derbyCardText(db.card,db.R,db.day,(db.card==='over')?last.book:bk,(db.card==='over')?last.beat:null,db.won,_D3_DERBY.rounds);
+h+='<div class="card g" data-card="'+db.card+'"><h2>'+escapeHtml(C.title)+'</h2>';
+C.lines.forEach(function(t){h+='<p>'+escapeHtml(t)+'</p>';});
+C.rows.forEach(function(r){h+='<div class="row'+(r[2]?' new':'')+'"><span>'+escapeHtml(r[0])+(r[2]?' \u2605':'')+'</span><b>'+escapeHtml(r[1])+'</b></div>';});
+h+='<div class="cb"><button data-db="done">Done</button><button class="go" data-db="go">'+escapeHtml(C.go)+'</button></div></div>';
+}else{
+h+='<div class="top g"><span class="rn" id="dbRn"></span><span class="ck" id="dbCk"></span>'+
+'<span class="wt"><span id="dbWt"></span><span class="bar"><i id="dbWb"></i></span></span><span id="dbN"></span></div>'+
+'<div class="call" id="dbCall" style="display:none"></div>'+
+'<div class="ten g" id="dbTen" style="display:none"><span class="sm">Line</span><div class="tk"><div class="red" id="dbRed"></div><div class="bd" id="dbBd"></div><div class="mk" id="dbMk"></div></div><span class="sm" id="dbOut"></span></div>'+
+'<div class="dep g" id="dbDep" style="display:none"><span class="sm">Depth</span><div class="tk"><div class="mk" id="dbDm"></div></div><span class="sm" id="dbDn"></span></div>'+
+'<div class="low2"><div class="pow" id="dbPow" style="display:none"><i id="dbPw"></i></div>'+
+'<div class="chips" id="dbChips">'+_D3_DERBY_LURES.map(function(L){return '<button class="chip'+(L.k===db.lure?' on':'')+'" data-db="lure" data-k="'+L.k+'" title="'+_htmlAttr(L.d)+'">'+escapeHtml(L.name)+'</button>';}).join('')+'</div>'+
+'<div class="hint g" id="dbHint"></div>'+
+'<div class="btns"><button data-db="left" aria-label="Rod left">\u25c0</button><button data-db="reel">Reel</button><button class="act" data-db="cast" id="dbAct">Cast</button><button data-db="right" aria-label="Rod right">\u25b6</button><button data-db="done">Done</button></div></div>';
+}
+el.innerHTML=h;db.ui=0;db._uiSt=db.st;
+_d3derbyHUDTick(S);
+}
+function _d3derbyWords(st,L,f){
+if(st==='ready')return {act:'Cast',hint:L.name+' \u2014 '+L.d+'  Hold Cast for power.',hot:false};
+if(st==='power')return {act:'Let go!',hint:'Let go to cast',hot:false};
+if(st==='cast')return {act:'\u2014',hint:'',hot:false};
+if(st==='work')return {act:'Twitch',hint:'Reel to bring it in \u2014 twitch to give it life',hot:false};
+if(st==='hit')return {act:'HOOK!',hint:'Set the hook!',hot:true};
+if(st==='fight')return {act:'\u2014',hint:f&&f.run?'It is running \u2014 ease off, rod '+(f.side>0?'right \u25b6':'\u25c0 left')+' with it':'Reel it in',hot:false};
+if(st==='land')return {act:'\u2014',hint:'',hot:false};
+return {act:'Cast',hint:'',hot:false};
+}
+function _d3derbyHUDTick(S){
+var db=S&&S.db;if(!db)return;
+if(db._uiSt!==db.st){if(db.st==='card'||db._uiSt==='card'){_d3derbyHUD(S,true);return;}db.ui=0;}
+if((db.ui=(db.ui||0)+1)%4!==1)return;
+var $=function(id){return document.getElementById(id);},R=db.R,L=_d3derbyLure(db.lure),f=db.fight;
+if(db.st==='card'||!$('dbCk'))return;
+db._uiSt=db.st;
+$('dbRn').textContent='Round '+(R.i+1)+' \u00b7 '+R.name;
+var ck=$('dbCk');ck.textContent=_d3derbyClock(R.time);ck.className='ck'+(R.time<=10?' low':'');
+$('dbWt').textContent=_d3derbyKg(R.kg)+' / '+_d3derbyKg(R.goal);
+$('dbWb').style.width=Math.round(Math.min(1,R.kg/R.goal)*100)+'%';
+$('dbN').textContent='\ud83d\udc1f '+R.fish.length;
+var call=$('dbCall');if(db.callT>0){call.style.display='block';call.textContent=db.call;call.className='call '+(db.callTone||'');}else call.style.display='none';
+var W=_d3derbyWords(db.st,L,f),act=$('dbAct');act.textContent=W.act;act.className='act'+(W.hot?' hot':'');
+var hint=$('dbHint');hint.textContent=W.hint;hint.style.display=W.hint?'block':'none';
+$('dbChips').style.display=(db.st==='ready')?'flex':'none';
+var pow=$('dbPow');pow.style.display=(db.st==='power')?'block':'none';if(db.st==='power')$('dbPw').style.width=Math.round(_d3derbyPower(db.pw)*100)+'%';
+var ten=$('dbTen');ten.style.display=(db.st==='fight'&&f)?'flex':'none';
+if(db.st==='fight'&&f){var B=_D3_DERBY.fight.band,sc=1/1.15,t=Math.min(1.15,f.ten);
+$('dbRed').style.height=((1.15-1)*sc*100)+'%';
+$('dbBd').style.bottom=(B[0]*sc*100)+'%';$('dbBd').style.height=((B[1]-B[0])*sc*100)+'%';
+$('dbMk').style.bottom=(t*sc*100)+'%';$('dbMk').style.background=(f.ten>1)?'#ff6a4a':((f.ten>B[1])?'#ffd77a':'#fff');
+$('dbOut').textContent=(f.dist*3).toFixed(0)+' m';}
+var dep=$('dbDep'),st=db.lureSt;dep.style.display=(db.st==='work'&&st)?'flex':'none';
+if(db.st==='work'&&st){var bed=Math.max(0.2,_d3derbyDepthAt(S,db.pos.x,db.pos.z)||0.3);
+$('dbDm').style.top=Math.round(Math.min(1,st.dep/bed)*100)+'%';$('dbDn').textContent=(st.dep*3).toFixed(1)+' m';}
 }
 var _D3_SF_FLOW=0.30;
 var _D3_SF_TABLE=[['brook',32],['brown',30],['rainbow',25],['cutthroat',10],['chub',3]];
@@ -81870,6 +82524,7 @@ var f=_d3diveFog(1,_D3.dive&&_D3.dive.span);
 if(!_D3.diveFog)_D3.diveFog=new T.FogExp2(f.col.getHex(),f.dens);
 _D3.diveFog.color.copy(f.col);_D3.diveFog.density=f.dens;
 _D3.scene.fog=_D3.diveFog;
+if(_D3._noUwSkyHide!==1)['_cloudPuffs','_cloudSheets','_rainShafts'].forEach(function(k){if(_D3[k])_D3[k].visible=false;});
 try{var _ob=_D3.scene.background;_D3.scene.background=new T.Color(f.col);if(_ob&&_ob.dispose)_ob.dispose();}catch(_bg){}
 if(_D3.ren)_D3.ren.setClearColor(f.col,1);
 _D3._diveLit={sun:_D3.sun?_D3.sun.intensity:0,hemi:_D3.hemi?_D3.hemi.intensity:0,
