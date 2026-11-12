@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='73d4fca';
+var RCG_BUILD='9ee0e12';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -66091,12 +66091,13 @@ var _D3_DERBY={
 cast:{min:2.2,span:4.6,sweep:1.1,flight:0.9,need:1.6},
 col:2.4,
 sense:2.1,
+forget:0.1,
 hook:0.95,
 fight:{reel:0.62,land:0.45,max:9.5,over:0.55,slack:1.8,band:[0.25,0.78]},
 stock:[12,2],
 rise:[5,8],
-bonus:[[0.5,8],[1.5,14],[3,20],[1e9,28]],
-rounds:[{k:'dawn',name:'First light',time:90,goal:2.0},{k:'noon',name:'High sun',time:80,goal:4.5},{k:'dusk',name:'Last light',time:75,goal:8.0}]
+bonus:[[0.5,4],[1.5,8],[3,13],[1e9,20]],
+rounds:[{k:'dawn',name:'First light',time:90,goal:2.0},{k:'noon',name:'High sun',time:80,goal:4.5},{k:'dusk',name:'Last light',time:75,goal:7.5}]
 };
 var _D3_DERBY_LURES=[
 {k:'popper', name:'Popper', kind:'top', spd:0.75,sink:0, dive:0, steady:0.20,col:0xf2c21c,col2:0xd8371f,d:'Stays on top. Twitch it, then let it sit.'},
@@ -66178,8 +66179,8 @@ return _d3dbClamp(like*dk*Math.max(sp,paused)*(0.35+0.65*life),0,1);
 function _d3derbyFishMind(F,a,dt,rnd){
 var wary=1-0.45*(F.q||0),near=F.dist<=_D3_DERBY.sense,ev='';
 if(F.mode==='flee'){F.t=(F.t||0)+dt;if(F.t>4){F.mode='hold';F.int=0;}return '';}
-if(!near){if(F.mode!=='hold'){F.mode='hold';ev='lost';}F.rush=0;F.int=Math.max(0,(F.int||0)-dt*0.5);return ev;}
-F.int=_d3dbClamp((F.int||0)+(a*1.15*wary-0.22)*dt,0,1);
+if(!near){if(F.mode!=='hold'){F.mode='hold';ev='lost';}F.rush=0;F.int=Math.max(0,(F.int||0)-dt*_D3_DERBY.forget);return ev;}
+F.int=_d3dbClamp((F.int||0)+(a*1.35*wary-0.22)*dt,0,1);
 if(F.mode==='hold'&&F.int>0.2){F.mode='look';ev='look';}
 else if(F.mode==='look'&&F.int>0.45){F.mode='follow';ev='follow';}
 else if((F.mode==='look'||F.mode==='follow')&&F.int<0.08){F.mode='hold';F.rush=0;ev='lost';}
@@ -66190,27 +66191,44 @@ return ev;
 function _d3derbyWeight(P,q){var a=P.kg[0],b=P.kg[1];return Math.round((a+(b-a)*Math.pow(_d3dbClamp(q,0,1),2.2))*100)/100;}
 function _d3derbyHookWin(q){return _D3_DERBY.hook*(1-0.3*_d3dbClamp(q,0,1));}
 function _d3derbyBonus(w){var B=_D3_DERBY.bonus,i;for(i=0;i<B.length;i++)if(w<B[i][0])return B[i][1];return B[B.length-1][1];}
+function _d3derbyStyle(P){return (P.jump>=0.6)?'leaper':((P.dep[0]>=0.5)?'digger':((P.spd[1]>=0.95)?'runner':'brawler'));}
+var _D3_DERBY_MOVES={leaper:{surge:0.12,charge:0.10},runner:{surge:0.25,charge:0.20},digger:{surge:0.30,charge:0},brawler:{surge:0.35,charge:0.08}};
+var _D3_DERBY_TELL=0.45;
 function _d3derbyFightNew(P,w,dist){
 var pull=_d3dbClamp((0.34+0.11*Math.sqrt(w))*P.str,0.25,0.95);
-return {dist:Math.max(1,dist),ten:0.35,stam:1,pull:pull,w:w,run:true,rt:0,runFor:1.6+w*0.25,side:1,over:0,slackT:0,jump:0,jumpP:P.jump,t:0,out:''};
+return {dist:Math.max(1,dist),ten:0.35,stam:1,pull:pull,w:w,run:true,rt:0,runFor:1.6+w*0.25,side:1,over:0,slackT:0,jump:0,jumpP:P.jump,t:0,out:'',
+style:_d3derbyStyle(P),mv:'',mvT:0,warn:0,next:'',stood:false,chain:0,chainT:0};
 }
 function _d3derbyFightStep(S,inp,dt,rnd){
 var K=_D3_DERBY.fight,reel=!!inp.reel,rod=(inp.rod>0)?1:((inp.rod<0)?-1:0),ev='';
 if(S.out)return S.out;
 S.t+=dt;S.rt+=dt;
-if(S.rt>=S.runFor){S.run=!S.run;S.rt=0;
+if(S.mv){S.mvT-=dt;if(S.mvT<=0){var was=S.mv;S.mv='';if(was==='charge'){S.run=true;S.rt=0;S.runFor=0.8+1.2*S.stam;ev='run';}}}
+else if(S.warn>0){S.warn-=dt;if(S.warn<=0){S.mv=S.next;S.next='';S.mvT=(S.mv==='charge')?1.4:0.9;if(S.mv==='charge')S.run=false;ev=S.mv;}}
+if(!S.mv&&S.rt>=S.runFor){S.run=!S.run;S.rt=0;
 S.runFor=S.run?(0.9+1.6*S.stam+rnd()*0.8):(1.1+(1-S.stam)*2.2+rnd()*0.9);
 if(S.run&&rnd()<0.6)S.side=-S.side;ev=S.run?'run':'rest';}
-if(S.jump>0)S.jump=Math.max(0,S.jump-dt);
-else if(S.run&&S.stam>0.25&&S.dist<5&&rnd()<S.jumpP*0.22*dt){S.jump=0.8;ev='jump';}
-var fish=S.pull*(S.run?(0.55+0.45*S.stam):0.22*S.stam+0.06),withIt=(rod!==0&&rod===S.side),against=(rod!==0&&rod===-S.side);
+if(!S.stood&&!S.mv&&S.dist<=1.3&&S.stam>0.15&&S.w>=0.5){
+S.stood=true;S.warn=0;S.next='';S.mv='stand';S.mvT=1.0+1.4*S.stam;S.run=true;S.rt=0;S.runFor=S.mvT;if(rnd()<0.5)S.side=-S.side;ev='stand';}
+else if(!S.mv&&!(S.warn>0)&&S.run&&S.stam>0.3&&!(S.jump>0)){
+var M=_D3_DERBY_MOVES[S.style]||_D3_DERBY_MOVES.brawler,mk=_d3dbClamp(S.w/1.5,0.2,1)*dt,dice=rnd();
+if(dice<M.surge*mk){S.next='surge';S.warn=_D3_DERBY_TELL;ev='warn';}
+else if(dice<(M.surge+M.charge)*mk&&S.dist>2){S.next='charge';S.warn=_D3_DERBY_TELL;ev='warn';}}
+if(S.jump>0){S.jump=Math.max(0,S.jump-dt);if(S.jump<=0&&S.chain>0){S.chain--;S.chainT=0.35;}}
+else if(S.chainT>0){S.chainT-=dt;if(S.chainT<=0){S.jump=0.8;ev='jump';}}
+else if(S.run&&!S.mv&&S.stam>0.25&&S.dist<5&&rnd()<S.jumpP*0.22*dt){S.jump=0.8;ev='jump';S.chain=(S.style==='leaper'&&rnd()<0.5)?((rnd()<0.4)?2:1):0;}
+var surge=(S.mv==='surge'),stand=(S.mv==='stand'),charge=(S.mv==='charge');
+var fish=charge?0.02:S.pull*(S.run?(0.55+0.45*S.stam):((S.style==='digger')?0.34:0.22)*S.stam+0.06)*(surge?1.3:(stand?1.15:1));
+var withIt=(rod!==0&&rod===S.side),against=(rod!==0&&rod===-S.side);
 var want=fish+(reel?0.42:0)-(withIt?0.16:0)+(against?0.12:0)+(S.jump>0&&reel?0.35:0);
 S.ten+=(want-S.ten)*Math.min(1,dt*3.2);if(S.ten<0)S.ten=0;
-if(reel)S.dist-=K.reel*(S.run?0.18:1)*(S.ten>1?0.3:1)*(1-0.7*S.stam*_d3dbClamp(S.w/4,0.15,1))*dt;
-if(S.run&&!reel)S.dist+=(0.5+0.7*S.stam)*S.pull*dt;
+if(charge)S.dist=Math.max(Math.min(S.dist,1.0),S.dist-1.0*dt);
+if(reel)S.dist-=K.reel*(S.run?0.18:1)*(S.ten>1?0.3:1)*(charge?1:(1-0.7*S.stam*_d3dbClamp(S.w/4,0.15,1)))*dt;
+if(charge)S.dist=Math.max(0.9,S.dist);
+if(S.run&&!reel)S.dist+=(0.5+0.7*S.stam)*S.pull*(surge?1.6:1)*dt;
 S.stam=Math.max(0,S.stam-dt*(0.022+0.085*Math.min(1,S.ten)+(against?0.05:0))/(0.5+0.6*Math.sqrt(S.w)));
 S.over=(S.ten>1)?S.over+dt:Math.max(0,S.over-dt*1.5);
-S.slackT=(S.ten<0.1)?S.slackT+dt:0;
+S.slackT=(S.ten<0.1)?S.slackT+dt*(charge?2.5:1):0;
 if(S.over>=K.over)S.out='break';
 else if(S.slackT>=K.slack)S.out='thrown';
 else if(S.dist>=K.max)S.out='spooled';
@@ -66382,7 +66400,7 @@ var ap=_d3derbyActAppeal(F.k,hr?F._hp:F.P,lure.L,lure.st,lure.bed,_D3._noDerbyAc
 ev=_d3derbyFishMind(F,ap,dt,db.rnd);
 if(F.mode==='hold')F.favT=0;else if(_d3derbyIsFav(F.k,lure.act))F.favT=(F.favT||0)+dt;
 if(ev==='hit'&&db.hooked){F.mode='follow';F.int=0.8;ev='';}
-}else{F.dist=99;if(F.mode!=='hold'&&F.mode!=='flee'){F.mode='hold';}F.int=Math.max(0,F.int-dt*0.6);}
+}else{F.dist=99;if(F.mode!=='hold'&&F.mode!=='flee'){F.mode='hold';}F.int=Math.max(0,F.int-dt*_D3_DERBY.forget);}
 if(ev)out.push({ev:ev,F:F});
 if(F.mode==='flee'){F.t+=dt;var a=Math.atan2(F.z-S.c0.z,F.x-S.c0.x);
 _d3derbyFishGo(F,F.x+Math.cos(a)*2,surf-Math.min(bed-0.05,bed*0.8),F.z+Math.sin(a)*2,1.7,dt,t);
@@ -66400,13 +66418,13 @@ function _d3derbyFishFight(S,db,F,dt){
 var f=db.fight,t=db.t,bedHere=_d3derbyDepthAt(S,F.x,F.z)||0.6;
 db.swing=(db.swing||0)+((f.side*0.42*(f.run?1:0.45))-(db.swing||0))*Math.min(1,dt*1.6);
 var a=S.yaw+db.swing,r=Math.min(f.dist,Math.max(0.4,_d3derbyRunAt(db.runs,a)-0.3)),x=S.c0.x+Math.cos(a)*r,z=S.c0.z+Math.sin(a)*r;
-var deep=Math.min(bedHere-0.06,f.run?bedHere*0.7:bedHere*0.35),y=S.surf-Math.max(0.06,deep);
+var hard=(f.mv==='surge'||f.mv==='stand'),deep=Math.min(bedHere-0.06,hard?bedHere*0.9:(f.run?bedHere*0.7:bedHere*0.35)),y=S.surf-Math.max(0.06,deep);
 if(f.jump>0){var u=1-f.jump/0.8;y=S.surf+Math.sin(u*Math.PI)*0.42;}
 F.x+=(x-F.x)*Math.min(1,dt*5);F.z+=(z-F.z)*Math.min(1,dt*5);F.y+=(y-F.y)*Math.min(1,dt*(f.jump>0?12:3));
 var away=f.run?a:(a+Math.PI),shake=Math.sin(t*(f.run?11:6)+F.ph)*(f.run?0.5:0.25);
 if(F.obj){F.obj.position.set(F.x,F.y,F.z);var hero=F.obj.userData.hero;if(hero)shake*=0.35;
 F.obj.rotation.set((f.jump>0)?Math.sin(t*14)*0.5:0,-(away+f.side*0.6)+shake,(f.jump>0)?0.7:Math.sin(t*8)*0.15);
-if(hero)_d3derbyFishPose(F.obj,dt,f.run?1:0.55,0.55+0.45*Math.sin(t*5+F.ph));}
+if(hero)_d3derbyFishPose(F.obj,dt,hard?1.5:((f.mv==='charge')?1.2:(f.run?1:0.55)),0.55+0.45*Math.sin(t*5+F.ph));}
 return F;
 }
 function _d3derbyTrophyLit(o){
@@ -66442,7 +66460,7 @@ if(!(face.run>=_D3_DERBY.cast.need)){_d3fishEnd();try{showToast('This water is t
 S.yaw=face.yaw;
 S.mode='derby';_d3fishHUD(false);S.bob.visible=false;S.line.visible=false;S.ring.visible=false;
 var rnd=(typeof _D3._derbyRnd==='function')?_D3._derbyRnd:Math.random;
-S.db={st:'card',card:'start',sea:!!S.sea,wk:S.sea?_D3_DERBY_SEAK:1,free:false,ri:0,R:null,lure:'crank',lureSt:null,fish:[],hooked:null,fight:null,inp:{reel:false,rod:0,twitch:false},
+S.db={st:'card',card:'start',sea:!!S.sea,wk:S.sea?_D3_DERBY_SEAK:1,gk:S.sea?_D3_DERBY_SEAG:1,free:false,ri:0,R:null,lure:'crank',lureSt:null,fish:[],hooked:null,fight:null,inp:{reel:false,rod:0,twitch:false},
 pw:0,ct:0,t:0,runs:runs,dir:{x:Math.cos(S.yaw),z:Math.sin(S.yaw)},pos:new window.THREE.Vector3(),day:{kg:0,best:null,rounds:0,fish:0,pts:0},call:'',callT:0,rnd:rnd,ui:0,
 A:_d3derbyActNew(),streak:0,zoom:0,watch:null};
 S.db.spots=_D3._noDerbySpots?[{x:S.c0.x,z:S.c0.z}]:_d3derbySpots(_d3derbyPlaces(S),_D3_DERBY.cast.need+1.6,_D3_DERBY.rounds.length,4.5);
@@ -66452,7 +66470,7 @@ _d3derbyHUD(S,true);
 return true;
 }
 function _d3derbyRoundSet(S,i){
-var db=S.db;db.ri=i;db.R=_d3derbyRoundNew(i,db.wk);db.hooked=null;db.fight=null;db.lureSt=null;
+var db=S.db;db.ri=i;db.R=_d3derbyRoundNew(i,db.gk);db.hooked=null;db.fight=null;db.lureSt=null;
 if(db.spots&&db.spots.length)_d3derbyMoveTo(S,db.spots[Math.min(i,db.spots.length-1)]);
 if(db.lureObj)db.lureObj.visible=false;if(db.line)db.line.visible=false;
 _d3derbyStockSpot(S,db,_D3_DERBY.stock[0]+i*_D3_DERBY.stock[1]);
@@ -66475,6 +66493,7 @@ var k;for(k in (db._lures||{}))if(db._lures[k].parent)db._lures[k].parent.remove
 if(db._spl&&db._spl.parent){db._spl.parent.remove(db._spl);db._spl.geometry.dispose();db._spl.material.dispose();}
 if(db.line&&db.line.parent)db.line.parent.remove(db.line);
 _d3derbyTrophyDrop(db.landObj);
+_d3derbyFightDrop(S,db);
 _d3derbyWorldDrop(db);_d3derbyGullsDrop(db);_d3derbyFishKitDrop();
 _d3derbyHUD(S,false);S.db=null;S.mode='boat';S.sea=false;
 }
@@ -66556,11 +66575,11 @@ _d3derbyCall(db,F.big?'FISH ON \u2014 BIG GAME!':(big?((sz==='huge')?'FISH ON \u
 return true;
 }
 function _d3derbyLanded(S){
-var db=S.db,F=db.hooked,b=_d3derbyLand(db.R,F.k,F.name,F.w,db.wk);
+var db=S.db,F=db.hooked,b=_d3derbyLand(db.R,F.k,F.name,F.w,db.gk);
 db.day.kg=Math.round((db.day.kg+F.w)*100)/100;db.day.fish++;if(!db.day.best||F.w>db.day.best.kg)db.day.best={name:F.name,kg:F.w};
 db.st='land';db.lt=0;db.landObj=F.obj;F.obj=null;db.fish.splice(db.fish.indexOf(F),1);db.hooked=null;db.fight=null;
 if(db.line)db.line.visible=false;
-var gr=_d3derbyGrade(F.q),pts=_d3derbyPoints(F.w,db.wk,gr,db.hookFav,db.streak);
+var gr=_d3derbyGrade(F.q),pts=_d3derbyPoints(F.w,db.gk,gr,db.hookFav,db.streak);
 db.catch={name:F.name,kg:F.w,grade:gr,pts:pts,fav:!!db.hookFav,streak:db.streak,secs:b,way:_d3derbyFavOf(F.k).map(_d3derbyActName).join(' or ')};
 db.streak++;db.day.pts=(db.day.pts|0)+pts;db.landLen=0;
 try{db.catch.isNew=_d3derbyCatchNote(F.k,F.w,gr);}catch(_cb){}
@@ -66579,6 +66598,7 @@ _d3derbyCall(db,why,2.2,'bad');_d3derbyFx(db,(why==='The line broke')?'snap':'mi
 }
 function _d3derbyStep(S,dt){
 var db=S.db,T=window.THREE;if(!db)return;
+if(db.slowT>0){db.slowT-=dt;if(!_D3._noDerbySlow)dt*=_d3derbyPace(db.slowT);}
 db.t+=dt;S.t=(S.t||0)+dt;
 var surf=S.surf,rock=Math.sin(S.t*0.9)*0.012+Math.sin(S.t*1.7+1.1)*0.006;
 S.rig.position.y=surf+rock;S.rig.rotation.z=Math.sin(S.t*0.8)*0.014;S.rig.rotation.x=Math.sin(S.t*1.3+0.7)*0.008;
@@ -66615,13 +66635,12 @@ var f=db.fight,F=db.hooked,d0=f.dist,ev=_d3derbyFightStep(f,db.inp,dt,db.rnd);
 var fk=_d3derbyClicks(db.clk,Math.abs(f.dist-d0)*1.6);db.clk=fk.acc;if(fk.n)_d3derbySfx((f.dist>d0)?'drag':'reel',f.ten);
 _d3derbyFishFight(S,db,F,dt);db.pos.set(F.x,F.y,F.z);
 bend=Math.min(1,0.25+0.7*f.ten);
-if(ev==='jump'){_d3derbyRing(db,F.x,F.z,surf,true);_d3derbySplash(db,F.x,F.z,surf,1.4);_d3derbyFx(db,'jump');_d3derbyCall(db,'It jumps \u2014 ease off!',1.0,'warn');_d3derbySay('jump');}
-else if(ev==='run')_d3derbyCall(db,'It runs!',0.9,'warn');
+_d3derbyFightEv(S,db,ev);
 if(f.out==='landed')_d3derbyLanded(S);
 else if(f.out==='break')_d3derbyLost(S,'The line broke');
 else if(f.out==='thrown')_d3derbyLost(S,'It threw the hook');
 else if(f.out==='spooled')_d3derbyLost(S,'It took all the line');
-else if(!(f.jump>0.25))uw={x:F.x,y:F.y,z:F.z,kind:'fish'};
+else if(!(f.jump>0.25||f.chainT>0))uw={x:F.x,y:F.y,z:F.z,kind:'fish'};
 break;
 case 'land':
 db.lt+=dt;var lu=Math.min(1,db.lt*1.6);bend=0.30;
@@ -66650,6 +66669,7 @@ db.lureObj.rotation.set(0,-Math.atan2(-db.dir.z,-db.dir.x),(db.st==='cast')?db.t
 var bl=db.lureObj.getObjectByName('dbBlade');if(bl)bl.rotation.x=db.t*30*Math.min(1,(db.lureSt&&db.lureSt.spd)||0);}
 if(db.st==='cast'||db.st==='work'||db.st==='hit'||db.st==='fight')_d3derbyLine(S,db,db.pos,db.st==='fight'||db.st==='hit');
 _d3fishBend(bend);
+_d3derbyFightFx(S,db,dt);
 _d3derbyRingsStep(db,dt);
 if(db.callT>0){db.callT-=dt;if(db.callT<=0)db.ui=0;}
 if(db.st!=='card'&&!db.free){
@@ -66665,7 +66685,7 @@ _d3derbyFx(db,(over==='clear')?'clear':'over');_d3derbySay((over!=='clear')?'ove
 _d3derbyHUD(S,true);
 }
 }
-S.rig.rotation.y=-S.yaw;S.cam.rotation.order='YXZ';S.cam.rotation.set(S.pitch,-Math.PI/2,0);
+S.rig.rotation.y=-S.yaw;_d3derbySeatCam(S,db,dt);
 _d3derbyCam(S,db,uw,dt);
 _d3derbyWorldStep(S,db,dt);_d3derbyGullsStep(S,db,dt);
 _d3derbyHUDTick(S);
@@ -66680,13 +66700,15 @@ function _d3derbyCam(S,db,uw,dt){
 if(!uw){_d3fishUWSet(false);db.camP=null;return;}
 _d3fishUWSet(true);if(!S.uwOn)return;
 var cam=_d3fishCamUW(),P;
-if(uw.kind==='fish')P=_d3fishUWPose({x:uw.x,y:uw.y,z:uw.z,wl:S.surf,fight:true},null,db.t,Math.atan2(uw.z-S.c0.z,uw.x-S.c0.x)+Math.sin(db.t*0.35)*1.0);
+var shk=0;
+if(uw.kind==='fish'){var sh=_d3derbyFightShot(db.fight||{dist:9});shk=sh.shake;
+P=_d3derbyFightCam(uw,S.c0,S.surf,sh,Math.sin(db.t*0.35)*sh.swing,0);P=_d3derbyFightCam(uw,S.c0,S.surf,sh,Math.sin(db.t*0.35)*sh.swing,_d3derbyDepthAt(S,P.x,P.z));}
 else{var zt=(db.st==='hit')?1:((db.watch&&db.watch.on)?(db.watch.near?0.7:0.35):0);db.zoom+=(zt-db.zoom)*Math.min(1,dt*(zt>db.zoom?6:1.5));
 P=_d3derbyCamPose(uw,db.dir,S.surf,_d3derbyDepthAt(S,uw.x,uw.z)||0.4,Math.hypot(uw.x-S.c0.x,uw.z-S.c0.z),_D3._noDerbyZoom?0:db.zoom);}
 var C=db.camP,k=C?Math.min(1,dt*4.5):1;if(!C)C=db.camP={x:P.x,y:P.y,z:P.z,lx:P.lx,ly:P.ly,lz:P.lz};
 C.x+=(P.x-C.x)*k;C.y+=(P.y-C.y)*k;C.z+=(P.z-C.z)*k;C.lx+=(P.lx-C.lx)*k;C.ly+=(P.ly-C.ly)*k;C.lz+=(P.lz-C.lz)*k;
 C.y=Math.min(C.y,S.surf-0.04);
-cam.position.set(C.x,C.y,C.z);cam.up.set(0,1,0);cam.lookAt(C.lx,C.ly,C.lz);
+cam.position.set(C.x+Math.sin(db.t*47)*shk,Math.min(S.surf-0.04,C.y+Math.sin(db.t*61)*shk*0.6),C.z+Math.cos(db.t*53)*shk);cam.up.set(0,1,0);cam.lookAt(C.lx,C.ly,C.lz);
 if(Math.abs(cam.fov-P.fov)>0.05){cam.fov=P.fov;cam.updateProjectionMatrix();}
 }
 function _d3derbyCss(){
@@ -66761,7 +66783,7 @@ var o={title:'',lines:[],rows:[],go:'',alt:''},B=beat||[],has=function(k){return
 if(kind==='start'){
 o.title=(W&&W.sea)?'Sea derby':'Fishing derby';
 o.lines=['Three rounds against the clock. Land the round\u2019s weight before the time runs out \u2014 every fish puts seconds back.',
-'Hold Cast for power and let go. Reel and twitch to work the lure; when a fish hits, set the hook. In the fight keep the line in the green: ease off when it runs, reel when it rests, and turn the rod with it to ease the line.'];
+'Hold Cast for power and let go. Reel and twitch to work the lure; when a fish hits, set the hook. In the fight keep the line in the green: ease off when it runs, reel when it rests, and turn the rod with it to ease the line. When it surges, let it run; when it comes at you, reel!'];
 o.lines.push('Work the lure five ways: steady, stop & go, twitch, sweep (the rod to a side as you reel) and shake (the rod side to side). Every fish has a way it cannot leave alone \u2014 the strip over the buttons says when you have found it.');
 if(W&&W.sea)o.lines.push('At sea the fish are the sea\u2019s and the tackle is heavier: each round asks '+wk+' times the lake\u2019s weight. Gulls work over the heaviest fish in reach \u2014 cast under them. There is big game out here: sailfish, marlin, a mako.');
 o.rows=rounds.map(function(r,i){return ['Round '+(i+1)+' \u00b7 '+r.name,_d3derbyKg(r.goal*wk)+' in '+_d3derbyClock(r.time),false];});
@@ -66814,7 +66836,7 @@ RT.kinds.forEach(function(r){h+='<div class="'+(r[2]?'':'no')+'"><span>'+escapeH
 h+='</div></div></div></div>';
 }else if(db.st==='card'){
 var bk=_d3derbyBook()[_d3derbyBookKey(db.sea)]||null,last=_D3._derby||{};
-var C=_d3derbyCardText(db.card,db.R,db.day,(db.card==='over')?last.book:bk,(db.card==='over')?last.beat:null,db.won,_D3_DERBY.rounds,{sea:db.sea,wk:db.wk,box:_d3derbyTackle(life),next:nx,life:life,rank:(db.card==='over')?last.rank:0});
+var C=_d3derbyCardText(db.card,db.R,db.day,(db.card==='over')?last.book:bk,(db.card==='over')?last.beat:null,db.won,_D3_DERBY.rounds,{sea:db.sea,wk:db.gk,box:_d3derbyTackle(life),next:nx,life:life,rank:(db.card==='over')?last.rank:0});
 h+='<div class="card g" data-card="'+db.card+'"><div class="hd"><h2>'+escapeHtml(C.title)+'</h2>'+((db.card==='start')?'<button class="chip" data-db="records" id="dbRec">Records</button>':'')+'<button class="chip'+(_d3derbyVoiceOn()?' on':'')+'" data-db="voice" id="dbVoice">\ud83d\udd0a Voice '+(_d3derbyVoiceOn()?'on':'off')+'</button></div><div class="bd"><div class="tx">';
 C.lines.forEach(function(t){h+='<p>'+escapeHtml(t)+'</p>';});
 h+='</div><div class="rw">';
@@ -66902,6 +66924,9 @@ case 'hit': return [N(880,0,0.07,0.085,'square'),N(1320,0.08,0.11,0.085,'square'
 case 'hook': return [{w:'triangle',f:[520,1040],t:0,d:0.16,g:0.11}];
 case 'miss': return [{w:'triangle',f:[420,205],t:0,d:0.24,g:0.085}];
 case 'jump': return [{w:'noise',f:[1300,650],t:0,d:0.42,g:0.19,q:0.7}];
+case 'surge':return [{w:'sawtooth',f:[760,1480+500*m],t:0,d:0.50,g:0.060},{w:'noise',f:[2200,3200],t:0,d:0.40,g:0.05,q:1.6}];
+case 'charge':return [{w:'triangle',f:[900,240],t:0,d:0.38,g:0.075},{w:'noise',f:[1400,500],t:0.05,d:0.32,g:0.06,q:0.8}];
+case 'stand':return [N(196,0,0.11,0.10,'square'),N(196,0.16,0.14,0.10,'square')];
 case 'snap': return [{w:'noise',f:[3200,2600],t:0,d:0.035,g:0.20,q:2},{w:'sawtooth',f:[310,88],t:0.02,d:0.30,g:0.075}];
 case 'tick': return [N(1000,0,0.05,0.055,'sine')];
 case 'land': return [N(523,0,0.10,0.09),N(659,0.09,0.10,0.09),N(784,0.18,0.10,0.09),N(1047,0.27,0.22,0.10)];
@@ -66940,6 +66965,8 @@ if(ev==='hit')return {s:0.8,w:0.8,ms:180,now:1};
 if(ev==='snap')return {s:1,w:0.6,ms:300,now:1};
 if(ev==='land')return {s:0.3,w:0.5,ms:160,now:1};
 if(ev==='jump')return {s:0.5,w:0.3,ms:140,now:1};
+if(ev==='surge'||ev==='stand')return {s:0.7,w:0.5,ms:260,now:1};
+if(ev==='charge')return {s:0.2,w:0.8,ms:200,now:1};
 if(ten>top)return {s:0,w:Math.min(1,0.15+0.85*(ten-top)/Math.max(0.01,1-top)),ms:120,now:0};
 return null;}
 function _d3padDerby(p,E,dt){
@@ -67028,12 +67055,17 @@ return Math.max(0.12,Math.min(1.6,(+len||0.1)/((+share||0.6)*w)));
 function _d3derbyTrophyShare(w){return 0.34+0.32*Math.max(0,Math.min(1,(+w||0)/4));}
 function _d3derbyCue(f,reel,top){
 if(!f)return {txt:'',tone:''};
+var mv=f.mv||((f.warn>0)?f.next:''),rodW=(f.side>0?'ROD \u25b6':'\u25c0 ROD');
+if(mv==='charge')return {txt:'IT\u2019S COMING AT YOU \u2014 REEL!',tone:'bad'};
 if(f.ten>1)return {txt:'EASE OFF!',tone:'bad'};
-if(f.jump>0)return {txt:'SLACK \u2014 IT JUMPS',tone:'warn'};
+if(f.jump>0||f.chainT>0)return {txt:'SLACK \u2014 IT JUMPS',tone:'warn'};
+if(mv==='surge')return {txt:((f.style==='digger')?'IT DIVES':'IT SURGES')+' \u2014 LET IT RUN \u00b7 '+rodW,tone:'bad'};
+if(mv==='stand')return {txt:'IT SEES THE BOAT \u2014 '+rodW+((reel&&f.ten>top)?' \u00b7 EASE OFF':''),tone:'warn'};
 if(f.run)return {txt:(f.side>0?'ROD \u25b6':'\u25c0 ROD')+((reel&&f.ten>top)?' \u00b7 EASE OFF':''),tone:'warn'};
 return {txt:'REEL!',tone:'good'};
 }
 var _D3_DERBY_SAY={start:'Lines in!',hit:'Hit!',hook:'Fish on!',big:'A big one!',huge:'It\'s a monster!',jump:'It jumps!',
+surge:'It surges!',dive:'It dives!',charge:'It\'s coming at you!',stand:'It sees the boat!',
 landC:'Got it.',landB:'Nice fish!',landA:'A beauty!',landS:'What a catch!',miss:'Missed it.',snap:'The line snapped!',lost:'It got away.',
 clear:'Round clear!',ten:'Ten seconds!',over:'Time is up.',won:'You won the derby!',lure:'A new lure!'};
 function _d3derbyVoiceOn(){try{return __LS.getItem('rcgDerbyVoice')!=='0';}catch(_v){return true;}}
@@ -67048,6 +67080,88 @@ var u=new window.SpeechSynthesisUtterance(t);u.rate=1.15;u.pitch=1.05;u.volume=M
 try{SS.cancel();}catch(_c){}
 SS.speak(u);return true;
 }catch(_e){return false;}
+}
+function _d3derbyFightShot(f){
+var mv=f.mv||'',hard=(mv==='surge'||mv==='stand'),near=(f.dist<1.5);
+return {r:hard?0.72:((mv==='charge')?1.30:(near?0.80:(f.run?0.95:1.08))),dy:(mv==='charge')?0.16:0.26,fov:hard?44:((mv==='charge')?58:52),
+shake:Math.max(0,(f.ten||0)-0.85)*0.07+(hard?0.012:0),swing:(mv==='charge')?0.35:1.0};
+}
+function _d3derbyFightCam(fish,boat,surf,shot,turn,bed){
+var a=Math.atan2(fish.z-boat.z,fish.x-boat.x)+(turn||0),y=Math.min(surf-0.045,fish.y+shot.dy);
+if(bed>0)y=Math.min(surf-0.045,Math.max(y,surf-bed+0.06));
+return {x:fish.x+Math.cos(a)*shot.r,y:y,z:fish.z+Math.sin(a)*shot.r,lx:fish.x,ly:Math.min(surf-0.04,fish.y+0.01),lz:fish.z,fov:shot.fov};
+}
+function _d3derbyLineHue(ten,top){
+if(ten>1)return [1,0.26,0.18];
+var u=_d3dbClamp(((+ten||0)-top)/Math.max(0.01,1-top),0,1);
+return [0.92+0.08*u,0.96-0.20*u,0.97-0.62*u];
+}
+function _d3derbyPace(left){return (left>0)?0.45:1;}
+function _d3derbyLineCut(tip,fish,surf){
+var d=tip.y-fish.y,t=(d>1e-4)?_d3dbClamp((tip.y-surf)/d,0,1):0;
+return {x:tip.x+(fish.x-tip.x)*t,z:tip.z+(fish.z-tip.z)*t};
+}
+function _d3derbyBubbles(db,x,y,z,n,spread){
+var T=window.THREE,N=56,P=db._bub,i;
+if(!P){var g=new T.BufferGeometry(),a0=new Float32Array(N*3);for(i=0;i<N;i++)a0[i*3+1]=-9999;
+g.setAttribute('position',new T.Float32BufferAttribute(a0,3));
+P=db._bub=new T.Points(g,new T.PointsMaterial({color:0xdff3fa,size:0.024,transparent:true,opacity:0.75,depthWrite:false}));
+P.frustumCulled=false;P.userData.noMerge=true;P.userData.derby=1;P.userData.life=new Float32Array(N);P.userData.i=0;_D3.scene.add(P);}
+var pos=P.geometry.attributes.position,L=P.userData.life,rnd=db.rnd,s=spread||0.05;
+for(i=0;i<n;i++){var k=P.userData.i=(P.userData.i+1)%N;pos.setXYZ(k,x+(rnd()-0.5)*s,y+(rnd()-0.5)*s,z+(rnd()-0.5)*s);L[k]=0.01;}
+pos.needsUpdate=true;P.visible=true;
+return P;
+}
+function _d3derbyBubblesStep(db,dt,surf){
+var P=db._bub;if(!P||!P.visible)return 0;
+var pos=P.geometry.attributes.position,a=pos.array,L=P.userData.life,n=L.length,i,live=0;
+for(i=0;i<n;i++){if(!(L[i]>0))continue;L[i]+=dt;var k=i*3;a[k+1]+=(0.34+0.2*((i%5)/5))*dt;a[k]+=Math.sin(L[i]*7+i)*0.02*dt;
+if(a[k+1]>=surf-0.01||L[i]>2.2){L[i]=0;a[k+1]=-9999;}else live++;}
+pos.needsUpdate=true;if(!live)P.visible=false;
+return live;
+}
+function _d3derbyBubblesDrop(db){var P=db._bub;if(P){if(P.parent)P.parent.remove(P);P.geometry.dispose();P.material.dispose();db._bub=null;}}
+function _d3derbyFightEv(S,db,ev){
+var f=db.fight,F=db.hooked,surf=S.surf;if(!ev||!f||!F)return;
+if(ev==='jump'){_d3derbyRing(db,F.x,F.z,surf,true);_d3derbySplash(db,F.x,F.z,surf,1.4);_d3derbyFx(db,'jump');
+_d3derbyCall(db,(f.chain>0)?'It jumps — and again!':'It jumps — ease off!',1.0,'warn');_d3derbySay('jump');db.slowT=0.35;}
+else if(ev==='run')_d3derbyCall(db,'It runs!',0.9,'warn');
+else if(ev==='warn')_d3derbySfx('look');
+else if(ev==='surge'){var dig=(f.style==='digger');_d3derbyCall(db,dig?'IT DIVES!':'IT SURGES!',0.9,'bad');_d3derbyFx(db,'surge',f.ten);_d3derbySay(dig?'dive':'surge');
+_d3derbyBubbles(db,F.x,F.y,F.z,14,0.16);}
+else if(ev==='charge'){_d3derbyCall(db,'IT’S COMING AT YOU!',1.1,'bad');_d3derbyFx(db,'charge');_d3derbySay('charge');}
+else if(ev==='stand'){_d3derbyCall(db,'IT SEES THE BOAT!',1.1,'warn');_d3derbyFx(db,'stand');_d3derbySay('stand');_d3derbySplash(db,F.x,F.z,surf,0.8);db.slowT=0.25;}
+}
+function _d3derbyFightFx(S,db,dt){
+var f=db.fight,F=db.hooked;
+if(db.line&&db.line.material){var h=(f&&db.st==='fight')?_d3derbyLineHue(f.ten,_D3_DERBY.fight.band[1]):[0.918,0.957,0.973];db.line.material.color.setRGB(h[0],h[1],h[2]);}
+if(f&&F&&db.st==='fight'){
+var rate=(f.mv==='surge'||f.mv==='stand')?26:(f.run?10:3);db.bubA=(db.bubA||0)+rate*dt;
+if(db.bubA>=1&&!(f.jump>0)){_d3derbyBubbles(db,F.x,F.y,F.z,Math.min(4,db.bubA|0),0.07);db.bubA=0;}
+db.wakeT=(db.wakeT||0)-dt;
+if(f.run&&db.wakeT<=0&&db._tip){db.wakeT=0.45;var c=_d3derbyLineCut(db._tip,F,S.surf);_d3derbyRing(db,c.x,c.z,S.surf);}
+}
+_d3derbyBubblesStep(db,dt,S.surf);
+var want=(db.st==='fight')?-(db.inp.rod||0)*0.30:0;db.lean=(db.lean||0)+(want-(db.lean||0))*Math.min(1,dt*7);
+if(S.rod)S.rod.rotation.y=-0.38+db.lean;
+}
+function _d3derbySeatCam(S,db,dt){
+var f=db.fight,F=db.hooked,up=(db.st==='fight'&&f&&F&&(f.jump>0||f.chainT>0))?1:0,T=window.THREE;
+if(_D3._noDerbyJumpCam)up=0;
+db.jz=(db.jz||0)+(up-(db.jz||0))*Math.min(1,dt*(up?9:3));if(db.jz<0.002)db.jz=0;
+if(db.fov0==null)db.fov0=S.cam.fov||58;
+var pitch=S.pitch,yawOff=0;
+if(db.jz>0&&F){var cp=db._cp||(db._cp=new T.Vector3());S.cam.getWorldPosition(cp);
+var dx=F.x-cp.x,dz=F.z-cp.z,pw=Math.atan2(S.surf+0.2-cp.y,Math.max(0.3,Math.hypot(dx,dz))),yw=Math.atan2(dz,dx)-S.yaw;
+while(yw>Math.PI)yw-=6.283185307;while(yw<-Math.PI)yw+=6.283185307;
+pitch=S.pitch+(pw-S.pitch)*db.jz;yawOff=yw*db.jz;}
+S.cam.rotation.order='YXZ';S.cam.rotation.set(pitch,-Math.PI/2-yawOff,0);
+var fv=db.fov0-18*db.jz;if(Math.abs((S.cam.fov||0)-fv)>0.05){S.cam.fov=fv;S.cam.updateProjectionMatrix();}
+}
+function _d3derbyFightDrop(S,db){
+_d3derbyBubblesDrop(db);
+try{if(db.fov0!=null&&S.cam){S.cam.fov=db.fov0;S.cam.updateProjectionMatrix();}}catch(_f){}
+try{if(S.rod)S.rod.rotation.y=-0.38;}catch(_r){}
 }
 function _d3derbyBodyAt(sp,u){
 var U=0.22,Lf=U*sp.L,k=Math.max(0.35,sp.tp+0.45),Hd=0.5*U*sp.d/k,Hw=0.5*U*sp.w/k;
@@ -67361,6 +67475,7 @@ x.fillStyle='#fff';x.beginPath();x.moveTo(ox,oy-5);x.lineTo(ox-4,oy+4);x.lineTo(
 return M.length;
 }
 var _D3_DERBY_SEAK=6;
+var _D3_DERBY_SEAG=20;
 var _D3_DERBY_SEA=[
 {k:'seamack', name:'Mackerel', L:1.00,d:0.24,w:0.16,tp:0.34,b:0x12303a,s:0x8fb0b4,y:0xe2e9e6,f:0x2a3c40,m:'bars', stripe:0x0c1c22,spot:0,sc:0.95,lo:0.00,hi:0.55,
 P:{lure:{top:0.5,diver:0.7,spinner:1.0,jig:0.5},dep:[0.00,0.55],spd:[0.40,1.05],pause:0.1,kg:[0.3,2.4],str:1.00,jump:0.3}},
