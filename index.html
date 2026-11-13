@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='b697f14';
+var RCG_BUILD='5f68974';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -42905,13 +42905,28 @@ var y=H(v[0],v[1]);if(!(Math.abs(y-v[3])<=tol))return false;
 if(v[4]!=null&&(!!S(v[0],v[1]))!==!!v[4])return false;}
 return true;
 }
+var _D3_LAKE_PART_SEEN=0.25;
+var _D3_LAKE_PART_Q=0.8;
+function _d3partRadiusOf(rs,q){
+var a=[],i;for(i=0;i<rs.length;i++)if(rs[i]>0&&isFinite(rs[i]))a.push(rs[i]);
+if(!a.length)return 0;a.sort(function(x,y){return x-y;});
+return a[Math.min(a.length-1,Math.max(0,Math.floor(a.length*q)))];
+}
+function _d3lakePartR(PG){
+var T=window.THREE,bx=new T.Box3(),v=new T.Vector3(),rs=[],i;
+PG.updateMatrixWorld(true);
+for(i=0;i<PG.children.length;i++){bx.makeEmpty();bx.expandByObject(PG.children[i]);if(!bx.isEmpty())rs.push(bx.getSize(v).length()/2);}
+return _d3partRadiusOf(rs,_D3_LAKE_PART_Q);
+}
 function _d3lakeKeepSeal(PG){
-var D=_D3,mm=D.mergedMesh;
+var D=_D3,mm=D.mergedMesh,pr=0;
+try{pr=_d3lakePartR(PG)*_D3_LAKE_PART_SEEN;}catch(_p9){}
 try{if(typeof _d3mergeStatic==='function')_d3mergeStatic(PG);}catch(_m9){}
 D.mergedMesh=mm;
 PG.children=PG.children.filter(function(c){var m=false;c.traverse(function(q){if(q.isMesh)m=true;});if(!m)c.parent=null;return m;});
 PG.userData.noMerge=true;PG.userData._lakePG=1;
 if(!D._noLakePlantShadowCut)PG.traverse(function(o){if(o.isMesh)o.castShadow=false;});
+if(pr>0&&!D._noLakePartR)PG.traverse(function(o){if(o.isMesh)o.userData.partR=pr;});PG.userData.partR=pr;
 return PG;
 }
 function _d3lakeKeepTake(key,maxDep){
@@ -48506,7 +48521,7 @@ return scene;
 }
 var _D3_TINY_PX=1.5;
 var _D3_TINY_EVERY=90;
-var _D3_TINY={L:[],R:new Float32Array(0),C:new Float32Array(0),n:0,f:0,at:-1e9,bc:-1,ver:0,K:null,sc:null};
+var _D3_TINY={L:[],R:new Float32Array(0),C:new Float32Array(0),P:new Float32Array(0),n:0,f:0,at:-1e9,bc:-1,ver:0,K:null,sc:null};
 function _d3tinyOrthoPpu(hPx,top,bottom,zoom){var s=(top-bottom)/(zoom>0?zoom:1);return s>0?hPx/s:0;}
 function _d3tinyPerspK(hPx,fovDeg,zoom){return hPx*(zoom>0?zoom:1)/(2*Math.tan(fovDeg*Math.PI/360));}
 function _d3tinyIs(r,th,ppu,k,d){
@@ -48515,10 +48530,16 @@ if(ppu>0)return 2*r*ppu<th;
 var near=d-r;if(!(near>0)||!(k>0))return false;
 return 2*r*k<th*near;
 }
+function _d3tinyPartIs(p,r,th,ppu,k,d){
+if(!(p>0)||!(th>0))return false;
+if(ppu>0)return 2*p*ppu<th;
+var near=d-(r>0?r:0);if(!(near>0)||!(k>0))return false;
+return 2*p*k<th*near;
+}
 function _d3tinyWant(o,O3){
 if(!o||(o.children&&o.children.length)||(o.userData&&o.userData._noTiny))return 0;
 if(o.isSprite)return (o.material&&o.material.sizeAttenuation!==false)?2:0;
-if(!o.isMesh||o.isInstancedMesh||o.isSkinnedMesh||o.frustumCulled===false||!o.geometry)return 0;
+if(!o.isMesh||o.isInstancedMesh||o.isSkinnedMesh||(o.frustumCulled===false&&!(o.userData&&o.userData.partR>0))||!o.geometry)return 0;
 if(O3&&(o.onBeforeRender!==O3.onBeforeRender||o.onAfterRender!==O3.onAfterRender))return 0;
 return 1;
 }
@@ -48527,17 +48548,17 @@ var a=e[0]*e[0]+e[1]*e[1]+e[2]*e[2],b=e[4]*e[4]+e[5]*e[5]+e[6]*e[6],c=e[8]*e[8]+
 return Math.sqrt(Math.max(a,b,c));
 }
 function _d3tinyList(scene){
-var S=_D3_TINY,T=window.THREE,O3=T.Object3D.prototype,L=[],R=[],C=[];
+var S=_D3_TINY,T=window.THREE,O3=T.Object3D.prototype,L=[],R=[],C=[],P=[];
 (function walk(o){
 var w=_d3tinyWant(o,O3),e;
 if(w===1){var g=o.geometry;if(!g.boundingSphere&&o.visible!==false){try{g.computeBoundingSphere();}catch(_b){}}
 var s=g.boundingSphere;
-if(s&&s.radius>=0&&isFinite(s.radius)){L.push(o);R.push(s.radius*_d3tinyScale(o.matrixWorld.elements));C.push(s.center.x,s.center.y,s.center.z);}}
+if(s&&s.radius>=0&&isFinite(s.radius)){L.push(o);R.push(s.radius*_d3tinyScale(o.matrixWorld.elements));C.push(s.center.x,s.center.y,s.center.z);P.push((o.userData&&o.userData.partR>0)?o.userData.partR:0);}}
 else if(w===2){e=o.matrixWorld.elements;
-L.push(o);R.push(0.5*Math.sqrt(e[0]*e[0]+e[1]*e[1]+e[2]*e[2]+e[4]*e[4]+e[5]*e[5]+e[6]*e[6]));C.push(0,0,0);}
+L.push(o);R.push(0.5*Math.sqrt(e[0]*e[0]+e[1]*e[1]+e[2]*e[2]+e[4]*e[4]+e[5]*e[5]+e[6]*e[6]));C.push(0,0,0);P.push(0);}
 var ch=o.children;for(var i=0,n=ch.length;i<n;i++)walk(ch[i]);
 })(scene);
-S.L=L;S.R=new Float32Array(R);S.C=new Float32Array(C);S.n=L.length;S.ver++;S.K=null;
+S.L=L;S.R=new Float32Array(R);S.C=new Float32Array(C);S.P=new Float32Array(P);S.n=L.length;S.ver++;S.K=null;
 return S.n;
 }
 function _d3tinyHide(ren,scene,cam){
@@ -48545,10 +48566,10 @@ var D=(typeof _D3!=='undefined')?_D3:null,S=_D3_TINY,H=[],i,o;
 if(!D||D._noTiny||!scene||scene!==D.scene||!cam||!ren){if(D)D._tinyN=null;return H;}
 S.f++;
 if(S.sc!==scene||S.f-S.at>=_D3_TINY_EVERY||(D.buildCount|0)!==S.bc){S.sc=scene;S.at=S.f;S.bc=D.buildCount|0;_d3tinyList(scene);}
-var rt=ren.getRenderTarget?ren.getRenderTarget():null,hPx=rt?rt.height:ren.domElement.height,L=S.L,R=S.R,n=S.n,th=_D3_TINY_PX;
+var rt=ren.getRenderTarget?ren.getRenderTarget():null,hPx=rt?rt.height:ren.domElement.height,L=S.L,R=S.R,n=S.n,th=_D3_TINY_PX,PR=D._noTinyParts?null:S.P;
 if(cam.isOrthographicCamera){
 var ppu=_d3tinyOrthoPpu(hPx,cam.top,cam.bottom,cam.zoom),K=S.K;
-if(!K||K.ppu!==ppu||K.ver!==S.ver){var I=[];for(i=0;i<n;i++)if(_d3tinyIs(R[i],th,ppu,0,0))I.push(i);K=S.K={ppu:ppu,ver:S.ver,I:I};}
+if(!K||K.ppu!==ppu||K.ver!==S.ver||K.pr!==!!PR){var I=[];for(i=0;i<n;i++)if((PR&&PR[i]>0)?_d3tinyPartIs(PR[i],R[i],th,ppu,0,0):_d3tinyIs(R[i],th,ppu,0,0))I.push(i);K=S.K={ppu:ppu,ver:S.ver,I:I,pr:!!PR};}
 var J=K.I;for(i=0;i<J.length;i++){o=L[J[i]];if(o.visible){o.visible=false;H.push(o);}}
 D._tinyN={listed:n,hid:H.length,ortho:true};
 if(typeof _d3meshLodIn==='function')H.sw=_d3meshLodIn(S,K,ppu,D);
@@ -48557,7 +48578,8 @@ var k=_d3tinyPerspK(hPx,cam.fov,cam.zoom),ce=cam.matrixWorld.elements,ex=ce[12],
 for(i=0;i<n;i++){o=L[i];if(!o.visible)continue;
 var m=o.matrixWorld.elements,j=i*3,cx=C[j],cy=C[j+1],cz=C[j+2],
 x=m[0]*cx+m[4]*cy+m[8]*cz+m[12]-ex,y=m[1]*cx+m[5]*cy+m[9]*cz+m[13]-ey,z=m[2]*cx+m[6]*cy+m[10]*cz+m[14]-ez;
-if(_d3tinyIs(R[i],th,0,k,Math.sqrt(x*x+y*y+z*z))){o.visible=false;H.push(o);}}
+var dd=Math.sqrt(x*x+y*y+z*z);
+if((PR&&PR[i]>0)?_d3tinyPartIs(PR[i],R[i],th,0,k,dd):_d3tinyIs(R[i],th,0,k,dd)){o.visible=false;H.push(o);}}
 D._tinyN={listed:n,hid:H.length,ortho:false};
 D._meshLod=null;
 }else D._tinyN=null;
