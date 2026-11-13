@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='5f68974';
+var RCG_BUILD='8582802';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -43344,7 +43344,7 @@ stripe:0,spot:0,sc:0.86,n:[2,5],lo:0.20,hi:0.80,name:'Northern chub'}
 ];
 var _D3_FISH_BY={};
 (function(){for(var i=0;i<_D3_FISH.length;i++)_D3_FISH_BY[_D3_FISH[i].k]=_D3_FISH[i];})();
-function _d3fishSpec(k){return _D3_FISH_BY[k]||_D3_FISH_BY.rainbow;}
+function _d3fishSpec(k){return _D3_FISH_BY[k]||((typeof _D3_SF_BY!=='undefined')&&_D3_SF_BY[k])||_D3_FISH_BY.rainbow;}
 function _d3fishTex(sp,K){
 _D3._fishTex=_D3._fishTex||{};K=(K>1)?K:1;var _tk=sp.k+(K>1?'@'+K:'');
 if(_D3._fishTex[_tk])return _D3._fishTex[_tk];
@@ -65156,11 +65156,14 @@ var t=0;while(acc+(L-t)>=step){var need=step-acc,nt=t+need;var px=a.x+(b.x-a.x)*
 acc+=L-t;}
 if(out.length<3)return null;
 var n=out.length;
+if(!(_D3&&_D3._noStreamDown)){var _g0=(typeof _d3drawnTri==='function')?_d3drawnTri(out[0].x,out[0].z):0,_g1=(typeof _d3drawnTri==='function')?_d3drawnTri(out[n-1].x,out[n-1].z):0;
+if(_d3streamUphill(_g0,_g1)){out.reverse();for(i=0;i<n;i++)out[i].d=i*step;}}
 for(i=0;i<n;i++){var p0=out[Math.max(0,i-1)],p1=out[Math.min(n-1,i+1)];out[i].head=Math.atan2(p1.z-p0.z,p1.x-p0.x);
 out[i].g=(typeof _d3drawnTri==='function')?_d3drawnTri(out[i].x,out[i].z):((typeof _d3drawnH==='function')?_d3drawnH(out[i].x,out[i].z):0);
 out[i].cov=_d3streamCover(out[i].x,out[i].z);}
 return {pts:out,len:out[n-1].d};
 }
+function _d3streamUphill(g0,g1){return (g1-g0)>0.05;}
 function _d3streamAt(S,d){
 var P=S&&S.pts;if(!P||P.length<2)return null;
 if(d<=0)return P[0];if(d>=S.len)return P[P.length-1];
@@ -65211,6 +65214,7 @@ var flat=Math.max(0,Math.min(1,(0.05-Math.abs(slope))/0.05));
 var beat=Math.max(0,Math.sin(p.d*0.62+si*1.3)-0.55)/0.45;
 var pool=Math.max(bend*0.9,flat*beat);
 p.rif=rif*(1-pool*0.6);p.pool=pool;
+p.cv=bend*0.45;
 p.half=half*(1+pool*0.7)*(1-p.rif*0.12);
 p.wy=p.g+0.030+pool*0.004;}
 var grp=new T.Group();grp.userData.stream=si;g.add(grp);
@@ -65229,6 +65233,7 @@ var lat=inW?side*q.half*(0.2+rr()*0.35):side*q.half*(1.25+rr()*0.7);
 var sx=q.x+nx*lat,sz=q.z+nz*lat,gy=(typeof _d3drawnTri==='function')?_d3drawnTri(sx,sz):q.g;
 var st=new T.Mesh(stoneG[(rr()*2)|0],stoneM[(rr()*3)|0]);st.scale.set(r*(0.8+rr()*0.5),r*(0.55+rr()*0.35),r*(0.8+rr()*0.5));st.rotation.set(rr()*0.6,rr()*6.28,rr()*0.6);
 st.position.set(sx,(inW?q.wy-0.01:gy+0.012)+r*0.32,sz);st.castShadow=true;grp.add(st);stonesN++;
+if(typeof _d3sfCoverAdd==='function')_d3sfCoverAdd(P,q.d,inW?0.55:0.2);
 if(inW&&foamTex&&foamN<CAP_FO){var fs=new T.Sprite(new T.SpriteMaterial({map:foamTex,color:0xf4fbff,transparent:true,opacity:0.55,depthWrite:false}));
 fs.scale.set(q.half*0.9,q.half*0.45,1);fs.position.set(sx+Math.cos(q.head)*r*1.2,q.wy+0.02,sz+Math.sin(q.head)*r*1.2);grp.add(fs);
 (_D3.streamFoam=_D3.streamFoam||[]).push({sp:fs,ph:rr()*6.28,b:0.55,k:'stone'});foamN++;}}
@@ -65237,19 +65242,25 @@ var rl=(rr()-0.5)*q.half*1.2;rf.scale.set(q.half*1.3,q.half*0.5,1);rf.position.s
 (_D3.streamFoam=_D3.streamFoam||[]).push({sp:rf,ph:rr()*6.28,b:0.4*q.rif,k:'riffle'});foamN++;}
 if(q.d-tl>0.8&&rr()<0.4&&tuftsN<CAP_TF){tl=q.d;var ts=rr()<0.5?-1:1,tlat=ts*q.half*(1.6+rr()*0.9),tx=q.x+nx*tlat,tz=q.z+nz*tlat;
 var tg=(typeof _d3drawnTri==='function')?_d3drawnTri(tx,tz):q.g,th=q.half*(1.2+rr()*0.9),tw=q.half*(0.5+rr()*0.4);
-var tf=new T.Mesh(tuftG,tuftM[(rr()*3)|0]);tf.scale.set(tw*1.3,th*0.7,tw*1.3);tf.position.set(tx,tg+th*0.5,tz);tf.rotation.set((rr()-0.5)*0.5,rr()*6.28,-ts*(0.25+rr()*0.3));grp.add(tf);tuftsN++;}
+var tf=new T.Mesh(tuftG,tuftM[(rr()*3)|0]);tf.scale.set(tw*1.3,th*0.7,tw*1.3);tf.position.set(tx,tg+th*0.5,tz);tf.rotation.set((rr()-0.5)*0.5,rr()*6.28,-ts*(0.25+rr()*0.3));grp.add(tf);tuftsN++;if(typeof _d3sfCoverAdd==='function')_d3sfCoverAdd(P,q.d,0.2);}
 }
 var kinds=['brook','brook','brown','brown','rainbow','rainbow','cutthroat'],pl=-9;
+var _RD=(typeof _d3sfReadAll==='function')?_d3sfReadAll(P,half):null,_mo=0,_hab=(_RD&&typeof _d3sfHab==='function'&&typeof _d3sfKindFor==='function'&&!_D3._noSfTrout);
+try{var _ft=P[n-1];if(typeof _d3inAnySalt==='function'&&_d3inAnySalt(_ft.x,_ft.z))_mo=2;else if(typeof _d3inAnyWater==='function'&&_d3inAnyWater(_ft.x,_ft.z))_mo=1;}catch(_m9){}
+var _f0=fishN;
 if(typeof _d3fishMesh==='function')for(i=3;i<n-3&&fishN<CAP_FI;i++){var w=P[i];if(w.cov)continue;
 var want=(w.pool>0.55&&w.d-pl>1.6)?(1+((rr()*2.4)|0)):((w.rif>0.5&&P[i+2].rif<0.2&&w.d-pl>2.4)?1:0);
 if(!want)continue;pl=w.d;
-for(var f=0;f<want&&fishN<CAP_FI;f++){var kind=kinds[(rr()*kinds.length)|0],fm=_d3fishMesh(kind);
-var FL=w.half*(1.3+rr()*0.9);fm.scale.setScalar(FL/1.0*0.9);fm.traverse(function(o){if(o.isMesh){o.userData.noMerge=true;o.castShadow=false;}});
+for(var f=0;f<want&&fishN<CAP_FI;f++){var _kr=rr(),kind=_hab?_d3sfKindFor(_d3sfHab(P,i,_RD,half,_mo),_kr):kinds[(_kr*kinds.length)|0],fm=_d3fishMesh(kind);
+var FL=w.half*(1.3+rr()*0.9)*(_hab?Math.max(0.8,Math.min(1.45,_d3fishSpec(kind).sc)):1);fm.scale.setScalar(FL/1.0*0.9);fm.traverse(function(o){if(o.isMesh){o.userData.noMerge=true;o.castShadow=false;}});
 var lat=(rr()-0.5)*w.half*1.1,dd=w.d+(rr()-0.5)*0.8;
 grp.add(fm);
-(_D3.streamLife=_D3.streamLife||[]).push({obj:fm,si:si,d:dd,lat:lat,ph:rr()*6.28,hz:0.15+rr()*0.25,spd:0.5+rr()*0.5,kind:kind,L:FL,rise:6+rr()*12,t0:0});
+(_D3.streamLife=_D3.streamLife||[]).push({obj:fm,si:si,d:dd,lat:lat,ph:rr()*6.28,hz:0.15+rr()*0.25,spd:0.5+rr()*0.5,kind:kind,L:FL,rise:6+rr()*12,t0:0,i0:i});
 fishN++;}}
-_D3.streams.push({si:si,pts:P,len:S.len,half:half,grp:grp,water:water,fish:fishN});
+if(_hab&&_RD.best>=0&&fishN>_f0&&typeof _d3fishMesh==='function'){var _bp=P[_RD.best],_bh=_d3sfHab(P,_RD.best,_RD,half,_mo),_bk=_d3sfTrophyKind(_bh),_bm=_d3fishMesh(_bk),_bL=_bp.half*2.4*Math.max(0.9,Math.min(1.45,_d3fishSpec(_bk).sc));
+_bm.scale.setScalar(_bL*0.9);_bm.traverse(function(o){if(o.isMesh){o.userData.noMerge=true;o.castShadow=false;}});grp.add(_bm);
+(_D3.streamLife=_D3.streamLife||[]).push({obj:_bm,si:si,d:_bp.d,lat:0,ph:rr()*6.28,hz:0.12,spd:0.4,kind:_bk,L:_bL,rise:9+rr()*10,t0:0,trophy:1});fishN++;}
+_D3.streams.push({si:si,pts:P,len:S.len,half:half,grp:grp,water:water,fish:fishN,_read:_RD,_readN:n,_mouth:_mo});
 if(_da.stmode&&si===(_da.streamIdx||0)){_D3._streamM={cx:m.cx,cy:m.cy,s:m.s};_D3.streamGrp=grp;
 for(i=0;i<ctrl.length;i++){var cp=_d3xy(ctrl[i]),hx=(cp[0]-m.cx)*m.s,hz=(cp[1]-m.cy)*m.s,hy=((typeof _d3drawnTri==='function')?_d3drawnTri(hx,hz):0)+0.09;
 var hd=new T.Mesh(new T.CircleGeometry(0.55,22),_mat(0x9fe6c8,{e:0x3fb98a,ei:0.6,ds:true}));hd.rotation.x=-Math.PI/2;hd.position.set(hx,hy,hz);hd.userData.noMerge=true;hd.renderOrder=998;g.add(hd);
@@ -65262,20 +65273,22 @@ var _d3stE=null;
 function _d3streamStep(t){
 var T=window.THREE,LF=_D3&&_D3.streamLife,FM=_D3&&_D3.streamFoam,i;
 if(!T)return;
+_D3._streamT=t;
 if(FM&&FM.length)for(i=0;i<FM.length;i++){var f=FM[i];if(f.sp&&f.sp.material)f.sp.material.opacity=f.b*(0.7+0.3*Math.sin(t*(f.k==='riffle'?5.2:3.1)+f.ph));}
 if(!LF||!LF.length)return;
 if(!_d3stE)_d3stE=new T.Euler();
 for(i=0;i<LF.length;i++){var e=LF[i],S=_D3.streams&&_D3.streams[e.si];if(!S||!e.obj)continue;
-var dd=e.d+Math.sin(t*e.spd+e.ph)*e.hz;if(dd<0.3)dd=0.3;else if(dd>S.len-0.3)dd=S.len-0.3;
+var spk=(e.spk>t)?Math.min(1,(t-(e.spk0||t))/0.35):0,back=(e.spk>t)?Math.min(1,Math.max(0,(e.spk-t)/3)):0,lie=spk*back;
+var dd=e.d+Math.sin(t*e.spd+e.ph)*e.hz*(1-lie)-lie*1.1;if(dd<0.3)dd=0.3;else if(dd>S.len-0.3)dd=S.len-0.3;
 var q=_d3streamAt(S,dd);if(!q)continue;
 var hf=Math.max(0.03,q.half),lt=Math.max(-hf*0.8,Math.min(hf*0.8,e.lat+Math.sin(t*0.7+e.ph*1.7)*hf*0.18));
 var nx=Math.cos(q.head+1.5708),nz=Math.sin(q.head+1.5708);
-var rz=0;if(t-e.t0>e.rise){e.t0=t;e.rise=6+Math.random()*14;
+var rz=0;if(lie>0.1)e.t0=t;if(t-e.t0>e.rise){e.t0=t;e.rise=6+Math.random()*14;
 try{var rg=new T.Mesh(new T.RingGeometry(0.02,0.05,20),new T.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.7,depthWrite:false,side:T.DoubleSide}));
 rg.rotation.x=-Math.PI/2;rg.position.set(q.x+nx*lt,q.wy+0.012,q.z+nz*lt);rg.renderOrder=6;(S.grp||_D3.trackG).add(rg);
 (_D3.streamRings=_D3.streamRings||[]).push({m:rg,t0:t,r0:hf*0.5});}catch(_r){}}
 var since=t-e.t0;if(since<0.5)rz=Math.sin(since/0.5*Math.PI)*hf*0.25;
-e.obj.position.set(q.x+nx*lt,q.wy-hf*0.35+rz,q.z+nz*lt);
+e.obj.position.set(q.x+nx*lt,q.wy-hf*(0.35+0.2*lie)+rz,q.z+nz*lt);
 _d3stE.set(0,-q.head+Math.PI+Math.sin(t*1.9+e.ph)*0.08,Math.sin(t*3.1+e.ph)*0.08);
 e.obj.rotation.copy(_d3stE);}
 var RG=_D3.streamRings;if(RG&&RG.length){for(i=RG.length-1;i>=0;i--){var r=RG[i],a=t-r.t0;if(a>1.4){if(r.m.parent)r.m.parent.remove(r.m);r.m.geometry.dispose();r.m.material.dispose();RG.splice(i,1);continue;}
@@ -66219,6 +66232,7 @@ if(S.mode==='derby'&&S.db){_d3derbyStep(S,dt);return;}
 S.t=(S.t||0)+dt;
 var surf=S.surf;
 var stream=(S.mode==='stream'),wl=stream?S.wl:surf;
+if(stream&&S.wade&&typeof _d3sfWadeStep==='function'){_d3sfWadeStep(S,dt);surf=S.surf;}
 if(stream){S.rig.position.y=surf;S.rig.rotation.z=0;S.rig.rotation.x=0;}
 else{
 var rock=Math.sin(S.t*0.9)*0.012+Math.sin(S.t*1.7+1.1)*0.006;
@@ -66310,6 +66324,7 @@ _d3fishHUD();
 }else if(S.prog>=1){
 S.state='landed';S.lt=0;
 S.cm=_d3fishSize(S.spec);if(stream)S.cm=Math.round(S.cm*0.85);
+if(stream&&S.wade&&typeof _d3sfLand==='function')_d3sfLand(S);
 S.caught=S.caught||[];S.caught.push({k:S.spec.k,name:S.spec.name,cm:S.cm,tackle:stream?S.tackle:'boat'});
 if(!stream){try{if(typeof _d3rpgAdd==='function'){var _P9=_d3rpgLoad();_d3rpgAdd(_P9,'fish',1);
 var _k9=(typeof _d3skillFish==='function')?_d3skillFish(_P9):null;if(_k9&&(_k9.two||_k9.up))try{showToast((_k9.two?'\ud83d\udc1f\ud83d\udc1f Two on the line \u2014 a second fish!  ':'')+(_k9.up||''));}catch(_t9){}
@@ -66406,6 +66421,7 @@ S.on=false;S.state='idle';S.reel=false;
 try{if(S.db)_d3derbyEnd(S);}catch(_db){}
 try{if(typeof _d3fishUWSet==='function')_d3fishUWSet(false);}catch(_uw){}
 try{if(S.mode==='stream'&&typeof _d3sfRelease==='function')_d3sfRelease(S);}catch(_r){}
+S.wadeDir=0;try{if(typeof _d3sfBookToggle==='function')_d3sfBookToggle(false);}catch(_b){}
 if(S.rig)S.rig.visible=false;
 if(S.fishObj){S.fishObj.visible=false;}
 _d3fishHUD(false);
@@ -66460,6 +66476,7 @@ var k=(e.key||'').toLowerCase();
 if(k===' '||k==='enter'){if(down)_d3fishStrike();return true;}
 if(k==='r'||k==='arrowdown'){_d3fishReel(down);return true;}
 if(S.mode==='stream'&&(k==='1'||k==='2'||k==='3')){if(down&&typeof _d3sfTackle==='function')_d3sfTackle(['lure','bait','fly'][(+k)-1]);return true;}
+if(S.mode==='stream'&&typeof _d3sfKey==='function'&&_d3sfKey(k,down))return true;
 if(k==='escape'&&down){_d3fishEnd();return true;}
 return false;
 }
@@ -66506,9 +66523,11 @@ el.innerHTML='<div id="d3FishMsg" style="pointer-events:none;padding:6px 12px;bo
 '<button data-fs="out" style="'+BTN+'min-width:64px">Done</button></div>'+
 '<div id="d3FishLiftRow" style="display:none;gap:6px"><button data-fs="lift" style="'+BTN+'min-width:132px;height:34px;font-size:12px">\ud83d\udcf1 Lift to hook</button></div>';
 document.body.appendChild(el);
+if(typeof _d3sfHudRow==='function')_d3sfHudRow(el,BTN);
 var press=function(ev){
 var b=ev.target&&ev.target.closest?ev.target.closest('[data-fs]'):null;if(!b)return;
 var a=b.getAttribute('data-fs');
+if((a==='wd'||a==='in'||a==='bk')&&typeof _d3sfHudPress==='function'){_d3sfHudPress(a,b,ev);}else
 if(ev.type==='pointerdown'){
 if(a==='out'){_d3fishEnd();}
 else if(a==='act'){_d3fishStrike();}
@@ -66525,6 +66544,7 @@ el.addEventListener('pointercancel',press);
 }
 el.style.display='flex';
 var S=_D3.fishing,act=el.querySelector('[data-fs="act"]'),msg=el.querySelector('#d3FishMsg');
+if(typeof _d3sfHudShow==='function')_d3sfHudShow(el,S);
 var lfr=el.querySelector('#d3FishLiftRow');
 if(lfr){var _sup=(typeof _d3liftSupported==='function')&&_d3liftSupported();lfr.style.display=_sup?'flex':'none';
 var _lb=lfr.querySelector('[data-fs="lift"]');if(_lb){var _on=!!(_D3._liftH);_lb.style.outline=_on?'2px solid #7fe0c0':'none';_lb.textContent=(_on?'\ud83d\udcf1 Lift: on':'\ud83d\udcf1 Lift to hook');}}
@@ -68253,14 +68273,16 @@ var off=hf*3.2+0.28,x=p2.x+nx*side*off,z=p2.z+nz*side*off;
 var g=(typeof _d3drawnTri==='function')?_d3drawnTri(x,z):p2.g;
 return {S:bestS,i:pick,p:p2,x:x,z:z,g:g,side:side,hf:hf,wx:p2.x+nx*side*hf*0.55,wz:p2.z+nz*side*hf*0.55};
 }
-function _d3sfPick(S,d){var LF=_D3.streamLife||[],f,best=null,bd=1e9;for(f=0;f<LF.length;f++){var e=LF[f];if(e.si!==S.si||e.hidden)continue;var dd=Math.abs(e.d-d);if(dd<1.2&&dd<bd){bd=dd;best=e;}}return best;}
+function _d3sfPick(S,d){var LF=_D3.streamLife||[],f,best=null,bd=1e9,now=(_D3._streamT!=null)?_D3._streamT:0;for(f=0;f<LF.length;f++){var e=LF[f];if(e.si!==S.si||e.hidden||e.spk>now)continue; var dd=Math.abs(e.d-d);if(dd<1.2&&dd<bd){bd=dd;best=e;}}return best;}
 function _d3sfSpec(k){return (typeof _d3fishSpec==='function')?_d3fishSpec(k):null;}
 function drift3DStreamFish(){
 try{
 if(!_D3||!_D3.scene)return;
 if(_D3.fishing&&_D3.fishing.on){_d3fishEnd();return;}
 if(typeof _d3ownAsk==='function'&&!_d3ownAsk('fish'))return;
-var s=_d3sfSpot();
+var _ac=(!_D3._noSfWade&&typeof _d3sfAccess==='function')?_d3sfAccess():null,s=_ac?null:_d3sfSpot();
+if(_ac){var _wp=_d3sfWadePose(_ac.p,_ac.side,0,_ac.S.half),_wg=(typeof _d3drawnTri==='function')?_d3drawnTri(_wp.x,_wp.z):_ac.p.g,_wn=Math.cos(_ac.p.head+1.5708),_wz=Math.sin(_ac.p.head+1.5708);
+s={S:_ac.S,i:_ac.i,p:_ac.p,x:_wp.x,z:_wp.z,g:_wg,side:_ac.side,hf:_wp.hf,wx:_ac.p.x+_wn*_ac.side*_wp.hf*0.55,wz:_ac.p.z+_wz*_ac.side*_wp.hf*0.55};}
 if(!s){try{if(typeof showToast==='function')showToast('This map has no stream to fish - draw one: Water › Stream');}catch(_t){}return;}
 if(_D3.dive&&_D3.dive.on&&typeof _d3diveEnd==='function')_d3diveEnd();
 try{if(typeof driftIsEditing==='function'&&driftIsEditing()&&typeof driftExitModes==='function'){driftExitModes();if(typeof driftModeBanner==='function')driftModeBanner();}}catch(_em){}
@@ -68269,6 +68291,7 @@ _D3.fishing=_D3.fishing||{};var S=_D3.fishing;
 S.on=true;S.mode='stream';S.state='idle';S.t=0;S.msg='';S.msgT=0;S.reel=false;
 S.caught=S.caught||[];S.tackle=S.tackle||'fly';
 S.stream=s.S;S.si=s.S.si;S.sd=s.p.d;S.sidx=s.i;S.hf=s.hf;S.side=s.side;
+S.wade=!!_ac;S.inW=false;S.wt=0;S.wet=false;S.wadeDir=0;S.moving=false;S.read=null;S.perfect=false;S.readKey='';S.spooked=0;S.book=(typeof _d3sfBookLoad==='function')?_d3sfBookLoad():{};
 S.surf=s.g;S.wl=s.p.wy;S.at={x:s.x,z:s.z,surf:s.g};S.maxDep=0.3;
 _d3fishCamera();_d3fishRig();
 S.rig.visible=true;S.boat.visible=false;
@@ -68283,6 +68306,7 @@ S.cam.position.set(-0.10,0.50,0.0);
 if(S.cam.parent!==S.rig)S.rig.add(S.cam);
 S.win=_D3_SF_WIN[S.tackle]||1;S.runK=1.6;S.luck=S.luck||1;
 try{if(typeof _d3liftRestore==='function')_d3liftRestore();}catch(_lr){}
+if(S.wade){try{_d3sfReadOf(S.stream);_d3sfWadeTo(S.sd,false);}catch(_wp9){}}
 _d3fishHUD(true);
 _d3fishStep(0.016);
 }catch(_fe){try{if(window.console&&console.warn)console.warn('[RC Garage] stream fishing failed:',_fe&&_fe.message);}catch(_){}try{_d3fishEnd();}catch(_){}}
@@ -68290,8 +68314,15 @@ _d3fishStep(0.016);
 function _d3sfTackle(t){var S=_D3&&_D3.fishing;if(!S||!S.on||S.mode!=='stream')return;if(t!=='lure'&&t!=='bait'&&t!=='fly')return;if(S.state!=='idle'){S.msg='Reel in first - tackle changes between casts.';S.msgT=2;_d3fishHUD();return;}S.tackle=t;S.win=_D3_SF_WIN[t];if(S.bob)S.bob.scale.setScalar(t==='bait'?1:(t==='lure'?0.55:0.4));_d3fishHUD();}
 function _d3sfCast(S){
 if(S.state!=='idle')return;
-var tr=_d3sfCastTargetOn(S.stream,S.c0,S.yaw,S.hf,S.sidx);
-if(!tr){S.msg='No water that way - turn to face the creek.';S.msgT=2.2;_d3fishHUD();return;}
+var tr;
+if(S.wade){
+if(!S.wet){S.msg=S.inW?'Wading in...':'Step into the creek first - you cast from the water.';S.msgT=2.4;_d3fishHUD();return;}
+var ST=S.stream,c=_d3sfCastOn(S.at.x,S.at.z,S.yaw,function(x,z){return _d3sfOnCreek(ST,x,z,S.sidx);});
+tr=c?{x:c.x,z:c.z,d:c.d,lat:c.lat,wy:c.wy,i:c.i}:null;
+if(!tr){S.msg='No water that way - turn to face up or down the creek.';S.msgT=2.2;_d3fishHUD();return;}
+}else{
+tr=_d3sfCastTargetOn(S.stream,S.c0,S.yaw,S.hf,S.sidx);
+if(!tr){S.msg='No water that way - turn to face the creek.';S.msgT=2.2;_d3fishHUD();return;}}
 S.tgt={x:tr.x,z:tr.z};S.td=tr.d;S.tl=tr.lat;S.wl=tr.wy;S.ti=tr.i;
 S.state='cast';S.ct=0;S.msg='';S.msgT=0;S.dt0=0;S.drag=false;S.took=null;
 _d3fishHUD();
@@ -68304,7 +68335,8 @@ return false;
 }
 function _d3sfBite(S,e){
 S.state='bite';S.bt=0;S.took=e||null;
-var k=e?e.kind:_d3sfPickTable();S.spec=_d3sfSpec(k)||S.spec;
+var k=e?e.kind:((S.wade&&typeof _d3sfKindAt==='function')?_d3sfKindAt(S.stream,S.td):_d3sfPickTable());S.spec=_d3sfSpec(k)||S.spec;
+S.tookScore=(S.wade&&typeof _d3sfScoreAt==='function')?_d3sfScoreAt(S.stream,S.td):50;S.trophy=!!(e&&e.trophy);
 if(e&&e.obj){e.obj.visible=false;e.hidden=true;}
 S.ring.position.set(S.bob.position.x,S.wl+0.006,S.bob.position.z);S.ring.visible=true;S.ringT=0;
 _d3fishHUD();
@@ -68324,7 +68356,7 @@ nx=Math.cos(q.head+1.5708);nz=Math.sin(q.head+1.5708);
 var hq=Math.max(0.03,q.half),lt=Math.max(-hq*0.75,Math.min(hq*0.75,S.tl));
 S.tgt.x=q.x+nx*lt;S.tgt.z=q.z+nz*lt;S.wl=wl=q.wy;
 var bobY=wl-(st==='drift'?0.002:0.012)+Math.sin(S.t*1.7)*0.006;
-if(st==='drift'&&S.dt0>4.6){S.drag=true;bobY=wl+0.01;S.tgt.x+=Math.cos(q.head+0.9)*0.02;}
+if(st==='drift'&&S.dt0>(S.wade?_d3sfDragT(true):4.6)){S.drag=true;bobY=wl+0.01;S.tgt.x+=Math.cos(q.head+0.9)*0.02;}
 S.bob.position.set(S.tgt.x,bobY,S.tgt.z);
 S.bob.rotation.z=Math.sin(S.t*1.2)*0.05;
 _d3fishBend(0.10);
@@ -68332,6 +68364,7 @@ var e=_d3sfPick(ST,S.td),near=e?Math.abs(e.d-S.td):9;
 if(st==='wait'&&e&&near<0.9){S.nib=Math.min(1,S.nib+dt*1.5);S.bob.position.y-=Math.max(0,Math.sin(S.t*22))*0.03*S.nib;}
 var chance=0;
 if(!S.drag){if(e&&near<0.55)chance=(st==='drift'?1.6:1.0)*luck;else chance=(st==='drift'?0.04:0.07)*luck;}
+if(S.wade&&typeof _d3sfChanceK==='function')chance*=_d3sfChanceK(S,e&&near<0.55?e:null);
 if(Math.random()<chance*dt){_d3sfBite(S,(e&&near<0.9)?e:null);return true;}
 return true;
 }
@@ -68345,20 +68378,361 @@ var wob=moving?Math.sin(S.t*14)*0.012:0;
 S.bob.position.set(S.tgt.x+wob,wl-0.03-(moving?0:0.01),S.tgt.z-wob);
 _d3fishBend(moving?0.16:0.09);
 if(dl<=0.06&&S.reel){S.state='idle';S.bob.visible=false;S.line.visible=false;S.msg='Back at your feet - cast again.';S.msgT=2;_d3fishHUD();return true;}
-if(moving){var e2=_d3sfPick(ST,S.td),near2=e2?Math.abs(e2.d-S.td):9;var ch=(e2&&near2<0.55)?1.4*luck:0.05*luck;if(Math.random()<ch*dt){_d3sfBite(S,(e2&&near2<0.9)?e2:null);}}
+if(moving){var e2=_d3sfPick(ST,S.td),near2=e2?Math.abs(e2.d-S.td):9;var ch=(e2&&near2<0.55)?1.4*luck:0.05*luck;if(S.wade&&typeof _d3sfChanceK==='function')ch*=_d3sfChanceK(S,e2&&near2<0.55?e2:null);if(Math.random()<ch*dt){_d3sfBite(S,(e2&&near2<0.9)?e2:null);}}
 return true;
 }
 function _d3sfText(S){
 var tk={lure:'a lure',bait:'live bait',fly:'a fly'}[S.tackle]||S.tackle;
 switch(S.state){
-case 'idle':return 'Tap the water to cast '+tk+' · pick your tackle below';
+case 'idle':if(S.wade&&typeof _d3sfIdleText==='function')return _d3sfIdleText(S,tk);return 'Tap the water to cast '+tk+' · pick your tackle below';
 case 'wait':return S.nib>0.3?'Tap tap… something is looking at it':'Watch the float drift…';
 case 'retrieve':return S.reel?'Working the lure…':'Hold Reel to work the lure';
 case 'drift':return S.drag?'The fly is dragging - lift and cast again':'Dead drift… watch for the rise';
 case 'bite':return S.tackle==='fly'?'It rose! LIFT the rod!':(S.tackle==='lure'?'A hit - set the hook!':'It has the bait - set the hook!');
-case 'landed':return '✓ '+(S.spec?S.spec.name:'Trout')+', '+S.cm+' cm on '+tk+'  ·  '+S.caught.length+' landed today  ·  released';
+case 'landed':return '✓ '+(S.spec?S.spec.name:'Trout')+', '+S.cm+' cm on '+tk+((S.wade&&S.bookNote)?'  ·  '+S.bookNote:'')+'  ·  '+S.caught.length+' landed today  ·  released';
 }
 return null;
+}
+function _d3sfIdxAt(ST,d){return Math.max(0,Math.min(ST.pts.length-1,Math.round(d/_D3_STREAM_STEP)));}
+function _d3sfScoreAt(ST,d){var r=_d3sfRead(ST.pts,_d3sfIdxAt(ST,d),ST.half);return r?r.score:0;}
+function _d3sfKindAt(ST,d){var R=_d3sfReadOf(ST);return _d3sfKindFor(_d3sfHab(ST.pts,_d3sfIdxAt(ST,d),R,ST.half,ST._mouth|0),Math.random());}
+function _d3sfLow(){var D=_D3,w=D&&D.hourW;if(D&&D.dusk)return 1;if(!w)return 0;return Math.max(0,Math.min(1,(w.dusk||0)+(w.dawn||0)*0.7+(w.night||0)*0.6));}
+function _d3sfChanceK(S,e){
+var k=_d3sfTakeK(_d3sfScoreAt(S.stream,S.td));
+if(e)k*=_d3sfTakes(e.kind,S.tackle,_d3sfLow())*(e.trophy?0.6:1);
+return k;
+}
+function _d3sfLand(S){
+var k=S.spec?S.spec.k:'brook';
+S.cm=_d3sfCm(k,S.tookScore,Math.random(),S.trophy)||S.cm;
+var a=_d3sfBookAdd(S.book||{},k,S.cm);S.book=a.book;_d3sfBookSave(a.book);
+var n=0,q;for(q in a.book)n++;
+S.bookNote=a.first?('NEW for the book - '+n+' of '+_D3_SF_TROUT.length+' trout'):(a.best?'your biggest '+S.spec.name.toLowerCase():'');
+return S.cm;
+}
+function _d3sfIdleText(S,tk){
+var rd=_d3sfReadText(S.read,S.perfect);
+if(!S.wet)return (rd?rd+'  \u00b7  ':'')+'Walk the bank \u25c0 \u25b6, then Step in to fish';
+return (rd?rd+'  \u00b7  ':'')+'Tap the water to cast '+tk;
+}
+var _D3_SF_READ={pool:45,lane:20,cover:20,wide:10,calm:5,laneReach:1.6,coverReach:0.6,perfect:78,good:55,bestMin:50};
+function _d3sfCoverAdd(P,d,amt,reach,step){
+if(!P||!P.length||!(amt>0))return 0;
+var st=step||((P.length>1)?(P[1].d-P[0].d):0.24)||0.24,r=reach||_D3_SF_READ.coverReach,i0=Math.max(0,Math.floor((d-r)/st)),i1=Math.min(P.length-1,Math.ceil((d+r)/st)),i,n=0;
+for(i=i0;i<=i1;i++){var k=1-Math.abs(P[i].d-d)/r;if(k>0){P[i].cv=Math.min(1,(P[i].cv||0)+amt*k);n++;}}
+return n;
+}
+function _d3sfRead(P,i,half0,K){
+K=K||_D3_SF_READ;var p=P&&P[i];if(!p)return null;
+if(p.cov)return {score:0,stars:0,kind:'culvert',lane:0,cover:0,pool:0,perfect:false};
+var st=((P.length>1)?(P[1].d-P[0].d):0.24)||0.24,n=Math.max(1,Math.round(K.laneReach/st)),lane=0,j;
+for(j=1;j<=n;j++){var q=P[i-j];if(!q||q.cov)break;if((q.rif||0)>lane)lane=q.rif||0;}
+var pool=Math.max(0,Math.min(1,p.pool||0)),rif=Math.max(0,Math.min(1,p.rif||0));
+var cover=Math.max(0,Math.min(1,(p.cv||0)));
+var wide=(half0>0)?Math.max(0,Math.min(1,((p.half||half0)/half0-1)/0.7)):0;
+var score=pool*K.pool+lane*K.lane*(0.35+0.65*pool)+cover*K.cover+wide*K.wide+(1-rif)*K.calm;
+score=Math.max(0,Math.min(100,score));
+var up=P[i-Math.max(1,Math.round(0.7/st))],kind;
+if(pool>=0.55)kind='pool';
+else if(rif>=0.3&&cover>=0.45)kind='pocket';
+else if(rif>=0.45)kind='riffle';
+else if(pool>=0.2&&up&&(up.pool||0)>pool+0.15)kind='tail';
+else kind='run';
+return {score:Math.round(score*10)/10,stars:Math.max(1,Math.min(5,1+Math.floor(score/20))),kind:kind,lane:lane,cover:cover,pool:pool,perfect:false};
+}
+function _d3sfReadAll(P,half0,K){
+K=K||_D3_SF_READ;var n=P?P.length:0,sc=new Float32Array(n),best=-1,bs=-1,gmin=Infinity,gmax=-Infinity,i;
+for(i=0;i<n;i++){var r=_d3sfRead(P,i,half0,K);sc[i]=r?r.score:0;if(sc[i]>bs){bs=sc[i];best=i;}
+if(P[i].g<gmin)gmin=P[i].g;if(P[i].g>gmax)gmax=P[i].g;}
+if(!(bs>=K.bestMin))best=-1;
+return {score:sc,best:best,bestScore:Math.max(0,bs),gmin:isFinite(gmin)?gmin:0,gmax:isFinite(gmax)?gmax:0,down:(n>1&&P[0].g<P[n-1].g)?-1:1};
+}
+function _d3sfPerfect(score,R,i,st,K){
+K=K||_D3_SF_READ;if(score>=K.perfect)return true;
+if(!R||R.best<0)return false;
+return Math.abs(i-R.best)*(st||0.24)<=0.9&&score>=R.bestScore-6;
+}
+function _d3sfTakeK(score){return Math.max(0.12,Math.min(1,((+score||0)-12)/58));}
+var _D3_SF_KIND={culvert:'Under the road',riffle:'A riffle - thin, fast water',run:'A run',pocket:'Pocket water among the stones',pool:'A pool',tail:'The tail of a pool'};
+function _d3sfReadText(r,perfect){
+if(!r)return '';
+if(r.kind==='culvert')return _D3_SF_KIND.culvert+' - nothing to fish here';
+var s='',i;for(i=0;i<5;i++)s+=(i<r.stars)?'★':'☆';
+var w=_D3_SF_KIND[r.kind]||'Water';
+if(r.kind==='pool'){w=(r.pool>=0.8?'A deep pool':'A pool')+(r.lane>=0.35?' under a riffle':'')+(r.cover>=0.5?', with cover':'');}
+return s+' '+w+(perfect?' · THE PERFECT POOL':(r.stars<=2?' · keep wading':''));
+}
+var _D3_SF_FISH=[
+{k:'golden', L:0.86,d:0.30,w:0.19,tp:0.30,b:0x4a4a1e,s:0xd9a520,y:0xe2531c,f:0xc2451a,m:'trout',stripe:0xc23a2a,spot:0x14140c,sc:0.84,n:[1,2],lo:0.1,hi:0.9,name:'Golden trout'},
+{k:'bull', L:1.24,d:0.30,w:0.20,tp:0.28,b:0x2a3326,s:0x55634a,y:0xd8d2bc,f:0x4a5540,m:'verm',stripe:0,spot:0xe8c9a0,sc:1.26,n:[1,1],lo:0.5,hi:1.0,name:'Bull trout'},
+{k:'tiger', L:1.00,d:0.31,w:0.20,tp:0.30,b:0x3a3015,s:0x9a7a2e,y:0xd9a04a,f:0x8a3a18,m:'verm',stripe:0,spot:0xe0c878,sc:1.00,n:[1,1],lo:0.2,hi:0.9,name:'Tiger trout'},
+{k:'dolly', L:1.08,d:0.29,w:0.19,tp:0.29,b:0x24332e,s:0x56706a,y:0xd9d6cc,f:0x6a4a3a,m:'brook',stripe:0,spot:0xe07a6a,sc:1.08,n:[1,2],lo:0.3,hi:0.95,name:'Dolly Varden'},
+{k:'steelhead',L:1.30,d:0.29,w:0.19,tp:0.28,b:0x27343a,s:0xa9b6ba,y:0xe6eae8,f:0x3c4a4e,m:'trout',stripe:0xb86a80,spot:0x12160f,sc:1.34,n:[1,1],lo:0.3,hi:0.95,name:'Steelhead'},
+{k:'apache', L:0.90,d:0.31,w:0.19,tp:0.30,b:0x4a4420,s:0xc9a23a,y:0xe0c060,f:0x8a6a1e,m:'brown',stripe:0,spot:0x1a160c,sc:0.88,n:[1,2],lo:0.2,hi:0.9,name:'Apache trout'},
+{k:'marble', L:1.14,d:0.31,w:0.20,tp:0.30,b:0x3a3a2c,s:0x8a8468,y:0xd8d2b8,f:0x55503a,m:'verm',stripe:0,spot:0xc8c0a0,sc:1.14,n:[1,1],lo:0.3,hi:0.95,name:'Marble trout'}
+];
+var _D3_SF_BY={};
+(function(){for(var i=0;i<_D3_SF_FISH.length;i++)_D3_SF_BY[_D3_SF_FISH[i].k]=_D3_SF_FISH[i];})();
+var _D3_SF_RELIEF=5;
+var _D3_SF_TROUT=[
+{k:'brook', w:26,elev:[0.15,1],reach:[0,0.7],cover:[0.15,1],cm:[13,30],tk:{fly:1.25,lure:0.8,bait:1.0},wary:0.8,dusk:1,
+where:'Cold water high on a creek: pocket water and small pools among the stones.'},
+{k:'brown', w:24,reach:[0.3,1],pool:[0.5,1],cover:[0.3,1],cm:[22,58],tk:{fly:0.9,lure:1.15,bait:1.2},wary:1.45,dusk:1.7,
+where:'Low on a creek, under cover in the deep pools. Wary by day - best at dusk.'},
+{k:'rainbow', w:24,reach:[0.2,0.95],lane:[0.25,1],cm:[18,46],tk:{fly:1.0,lure:1.25,bait:1.0},wary:1.0,dusk:1,
+where:'The seam below a riffle, in the middle reaches. Hits a lure hard.'},
+{k:'cutthroat',w:14,elev:[0.45,1],pool:[0.3,1],cm:[18,42],tk:{fly:1.45,lure:0.9,bait:0.9},wary:0.7,dusk:1,
+where:'The pools of a creek that climbs - halfway up and higher. Rises freely to a fly.'},
+{k:'golden', w:7,elev:[0.8,1],cm:[10,25],tk:{fly:1.35,lure:0.7,bait:0.8},wary:0.9,dusk:1,
+where:'Only the highest headwaters of a creek drawn up a mountain.'},
+{k:'bull', w:5,elev:[0.25,1],pool:[0.78,1],cm:[38,74],tk:{fly:0.5,lure:1.5,bait:1.25},wary:1.2,dusk:1.3,
+where:'The deepest, coldest pool on a mountain creek. A lure or bait, worked deep.'},
+{k:'steelhead',w:6,reach:[0.72,1],pool:[0.45,1],mouth:1,cm:[52,88],tk:{fly:0.8,lure:1.35,bait:1.1},wary:1.3,dusk:1.2,
+where:'The last pools above a lake or the sea: it ran up from there.'},
+{k:'dolly', w:7,reach:[0.55,1],mouth:2,cm:[26,58],tk:{fly:0.9,lure:1.2,bait:1.2},wary:1.0,dusk:1.1,
+where:'The lower reaches of a creek that runs into the sea.'},
+{k:'tiger', w:3,reach:[0.3,0.7],pool:[0.4,1],cm:[20,46],tk:{fly:1.0,lure:1.2,bait:1.0},wary:1.1,dusk:1.2,
+where:'Rare: mid-creek pools, where brook and brown trout meet.'},
+{k:'apache', w:3,elev:[0.55,0.85],pool:[0.3,1],cm:[15,34],tk:{fly:1.3,lure:0.8,bait:0.9},wary:0.9,dusk:1,
+where:'Rare: small pools three-quarters of the way up a mountain creek.'},
+{k:'marble', w:3,reach:[0.4,0.85],pool:[0.6,1],cover:[0.5,1],cm:[30,68],tk:{fly:0.8,lure:1.3,bait:1.1},wary:1.35,dusk:1.4,
+where:'Rare: a deep pool among big stones, in the middle reaches.'}
+];
+var _D3_SF_TROUT_BY={};
+(function(){for(var i=0;i<_D3_SF_TROUT.length;i++)_D3_SF_TROUT_BY[_D3_SF_TROUT[i].k]=_D3_SF_TROUT[i];})();
+function _d3sfTroutOf(k){return _D3_SF_TROUT_BY[k]||null;}
+function _d3sfFit(v,r,soft){
+if(!r)return 1;var s=(soft>0)?soft:0.12;
+if(v<r[0])return Math.max(0,1-(r[0]-v)/s);
+if(v>r[1])return Math.max(0,1-(v-r[1])/s);
+return 1;
+}
+function _d3sfHab(P,i,R,half0,mouth){
+var p=P[i],n=P.length,r=_d3sfRead(P,i,half0)||{score:0,lane:0,cover:0,pool:0};
+var rel=R?(R.gmax-R.gmin):0,elev=(rel>1e-6)?((p.g-R.gmin)/rel)*Math.min(1,rel/_D3_SF_RELIEF):0;
+var len=P[n-1].d||1,reach=(R&&R.down<0)?(1-p.d/len):(p.d/len);
+return {elev:Math.max(0,Math.min(1,elev)),reach:Math.max(0,Math.min(1,reach)),pool:r.pool,lane:r.lane,cover:r.cover,score:r.score,mouth:mouth|0};
+}
+function _d3sfWant(t,h){
+if(!t||!h)return 0;
+if(t.mouth&&(h.mouth|0)<t.mouth)return 0;
+return t.w*_d3sfFit(h.elev,t.elev)*_d3sfFit(h.reach,t.reach)*_d3sfFit(h.pool,t.pool,0.2)*_d3sfFit(h.lane,t.lane,0.2)*_d3sfFit(h.cover,t.cover,0.2);
+}
+function _d3sfKindFor(h,rnd){
+var T=_D3_SF_TROUT,W=[],tot=0,i;
+for(i=0;i<T.length;i++){var w=_d3sfWant(T[i],h);W.push(w);tot+=w;}
+if(!(tot>0))return 'brook';
+var r=Math.max(0,Math.min(0.999999,(rnd==null)?Math.random():rnd))*tot;
+for(i=0;i<T.length;i++){r-=W[i];if(r<0)return T[i].k;}
+return T[T.length-1].k;
+}
+function _d3sfTrophyKind(h){
+var T=_D3_SF_TROUT,best='brown',bc=-1,i;
+for(i=0;i<T.length;i++){if(T[i].w>=5&&_d3sfWant(T[i],h)>T[i].w*0.5&&T[i].cm[1]>bc){bc=T[i].cm[1];best=T[i].k;}}
+return (bc<0)?_d3sfKindFor(h,0.5):best;
+}
+function _d3sfKindsIn(P,R,half0,mouth){
+var T=_D3_SF_TROUT,out={},i,j;
+for(i=0;i<P.length;i+=2){if(P[i].cov)continue;var h=_d3sfHab(P,i,R,half0,mouth);for(j=0;j<T.length;j++)if(!out[T[j].k]&&_d3sfWant(T[j],h)>T[j].w*0.5)out[T[j].k]=1;}
+return Object.keys(out);
+}
+function _d3sfCm(k,score,rnd,trophy){
+var t=_d3sfTroutOf(k);if(!t)return 0;
+var q=Math.max(0,Math.min(1,(+score||0)/100)),r=(rnd==null)?Math.random():rnd;
+var f=Math.max(0,Math.min(1,q*0.6+r*0.4));
+var cm=t.cm[0]+(t.cm[1]-t.cm[0])*f;
+if(trophy)cm=t.cm[1]*(1+0.08*r);
+return Math.round(cm);
+}
+function _d3sfTakes(k,tackle,low){
+var t=_d3sfTroutOf(k);if(!t)return 1;
+var a=(t.tk&&t.tk[tackle]!=null)?t.tk[tackle]:1,l=Math.max(0,Math.min(1,+low||0));
+return a*(1+(t.dusk-1)*l)*((t.dusk>1.3&&l<0.15)?0.75:1);
+}
+function _d3sfBookLoad(){
+try{var s=(typeof __LS!=='undefined'&&__LS)?__LS.getItem('rcgTroutBook'):null,o=s?JSON.parse(s):null;if(o&&typeof o==='object')return o;}catch(_e){}
+return {};
+}
+function _d3sfBookAdd(book,k,cm){
+var B={},q;for(q in book)B[q]={n:book[q].n|0,cm:book[q].cm|0};
+var was=B[k],first=!was,best=!!was&&cm>(was.cm|0);
+B[k]={n:(was?was.n:0)+1,cm:Math.max(was?was.cm:0,cm|0)};
+return {book:B,first:first,best:best};
+}
+function _d3sfBookSave(B){try{if(typeof __LS!=='undefined'&&__LS)__LS.setItem('rcgTroutBook',JSON.stringify(B));}catch(_e){}}
+function _d3sfBookRows(book,here,nameOf){
+return _D3_SF_TROUT.map(function(t){var b=book&&book[t.k];
+return {k:t.k,name:nameOf?nameOf(t.k):t.k,n:b?b.n|0:0,cm:b?b.cm|0:0,where:t.where,here:!here||here.indexOf(t.k)>=0};});
+}
+var _D3_SF_WADE={bank:0.55,wade:0.26,rifDrag:0.45,upDrag:0.85,lat:3.2,latPad:0.28,inLat:0.34,latSpeed:5,
+seeDown:2.3,seeUp:0.65,bankK:0.75,stillK:0.4,spookFor:[24,34],dart:1.1,cast:[0.9,3.0],castStep:0.1,dragT:[4.6,7.2],
+reach:0.9,far:6};
+function _d3sfWadeSpeed(inWater,rif,dir,K){
+K=K||_D3_SF_WADE;if(!inWater)return K.bank;
+return K.wade*(1-K.rifDrag*Math.max(0,Math.min(1,rif||0)))*((dir<0)?K.upDrag:1);
+}
+function _d3sfSpooks(dRel,inWater,moving,wary,K){
+K=K||_D3_SF_WADE;var w=(wary>0)?wary:1;
+var see=((dRel>=0)?K.seeDown:K.seeUp)*w*(inWater?1:K.bankK)*(moving?1:K.stillK);
+if(!inWater&&dRel<0)see=K.seeUp*w*(moving?1:K.stillK)*1.4;
+return Math.abs(dRel)<see;
+}
+function _d3sfWadePose(p,side,t,half0,K){
+K=K||_D3_SF_WADE;var hf=Math.max(0.05,p.half||half0||0.1),nx=Math.cos(p.head+1.5708),nz=Math.sin(p.head+1.5708);
+var out=hf*K.lat+K.latPad,inn=hf*K.inLat,off=out+(inn-out)*Math.max(0,Math.min(1,t));
+return {x:p.x+nx*side*off,z:p.z+nz*side*off,off:off,hf:hf,wet:off<=hf*1.05};
+}
+function _d3sfCastOn(x0,z0,yaw,on,K){
+K=K||_D3_SF_WADE;var r,last=null,cx=Math.cos(yaw),cz=Math.sin(yaw);
+for(r=K.cast[0]*0.5;r<=K.cast[1]+1e-9;r+=K.castStep){var x=x0+cx*r,z=z0+cz*r,h=on(x,z);
+if(!h){if(last)break;continue;}
+last={x:x,z:z,r:r,d:h.d,lat:h.lat,wy:h.wy,i:h.i};}
+return (last&&last.r>=K.cast[0])?last:null;
+}
+function _d3sfDragT(inWater,K){K=K||_D3_SF_WADE;return inWater?K.dragT[1]:K.dragT[0];}
+function _d3sfOnCreek(ST,x,z,i0){
+var nn=_d3sfNearest(ST,x,z,i0,120);if(!nn||nn.p.cov)return null;
+var p=nn.p,hf=Math.max(0.03,p.half||ST.half);if(nn.dist>hf*1.25)return null;
+var nx=Math.cos(p.head+1.5708),nz=Math.sin(p.head+1.5708),lat=(x-p.x)*nx+(z-p.z)*nz;
+return {d:p.d,lat:Math.max(-hf*0.75,Math.min(hf*0.75,lat)),wy:p.wy,i:nn.i};
+}
+function _d3sfAccess(){
+var ST=_D3&&_D3.streams;if(!ST||!ST.length)return null;
+var tx=(_D3.target&&_D3.target.x)||0,tz=(_D3.target&&_D3.target.z)||0,k,bestS=null,bn=null;
+for(k=0;k<ST.length;k++){var nn=_d3sfNearest(ST[k],tx,tz);if(nn&&(!bn||nn.dist<bn.dist)){bn=nn;bestS=ST[k];}}
+if(!bestS)return null;
+var P=bestS.pts,i=bn.i,j;
+for(j=0;j<P.length&&P[i].cov;j++){var a=bn.i-j,b=bn.i+j;if(a>=0&&!P[a].cov){i=a;break;}if(b<P.length&&!P[b].cov){i=b;break;}}
+if(P[i].cov)return null;
+i=Math.max(2,Math.min(P.length-3,i));
+var p=P[i],nx=Math.cos(p.head+1.5708),nz=Math.sin(p.head+1.5708),side=((tx-p.x)*nx+(tz-p.z)*nz)>=0?1:-1;
+return {S:bestS,i:i,p:p,side:side};
+}
+function _d3sfReadOf(ST){
+if(!ST)return null;
+if(!ST._read||ST._readN!==ST.pts.length){ST._read=_d3sfReadAll(ST.pts,ST.half);ST._readN=ST.pts.length;
+var P=ST.pts,e=(ST._read.down<0)?P[0]:P[P.length-1],m=0;
+try{if(typeof _d3inAnySalt==='function'&&_d3inAnySalt(e.x,e.z))m=2;else if(typeof _d3inAnyWater==='function'&&_d3inAnyWater(e.x,e.z))m=1;}catch(_m){}
+ST._mouth=m;}
+return ST._read;
+}
+function _d3sfWadePlace(S){
+var ST=S.stream,p=_d3streamAt(ST,S.sd);if(!p)return;
+var W=_d3sfWadePose(p,S.side,S.wt||0,ST.half),g=(typeof _d3drawnTri==='function')?_d3drawnTri(W.x,W.z):p.g;
+var y=W.wet?Math.min(g,p.wy-0.018):g;
+S.hf=W.hf;S.surf=y;S.wet=W.wet;S.at={x:W.x,z:W.z,surf:y};
+if(S.c0)S.c0.set(W.x,y,W.z);if(S.rig)S.rig.position.set(W.x,y,W.z);
+var nx=Math.cos(p.head+1.5708),nz=Math.sin(p.head+1.5708);
+S.c0w={x:p.x+nx*S.side*W.hf*0.55,z:p.z+nz*S.side*W.hf*0.55};
+S.sidx=Math.max(0,Math.min(ST.pts.length-1,Math.round(S.sd/_D3_STREAM_STEP)));
+var R=_d3sfReadOf(ST),r=_d3sfRead(ST.pts,S.sidx,ST.half);
+S.read=r;S.perfect=!!(r&&_d3sfPerfect(r.score,R,S.sidx,_D3_STREAM_STEP));
+}
+function _d3sfSpookNear(S,moving){
+var LF=_D3.streamLife||[],now=(_D3._streamT!=null)?_D3._streamT:performance.now()/1000,n=0,i,K=_D3_SF_WADE;
+for(i=0;i<LF.length;i++){var e=LF[i];if(e.si!==S.si||e.hidden||e.spk>now)continue;
+var dRel=(e.d-S.sd)*((S.stream._read&&S.stream._read.down<0)?-1:1),t=_d3sfTroutOf(e.kind);
+if(Math.abs(dRel)>K.far)continue;
+if(_d3sfSpooks(dRel,!!S.wet,moving,t?t.wary:1)){e.spk=now+K.spookFor[0]+Math.random()*(K.spookFor[1]-K.spookFor[0]);e.spk0=now;n++;}}
+return n;
+}
+function _d3sfWadeStep(S,dt){
+if(!S||S.mode!=='stream'||!S.stream)return;
+var K=_D3_SF_WADE,ST=S.stream,dir=S.wadeDir|0,moved=false;
+if(S.state!=='idle'){if(dir&&!(S.msgT>0)){S.msg='Reel in before you move.';S.msgT=1.6;_d3fishHUD();}dir=0;}
+var want=S.inW?1:0,wt=S.wt||0;
+if(wt!==want&&S.state==='idle'){wt+=(want>wt?1:-1)*K.latSpeed*dt*0.5;if((want>wt)!==(want>(S.wt||0)))wt=want;wt=Math.max(0,Math.min(1,wt));S.wt=wt;moved=true;}
+if(dir){var p=_d3streamAt(ST,S.sd),down=(ST._read&&ST._read.down<0)?-1:1;
+var sp=_d3sfWadeSpeed(!!S.wet,p?p.rif:0,dir*down),nd=S.sd+dir*sp*dt,q=_d3streamAt(ST,nd);
+if(nd<0.4||nd>ST.len-0.4){if(!(S.msgT>0)){S.msg='The end of the creek.';S.msgT=1.6;_d3fishHUD();}}
+else if(q&&q.cov&&S.inW){S.inW=false;S.msg='The creek runs under here - out onto the bank to walk round.';S.msgT=2.4;_d3fishHUD();}
+else{S.sd=nd;moved=true;}}
+if(moved){_d3sfWadePlace(S);
+if(S.wet&&dir){S.rplT=(S.rplT||0)+dt;if(S.rplT>0.35){S.rplT=0;_d3sfRipple(S);}}}
+S.moving=moved&&!!dir;
+S.spkT=(S.spkT||0)+dt;
+if(S.spkT>0.2){S.spkT=0;var n=_D3._noSfSpook?0:_d3sfSpookNear(S,S.moving);
+if(n){S.spooked=(S.spooked|0)+n;S.msg=(S.wet?'You put the trout down - come up on a pool from below, and stand still before you cast.':'They saw you on the bank - step in below the pool and wade up to it.');S.msgT=3.6;_d3fishHUD();}}
+if(moved){var rd=S.read,key=(rd?rd.kind+rd.stars:'')+(S.perfect?'!':'')+(S.wet?'w':'b');if(key!==S.readKey){S.readKey=key;_d3fishHUD();}}
+}
+function _d3sfRipple(S){
+try{var T=window.THREE,ST=S.stream,p=_d3streamAt(ST,S.sd);if(!T||!p)return;
+var rg=new T.Mesh(new T.RingGeometry(0.03,0.07,20),new T.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.6,depthWrite:false,side:T.DoubleSide}));
+rg.rotation.x=-Math.PI/2;rg.position.set(S.at.x,p.wy+0.012,S.at.z);rg.renderOrder=6;(ST.grp||_D3.trackG).add(rg);
+(_D3.streamRings=_D3.streamRings||[]).push({m:rg,t0:(_D3._streamT!=null)?_D3._streamT:0,r0:(S.hf||0.1)*0.6});}catch(_r){}
+}
+function _d3sfWade(dir){var S=_D3&&_D3.fishing;if(!S||!S.on||S.mode!=='stream')return;S.wadeDir=(dir>0)?1:((dir<0)?-1:0);}
+function _d3sfStepIn(on){
+var S=_D3&&_D3.fishing;if(!S||!S.on||S.mode!=='stream')return false;
+if(S.state!=='idle'){S.msg='Reel in first.';S.msgT=1.6;_d3fishHUD();return false;}
+var want=(on==null)?!S.inW:!!on;
+if(want){var p=_d3streamAt(S.stream,S.sd);if(p&&p.cov){S.msg='The creek is under the road here - walk on.';S.msgT=2;_d3fishHUD();return false;}}
+S.inW=want;_d3fishHUD();return true;
+}
+function _d3sfWadeTo(d,inWater){
+var S=_D3&&_D3.fishing;if(!S||!S.on||S.mode!=='stream')return false;
+S.sd=Math.max(0.4,Math.min(S.stream.len-0.4,d));if(inWater!=null){S.inW=!!inWater;S.wt=S.inW?1:0;}
+_d3sfWadePlace(S);return true;
+}
+function _d3sfHudRow(el,BTN){
+if(!el||el.querySelector('#d3FishWade'))return;
+var row=document.createElement('div');row.id='d3FishWade';row.style.cssText='display:none;gap:6px;flex-wrap:wrap;justify-content:center';
+var b='min-width:74px;height:38px;font-size:13px';
+row.innerHTML='<button data-fs="wd" data-wd="-1" style="'+BTN+b+'">⬆ Upstream</button>'+
+'<button data-fs="in" style="'+BTN+b+'">🥾 Step in</button>'+
+'<button data-fs="wd" data-wd="1" style="'+BTN+b+'">⬇ Downstream</button>'+
+'<button data-fs="bk" style="'+BTN+b+';min-width:58px">📖 Trout</button>';
+var tk=el.querySelector('#d3FishTackle');
+if(tk&&tk.parentNode===el)el.insertBefore(row,tk);else el.appendChild(row);
+}
+function _d3sfHudPress(a,b,ev){
+if(a==='wd'){if(ev.type==='pointerdown'){_d3sfWade(+b.getAttribute('data-wd'));try{b.setPointerCapture(ev.pointerId);}catch(_c){}}else _d3sfWade(0);return true;}
+if(ev.type!=='pointerdown')return a==='in'||a==='bk';
+if(a==='in'){_d3sfStepIn();return true;}
+if(a==='bk'){_d3sfBookToggle();return true;}
+return false;
+}
+function _d3sfHudShow(el,S){
+var row=el&&el.querySelector('#d3FishWade');if(!row)return;
+var on=!!(S&&S.mode==='stream'&&S.wade);row.style.display=on?'flex':'none';if(!on){_d3sfBookToggle(false);return;}
+var st=row.querySelector('[data-fs="in"]');if(st){st.textContent=S.inW?'🥾 Step out':'🥾 Step in';st.style.outline=S.inW?'2px solid #7fe0c0':'none';}
+}
+function _d3sfKey(k,down){
+var S=_D3&&_D3.fishing;if(!S||!S.on||S.mode!=='stream'||!S.wade)return false;
+if(k==='a'||k==='arrowleft'){_d3sfWade(down?-1:0);return true;}
+if(k==='d'||k==='arrowright'){_d3sfWade(down?1:0);return true;}
+if(k==='w'||k==='arrowup'){if(down)_d3sfStepIn();return true;}
+if(k==='b'){if(down)_d3sfBookToggle();return true;}
+return false;
+}
+function _d3sfBookHTML(rows){
+var n=0,i,h='';for(i=0;i<rows.length;i++)if(rows[i].n>0)n++;
+h+='<div data-shtop style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px"><span style="flex:1;min-width:0"><div style="font:700 15px system-ui,sans-serif;margin-bottom:2px">The trout of the creek — '+n+' of '+rows.length+' landed</div>'+
+'<div style="font:500 12px system-ui,sans-serif;opacity:.8">Each lives in its own water. Wade to find it.</div></span>'+
+'<button data-bk="x" style="min-width:38px;height:32px;border-radius:9px;border:1px solid rgba(190,240,255,.35);background:rgba(8,34,48,.7);color:#dff6ff;font:700 14px system-ui,sans-serif">✕</button></div>';
+for(i=0;i<rows.length;i++){var r=rows[i],got=r.n>0;
+h+='<div data-trout="'+r.k+'" style="margin-bottom:6px;break-inside:avoid;padding:7px 9px;border-radius:9px;background:'+(got?'rgba(79,208,168,.16)':'rgba(255,255,255,.06)')+';border:1px solid '+(got?'rgba(79,208,168,.5)':'rgba(190,240,255,.18)')+'">'+
+'<div style="font:700 13px system-ui,sans-serif">'+(got?'✓ ':'')+r.name+(r.here?'':' <span style="font-weight:500;opacity:.6">· not in this creek</span>')+'</div>'+
+'<div style="font:500 11.5px system-ui,sans-serif;opacity:.85;margin-top:2px">'+(got?(r.n+' landed · biggest '+r.cm+' cm'):'Not landed yet')+'</div>'+
+'<div style="font:500 11.5px system-ui,sans-serif;opacity:.7;margin-top:2px">'+r.where+'</div></div>';}
+return h;
+}
+function _d3sfBookToggle(on){
+var el=document.getElementById('d3TroutBook'),S=_D3&&_D3.fishing;
+var want=(on==null)?!(el&&el.style.display!=='none'):!!on;
+if(!want){if(el)el.style.display='none';return false;}
+if(!S||!S.on||S.mode!=='stream')return false;
+if(!el){el=document.createElement('div');el.id='d3TroutBook';
+el.style.cssText='position:fixed;left:6px;top:6px;width:min(720px,94vw);max-height:62vh;overflow:auto;z-index:2147482100;'+
+'padding:12px 14px;border-radius:14px;background:rgba(8,34,48,.93);color:#dff6ff;border:1px solid rgba(190,240,255,.35);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)';
+el.addEventListener('pointerdown',function(ev){if(ev.target&&ev.target.getAttribute&&ev.target.getAttribute('data-bk')==='x')_d3sfBookToggle(false);ev.stopPropagation();});
+document.body.appendChild(el);
+try{el.setAttribute('data-shname','Trout');el.setAttribute('data-shcol','230');_d3sheet(el);}catch(_sh){}}
+var ST=S.stream,here=null;
+try{here=_d3sfKindsIn(ST.pts,_d3sfReadOf(ST),ST.half,ST._mouth|0);}catch(_h){}
+var rows=_d3sfBookRows(S.book||_d3sfBookLoad(),here,function(k){var sp=_d3sfSpec(k);return sp?sp.name:k;});
+el.innerHTML=_d3sfBookHTML(rows);
+el.style.display='block';return true;
 }
 var _D3_LIFT_THR=7.5;
 var _D3_LIFT_COOL=0.7;
