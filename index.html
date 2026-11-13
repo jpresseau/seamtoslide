@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='9fae71a';
+var RCG_BUILD='aeb45a8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -52401,6 +52401,8 @@ return true;
 var _D3_WB_STEP=0.25,_D3_WB_BANK=1.0,_D3_WB_PIER=3.0;
 var _D3_WB_LOW=0.12;
 function _d3wbHwLowOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noWaterHwLow);}
+function _d3wbWideOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noWbWide);}
+function _d3wbHalfOf(E,rw){return (typeof _d3roadClaimW==='function')?_d3roadClaimW(E,rw).rw:rw;}
 function _d3wbLowOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noWaterLow);}
 var _D3_WB_DEEP=20;
 function _d3wbLevelAt(x,z){var v=_d3waterLevelAt(x,z);if(v!=null&&typeof _d3isleAt==='function'&&_d3isleAt(x,z,0))return null;return v;}
@@ -52409,14 +52411,22 @@ if(typeof _d3isleAt!=='function'||!P||P.length<2)return null;var n=P.length,L=cu
 var d=0,i;for(i=1;i<n;i++){var k=end?n-1-i:i,p=P[k];if(Math.hypot(p.x-I.x,p.z-I.z)>I.r+pad)break;d=end?L-cum[k]:cum[k];}
 return {s:end?L:0,flat:d,h:I.y-_d3bldWaterline(),grade:gl,yb:_d3bldWaterline(),span:0,isle:1};
 }
-function _d3roadWaterRuns(P,cum,lvAt,step){
-var L=(cum&&cum.length)?cum[cum.length-1]:0,out=[],run=null,i=1,k;if(!(L>0)||P.length<2)return out;
-var n=Math.max(2,Math.ceil(L/(step||_D3_WB_STEP)));
+var _D3_WB_SKEW=6;
+function _d3roadWaterRuns(P,cum,lvAt,step,hw){
+var L=(cum&&cum.length)?cum[cum.length-1]:0,out=[],i=1,k,j,e,a0,a1;if(!(L>0)||P.length<2)return out;
+var n=Math.max(2,Math.ceil(L/(step||_D3_WB_STEP))),wide=(hw>0),cap=wide?hw*_D3_WB_SKEW:0,S=[],C=[],V=[];
 for(k=0;k<=n;k++){var s=L*k/n;while(i<P.length-1&&cum[i]<s)i++;
-var a=P[i-1],b=P[i],sl=(cum[i]-cum[i-1])||1,t=Math.max(0,Math.min(1,(s-cum[i-1])/sl)),x=a.x+(b.x-a.x)*t,z=a.z+(b.z-a.z)*t,lv=lvAt(x,z);
-if(lv!=null){if(!run)run={s0:s,s1:s,yb:lv};else run.s1=s;if(lv>run.yb)run.yb=lv;}
-else if(run){out.push(run);run=null;}}
-if(run)out.push(run);
+var a=P[i-1],b=P[i],sl=(cum[i]-cum[i-1])||1,t=Math.max(0,Math.min(1,(s-cum[i-1])/sl)),x=a.x+(b.x-a.x)*t,z=a.z+(b.z-a.z)*t,c=lvAt(x,z),lv=c;
+if(wide){var nx=-(b.z-a.z)/sl,nz=(b.x-a.x)/sl,e1=lvAt(x+nx*hw,z+nz*hw),e2=lvAt(x-nx*hw,z-nz*hw);
+if(e1!=null&&(lv==null||e1>lv))lv=e1;if(e2!=null&&(lv==null||e2>lv))lv=e2;}
+S.push(s);C.push(c);V.push(lv);}
+for(k=0;k<=n;k++){if(C[k]==null||(k>0&&C[k-1]!=null))continue;
+for(e=k;e<n&&C[e+1]!=null;e++);
+for(a0=k;a0>0&&V[a0-1]!=null&&S[k]-S[a0-1]<=cap;a0--);
+for(a1=e;a1<n&&V[a1+1]!=null&&S[a1+1]-S[e]<=cap;a1++);
+var r=out[out.length-1];if(r&&a0<=r.k1+1)r.k1=Math.max(r.k1,a1);else out.push({k0:a0,k1:a1});
+k=e;}
+out.forEach(function(r){r.s0=S[r.k0];r.s1=S[r.k1];r.yb=V[r.k0];for(j=r.k0+1;j<=r.k1;j++)if(V[j]>r.yb)r.yb=V[j];delete r.k0;delete r.k1;});
 out.forEach(function(r){var m=(r.s0+r.s1)/2,j=1;while(j<P.length-1&&cum[j]<m)j++;var a=P[j-1],b=P[j],sl=(cum[j]-cum[j-1])||1,t=Math.max(0,Math.min(1,(m-cum[j-1])/sl));
 r.x=a.x+(b.x-a.x)*t;r.z=a.z+(b.z-a.z)*t;});
 return out;
@@ -52429,7 +52439,7 @@ var hw=(E.c==='highway'),cH=_d3rjCum(E.pts),L=cH[cH.length-1],rg=hw&&(typeof _d3
 var gr=hw?_D3_HW_GRADE:_D3_RB_GRADE;
 var gl0=(typeof _d3tunGrade==='function')?_d3tunGrade('road'):0.34;
 [0,1].forEach(function(end){var I=_d3wbIsleEnd(E.pts,cH,end,rw*2.5,gl0);if(I){(E.hwLift=E.hwLift||[]).push(I);st.isle=(st.isle|0)+1;}});
-_d3roadWaterRuns(E.pts,cH,_d3wbLevelAt,_D3_WB_STEP).forEach(function(r){
+_d3roadWaterRuns(E.pts,cH,_d3wbLevelAt,_D3_WB_STEP,_d3wbWideOn()?_d3wbHalfOf(E,rw):0).forEach(function(r){
 var span=(r.s1-r.s0)/2+_D3_WB_BANK,s=(r.s0+r.s1)/2,reach=span+rw+_D3_HW_CLEAR/gr;
 if(!rg&&(s<reach||s>L-reach)){
 var gl=(typeof _d3tunGrade==='function')?_d3tunGrade('road'):0.34;
