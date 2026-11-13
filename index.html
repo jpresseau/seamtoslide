@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='05a5a5a';
+var RCG_BUILD='f1049ff';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -59726,6 +59726,7 @@ nature:{t:'Land & Water',rows:[
 {i:'\ud83d\udca7',l:'Lake',d:'Add \u00b7 move \u00b7 resize \u00b7 delete lakes',flag:'lmode',menu:function(b){driftLakeTool(b);}},
 {sec:'Plants',grid:2,i:'\ud83c\udf3f',l:'Scenery theme & density',d:'Biome look, tree density, clear rocks',menu:function(b){driftBiomeMenu(b);}},
 {i:'\ud83c\udf33',l:'Place trees & bushes',d:'Tap map to add \u00b7 drag to move',flag:'scmode',fn:'driftSceneryToggle'},
+{sec:'Animals',i:'\ud83e\udd8c',l:'Wildlife\u2026',d:(typeof driftWildLabel==='function'?driftWildLabel():'Which wild animals live on the map, how many and how big'),menu:function(){driftWildPanel();}},
 {sec:'Boats',grid:2,i:'\u26f5',l:'Boat fleet\u2026',d:'Pick which boats sail this map',menu:function(b){_rcgFloatGrp('trkBoatGrp',b);driftBoatMenu();}},
 {i:'\ud83d\udea4',l:'Boats',d:'Show or hide every boat at once',click:'trkYachtBtn',onEl:'trkYachtBtn'}]},
 town:{t:'Town',rows:[
@@ -60914,7 +60915,7 @@ try{if(typeof drift3DMenuRefresh==='function')drift3DMenuRefresh();}catch(_r){}
 return true;
 }
 var _D3_MAPS_ID='d3MapsPanel',_D3_BSH_ID='d3BuildSheet';
-var _D3_HWP=':is(#d3MapsPanel,#d3BuildSheet,#d3TunePanel)';
+var _D3_HWP=':is(#d3MapsPanel,#d3BuildSheet,#d3TunePanel,#d3WildPanel)';
 var _D3_MAPS_CSS=(function(P){return [
 '.d3-hwp{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147481990;width:min(420px,94vw);max-height:86vh;overflow:auto;'+
 'background:#141a26;border:1px solid #2c3550;border-radius:14px;padding:14px;color:#e8f2ff;font:600 13px system-ui,sans-serif;box-shadow:0 18px 46px rgba(0,0,0,.55)}',
@@ -81890,26 +81891,26 @@ if(k!=='dog')return;var H=_D3&&_D3.me;if(!H||!H.on)return;
 try{_d3dogStart(H);var b=document.querySelector('#d3MeHUD [data-me="dog"]');if(b)b.style.display='';}catch(_b){}
 }
 var _D3_WILD=[
-{k:'deer', hab:'hill', n:[3,5], w:5, L:1.55,sh:1.00,bw:0.40,col:0xb8703a,col2:0xf0e2c6,neck:[0.52,1.15],head:0.27,snout:0.17,ear:0.17,tail:[0.10],antler:0.62,deer:1,sp:0.10,r:1.6},
-{k:'elk', hab:'plain',n:[4,6], w:3, L:2.3, sh:1.45,bw:0.58,col:0xa0764a,col2:0xe6d6b4,neckCol:0x5a3e28,neck:[0.72,1.05],head:0.36,snout:0.25,ear:0.18,tail:[0.10],antler:1.05,deer:1,sp:0.10,r:2.2},
-{k:'bison', hab:'plain',n:[5,8], w:3, L:2.8, sh:1.20,bw:0.80,col:0x4a3524,col2:0x2e2016,neck:[0.35,0.15],head:0.48,snout:0.22,ear:0.08,tail:[0.50,-1.2,0.04],hump:0.5,horn:0.16,sp:0.07,r:2.6},
-{k:'bear', hab:'hill', n:[2,3], w:3, L:2.0, sh:1.05,bw:0.86,col:0xa8521f,col2:0xbc6c34,head:0.58,snout:0.22,ear:0.10,tail:[0.07],bear:1,cub:0.5,sp:0.08,r:2.0},
-{k:'wolf', hab:'hill', n:[3,4], w:2, L:1.3, sh:0.72,bw:0.30,col:0x8c8490,col2:0xf0ebe4,neck:[0.28,0.6],head:0.34,snout:0.20,ear:0.16,tail:[0.62,-0.5,0.15],fox:1,ruff:1,eye:0xe8b020,legUp:0xf0ebe4,legLo:0xf0ebe4,earTip:0x6a6470,tip:0x4a4450,sp:0.14,r:2.8},
-{k:'fox', hab:'hill', n:[1,1], w:3, L:0.72,sh:0.36,bw:0.17,col:0xe0622a,col2:0xf6f0e2,neck:[0.14,0.6],head:0.22,snout:0.10,ear:0.15,tail:[0.50,-0.2,0.12],fox:1,sp:0.12,r:1.8},
-{k:'bobcat', hab:'hill', n:[1,1], w:2, L:0.85,sh:0.46,bw:0.22,col:0xb88a52,col2:0xead8b4,spot:0x5a3c20,neck:[0.14,0.7],head:0.26,snout:0.07,ear:0.13,tail:[0.12,0.6,0.06],cat:1,sp:0.11,r:1.8},
-{k:'rabbit', hab:'plain',n:[2,4], w:4, L:0.40,sh:0.20,bw:0.20,col:0xd98a48,col2:0xf6efe2,head:0.20,ear:0.20,rabbit:1,hop:1,sp:0.10,r:0.9},
-{k:'squirrel',hab:'hill', n:[1,3], w:4, L:0.24,sh:0.09,bw:0.08,col:0x7a5a3a,col2:0xd8c8a8,neck:[0.03,0.9],head:0.07,snout:0.03,ear:0.03,tail:[0.20,1.25,0.07],hop:1,sp:0.10,r:0.7},
-{k:'llama', hab:'hill', n:[2,3], w:2, L:1.5, sh:1.05,bw:0.50,col:0xf2eee4,col2:0xe6dccc,neck:[0.70,1.4],head:0.30,ear:0.20,llama:1,sp:0.08,r:2.2},
-{k:'llamaRust',hab:'hill',n:[2,3], w:2, L:1.5, sh:1.05,bw:0.50,col:0xc86a30,col2:0xe8c8a8,neck:[0.70,1.4],head:0.30,ear:0.20,llama:1,sp:0.08,r:2.2},
-{k:'turkey', hab:'plain',n:[3,6], w:3, L:0.95,sh:0.38,bw:0.36,col:0x7a4630,col2:0xb8402c,bird:1,fan:0.50,sp:0.07,r:1.2},
-{k:'gator', hab:'marsh',n:[1,2], w:3, L:3.2, sh:0.22,bw:0.62,col:0x3c4a30,col2:0xb8b08a,col3:0x2c3824,neck:[0.20,0.0],head:0.34,snout:0.62,ear:0,tail:[1.50,-0.05,0.26],low:1,croc:1,sp:0.03,r:0.8,fresh:'lake'},
-{k:'croc', hab:'marsh',n:[1,2], w:2, L:3.8, sh:0.24,bw:0.60,col:0x55683a,col2:0xc8c09a,col3:0x40502c,neck:[0.20,0.0],head:0.30,snout:0.78,ear:0,tail:[1.80,-0.05,0.24],low:1,croc:1,sp:0.03,r:0.8,fresh:'river'},
-{k:'seal', hab:'shore',n:[4,7], w:1, L:1.7, sh:0.0, bw:0.52,col:0x6a6660,col2:0xa8a49a,swim:'haul',sp:0.02,r:0.6},
-{k:'whale', hab:'sea', n:[1,2], w:1, L:13, bw:3.0, col:0x39424c,col2:0xd8dce0,swim:'whale',sp:0.16,r:9},
-{k:'dolphin', hab:'sea', n:[4,6], w:2, L:2.6, bw:0.55,col:0x6a7884,col2:0xe2e6ea,swim:'dolphin',sp:0.62,r:6},
-{k:'gull', hab:'sky', n:[5,8], w:2, L:0.55,span:1.3,col:0xf4f4f2,col2:0xdfe3e8,beak:0xe8b030,feet:0xc8402c,fly:1,over:'sea',sp:0.55,r:3.2,alt:[0.6,1.4]},
-{k:'hawk', hab:'sky', n:[1,2], w:1, L:0.55,span:1.2,col:0x8a5630,col2:0xe8dcc0,wing:0x7a4c2c,belly:0xecdcbc,beak:0xe8b830,feet:0xe0a820,broad:1,fly:1,over:'land',sp:0.40,r:4.5,alt:[1.6,2.8]},
-{k:'songbird',hab:'sky', n:[6,10],w:3, L:0.16,span:0.26,col:0x3a5a8a,col2:0xd88a3a,fly:1,over:'land',sp:0.70,r:1.6,alt:[0.35,0.8]}
+{k:'deer',nm:'Deer', hab:'hill', n:[3,5], w:5, L:1.55,sh:1.00,bw:0.40,col:0xb8703a,col2:0xf0e2c6,neck:[0.52,1.15],head:0.27,snout:0.17,ear:0.17,tail:[0.10],antler:0.62,deer:1,sp:0.10,r:1.6},
+{k:'elk',nm:'Elk', hab:'plain',n:[4,6], w:3, L:2.3, sh:1.45,bw:0.58,col:0xa0764a,col2:0xe6d6b4,neckCol:0x5a3e28,neck:[0.72,1.05],head:0.36,snout:0.25,ear:0.18,tail:[0.10],antler:1.05,deer:1,sp:0.10,r:2.2},
+{k:'bison',nm:'Bison', hab:'plain',n:[5,8], w:3, L:2.8, sh:1.20,bw:0.80,col:0x4a3524,col2:0x2e2016,neck:[0.35,0.15],head:0.48,snout:0.22,ear:0.08,tail:[0.50,-1.2,0.04],hump:0.5,horn:0.16,sp:0.07,r:2.6},
+{k:'bear',nm:'Bears', hab:'hill', n:[2,3], w:3, L:2.0, sh:1.05,bw:0.86,col:0xa8521f,col2:0xbc6c34,head:0.58,snout:0.22,ear:0.10,tail:[0.07],bear:1,cub:0.5,sp:0.08,r:2.0},
+{k:'wolf',nm:'Wolves', hab:'hill', n:[3,4], w:2, L:1.3, sh:0.72,bw:0.30,col:0x8c8490,col2:0xf0ebe4,neck:[0.28,0.6],head:0.34,snout:0.20,ear:0.16,tail:[0.62,-0.5,0.15],fox:1,ruff:1,eye:0xe8b020,legUp:0xf0ebe4,legLo:0xf0ebe4,earTip:0x6a6470,tip:0x4a4450,sp:0.14,r:2.8},
+{k:'fox',nm:'Foxes', hab:'hill', n:[1,1], w:3, L:0.72,sh:0.36,bw:0.17,col:0xe0622a,col2:0xf6f0e2,neck:[0.14,0.6],head:0.22,snout:0.10,ear:0.15,tail:[0.50,-0.2,0.12],fox:1,sp:0.12,r:1.8},
+{k:'bobcat',nm:'Bobcats', hab:'hill', n:[1,1], w:2, L:0.85,sh:0.46,bw:0.22,col:0xb88a52,col2:0xead8b4,spot:0x5a3c20,neck:[0.14,0.7],head:0.26,snout:0.07,ear:0.13,tail:[0.12,0.6,0.06],cat:1,sp:0.11,r:1.8},
+{k:'rabbit',nm:'Rabbits', hab:'plain',n:[2,4], w:4, L:0.40,sh:0.20,bw:0.20,col:0xd98a48,col2:0xf6efe2,head:0.20,ear:0.20,rabbit:1,hop:1,sp:0.10,r:0.9},
+{k:'squirrel',nm:'Squirrels',hab:'hill', n:[1,3], w:4, L:0.24,sh:0.09,bw:0.08,col:0x7a5a3a,col2:0xd8c8a8,neck:[0.03,0.9],head:0.07,snout:0.03,ear:0.03,tail:[0.20,1.25,0.07],hop:1,sp:0.10,r:0.7},
+{k:'llama',nm:'Llamas', hab:'hill', n:[2,3], w:2, L:1.5, sh:1.05,bw:0.50,col:0xf2eee4,col2:0xe6dccc,neck:[0.70,1.4],head:0.30,ear:0.20,llama:1,sp:0.08,r:2.2},
+{k:'llamaRust',nm:'Llamas (rust)',hab:'hill',n:[2,3], w:2, L:1.5, sh:1.05,bw:0.50,col:0xc86a30,col2:0xe8c8a8,neck:[0.70,1.4],head:0.30,ear:0.20,llama:1,sp:0.08,r:2.2},
+{k:'turkey',nm:'Turkeys', hab:'plain',n:[3,6], w:3, L:0.95,sh:0.38,bw:0.36,col:0x7a4630,col2:0xb8402c,bird:1,fan:0.50,sp:0.07,r:1.2},
+{k:'gator',nm:'Alligators', hab:'marsh',n:[1,2], w:3, L:3.2, sh:0.22,bw:0.62,col:0x3c4a30,col2:0xb8b08a,col3:0x2c3824,neck:[0.20,0.0],head:0.34,snout:0.62,ear:0,tail:[1.50,-0.05,0.26],low:1,croc:1,sp:0.03,r:0.8,fresh:'lake'},
+{k:'croc',nm:'Crocodiles', hab:'marsh',n:[1,2], w:2, L:3.8, sh:0.24,bw:0.60,col:0x55683a,col2:0xc8c09a,col3:0x40502c,neck:[0.20,0.0],head:0.30,snout:0.78,ear:0,tail:[1.80,-0.05,0.24],low:1,croc:1,sp:0.03,r:0.8,fresh:'river'},
+{k:'seal',nm:'Seals', hab:'shore',n:[4,7], w:1, L:1.7, sh:0.0, bw:0.52,col:0x6a6660,col2:0xa8a49a,swim:'haul',sp:0.02,r:0.6},
+{k:'whale',nm:'Whales', hab:'sea', n:[1,2], w:1, L:13, bw:3.0, col:0x39424c,col2:0xd8dce0,swim:'whale',sp:0.16,r:9},
+{k:'dolphin',nm:'Dolphins', hab:'sea', n:[4,6], w:2, L:2.6, bw:0.55,col:0x6a7884,col2:0xe2e6ea,swim:'dolphin',sp:0.62,r:6},
+{k:'gull',nm:'Gulls', hab:'sky', n:[5,8], w:2, L:0.55,span:1.3,col:0xf4f4f2,col2:0xdfe3e8,beak:0xe8b030,feet:0xc8402c,fly:1,over:'sea',sp:0.55,r:3.2,alt:[0.6,1.4]},
+{k:'hawk',nm:'Hawks', hab:'sky', n:[1,2], w:1, L:0.55,span:1.2,col:0x8a5630,col2:0xe8dcc0,wing:0x7a4c2c,belly:0xecdcbc,beak:0xe8b830,feet:0xe0a820,broad:1,fly:1,over:'land',sp:0.40,r:4.5,alt:[1.6,2.8]},
+{k:'songbird',nm:'Songbirds',hab:'sky', n:[6,10],w:3, L:0.16,span:0.26,col:0x3a5a8a,col2:0xd88a3a,fly:1,over:'land',sp:0.70,r:1.6,alt:[0.35,0.8]}
 ];
 var _D3_WILD_N={land:[26,60],sea:[3,5],sky:[3,6]};
 var _D3_WILD_TOWN=2.2;
@@ -82216,6 +82217,136 @@ if(s.antler&&stag===false)g.traverse(function(x){if(x.userData&&x.userData.wildS
 g.userData.wild=s.k;g.userData.noMerge=true;
 return o;
 }
+var _D3_WILD_ROAD=1.5;
+var _D3_WILD_REACH=0.78;
+var _D3_WILD_RANGE_MIN=0.25;
+function _d3wildLineGrid(L,cell,cap){
+var G={cell:cell>0?cell:8,cap:cap>0?cap:8,S:[],B:{},n:0},c=G.cell,i,j;
+for(i=0;i<(L?L.length:0);i++){var l=L[i],P=l&&l.P,hw=(l&&l.hw>0)?l.hw:0;if(!P||P.length<2)continue;
+for(j=0;j<P.length-1;j++){var a=P[j],b=P[j+1];if(!a||!b||!isFinite(a.x+a.z+b.x+b.z))continue;
+var k=G.S.length/5;G.S.push(a.x,a.z,b.x,b.z,hw);G.n++;
+var g=G.cap+hw,x0=Math.floor((Math.min(a.x,b.x)-g)/c),x1=Math.floor((Math.max(a.x,b.x)+g)/c),z0=Math.floor((Math.min(a.z,b.z)-g)/c),z1=Math.floor((Math.max(a.z,b.z)+g)/c),x,z;
+for(x=x0;x<=x1;x++)for(z=z0;z<=z1;z++){var key=x+'|'+z;(G.B[key]||(G.B[key]=[])).push(k);}}}
+return G;
+}
+function _d3wildLineDist(G,x,z){
+if(!G||!G.n)return (G&&G.cap)||1e9;
+var L=G.B[Math.floor(x/G.cell)+'|'+Math.floor(z/G.cell)],best=G.cap,i,S=G.S;if(!L)return best;
+for(i=0;i<L.length;i++){var o=L[i]*5,ax=S[o],az=S[o+1],vx=S[o+2]-ax,vz=S[o+3]-az,l2=vx*vx+vz*vz||1e-9,t=((x-ax)*vx+(z-az)*vz)/l2;t=t<0?0:(t>1?1:t);
+var d=Math.hypot(ax+vx*t-x,az+vz*t-z)-S[o+4];if(d<best)best=d;}
+return best<0?0:best;
+}
+function _d3wildRangeOf(r,d,keep,reach,min){
+var room=(d-keep)/(reach>0?reach:1);if(!(room>=min))return 0;
+return Math.min(r,room);
+}
+function _d3wildLines(){
+var o=[],D=(typeof _D3!=='undefined')?_D3:null;if(!D)return o;
+var rw=(D.roadW>0)?D.roadW:0.3,E=(D.roadGraph&&D.roadGraph.E)||[],R=D.railPtsAll||[],i;
+for(i=0;i<E.length;i++){var e=E[i];if(!e||!e.pts||e.pts.length<2)continue;
+var hw=rw*1.5;try{if((e.c==='highway'||e.c==='ramp')&&typeof _d3hwX==='function')hw=Math.max(hw,_d3hwX(rw).hw);}catch(_h){}
+o.push({P:e.pts,hw:hw,kind:'road'});}
+var rh=0.3;try{if(typeof _d3railBedHW==='function'&&typeof _d3realRailSC==='function')rh=Math.max(0.1,_d3railBedHW(Math.max(0.05,_d3realRailSC())));}catch(_r){}
+for(i=0;i<R.length;i++)if(R[i]&&R[i].length>=2)o.push({P:R[i],hw:rh,kind:'rail'});
+var TP=D.trkPoly;if(TP&&TP.length>=3)o.push({P:TP.concat([TP[0]]),hw:(D.trackHalf||0.9),kind:'track'});
+return o;
+}
+var _D3_WILD_KEY='rcgWildlife',_D3_WILD_PANEL='d3WildPanel';
+var _D3_WILD_MANY=[['few','Few',0.5],['some','Some',1],['many','Many',1.7]];
+var _D3_WILD_SIZES=[['real','True to life',1],['big','Easier to see',1.6],['huge','Giant',2.5]];
+var _D3_WILD_GROUPS=[['land','Land animals'],['sea','Sea life'],['sky','Birds']];
+function _d3wildGroupOf(s){return (s.hab==='sea')?'sea':((s.hab==='sky')?'sky':'land');}
+function _d3wildSetOf(raw){
+var o=null;try{o=(typeof raw==='string')?JSON.parse(raw):raw;}catch(_e){o=null;}if(!o||typeof o!=='object')o={};
+function pick(L,v,d){for(var i=0;i<L.length;i++)if(L[i][0]===v)return v;return d;}
+var off={},k;if(o.off&&typeof o.off==='object')for(k in o.off)if(o.off[k])off[String(k)]=1;
+return {on:o.on!==0&&o.on!==false,many:pick(_D3_WILD_MANY,o.many,'some'),size:pick(_D3_WILD_SIZES,o.size,'real'),
+land:o.land!==0&&o.land!==false,sea:o.sea!==0&&o.sea!==false,sky:o.sky!==0&&o.sky!==false,off:off};
+}
+function _d3wildKindsOn(S,L){var o=[];for(var i=0;i<L.length;i++){var s=L[i];if(S.on&&S[_d3wildGroupOf(s)]&&!S.off[s.k])o.push(s);}return o;}
+function _d3wildSizeK(S){for(var i=0;i<_D3_WILD_SIZES.length;i++)if(_D3_WILD_SIZES[i][0]===S.size)return _D3_WILD_SIZES[i][2];return 1;}
+function _d3wildManyK(S){for(var i=0;i<_D3_WILD_MANY.length;i++)if(_D3_WILD_MANY[i][0]===S.many)return _D3_WILD_MANY[i][2];return 1;}
+function _d3wildWant(S,N,ti){
+var m=_d3wildManyK(S),o={},g;for(g in N)o[g]=(S.on&&S[g])?Math.max(1,Math.round(N[g][ti]*m)):0;
+return o;
+}
+function _d3wildSet(){var r=null;try{r=__LS.getItem(_D3_WILD_KEY);}catch(_e){}return _d3wildSetOf(r);}
+function _d3wildSetSave(S){try{__LS.setItem(_D3_WILD_KEY,JSON.stringify({on:S.on?1:0,many:S.many,size:S.size,land:S.land?1:0,sea:S.sea?1:0,sky:S.sky?1:0,off:S.off}));}catch(_e){}}
+var _D3_WILD_T=0;
+function _d3wildChanged(S){
+_d3wildSetSave(S);_d3wildLit();
+if(_D3_WILD_T)clearTimeout(_D3_WILD_T);
+_D3_WILD_T=setTimeout(function(){_D3_WILD_T=0;try{if(typeof _d3buildNow==='function'&&_D3&&_D3.scene)_d3buildNow(true);}catch(_b){}
+},(_D3&&_D3._wildNow)?0:650);
+}
+function driftWildAct(a){
+var S=_d3wildSet(),i;
+if(a==='on')S.on=!S.on;
+else if(a.indexOf('many:')===0)S.many=a.slice(5);
+else if(a.indexOf('size:')===0)S.size=a.slice(5);
+else if(a.indexOf('grp:')===0){var g=a.slice(4);if(g==='land'||g==='sea'||g==='sky')S[g]=!S[g];}
+else if(a.indexOf('kind:')===0){var k=a.slice(5);if(_d3wildKind(k)){if(S.off[k])delete S.off[k];else S.off[k]=1;}}
+else if(a==='all')S.off={};
+else if(a==='none'){for(i=0;i<_D3_WILD.length;i++)S.off[_D3_WILD[i].k]=1;}
+else if(a==='reset')S=_d3wildSetOf(null);
+else return false;
+_d3wildChanged(_d3wildSetOf(S));return true;
+}
+function driftWildLabel(){
+var S=_d3wildSet();if(!S.on)return 'Off';
+var n=_d3wildKindsOn(S,_D3_WILD).length,m='';for(var i=0;i<_D3_WILD_MANY.length;i++)if(_D3_WILD_MANY[i][0]===S.many)m=_D3_WILD_MANY[i][1];
+return m+' · '+n+' of '+_D3_WILD.length+' kinds'+(S.size!=='real'?' · larger than life':'');
+}
+function _d3wildLit(){
+var d=document.getElementById(_D3_WILD_PANEL);if(!d)return;
+var S=_d3wildSet(),L=d.querySelectorAll('[data-act]'),i;
+for(i=0;i<L.length;i++){var a=L[i].getAttribute('data-act'),on=null;
+if(a==='on')on=S.on;else if(a.indexOf('many:')===0)on=(S.many===a.slice(5));else if(a.indexOf('size:')===0)on=(S.size===a.slice(5));
+else if(a.indexOf('grp:')===0)on=!!S[a.slice(4)];else if(a.indexOf('kind:')===0){var s=_d3wildKind(a.slice(5));on=!S.off[a.slice(5)];L[i].classList.toggle('dim',!(S.on&&s&&S[_d3wildGroupOf(s)]));}
+if(on!==null){L[i].setAttribute('data-on',on?'1':'0');L[i].classList.toggle('on',!!on);}}
+var o=d.querySelector('[data-wildon]');if(o)o.textContent=S.on?'On':'Off';
+var c=d.querySelector('[data-wildnow]'),A=_D3&&_D3._wild;
+if(c)c.textContent=!S.on?'No wildlife on the map':(A?(A.n+' animals on this map · '+Object.keys(A.kinds).length+' kinds · '+A.land+' groups on land, '+A.sea+' at sea, '+A.sky+' in the sky'):'Counting…');
+}
+function _d3wildClose(){var d=document.getElementById(_D3_WILD_PANEL);if(d&&d.parentNode)d.parentNode.removeChild(d);}
+function driftWildPanel(){
+if(document.getElementById(_D3_WILD_PANEL)){_d3wildClose();return;}
+if(typeof _d3mapsCss==='function')_d3mapsCss();_d3wildCss();
+var chip=function(act,label,title){return '<button type="button" class="trk-pat" data-act="'+act+'" data-on="0"'+(title?' title="'+title+'"':'')+'>'+label+'</button>';},i,g;
+var h='<div data-shtop class="d3-hwtop"><span style="flex:1;min-width:0"><b>🦌 Wildlife</b><span class="d3-hwnow" data-wildnow></span></span>'+
+'<button type="button" class="d3-hwx" data-act="close">Close</button></div>';
+h+='<div><div class="trk-mapsec">Wildlife</div><div class="d3-wlrow">'+chip('on','Wildlife: <b data-wildon>On</b>','Every wild animal on the map, on or off')+'</div>'+
+'<div class="trk-mapsec">How many</div><div class="d3-wlrow">';
+for(i=0;i<_D3_WILD_MANY.length;i++)h+=chip('many:'+_D3_WILD_MANY[i][0],_D3_WILD_MANY[i][1]);
+h+='</div><div class="trk-mapsec">Size</div><div class="d3-wlrow">';
+for(i=0;i<_D3_WILD_SIZES.length;i++)h+=chip('size:'+_D3_WILD_SIZES[i][0],_D3_WILD_SIZES[i][1]);
+h+='</div><div class="d3-wlhint">True to life is the size of the map’s people and cars: a deer is a metre at the shoulder.</div></div>';
+h+='<div><div class="trk-mapsec">Where</div><div class="d3-wlrow">';
+for(i=0;i<_D3_WILD_GROUPS.length;i++)h+=chip('grp:'+_D3_WILD_GROUPS[i][0],_D3_WILD_GROUPS[i][1]);
+h+='</div><div class="d3-wlhint">Animals keep to the wild: none stands in the town, in water it does not live in, or within fifteen metres of a road, the railway or the drift course.</div></div>';
+for(g=0;g<_D3_WILD_GROUPS.length;g++){h+='<div><div class="trk-mapsec">'+_D3_WILD_GROUPS[g][1]+'</div><div class="d3-wlkinds">';
+for(i=0;i<_D3_WILD.length;i++)if(_d3wildGroupOf(_D3_WILD[i])===_D3_WILD_GROUPS[g][0])h+=chip('kind:'+_D3_WILD[i].k,_D3_WILD[i].nm);
+h+='</div></div>';}
+h+='<div><div class="d3-wlrow">'+chip('all','Every kind')+chip('none','No kinds')+'</div>'+
+'<button type="button" class="trk-pat trk-act" data-act="reset" style="margin-top:10px"><span class="trk-acti">↺</span>Wildlife as it comes</button></div>';
+var d=document.createElement('div');d.id=_D3_WILD_PANEL;d.className='d3-hwp';d.innerHTML=h;
+d.addEventListener('click',function(ev){var b=ev.target&&ev.target.closest?ev.target.closest('[data-act]'):null;if(!b)return;
+var a=b.getAttribute('data-act');if(a==='close')_d3wildClose();else driftWildAct(a);});
+document.body.appendChild(d);_d3wildLit();
+d.setAttribute('data-shname','Wildlife');_d3sheet(d);
+return d;
+}
+var _D3_WILD_CSS=(function(P){return [
+P+' .d3-wlrow{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 4px}',
+P+' .d3-wlkinds{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:6px}',
+P+' :is(.d3-wlrow,.d3-wlkinds)>.trk-pat{justify-content:center;padding:8px 4px;text-align:center;min-height:36px}',
+P+' .trk-pat.dim{opacity:.45}',
+P+' .d3-wlhint{font:600 11.5px system-ui;color:#9fb3d6;margin:4px 0 8px;line-height:1.35}'
+].join('');})('#d3WildPanel');
+function _d3wildCss(){
+if(document.getElementById('d3WildCss'))return;
+var s=document.createElement('style');s.id='d3WildCss';s.textContent=_D3_WILD_CSS;document.head.appendChild(s);
+}
 function _d3wildAt(x,z,B){
 var q={salt:false,fresh:null,depth:0,nearSalt:false,nearFresh:null,slope:0,town:99,up:0},i;
 var salt=(typeof _d3inAnySalt==='function')&&_d3inAnySalt(x,z),wet=salt||((typeof _d3inAnyWater==='function')&&_d3inAnyWater(x,z));
@@ -82237,13 +82368,15 @@ var out=[],T=window.THREE,v=new T.Vector3();
 (_D3.bldMeshes||[]).forEach(function(b){var o=b&&(b.obj||b.grp||b);if(o&&o.getWorldPosition){try{o.updateMatrixWorld(true);o.getWorldPosition(v);out.push({x:v.x,z:v.z});}catch(_e){}}});
 return out;
 }
+function _d3wildScale(){var ls=(typeof _dsc==='function')?_dsc('life'):1,wm=(typeof WORLD_M!=='undefined'&&WORLD_M>0)?WORLD_M:10;return ((ls>0)?ls:1)/wm;}
 function _d3wildlife(g){
 var D=_D3,T=window.THREE;D.wildSea=[];D._wild=null;
 if(!T||!g||D._noWildlife||!D.hillGrid||typeof _d3groundH!=='function')return 0;
 var H=D.hillGrid,x0=H.x0,z0=H.z0,span=H.cs*(H.n-1),rnd=_d3wildRnd(((typeof _da!=='undefined'&&_da&&_da.pattern)||'map')+'|wild');
-var lite=(typeof _d3qual==='function')?!!_d3qual().lite:false,ti=lite?0:1,want={land:_D3_WILD_N.land[ti],sea:_D3_WILD_N.sea[ti],sky:_D3_WILD_N.sky[ti]},got={land:0,sea:0,sky:0},kinds={},tries=0;
-var B=_d3wildTown(),K=0.1*((typeof _dsc==='function')?(_dsc('life')/((typeof PEOPLE_SIZE_BASE!=='undefined')?PEOPLE_SIZE_BASE:1)):1);
-if(!(K>0))K=0.1;
+var lite=(typeof _d3qual==='function')?!!_d3qual().lite:false,ti=lite?0:1,SET=_d3wildSet(),want=_d3wildWant(SET,_D3_WILD_N,ti),LK=_d3wildKindsOn(SET,_D3_WILD),got={land:0,sea:0,sky:0},kinds={},tries=0,shy=0;
+if(!SET.on||!LK.length)return 0;
+var B=_d3wildTown(),K=_d3wildScale()*_d3wildSizeK(SET);
+var RG=D._noWildRoads?null:_d3wildLineGrid(_d3wildLines(),8,6);D._wildGrid=RG;
 if(!D.walkers)D.walkers=[];
 var nogo=D.farmNoGo||null;
 function stand(s,x,z,i,n,q){
@@ -82255,7 +82388,7 @@ D.wildSea.push({obj:m.grp,s:s,cx:q.cx,cz:q.cz,r:s.r*(0.6+0.4*rnd()),ph:i/n*6.283
 alt:s.alt?(s.alt[0]+rnd()*(s.alt[1]-s.alt[0])):0,dir:(rnd()<0.5)?-1:1});
 return;}
 m.grp.position.set(x,_d3groundH(x,z),z);
-D.walkers.push({obj:m.grp,cx:x,cz:z,y0:0,r:s.r,sp:s.sp,ph:rnd()*6.2832,bob:s.hop?0.012:0,graze:true,nogo:nogo,wild:s.k,
+D.walkers.push({obj:m.grp,cx:x,cz:z,y0:0,r:(q.rng>0?q.rng:s.r),sp:s.sp,ph:rnd()*6.2832,bob:s.hop?0.012:0,graze:true,nogo:nogo,wild:s.k,
 legFL:m.legFL,legFR:m.legFR,legBL:m.legBL,legBR:m.legBR,legL:m.legL,legR:m.legR,swing:(s.low?0.25:0.5)});
 }
 while(tries++<900&&(got.land<want.land||got.sea<want.sea||got.sky<want.sky)){
@@ -82263,15 +82396,17 @@ var x=x0+rnd()*span,z=z0+rnd()*span,q=_d3wildAt(x,z,B),hab=_d3wildHabitat(q),sky
 if(got.sky<want.sky&&(tries%5)===0){hab='sky';sky=true;}
 if(!hab)continue;
 var grp=(hab==='sea')?'sea':(sky?'sky':'land');if(got[grp]>=want[grp])continue;
-var s=_d3wildPick(hab,rnd,(hab==='marsh')?q.nearFresh:null);if(!s)continue;
+var s=_d3wildPick(hab,rnd,(hab==='marsh')?q.nearFresh:null,LK);if(!s)continue;
 if(s.fly&&((s.over==='sea')!==!!q.salt))continue;
 var n=_d3wildCount(s,rnd),i,put=0;q.cx=x;q.cz=z;
 for(i=0;i<n;i++){var p=_d3wildSpread(i,n,s.fly||s.swim==='whale'||s.swim==='dolphin'?s.r*0.5:Math.min(1.4,0.25+s.L*0.05*n),x,z);
 if(!(s.fly||hab==='sea')){var qi=(i===0)?q:_d3wildAt(p.x,p.z,B);if(_d3wildHabitat(qi)!==hab&&i>0)continue;}
+q.rng=0;if(RG&&!(s.fly||s.swim==='whale'||s.swim==='dolphin')){q.rng=_d3wildRangeOf(s.r,_d3wildLineDist(RG,p.x,p.z),_D3_WILD_ROAD,_D3_WILD_REACH,_D3_WILD_RANGE_MIN);if(!q.rng){shy++;continue;}}
 stand(s,p.x,p.z,i,n,q);put++;}
 if(put)got[grp]++;
 }
-D._wild={land:got.land,sea:got.sea,sky:got.sky,kinds:kinds,tries:tries,n:Object.keys(kinds).reduce(function(a,k){return a+kinds[k];},0)};
+D._wild={land:got.land,sea:got.sea,sky:got.sky,kinds:kinds,tries:tries,shy:shy,K:K,n:Object.keys(kinds).reduce(function(a,k){return a+kinds[k];},0)};
+try{if(typeof _d3wildLit==='function')_d3wildLit();}catch(_wl){}
 return D._wild.n;
 }
 function _d3wildPose(w,kind,t){
