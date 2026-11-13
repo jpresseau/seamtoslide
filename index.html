@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='aeb45a8';
+var RCG_BUILD='cb47b23';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -39056,6 +39056,11 @@ var Q=_D3_WET_Q,ix=Math.floor(x/Q),iz=Math.floor(z/Q),k=ix*131071+iz,v=S.m.get(k
 if(v===undefined){v=_d3waterLevelRaw((ix+0.5)*Q,(iz+0.5)*Q,S.rb);S.m.set(k,v);}
 return v;
 }
+function _d3sheetInRiver(x,z){
+if(typeof _D3==='undefined'||!_D3||_D3._noRiverFloor||typeof _d3riverNear!=='function')return false;
+var b=_d3riverBox();if(!b||x<b.x0||x>b.x1||z<b.z0||z>b.z1)return false;
+var r=_d3riverNear(x,z);return !!(r&&r.d<=r.half);
+}
 var _D3_RB_CUT=0.35,_D3_RB_FADE=1.6;
 function _d3ribbonW(d,g,rw,cw,cut,fill){
 function one(c){var h=c?cw:rw,sk=c?cut:fill;if(d<=h)return 1;if(d>=h+sk)return 0;var u=1-(d-h)/sk;return c?u:u*u*(3-2*u);}
@@ -56802,6 +56807,10 @@ if(_rf9>_nt9&&_rf9>_shRf[_ni9])_shRf[_ni9]=_rf9;
 if(_shRf[_ni9]>-1e8&&typeof _d3inLake==='function'&&_d3inLake(_nx9,_nz9)){
 var _wg9=_d3sheetTuck(_d3groundH(_nx9,_nz9));
 if(_shRf[_ni9]>_wg9)_shRf[_ni9]=_wg9;
+}
+if(_shRf[_ni9]>-1e8&&typeof _d3sheetInRiver==='function'&&_d3sheetInRiver(_nx9,_nz9)){
+var _wr9=_d3sheetTuck(_d3groundH(_nx9,_nz9));
+if(_shRf[_ni9]>_wr9)_shRf[_ni9]=_wr9;
 }
 if(_shRf[_ni9]>-1e8){
 var _bpd9=_bldPadY(_nx9,_nz9);
