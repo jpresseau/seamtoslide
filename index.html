@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='a062196';
+var RCG_BUILD='1517c73';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -6038,7 +6038,7 @@ if(_da.view3d&&typeof _d3build==='function'){_d3build();if(_D3)_D3._sig=(typeof 
 function driftLandKey(){return 'rcgLand_'+_ns();}
 function driftLandList(){
 var T=(typeof window!=='undefined')?window._D3_TERR:null,out=[],k;
-if(T)for(k in T)if(T.hasOwnProperty(k))out.push(k);
+if(T)for(k in T)if(T.hasOwnProperty(k)&&!_driftLandTown(k))out.push(k);
 out.sort();
 return out;
 }
@@ -6066,7 +6066,7 @@ _da.lfmode=!_da.lfmode;
 if(_da.lfmode){
 if(typeof driftExitModes==='function')driftExitModes('land');
 if(!Array.isArray(_da.terrStamps))_da.terrStamps=[];
-if(!_da.landSel)_da.landSel=driftLandList()[0]||null;
+if(!_da.landSel||_driftLandTown(_da.landSel))_da.landSel=driftLandList()[0]||null;
 _da._landMove=false;
 _da.landType=null;_da._landHold=null;
 _dlHoverWire();
@@ -6923,6 +6923,22 @@ st.lk=_d3cyLookSet(st,c,on,L);
 if(st!==_da._landGhost)try{driftLandSave();}catch(_s){}
 try{if(typeof _d3bluffLeafApply==='function')_d3bluffLeafApply();}catch(_t){}
 driftLandLookUI();
+}
+function _driftLandTown(k){
+var T=(window._D3_TERR||{})[k],K=(typeof _D3_LAND_KITS!=='undefined'&&_D3_LAND_KITS)||{};
+return !!(T&&T.model&&K[T.model]&&K[T.model].town);
+}
+function driftTownLandList(){
+var T=window._D3_TERR||{},out=[],k;
+for(k in T)if(T.hasOwnProperty(k)&&_driftLandTown(k))out.push(k);
+return out.sort();
+}
+function driftTownPlace(k){
+k=k||driftTownLandList()[0];
+if(!k)return;
+if(!_da.lfmode)driftLandToggle();
+_da._landMove=false;
+driftLandPick(k);
 }
 function _driftPanelCloseBtn(){
 var b=document.createElement('button');
@@ -60622,6 +60638,7 @@ nature:{t:'Land & Water',rows:[
 town:{t:'Town',rows:[
 {sec:'Buildings & people',grid:2,i:'\ud83c\udfd8',l:'Buildings',d:'Place \u00b7 drag \u00b7 rotate \u21bb \u00b7 restyle',menu:function(b){driftBldMenu(b);}},
 {i:'\ud83d\udeb6',l:'People',d:'Walkers on the pavements',click:'trkPeopleBtn',onEl:'trkPeopleBtn'},
+{i:'\ud83c\udfe1',l:'Neighborhood',d:'Houses, people and cars \u00b7 tap the map to place it',menu:function(){driftTownPlace();}},
 {sec:'Transport',grid:2,i:'\ud83d\ude82',l:'Railway',d:'Draw track \u00b7 trains run it',flag:'railmode',menu:function(b){if(!_da.railmode)driftRailToggle();_rcgFloatGrp('trkRailGrp',b);driftRailUI();}},
 {i:'\u2708\ufe0f',l:'Aircraft fleet\u2026',d:'Pick which planes fly',menu:function(b){_rcgFloatGrp('trkAircraftGrp',b);driftFleetMenu();}},{i:'\ud83d\udeec',l:'Runway\u2026',d:'A real-size runway \u00b7 length \u00b7 heading',menu:function(){driftRunwayPanel();}},{i:'\u2693',l:'Harbour\u2026',d:'A real-size harbour \u00b7 berths',menu:function(){driftHarbourPanel();}},
 {sec:'Build roads',i:'\ud83d\udee3',l:'Road network',d:'Tap two places to link or unlink \u00b7 or draw one',flag:'brmode',fn:'driftBldRoadToggle',acts:[['\ud83d\uddd1 Remove road','driftBldRoadDelToggle'],['\u21ba Reset auto','driftBldRoadReset']]},
@@ -90991,6 +91008,7 @@ if(isFinite(y)){B.root.position.y=y;B.root.updateMatrixWorld(true);if(B.ctr)B.ct
 return y;
 }
 _D3_LAND_KITS[_D3_NBHD_MODEL]={
+town:1,
 prep:function(src){if(typeof _D3!=='undefined'&&_D3&&_D3._noNbhdKit)return 0;return _d3nbPrep(src);},
 cast:function(o){var m=o.material;return !!(m&&!m.transparent&&!_D3_NBHD_NOCAST.test(_d3nbName(o))&&!_D3_NBHD_LEAF.test(_d3nbName(o)));},
 receive:function(o){return !_D3_NBHD_LEAF.test(_d3nbName(o));},
