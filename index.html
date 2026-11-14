@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='1517c73';
+var RCG_BUILD='de912c3';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -10159,6 +10159,7 @@ function _d3wxAfter(k){
 driftWxUI();
 try{if(typeof showToast==='function')showToast('Weather: '+_d3wxLabel());}catch(e){}
 try{if(typeof drift3DMenuRefresh==='function')drift3DMenuRefresh();}catch(e){}
+if(k==='fall')k='season';
 if((k==='season'||k==='event')&&_da&&_da.view3d&&typeof _d3build==='function'){try{_d3build();}catch(_3){}}
 else{try{if(typeof _d3applyTimeOfDay==='function')_d3applyTimeOfDay();}catch(_4){}}
 }
@@ -60654,6 +60655,7 @@ weather:{t:'Weather Station',rows:[
 {i:'\ud83d\udca8',l:'Wind',d:'It blows the cloud, the rain, the sea and the trees',pick:'wind'},
 {i:'\ud83e\udded',l:'Wind from',d:'Which way the weather comes from',pick:'dir'},
 {sec:'Year',i:'\ud83c\udf41',l:'Season',d:'The colour of the land - the leaves, the grass, the snow',pick:'season'},
+{i:'\ud83c\udf42',l:'Autumn stage',d:'Early, the peak of the colours, or late - yellow and brown as the leaves fall',pick:'fall'},
 {i:'\ud83c\udf00',l:'Natural disaster',d:'A tornado that crosses the map, or a hurricane with an eye that passes over you',pick:'event'}]},
 fish:{t:'Fish',rows:[
 {i:'\u26f5',l:'From a boat',d:'On the lake \u2014 cast, watch the float, set the hook and play it',menu:function(){drift3DFish();}},
@@ -61660,7 +61662,8 @@ var t=0,i,e9;for(i=0;i<E.length;i++){e9=E[i];
 t+=(xy(e9.x,e9.z)*1.3+(e9.r||0)*3.7+(e9.dy||0)*11.3)*(i+1);}
 return E.length+':'+t.toFixed(2);})());
 try{s+='|sea'+((a.lakeSalt||[]).map(function(v){return v?1:0;}).join(''));
-var w9=a.wx||{};s+='|wx'+(w9.season|0)+'.'+(w9.event|0);}catch(_sw9){}
+var w9=a.wx||{};s+='|wx'+(w9.season|0)+'.'+(w9.event|0);
+if(typeof _d3season==='function'&&_d3season()===1&&typeof _d3fallStage==='function')s+='.f'+_d3fallStage();}catch(_sw9){}
 try{if(typeof _d3fleetSig==='function')s+='|fl'+_d3fleetSig();}catch(_fl9){}
 return s;
 }
@@ -62344,6 +62347,8 @@ wind:['Still air, the trees and the sea at rest','A light breeze','The trees swa
 'The trees bend, the rain slants, the sea runs','Everything streams: the cloud races, the rain drives across'],
 season:['Follows your calendar, the season turning as the days go by','Green leaves and green grass','Leaves gold and rust, falling as the season ends, the grass going brown',
 'Snow on the ground, the woods bare','Fresh greens and blossom'],
+fall:['Follows the season: early in its first days, the peak in its middle, late as it ends',
+'Mostly green, the maples first to turn','Every colour at once: reds, oranges, golds and russet','Yellow and brown, the leaves coming down'],
 event:['No disaster','A tornado crosses the map, dark, wet and windy round it while it lasts',
 'A hurricane passes over you, its eye and all: a storm, a downpour and a gale while it lasts']
 };
@@ -62356,6 +62361,7 @@ else if(k==='rain'){o=_D3_WX_RAIN;c=raw.rain;e=eff.rain;}
 else if(k==='wind'){o=_D3_WX_WIND;c=raw.wind;e=eff.wind;}
 else if(k==='dir'){o=_D3_WX_DIRS;c=Math.round((((+raw.dir||0)%360+360)%360)/45)%8;e=c;}
 else if(k==='season'){o=['By the year'].concat(_D3_WX_SEASON);c=(raw.season==null)?0:(raw.season|0)+1;e=c;}
+else if(k==='fall'){o=['By the season','Early','Peak','Late'];c=(raw.fall==null)?0:(raw.fall|0)+1;e=c;}
 else if(k==='event'){o=_D3_WX_EVENT;c=raw.event;e=c;}
 else return null;
 c=Math.max(0,Math.min(o.length-1,c|0));e=Math.max(0,Math.min(o.length-1,e|0));
@@ -62365,12 +62371,12 @@ return {k:k,opts:o.slice(),tips:t,cur:c,eff:e};
 function _d3wxPickVal(k,i){
 i=i|0;
 if(k==='dir')return ['dir',i*45];
-if(k==='season')return ['season',i<=0?null:i-1];
+if(k==='season'||k==='fall')return [k,i<=0?null:i-1];
 return [k,i];
 }
 function _d3wxPicks(k){
 var raw=(typeof _d3wxRaw==='function')?_d3wxRaw():{},eff=(typeof _d3wx==='function')?_d3wx():raw,w=(typeof _da!=='undefined'&&_da&&_da.wx)||{};
-raw.season=(w.season==null)?null:w.season;raw.event=(typeof _d3wxEvent==='function')?_d3wxEvent():(w.event|0);
+raw.season=(w.season==null)?null:w.season;raw.fall=(w.fall==null)?null:w.fall;raw.event=(typeof _d3wxEvent==='function')?_d3wxEvent():(w.event|0);
 var P=_d3wxPickOf(k,raw,eff);if(!P)return null;
 if(k==='rain'&&typeof _d3snowNow==='function'&&_d3snowNow()){P.opts=_D3_SNOW.words.slice();P.tips=_D3_SNOW.tips.slice();}
 P.note=_d3wxPickNote(k,P);P.set=function(i){driftWxPick(k,i);};
@@ -62529,7 +62535,9 @@ function _d3seasonPal(pal){
 var se=_d3season();if(!se||!pal||!pal.length)return pal;
 var out=[],i,sat=1;
 if(se===1)try{if(typeof _d3autumnSat==='function')sat=_d3autumnSat();}catch(_as){}
-for(i=0;i<pal.length;i++)out.push(_d3seasonGrade(_d3seasonHex(pal[i],se),sat));
+for(i=0;i<pal.length;i++){var fh=null;
+if(se===1)try{if(typeof _d3fallHex==='function')fh=_d3fallHex(pal[i],i);}catch(_fh){fh=null;}
+out.push(_d3seasonGrade(fh!=null?fh:_d3seasonHex(pal[i],se),sat));}
 if(se===3)out.push(0xf2c8d8,0xf6dce6,0xfbeef2);
 return out;
 }
@@ -63463,7 +63471,7 @@ dorm:{dn0:0.35,dMax:0.7,win:0.85,sp1:0.5,straw:[0.6,0.53,0.33]}};
 function _d3seasonPhaseOf(dayF,S){S=S||7;var d=((+dayF%S)+S)%S;return d/S;}
 function _d3seasonPhase(){
 var D=(typeof _D3!=='undefined')?_D3:null;if(D&&typeof D._leafPh==='number')return Math.max(0,Math.min(1,D._leafPh));
-try{var w=(typeof _da!=='undefined'&&_da&&_da.wx)||{};if(w.season!=null)return 0.5;}catch(_w){}
+try{var w=(typeof _da!=='undefined'&&_da&&_da.wx)||{};if(w.season!=null)return (w.fall!=null&&typeof _D3_FALL_PH!=='undefined')?_D3_FALL_PH[Math.max(0,Math.min(2,w.fall|0))]:0.5;}catch(_w){}
 var S=(typeof _D3_SEASON_DAYS!=='undefined')?_D3_SEASON_DAYS:7,day=Date.now()/864e5;
 if(D&&typeof D.jobDayFixed==='number')day=(D.jobDayFixed|0)+0.5;
 return _d3seasonPhaseOf(day,S);
@@ -63608,6 +63616,34 @@ if(P[i*3+1]<=S[b]+0.005){P[i*3+1]=S[b]+0.005;S[b+3]=F.rest*(0.6+Math.random()*0.
 geo.attributes.position.needsUpdate=true;geo.attributes.aSpin.needsUpdate=true;geo.attributes.color.needsUpdate=true;geo.setDrawRange(0,want);
 D._leafMesh.visible=true;D._leafDrawn=want;
 return want;
+}
+var _D3_FALL_KINDS=[
+{c:[0xc8361e,0x9c5a2e],e:0.55},
+{c:[0xdc6a2a,0xb08042],e:0.35},
+{c:[0xdeb03a,0xe2c654],e:0.3},
+{c:[0xac5a2a,0x8e6238],e:0.12},
+{c:[0xe08c32,0xceac4a],e:0.22},
+{c:[0x92a43e,0xd4c456],e:0.0}
+];
+var _D3_FALL_AT=[0.3,0.62];
+var _D3_FALL_PH=[0.15,0.45,0.8];
+function _d3fallStageOf(ph){ph=+ph||0;return ph<_D3_FALL_AT[0]?0:(ph<_D3_FALL_AT[1]?1:2);}
+function _d3fallStage(){
+try{var w=(typeof _da!=='undefined'&&_da&&_da.wx)||{};if(w.fall!=null)return Math.max(0,Math.min(2,w.fall|0));}catch(_w){}
+try{return _d3fallStageOf((typeof _d3seasonPhase==='function')?_d3seasonPhase():0.5);}catch(_p){return 1;}
+}
+function _d3fallHexOf(h,i,st){
+var n=_D3_FALL_KINDS.length,K=_D3_FALL_KINDS[((i|0)%n+n)%n];st=Math.max(0,Math.min(2,st|0));
+var r=((h>>16)&255)/255,g=((h>>8)&255)/255,b=(h&255)/255,lum=r*0.30+g*0.59+b*0.11;
+var k=0.86+0.28*Math.max(0,Math.min(1,(lum-0.06)/0.34));
+var T=K.c[st===2?1:0],t=(st===0)?K.e:1,o=0,c,G=[r,g,b];
+for(c=0;c<3;c++){var v=G[c]*(1-t)+((T>>((2-c)*8))&255)/255*t*(st===0?1:k);
+o=o*256+Math.max(0,Math.min(255,Math.round(Math.max(0,Math.min(1,v))*255)));}
+return o;
+}
+function _d3fallHex(h,i){
+if(typeof _D3!=='undefined'&&_D3&&_D3._noFallStages)return null;
+return _d3fallHexOf(h,i,_d3fallStage());
 }
 var _D3_WX_EVENT=['None','Tornado','Hurricane'];
 function _d3wxEvent(){
