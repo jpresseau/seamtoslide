@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='9e40006';
+var RCG_BUILD='4c08fdb';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -55909,7 +55909,7 @@ q.raycast=function(){};q.userData.noMerge=true;q.userData._noB=1;q.userData._glb
 D.scene.add(q);K.quad=q;
 [D.sun,D.hemi,D.fill].forEach(function(l){if(l&&l.layers)l.layers.enable(_D3_FHD_LAYER);});
 var sc=D.scene,ob=sc.onBeforeRender;
-sc.onBeforeRender=function(ren,scene,cam){try{_d3fhdList();}catch(_e){}if(ob)return ob.apply(this,arguments);};
+sc.onBeforeRender=function(ren,scene,cam){try{_d3fhdList(cam);}catch(_e){}if(ob)return ob.apply(this,arguments);};
 return true;
 }
 function _d3fhdGrowU(){if(!_D3_FHD_GROWU)_D3_FHD_GROWU={value:0};return _D3_FHD_GROWU;}
@@ -55923,9 +55923,9 @@ mat.customProgramCacheKey=function(){return (ck?ck.call(this):'')+'+fhdGrow';};
 mat.needsUpdate=true;return true;
 }
 function _d3fhdShown(o){var D=_D3;while(o){if(o.visible===false)return false;if(o===D.scene)return true;o=o.parent;}return false;}
-function _d3fhdList(){
+function _d3fhdList(cam){
 var D=_D3,K=D._fhd,B=D.parkBlobs,cs=B&&B.userData&&B.userData.forestCells,i;if(!K||!K.quad)return;
-var keep=!!(K.valid&&!K.baking&&D._renderLoop&&!D._noForestHold&&cs&&cs.length);
+var keep=!!(K.valid&&!K.baking&&D._renderLoop&&!D._noForestHold&&cs&&cs.length&&(!cam||!K.cam||cam===K.cam));
 if(keep){for(i=0;i<cs.length;i++)cs[i].visible=false;K.quad.visible=true;K.kept++;}
 else{if(cs)for(i=0;i<cs.length;i++)cs[i].visible=true;K.quad.visible=false;if(cs&&cs.length&&D._renderLoop)K.live++;}
 }
@@ -55953,12 +55953,13 @@ var B=D.parkBlobs,cs=B&&B.userData&&B.userData.forestCells,ren=D.ren;
 var sh=!!(ren.shadowMap&&ren.shadowMap.enabled&&B.castShadow&&D.sun&&D.sun.castShadow),standIn=!!(D._fsh&&D._fsh.H===B&&D._fsh.mesh&&!D._noForestShadowCut);
 var on=!D._noForestHold&&cs&&cs.length&&_d3fhdShown(B)&&!D._building&&(!sh||standIn);
 if(!on){K.valid=false;K.key=null;K.still=0;K.why='off';return;}
+if(cam.isPerspectiveCamera&&!D._fhdPersp){K.valid=false;K.key=null;K.still=0;K.why='perspective';return;}
 var k;try{k=_d3fhdKey(cam,D,cs,B);}catch(_k){K.valid=false;K.key=null;K.still=0;K.why='key failed: '+(_k&&_k.message);return;}
 var L=D._forestLod,U=D._swayU,amp=(U&&U.value)?Math.hypot(U.value.x,U.value.z):0,ppu=(L&&L.px>0)?L.px/(D._forestR0||0.5):0;
 K.swayPx=+(amp*_d3fhdReach(B)*ppu).toFixed(3);
 var S=_d3fhdStep(K,K.key!==k,L?L.px:0,_D3_FHD_PX,_D3_FHD_STILL,K.swayPx,_D3_FHD_SWAY_PX);
 K.key=k;K.valid=S.valid;K.still=S.still;K.why=S.why;
-if(S.bake){try{_d3fhdBake(cam,ppu);K.bakes++;}catch(_b){K.valid=false;K.why='bake failed';}}
+if(S.bake){try{_d3fhdBake(cam,ppu);K.bakes++;K.cam=cam;}catch(_b){K.valid=false;K.why='bake failed';}}
 }
 function _d3fhdBake(cam,ppu){
 var D=_D3,K=D._fhd,T=window.THREE,ren=D.ren,sz=ren.getDrawingBufferSize(_fhdV2),w=sz.x,h=sz.y,i;
