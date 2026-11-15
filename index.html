@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='5f2345b';
+var RCG_BUILD='74582d8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -46620,6 +46620,45 @@ sh.uniforms.uLeafNear=_d3leafU().uLeafNear;
 sh.fragmentShader='uniform float uLeafNear;\n'+sh.fragmentShader.replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\n  if(length(vViewPosition)<uLeafNear) discard;');
 return true;
 }
+var _D3_FLK={rows:[0.25,0.5,0.75],step:24,jump:38,same:14,max:12};
+function _d3flkOn(){try{if(typeof location!=='undefined'&&/[?&]flicker=1/.test(location.search))return true;}catch(_l){}return false;}
+function _d3flkDiff(a,b){if(!a||!b||a.length!==b.length)return 0;var s=0,i;for(i=0;i<a.length;i++)s+=Math.abs(a[i]-b[i]);return s/a.length;}
+function _d3flkBlink(a,b,c,K){K=K||_D3_FLK;var ab=_d3flkDiff(a,b),bc=_d3flkDiff(b,c),ac=_d3flkDiff(a,c);return {is:ab>K.jump&&bc>K.jump&&(ac<K.same||ac<0.4*Math.min(ab,bc)),ab:+ab.toFixed(1),bc:+bc.toFixed(1),ac:+ac.toFixed(1)};}
+function _d3flkState(cam){
+var D=_D3,r=D.ren,f=D.scene&&D.scene.fog,K=D._fhd,inf=r&&r.info&&r.info.render,p=cam&&cam.position,s={t:+(performance.now()/1000).toFixed(3)};
+try{s.cam=cam?{type:cam.type,me:!!(D.me&&cam===D.me.cam),drive:!!(D.drive&&cam===D.drive.cam),map:cam===D.cam,x:+p.x.toFixed(3),y:+p.y.toFixed(3),z:+p.z.toFixed(3),near:cam.near,far:cam.far,fov:cam.fov,zoom:cam.zoom}:null;}catch(_c){}
+try{s.fog=f?{near:+(+f.near).toFixed(2),far:+(+f.far).toFixed(2),col:f.color.getHexString(),dens:f.density}:null;}catch(_f){}
+try{s.draws=inf?inf.calls:null;s.tris=inf?inf.triangles:null;s.exp=+r.toneMappingExposure.toFixed(3);}catch(_d){}
+try{s.sun=D.sun?{i:+D.sun.intensity.toFixed(3),cast:!!D.sun.castShadow}:null;s.shadow=!!(r.shadowMap&&r.shadowMap.enabled);}catch(_s){}
+s.forest=K?{why:K.why,valid:!!K.valid,quad:!!(K.quad&&K.quad.visible)}:null;
+s.cloudIn=D._cloudIn||0;s.building=!!D._building;s.walking=!!(D.me&&D.me.on);s.driving=!!(D.drive&&D.drive.on);
+s.camGuard=D._camGuardT!=null?+(+D._camGuardT).toFixed(3):null;s.leaves=D._leafDrawn|0;
+try{s.season=(typeof _d3season==='function')?_d3season():null;s.tier=(typeof _d3tier==='function')?_d3tier():null;}catch(_t){}
+return s;
+}
+function _d3flkFrame(cam){
+var D=_D3,F=D._flk;if(!F||!D.ren)return;
+var gl=D.ren.getContext(),W=gl.drawingBufferWidth,H=gl.drawingBufferHeight,K=_D3_FLK,n=Math.max(1,Math.floor(W/K.step)),row=new Uint8Array(W*4),out=new Uint8Array(n*3*K.rows.length),o=0,i,j;
+for(j=0;j<K.rows.length;j++){gl.readPixels(0,Math.floor(H*K.rows[j]),W,1,gl.RGBA,gl.UNSIGNED_BYTE,row);
+for(i=0;i<n;i++){var b=i*K.step*4;out[o++]=row[b];out[o++]=row[b+1];out[o++]=row[b+2];}}
+var st=_d3flkState(cam);F.h.push({px:out,st:st});if(F.h.length>3)F.h.shift();F.n++;
+if(F.h.length===3){var B=_d3flkBlink(F.h[0].px,F.h[1].px,F.h[2].px);
+if(B.is&&F.ev.length<K.max){F.ev.push({diff:B,before:F.h[0].st,flash:F.h[1].st,after:F.h[2].st});_d3flkUI();}}
+}
+function _d3flkUI(){
+var D=_D3,F=D._flk;if(!F||typeof document==='undefined')return;var b=document.getElementById('rcgFlkBtn');
+if(!b){b=document.createElement('button');b.id='rcgFlkBtn';b.type='button';
+b.style.cssText='position:fixed;left:8px;bottom:96px;z-index:99999;padding:8px 12px;border-radius:8px;border:0;background:#b3261e;color:#fff;font:600 13px system-ui;';
+b.onclick=_d3flkCopy;document.body.appendChild(b);}
+b.textContent='Copy flicker report ('+F.ev.length+' flashes in '+F.n+' frames)';
+}
+function _d3flkReport(){var D=_D3,F=D._flk||{ev:[],n:0};return JSON.stringify({v:(typeof document!=='undefined'&&document.title)||'',ua:(typeof navigator!=='undefined'?navigator.userAgent:''),frames:F.n,flashes:F.ev},null,0);}
+function _d3flkCopy(){
+var s=_d3flkReport();
+try{navigator.clipboard.writeText(s).then(function(){try{showToast('Flicker report copied - paste it to Claude');}catch(_t){}},function(){_d3flkShow(s);});}catch(_c){_d3flkShow(s);}
+}
+function _d3flkShow(s){var t=document.createElement('textarea');t.value=s;t.style.cssText='position:fixed;left:8px;bottom:140px;width:60vw;height:30vh;z-index:99999;';document.body.appendChild(t);t.select();}
+function _d3flkArm(){var D=_D3;if(!D||D._flk||!_d3flkOn())return;D._flk={h:[],ev:[],n:0};try{_d3flkUI();}catch(_u){}}
 var _D3_SH_NBTEX=1.5;
 function _d3shadowNB(rx,ry,px){
 var p=(px>0)?px:2048,r=Math.max(rx>0?rx:0,ry>0?ry:0);
@@ -91961,7 +92000,7 @@ if(typeof _d3lookStep==='function'){try{_d3lookStep();}catch(_ls9){}}
 if(typeof _d3fhdFrame==='function'){try{_d3fhdFrame((typeof _d3camNow==='function')?_d3camNow():_D3.cam);}catch(_fh9){}}
 var _rt0=performance.now();var _pfr9=!!_D3._pendingFirstRender;if(_pfr9&&window._rcgCrumb)_rcgCrumb('render-BEFORE');
 var _jn9=!_pfr9&&typeof _d3jnCovers==='function'&&_d3jnCovers();_D3._jnHeld=_jn9;
-_D3._renderLoop=1;try{if(!_jn9)_D3.ren.render(_D3.scene,(typeof _d3camNow==='function')?_d3camNow():_D3.cam);}finally{_D3._renderLoop=0;}if(_D3._matHold&&_D3._matHold.length)_d3matRelease();if(_pfr9){_D3._pendingFirstRender=false;if(window._rcgCrumb)_rcgCrumb('render-AFTER '+Math.round(performance.now()-_rt0)+'ms');}_D3._rms=(_D3._rms||0)*0.9+(performance.now()-_rt0)*0.1;_D3._lms=(_D3._lms||0)*0.9+(performance.now()-_L0)*0.1;
+_D3._renderLoop=1;try{if(!_jn9)_D3.ren.render(_D3.scene,(typeof _d3camNow==='function')?_d3camNow():_D3.cam);}finally{_D3._renderLoop=0;}if(_D3._flk===undefined){_D3._flk=null;try{if(typeof _d3flkArm==='function')_d3flkArm();}catch(_fa){}}if(_D3._flk)try{_d3flkFrame((typeof _d3camNow==='function')?_d3camNow():_D3.cam);}catch(_fk){}if(_D3._matHold&&_D3._matHold.length)_d3matRelease();if(_pfr9){_D3._pendingFirstRender=false;if(window._rcgCrumb)_rcgCrumb('render-AFTER '+Math.round(performance.now()-_rt0)+'ms');}_D3._rms=(_D3._rms||0)*0.9+(performance.now()-_rt0)*0.1;_D3._lms=(_D3._lms||0)*0.9+(performance.now()-_L0)*0.1;
 }
 function driftShadowApply(on){_D3._shadows=on;if(_D3.parkTrunks)_D3.parkTrunks.castShadow=on;if(_D3.parkBlobs)_D3.parkBlobs.castShadow=on;try{_d3forestShadow(on);}catch(_fs){}
 try{var _r=_D3.ren;if(!_r)return;
