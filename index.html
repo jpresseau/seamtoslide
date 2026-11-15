@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='709aa4e';
+var RCG_BUILD='7ae368d';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -46632,6 +46632,7 @@ try{s.fog=f?{near:+(+f.near).toFixed(2),far:+(+f.far).toFixed(2),col:f.color.get
 try{s.draws=inf?inf.calls:null;s.tris=inf?inf.triangles:null;s.exp=+r.toneMappingExposure.toFixed(3);}catch(_d){}
 try{s.sun=D.sun?{i:+D.sun.intensity.toFixed(3),cast:!!D.sun.castShadow}:null;s.shadow=!!(r.shadowMap&&r.shadowMap.enabled);}catch(_s){}
 s.forest=K?{why:K.why,valid:!!K.valid,quad:!!(K.quad&&K.quad.visible)}:null;
+try{var SK=D._shk,SS=D._shKeep||{};s.shk=SK?{v:!!SK.valid,st:SK.still|0,age:SK.age|0,b:SS.builds|0,p:SS.plain|0,r:SS.redo|0,w:SS.whole|0}:null;s.cfg=D._flk?D._flk.cfg:0;}catch(_sk){}
 s.cloudIn=D._cloudIn||0;s.building=!!D._building;s.walking=!!(D.me&&D.me.on);s.driving=!!(D.drive&&D.drive.on);
 s.camGuard=D._camGuardT!=null?+(+D._camGuardT).toFixed(3):null;s.leaves=D._leafDrawn|0;
 try{s.season=(typeof _d3season==='function')?_d3season():null;s.tier=(typeof _d3tier==='function')?_d3tier():null;}catch(_t){}
@@ -46648,22 +46649,28 @@ for(j=0;j<K.rows.length;j++){gl.readPixels(0,Math.floor(H*K.rows[j]),W,1,gl.RGBA
 for(i=0;i<n;i++){var b=i*K.step*4;out[o++]=row[b];out[o++]=row[b+1];out[o++]=row[b+2];}}
 var st=_d3flkState(cam),lu=0;try{var FF=D._frameFix;st.fix=FF?FF.last:'';st.fixN=FF?(FF.rt+FF.vp+FF.sc+FF.proj):0;st.jn=!!D._jnHeld;st.pr=+D.ren.getPixelRatio().toFixed(3);st.buf=[W,H];st.env=D._skyEnv?D._skyEnv.made:null;}catch(_ff){}for(i=0;i<out.length;i++)lu+=out[i];st.lum=+(lu/Math.max(1,out.length)).toFixed(1);F.h.push({px:out,st:st});if(F.h.length>3)F.h.shift();F.n++;
 if(F.h.length===3){var B=_d3flkBlink(F.h[0].px,F.h[1].px,F.h[2].px);
-if(B.is&&F.ev.length<K.max){F.ev.push({diff:B,before:F.h[0].st,flash:F.h[1].st,after:F.h[2].st});_d3flkUI();}}
+if(B.is){var cn=F.by[F.h[1].st.cfg|0];cn.flashes++;if(F.ev.length<K.max&&(cn.kept=(cn.kept|0)+1)<=Math.ceil(K.max/_D3_FLK_CFG.length))F.ev.push({diff:B,before:F.h[0].st,flash:F.h[1].st,after:F.h[2].st});_d3flkUI();}}
+F.by[F.cfg].frames++;_d3flkTurn(F);
 }
+var _D3_FLK_CFG=['as it is','sun map drawn whole','no sun shadow'];
+var _D3_FLK_TURN=400;
+function _d3flkSet(c){var D=_D3;D._noShadowKeep=(c===1)?1:0;try{if(D.sun){if(c===2){if(D._flkCast==null)D._flkCast=D.sun.castShadow;D.sun.castShadow=false;}else if(D._flkCast!=null){D.sun.castShadow=D._flkCast;D._flkCast=null;}}}catch(_c){}}
+function _d3flkTurn(F){if(!F.turns)return;var c=Math.floor(F.n/_D3_FLK_TURN)%_D3_FLK_CFG.length;if(c!==F.cfg){F.cfg=c;F.h=[];_d3flkSet(c);try{_d3flkUI();}catch(_u){}}}
 function _d3flkUI(){
 var D=_D3,F=D._flk;if(!F||typeof document==='undefined')return;var b=document.getElementById('rcgFlkBtn');
 if(!b){b=document.createElement('button');b.id='rcgFlkBtn';b.type='button';
 b.style.cssText='position:fixed;left:8px;bottom:96px;z-index:99999;padding:8px 12px;border-radius:8px;border:0;background:#b3261e;color:#fff;font:600 13px system-ui;';
 b.onclick=_d3flkCopy;document.body.appendChild(b);}
-b.textContent='Copy flicker report ('+F.ev.length+' flashes in '+F.n+' frames)';
+b.textContent='Copy flicker report ('+F.by.reduce(function(a,x){return a+x.flashes;},0)+' flashes in '+F.n+' frames; now: '+_D3_FLK_CFG[F.cfg]+')';
 }
-function _d3flkReport(){var D=_D3,F=D._flk||{ev:[],n:0};return JSON.stringify({v:(typeof document!=='undefined'&&document.title)||'',ua:(typeof navigator!=='undefined'?navigator.userAgent:''),frames:F.n,flashes:F.ev},null,0);}
+function _d3flkReport(){var D=_D3,F=D._flk||{ev:[],n:0};return JSON.stringify({v:(typeof document!=='undefined'&&document.title)||'',ua:(typeof navigator!=='undefined'?navigator.userAgent:''),frames:F.n,by:(F.by||[]).map(function(x,i){return {cfg:_D3_FLK_CFG[i],frames:x.frames,flashes:x.flashes};}),flashes:F.ev},null,0);}
 function _d3flkCopy(){
 var s=_d3flkReport();
 try{navigator.clipboard.writeText(s).then(function(){try{showToast('Flicker report copied - paste it to Claude');}catch(_t){}},function(){_d3flkShow(s);});}catch(_c){_d3flkShow(s);}
 }
 function _d3flkShow(s){var t=document.createElement('textarea');t.value=s;t.style.cssText='position:fixed;left:8px;bottom:140px;width:60vw;height:30vh;z-index:99999;';document.body.appendChild(t);t.select();}
-function _d3flkArm(){var D=_D3;if(!D||D._flk||!_d3flkOn())return;D._flk={h:[],ev:[],n:0};try{_d3flkUI();}catch(_u){}}
+function _d3flkArm(){var D=_D3;if(!D||D._flk||!_d3flkOn())return;D._flk=_d3flkNew(true);try{_d3flkUI();}catch(_u){}}
+function _d3flkNew(turns){return {h:[],ev:[],n:0,cfg:0,turns:!!turns,by:_D3_FLK_CFG.map(function(){return {frames:0,flashes:0};})};}
 function _d3frameReset(ren,cam){
 var D=_D3;if(!ren||(D&&D._noFrameReset))return 0;var F=D._frameFix||(D._frameFix={rt:0,vp:0,sc:0,proj:0,last:''}),w='',T=window.THREE;
 try{if(ren.getRenderTarget()){ren.setRenderTarget(null);F.rt++;w+='rt ';}}catch(_r){}
