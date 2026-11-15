@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='cbb9e09';
+var RCG_BUILD='709aa4e';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -46646,7 +46646,7 @@ var D=_D3,F=D._flk;if(!F||!D.ren)return;
 var gl=D.ren.getContext(),W=gl.drawingBufferWidth,H=gl.drawingBufferHeight,K=_D3_FLK,n=Math.max(1,Math.floor(W/K.step)),row=new Uint8Array(W*4),out=new Uint8Array(n*3*K.rows.length),o=0,i,j;
 for(j=0;j<K.rows.length;j++){gl.readPixels(0,Math.floor(H*K.rows[j]),W,1,gl.RGBA,gl.UNSIGNED_BYTE,row);
 for(i=0;i<n;i++){var b=i*K.step*4;out[o++]=row[b];out[o++]=row[b+1];out[o++]=row[b+2];}}
-var st=_d3flkState(cam),lu=0;for(i=0;i<out.length;i++)lu+=out[i];st.lum=+(lu/Math.max(1,out.length)).toFixed(1);F.h.push({px:out,st:st});if(F.h.length>3)F.h.shift();F.n++;
+var st=_d3flkState(cam),lu=0;try{var FF=D._frameFix;st.fix=FF?FF.last:'';st.fixN=FF?(FF.rt+FF.vp+FF.sc+FF.proj):0;st.jn=!!D._jnHeld;st.pr=+D.ren.getPixelRatio().toFixed(3);st.buf=[W,H];st.env=D._skyEnv?D._skyEnv.made:null;}catch(_ff){}for(i=0;i<out.length;i++)lu+=out[i];st.lum=+(lu/Math.max(1,out.length)).toFixed(1);F.h.push({px:out,st:st});if(F.h.length>3)F.h.shift();F.n++;
 if(F.h.length===3){var B=_d3flkBlink(F.h[0].px,F.h[1].px,F.h[2].px);
 if(B.is&&F.ev.length<K.max){F.ev.push({diff:B,before:F.h[0].st,flash:F.h[1].st,after:F.h[2].st});_d3flkUI();}}
 }
@@ -46664,6 +46664,16 @@ try{navigator.clipboard.writeText(s).then(function(){try{showToast('Flicker repo
 }
 function _d3flkShow(s){var t=document.createElement('textarea');t.value=s;t.style.cssText='position:fixed;left:8px;bottom:140px;width:60vw;height:30vh;z-index:99999;';document.body.appendChild(t);t.select();}
 function _d3flkArm(){var D=_D3;if(!D||D._flk||!_d3flkOn())return;D._flk={h:[],ev:[],n:0};try{_d3flkUI();}catch(_u){}}
+function _d3frameReset(ren,cam){
+var D=_D3;if(!ren||(D&&D._noFrameReset))return 0;var F=D._frameFix||(D._frameFix={rt:0,vp:0,sc:0,proj:0,last:''}),w='',T=window.THREE;
+try{if(ren.getRenderTarget()){ren.setRenderTarget(null);F.rt++;w+='rt ';}}catch(_r){}
+try{var cv=ren.domElement,pr=ren.getPixelRatio(),W=Math.floor(cv.width/pr+1e-6),H=Math.floor(cv.height/pr+1e-6),v=F.v4||(F.v4=new T.Vector4());ren.getViewport(v);
+if(W>0&&H>0&&(Math.abs(v.z-W)>1||Math.abs(v.w-H)>1||v.x!==0||v.y!==0)){ren.setViewport(0,0,W,H);F.vp++;w+='viewport('+v.x+','+v.y+','+v.z+','+v.w+'/'+W+'x'+H+') ';}
+if(ren.getScissorTest()){ren.setScissorTest(false);F.sc++;w+='scissor ';}
+if(cam&&cam.isPerspectiveCamera){var e=cam.projectionMatrix.elements,ok=true;for(var i=0;i<16;i++)if(!isFinite(e[i])){ok=false;break;}
+if(!ok||!(cam.aspect>0)||!isFinite(cam.aspect)){cam.aspect=(H>0)?W/H:1.6;cam.updateProjectionMatrix();F.proj++;w+='projection ';}}}catch(_v){}
+F.last=w;return w?1:0;
+}
 var _D3_SH_NBTEX=1.5;
 function _d3shadowNB(rx,ry,px){
 var p=(px>0)?px:2048,r=Math.max(rx>0?rx:0,ry>0?ry:0);
@@ -92015,6 +92025,7 @@ if(typeof _d3lookStep==='function'){try{_d3lookStep();}catch(_ls9){}}
 if(typeof _d3fhdFrame==='function'){try{_d3fhdFrame((typeof _d3camNow==='function')?_d3camNow():_D3.cam);}catch(_fh9){}}
 var _rt0=performance.now();var _pfr9=!!_D3._pendingFirstRender;if(_pfr9&&window._rcgCrumb)_rcgCrumb('render-BEFORE');
 var _jn9=!_pfr9&&typeof _d3jnCovers==='function'&&_d3jnCovers();_D3._jnHeld=_jn9;
+if(!_jn9&&typeof _d3frameReset==='function'){try{_d3frameReset(_D3.ren,(typeof _d3camNow==='function')?_d3camNow():_D3.cam);}catch(_fr9){}}
 _D3._renderLoop=1;try{if(!_jn9)_D3.ren.render(_D3.scene,(typeof _d3camNow==='function')?_d3camNow():_D3.cam);}finally{_D3._renderLoop=0;}if(_D3._flk===undefined){_D3._flk=null;try{if(typeof _d3flkArm==='function')_d3flkArm();}catch(_fa){}}if(_D3._flk)try{_d3flkFrame((typeof _d3camNow==='function')?_d3camNow():_D3.cam);}catch(_fk){}if(_D3._matHold&&_D3._matHold.length)_d3matRelease();if(_pfr9){_D3._pendingFirstRender=false;if(window._rcgCrumb)_rcgCrumb('render-AFTER '+Math.round(performance.now()-_rt0)+'ms');}_D3._rms=(_D3._rms||0)*0.9+(performance.now()-_rt0)*0.1;_D3._lms=(_D3._lms||0)*0.9+(performance.now()-_L0)*0.1;
 }
 function driftShadowApply(on){_D3._shadows=on;if(_D3.parkTrunks)_D3.parkTrunks.castShadow=on;if(_D3.parkBlobs)_D3.parkBlobs.castShadow=on;try{_d3forestShadow(on);}catch(_fs){}
