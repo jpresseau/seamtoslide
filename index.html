@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='2fc3222';
+var RCG_BUILD='88d2a03';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -46317,6 +46317,7 @@ if(iOS||/Android|Mobile/.test(ua))t=(lg<=850||sh<=480)?0:1;
 else if(touch&&lg<=1400&&sh<=900)t=1;
 else if((window.innerWidth||1200)<=820)t=1;
 }catch(_te2){}
+try{if(typeof _d3gpuTier==='function')t=_d3gpuTier(t);}catch(_gw){}
 return (_D3._devTier=t);
 }
 function _d3tier(){
@@ -46680,6 +46681,36 @@ if(ren.getScissorTest()){ren.setScissorTest(false);F.sc++;w+='scissor ';}
 if(cam&&cam.isPerspectiveCamera){var e=cam.projectionMatrix.elements,ok=true;for(var i=0;i<16;i++)if(!isFinite(e[i])){ok=false;break;}
 if(!ok||!(cam.aspect>0)||!isFinite(cam.aspect)){cam.aspect=(H>0)?W/H:1.6;cam.updateProjectionMatrix();F.proj++;w+='projection ';}}}catch(_v){}
 F.last=w;return w?1:0;
+}
+var _D3_GPU_STRONG=/NVIDIA|GeForce|Quadro|RTX|Radeon\s*(RX|Pro|R9|HD\s*7)|Arc\(TM\)\s*A\d|Arc A\d|Apple M\d/i;
+var _D3_GPU_WEAK=/Intel|Iris|UHD|HD Graphics|Radeon\(TM\)\s*Graphics|Radeon Graphics|Radeon Vega|Vega \d+ Graphics|Mali|Adreno|PowerVR/i;
+function _d3gpuWeakOf(s){s=String(s||'');if(!s||/SwiftShader|llvmpipe/i.test(s))return false;if(_D3_GPU_STRONG.test(s))return false;return _D3_GPU_WEAK.test(s);}
+function _d3gpuName(){
+var D=_D3;if(D._gpuName!=null)return D._gpuName;var s='';
+try{var gl=(D.ren&&D.ren.getContext&&D.ren.getContext())||document.createElement('canvas').getContext('webgl');
+if(gl){var x=gl.getExtension('WEBGL_debug_renderer_info');s=String(gl.getParameter(x?x.UNMASKED_RENDERER_WEBGL:gl.RENDERER)||'');}}catch(_g){}
+return (D._gpuName=s);
+}
+function _d3gpuHarness(){try{if(navigator.webdriver)return true;}catch(_w){}return /SwiftShader|llvmpipe/i.test(_d3gpuName());}
+function _d3gpuTier(t){
+if(t!==2||(_D3&&_D3._noGpuWeak))return t;
+try{if(__LS.getItem('rcg_d3slow')==='1')return 1;}catch(_l){}
+return _d3gpuWeakOf(_d3gpuName())?1:t;
+}
+var _D3_SLOW={fps:22,secs:8};
+function _d3slowStep(){
+var D=_D3;if(!D||D._noGpuWeak||D._slowDone)return;var now=performance.now(),S=D._slow||(D._slow={t0:now,n:0,last:now});
+if(now-S.last>1000||D._building){S.t0=now;S.n=0;}
+S.last=now;S.n++;if(now-S.t0<_D3_SLOW.secs*1000)return;
+var fps=S.n*1000/(now-S.t0);S.t0=now;S.n=0;if(fps>=_D3_SLOW.fps)return;
+D._slowDone=1;if(_d3gpuHarness())return;
+var ov=null;try{ov=__LS.getItem('rcg_d3tier');}catch(_o){}
+if(typeof _d3tier!=='function'||_d3tier()!==2)return;
+if(ov!=null){try{showToast('Full graphics runs at '+Math.round(fps)+' frames a second on this computer. Graphics: Fast is much smoother.');}catch(_t){}return;}
+try{__LS.setItem('rcg_d3slow','1');}catch(_s){}
+D._devTier=null;D._tier=null;
+try{_d3qualSet(null);}catch(_q){}
+try{setTimeout(function(){showToast('Graphics stepped down to Fast: Full ran at '+Math.round(fps)+' frames a second on this computer. Pick Full in Graphics to go back.');},2600);}catch(_t2){}
 }
 var _D3_SH_NBTEX=1.5;
 function _d3shadowNB(rx,ry,px){
@@ -92000,6 +92031,7 @@ try{if(typeof _d3grassStep==='function')_d3grassStep();}catch(_gs8){}
 if(!_frz){try{if(typeof _d3siteMvStep==='function')_d3siteMvStep(now*0.001,dt);}catch(_sm8){}}try{if(typeof _d3bldGlbMarkStep==='function')_d3bldGlbMarkStep(now*0.001);}catch(_gm8){}
 if(_D3.ride&&_D3.ride.on){try{_d3rideStep();}catch(_rs9){}}
 try{if(typeof _d3rideWheels==='function')_d3rideWheels();}catch(_rw9){}
+try{if(typeof _d3slowStep==='function')_d3slowStep();}catch(_sl9){}
 if(_D3._exp){try{_d3expStep(0.016);}catch(_xs9){}}
 if(!_frz&&((_D3.riverShoals&&_D3.riverShoals.length)||(_D3.riverLife&&_D3.riverLife.length))){
 try{_d3riverLifeStep(now*0.001);}catch(_rls9){}}
