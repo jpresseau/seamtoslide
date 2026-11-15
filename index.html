@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='9ae1744';
+var RCG_BUILD='2971c45';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -5028,7 +5028,7 @@ ev.target.value='';
 };
 rd.readAsText(fl);
 }
-function driftTrackKeyList(id){var P=['rcgDWP_','rcgDWPs_','rcgSX_','rcgSY_','rcgStartF_','rcgWorldO_','rcgKerb_','rcgScene_','rcgBiome_','rcgSceneDens_','rcgRiver_','rcgRivers_','rcgRiverW_','rcgRivMix_','rcgStreams_','rcgStreamW_','rcgStreamWs_','rcgWells_','rcgNut_','rcgBays_','rcgWet_','rcgBar_','rcgBvr_','rcgKey_','rcgSea_','rcgKarst_','rcgAge_','rcgLake_','rcgLakes_','rcgLakeDock_','rcgLWP_','rcgLamps_','rcgRocks_','rcgVillage_','rcgScenery_','rcgMtn_','rcgSigns_','rcgBldRoads_','rcgBldStyle_','rcgGrand_','rcgGrandX_','rcgSpans_','rcgRail_','rcgRailLoop_','rcgRail2Track_','rcgRailType2_','rcgRailCarMult_','rcgTrainType_','rcgTrainType2_','rcgTrainSpeed_','rcgScales_','rcgScaleBase_','rcgFitView_','rcgD3Cars_','rcgDots_','rcgRoadWS_','rcgAircraft_','rcgRunway_','rcgHarbour_','rcgSpeedMul_','rcgDriftSpd_', 'rcgTerr_','rcgLand_','rcgLakeSalt_','rcgMarkers_','rcgRailElev_','rcgRailScale_','rcgRailsX_','rcgVillScale_','rcgLastView_', 'rcgRpgT_','rcgRpgLv_', 'rcgHome_', 'rcgMineOps_', 'rcgMineUG_', 'rcgDrill_', 'rcgMineSite_', 'rcgCountry_', 'rcgBldArchive_'],o=[],i;for(i=0;i<P.length;i++){o.push(P[i]+id);o.push(P[i]+id+'~3d');}o.push('rcgSeed3d_'+id);return o;}
+function driftTrackKeyList(id){var P=['rcgDWP_','rcgDWPs_','rcgSX_','rcgSY_','rcgStartF_','rcgWorldO_','rcgKerb_','rcgScene_','rcgBiome_','rcgSceneDens_','rcgRiver_','rcgRivers_','rcgRiverW_','rcgRivMix_','rcgStreams_','rcgStreamW_','rcgStreamWs_','rcgWells_','rcgNut_','rcgBays_','rcgWet_','rcgBar_','rcgBvr_','rcgKey_','rcgSea_','rcgKarst_','rcgAge_','rcgFlood_','rcgLake_','rcgLakes_','rcgLakeDock_','rcgLWP_','rcgLamps_','rcgRocks_','rcgVillage_','rcgScenery_','rcgMtn_','rcgSigns_','rcgBldRoads_','rcgBldStyle_','rcgGrand_','rcgGrandX_','rcgSpans_','rcgRail_','rcgRailLoop_','rcgRail2Track_','rcgRailType2_','rcgRailCarMult_','rcgTrainType_','rcgTrainType2_','rcgTrainSpeed_','rcgScales_','rcgScaleBase_','rcgFitView_','rcgD3Cars_','rcgDots_','rcgRoadWS_','rcgAircraft_','rcgRunway_','rcgHarbour_','rcgSpeedMul_','rcgDriftSpd_', 'rcgTerr_','rcgLand_','rcgLakeSalt_','rcgMarkers_','rcgRailElev_','rcgRailScale_','rcgRailsX_','rcgVillScale_','rcgLastView_', 'rcgRpgT_','rcgRpgLv_', 'rcgHome_', 'rcgMineOps_', 'rcgMineUG_', 'rcgDrill_', 'rcgMineSite_', 'rcgCountry_', 'rcgBldArchive_'],o=[],i;for(i=0;i<P.length;i++){o.push(P[i]+id);o.push(P[i]+id+'~3d');}o.push('rcgSeed3d_'+id);return o;}
 function driftWipeTrackKeys(id){var K=driftTrackKeyList(id),i;for(i=0;i<K.length;i++){try{__LS.removeItem(K[i]);}catch(e){}}try{var a=driftTrackAliases();if(a[id]){delete a[id];_driftPutJSON('rcgTrackAlias',a);}}catch(e){}}
 function driftArchiveList(){try{var s=__LS.getItem('rcgArchive');if(s){var o=JSON.parse(s);if(o&&typeof o==='object')return o;}}catch(e){}return {};}
 function driftArchiveSave(o){return _driftPutJSON('rcgArchive',o);}
@@ -60845,7 +60845,7 @@ nature:{t:'Land & Water',rows:[
 {sec:'Water',grid:2,i:'\ud83c\udfd6\ufe0f',l:'Ocean',d:'Shape the coast \u2014 sand, surf and swell',flag:'lmode',menu:function(b){driftOceanTool(b);}},
 {i:'\ud83c\udf0a',l:'River',d:'Draw and shape rivers',flag:'rmode',fn:'driftRiverToggle'},
 {i:'\u3030\ufe0f',l:'Stream',d:'A clear creek that follows the ground \u2014 trout in its pools',flag:'stmode',fn:'driftStreamToggle'},
-{i:'\ud83d\udca7',l:'Lake',d:'Add \u00b7 move \u00b7 resize \u00b7 delete lakes',flag:'lmode',menu:function(b){driftLakeTool(b);}},{i:'\ud83d\uddfa\ufe0f',l:'Watershed',d:'Where every drop drains: basins, divides and outlets',flag:'wshed',fn:'driftWatershedToggle'},{i:'\ud83e\udea8',l:'Aquifer cutaway',d:'Tap the land: a slice through the ground, its water table and aquifer',menu:function(){driftCutawayArm();}},{i:'\ud83e\udea3',l:'Wells & pumping',d:'Each farm\u2019s well: shallow or deep, how hard it pumps, dry or salty',menu:function(){driftWellsPanel();}},{i:'\ud83e\udda0',l:'Nutrients',d:'What feeds each lake: farms, homes and roads - and the blooms too much brings',menu:function(){driftNutPanel();}},{i:'\ud83e\uddaa',l:'Bays & coves',d:'Sounds, bays and coves: clarity, eelgrass, shellfish, the tide - crab, clam and scallop',menu:function(){driftBaysPanel();}},{i:'\ud83c\udf3e',l:'Wetlands',d:'Swamps, marshes and bogs: the land\u2019s sponge and filter - boardwalks and cranberries',menu:function(){driftWetlandsPanel();}},{i:'\ud83d\udc1f',l:'Dams & runs',d:'Dams, mill dams and culverts; fish ladders and eel passes; the herring and eel runs',menu:function(){driftBarriersPanel();}},{i:'\ud83e\uddab',l:'Keystones',d:'Beavers, herring, eels, mussels, otters, oysters - what each gives, and what goes without it',menu:function(){driftKeystonesPanel();}},{i:'\ud83c\udf0a',l:'The sea',d:'Sea level, storm surge, seawalls - ghost forests and marshes moving inland',menu:function(){driftSeaPanel();}},{i:'\ud83d\udd73\ufe0f',l:'Karst',d:'Put the map on limestone: streams sink and rise again, sinkholes open, caves',menu:function(){driftKarstPanel();}},{i:'\u23f3',l:'Aging',d:'Let the water age: lakes fill to ponds, ponds to marsh, marsh to meadow',menu:function(){driftAgingPanel();}},
+{i:'\ud83d\udca7',l:'Lake',d:'Add \u00b7 move \u00b7 resize \u00b7 delete lakes',flag:'lmode',menu:function(b){driftLakeTool(b);}},{i:'\ud83d\uddfa\ufe0f',l:'Watershed',d:'Where every drop drains: basins, divides and outlets',flag:'wshed',fn:'driftWatershedToggle'},{i:'\ud83e\udea8',l:'Aquifer cutaway',d:'Tap the land: a slice through the ground, its water table and aquifer',menu:function(){driftCutawayArm();}},{i:'\ud83e\udea3',l:'Wells & pumping',d:'Each farm\u2019s well: shallow or deep, how hard it pumps, dry or salty',menu:function(){driftWellsPanel();}},{i:'\ud83e\udda0',l:'Nutrients',d:'What feeds each lake: farms, homes and roads - and the blooms too much brings',menu:function(){driftNutPanel();}},{i:'\ud83e\uddaa',l:'Bays & coves',d:'Sounds, bays and coves: clarity, eelgrass, shellfish, the tide - crab, clam and scallop',menu:function(){driftBaysPanel();}},{i:'\ud83c\udf3e',l:'Wetlands',d:'Swamps, marshes and bogs: the land\u2019s sponge and filter - boardwalks and cranberries',menu:function(){driftWetlandsPanel();}},{i:'\ud83d\udc1f',l:'Dams & runs',d:'Dams, mill dams and culverts; fish ladders and eel passes; the herring and eel runs',menu:function(){driftBarriersPanel();}},{i:'\ud83e\uddab',l:'Keystones',d:'Beavers, herring, eels, mussels, otters, oysters - what each gives, and what goes without it',menu:function(){driftKeystonesPanel();}},{i:'\ud83c\udf0a',l:'The sea',d:'Sea level, storm surge, seawalls - ghost forests and marshes moving inland',menu:function(){driftSeaPanel();}},{i:'\ud83d\udd73\ufe0f',l:'Karst',d:'Put the map on limestone: streams sink and rise again, sinkholes open, caves',menu:function(){driftKarstPanel();}},{i:'\u23f3',l:'Aging',d:'Let the water age: lakes fill to ponds, ponds to marsh, marsh to meadow',menu:function(){driftAgingPanel();}},{i:'\u2744\ufe0f',l:'Floods & snow',d:'The snowpack and the spring melt, the floodplain, river ice, vernal pools',menu:function(){driftFloodsPanel();}},
 {sec:'Plants',grid:2,i:'\ud83c\udf3f',l:'Scenery theme & density',d:'Biome look, tree density, clear rocks',menu:function(b){driftBiomeMenu(b);}},
 {i:'\ud83c\udf33',l:'Place trees & bushes',d:'Tap map to add \u00b7 drag to move',flag:'scmode',fn:'driftSceneryToggle'},
 {sec:'Animals',i:'\ud83e\udd8c',l:'Wildlife\u2026',d:(typeof driftWildLabel==='function'?driftWildLabel():'Which wild animals live on the map, how many and how big'),menu:function(){driftWildPanel();}},
@@ -66545,6 +66545,9 @@ surge:['Storm surge','A hurricane\u2019s winds pile the sea up against the shore
 inlet:['Inlet','A gap through a barrier beach that joins a pond or a bay to the sea, often cut by a storm. The tide runs in and out through it, and the pond behind turns salt.'],
 karst:['Karst','Land on limestone, which rainwater slowly dissolves into cracks, caves and hollows. Streams vanish down SWALLOW HOLES and run underground, coming out again at big KARST SPRINGS. SINKHOLES open where a cave roof gives way - slowly as a sagging hollow, or all at once. Water moves through the rock in hours, not years, so whatever is spilled on the land reaches the springs and wells almost at once.'],
 aging:['Aging','Every lake is slowly filling. Streams bring silt, and the plants and algae that die in it pile up on the bed. A lake fills to a pond, a pond to a marsh of cattails, and a marsh to a wet meadow or a swamp. Too many nutrients speed it up, because a bloom\u2019s dead algae pile up fast.'],
+flood:['Flood','When the spring melt or a long downpour brings more water than a river or a stream can carry, it spills over its banks onto its FLOODPLAIN, the flat low ground beside it. A FLASH flood comes fast where the land is steep or paved, because the rain runs straight off. Wetlands, beaver ponds and flood-control dams hold water back and make floods smaller. Winter snow is the land\u2019s store: a deep snowpack makes a big spring melt, a thin one a dry summer.'],
+icejam:['Ice jam','Rivers freeze over in winter. At the spring break-up the ice cracks into floes that ride down the river and can pile up against a bridge, damming the water behind them until it floods the banks.'],
+vernal:['Vernal pool','A small pond in a hollow in the woods that fills with snowmelt and spring rain and dries up by summer. With no fish to eat their eggs, spotted salamanders, wood frogs and fairy shrimp breed there in the spring.'],
 watershed:['Watershed','All the land that drains to one body of water, like a giant funnel. Its edge is the divide on the ridges: rain on one side runs to this water, on the other side to another. Everything done uphill reaches the water downhill.']
 };
 function _d3waterHintsOff(){try{return __LS.getItem('rcgWaterHints')==='0';}catch(_e){return false;}}
@@ -66595,7 +66598,7 @@ function _d3gwNow(){var D=_D3;return (D&&D._gw!=null)?D._gw:0;}
 function _d3gwTarget(){
 var w=(typeof _da!=='undefined'&&_da&&_da.wx)||{},s=0,r=0;
 try{s=(typeof _d3season==='function')?_d3season():0;}catch(_s){}try{var X=(typeof _d3wx==='function')?_d3wx():w;r=X.rain|0;}catch(_r){}
-return _d3gwTargetOf(s,r,w.drought|0);
+return _d3gwTargetOf(s,r,w.drought|0)+((typeof _d3snowGw==='function')?_d3snowGw():0);
 }
 function _d3gwStep(dt){
 var D=_D3;if(!D)return;var tg=_d3gwTarget();if(D._gw==null)D._gw=tg;
@@ -67184,7 +67187,7 @@ function _d3seaFloodOf(n,h,salt,marsh,wall,L0,cut){
 var N=n*n,lv=new Float32Array(N).fill(NaN),H=[],i;
 var push=function(k,v){H.push([v,k]);var c=H.length-1;while(c>0){var p=(c-1)>>1;if(H[p][0]>=H[c][0])break;var t=H[p];H[p]=H[c];H[c]=t;c=p;}};
 var pop=function(){var top=H[0],last=H.pop();if(H.length){H[0]=last;var c=0;for(;;){var l=c*2+1,r=l+1,m=c;if(l<H.length&&H[l][0]>H[m][0])m=l;if(r<H.length&&H[r][0]>H[m][0])m=r;if(m===c)break;var t=H[m];H[m]=H[c];H[c]=t;c=m;}}return top;};
-for(i=0;i<N;i++)if(salt[i]){lv[i]=L0;push(i,L0);}
+for(i=0;i<N;i++)if(salt[i]){var l0=(typeof L0==='number')?L0:L0[i];lv[i]=l0;push(i,l0);}
 while(H.length){var e=pop(),v=e[0],k=e[1],x=k%n,z=(k/n)|0;
 [x>0?k-1:-1,x<n-1?k+1:-1,z>0?k-n:-1,z<n-1?k+n:-1].forEach(function(j){if(j<0||salt[j]||!isNaN(lv[j]))return;var w=v-(marsh[j]?cut:0);if(wall[j]>=w||!(h[j]<w))return;lv[j]=w;push(j,w);});}
 for(i=0;i<N;i++)if(salt[i])lv[i]=NaN;return lv;
@@ -67359,6 +67362,95 @@ var W=_d3ageLoad(),d=_d3waterCard('aging',{title:'Aging - '+(W.on?'on':'off')});
 var b=function(l,a){return '<button type="button" data-a="'+a+'" style="margin:3px 3px 0 0;padding:3px 8px;border-radius:6px;border:1px solid #3d7f8f;background:transparent;color:#e8f4f6">'+l+'</button>';};
 box.innerHTML='<div style="margin-top:6px">'+(W.on?(_D3._ageSt||[]).map(function(o,i){return 'Water '+(i+1)+': '+o.stage+' ('+Math.round(Math.min(1,o.fill)*100)+'% filled)';}).join('<br>')+'<br>':'')+b(W.on?'Stop aging':'Let the water age','T')+(W.on?b('Dredge it all back','D'):'')+'</div>';
 d.appendChild(box);box.querySelectorAll('button').forEach(function(el){el.onclick=function(){var a=el.getAttribute('data-a'),W2=_d3ageLoad();if(a==='T')W2.on=W2.on?0:1;else W2.f={};_d3ageSave(W2);_D3._lkKey=null;_d3ageStep();driftAgingPanel();};});
+}
+var _D3_FLD={reach:25,cell:1,packRate:0.012,melt:0.22,rain:0.16,rainT:20,min:0.05,T:30,pave:0.004,gw:[0.06,0,0,0.12],ctl:0.5,jam:0.18,jamR:9,pools:4,poolR:1.1};
+var _D3_FLD_CALL={k:'flood',i:'\ud83c\udf0a',lbl:'Flood',svc:'firestation',crew:'Fire engine',scene:18,good:70,late:160,cash:190,xp:40,stat:'floodRescues',ok:'Everyone is out of the water',bad:'The water got there first',what:'flooding'};
+function _d3fldKind(BY){BY=BY||((typeof _D3_EMG_BY!=='undefined')?_D3_EMG_BY:null);if(BY&&!BY.flood)BY.flood=_D3_FLD_CALL;return BY;}
+function _d3floodHOf(cause,pack,pave,sponge,ctl,K){K=K||_D3_FLD;var h=cause==='melt'?K.melt*Math.max(0,Math.min(1,pack)):K.rain*(1+Math.max(0,Math.min(1,pave)));return h*(sponge==null?1:sponge)*(ctl?K.ctl:1);}
+function _d3snowGwOf(season,pack,K){K=K||_D3_FLD;return (K.gw[season|0]||0)*((pack==null?0.5:pack)-0.5)*2;}
+function _d3fldKey(){return 'rcgFlood_'+((typeof _ns==='function')?_ns():'');}
+function _d3fldLoad(){try{var v=JSON.parse(__LS.getItem(_d3fldKey())||'{}')||{};return {pack:Math.max(0,Math.min(1,+v.pack||0)),last:+v.last||0};}catch(_e){return {pack:0,last:0};}}
+function _d3fldSave(W){try{__LS.setItem(_d3fldKey(),JSON.stringify(W));}catch(_e){}}
+function _d3snowPack(){var D=_D3;if(D._pack==null)D._pack=_d3fldLoad().last;return D._pack;}
+function _d3snowGw(){var s=0;try{s=(typeof _d3season==='function')?_d3season():0;}catch(_s){}return (_D3&&_D3._noFloods)?0:_d3snowGwOf(s,_d3fldLoad().last);}
+function _d3fldGrid(){
+var D=_D3,R=D&&D.islandHalf,K=_D3_FLD;if(!R)return null;var v=D.buildCount;if(D._fldG&&D._fldG.v===v)return D._fldG;
+var ext=R*1.04,n=Math.ceil(ext*2/K.cell)+1,N=n*n,h=new Float32Array(N),seed=new Uint8Array(N),L=new Float32Array(N),own=new Int16Array(N).fill(-1),i;
+var idx=function(x,z){var a=Math.round((x+ext)/K.cell),b=Math.round((z+ext)/K.cell);return (a<0||b<0||a>=n||b>=n)?-1:b*n+a;};
+var salt=typeof _d3inAnySalt==='function'?_d3inAnySalt:function(){return false;};
+for(i=0;i<N;i++){var x=-ext+(i%n)*K.cell,z=-ext+((i/n)|0)*K.cell,lv=_d3waterLevelAt(x,z);if(typeof lv==='number'&&isFinite(lv)){h[i]=1e9;if(!salt(x,z)){seed[i]=1;L[i]=lv;own[i]=-3;}}else h[i]=+_d3drawnH(x,z);}
+var RV=(typeof _d3riversAll==='function')?_d3riversAll():[];RV.forEach(function(r,ri){(r.P||[]).forEach(function(p){var j=idx(p.x,p.z);if(j>=0&&seed[j])own[j]=-2-ri;});});
+(D.streams||[]).forEach(function(s){(s.pts||[]).forEach(function(p){if(p.mo)return;var j=idx(p.x,p.z);if(j<0||seed[j])return;seed[j]=1;L[j]=(p.wy!=null?p.wy:p.g);own[j]=s.si;h[j]=1e9;});});
+var dist=new Int16Array(N).fill(-1),Q=[],qi=0;for(i=0;i<N;i++)if(seed[i]){dist[i]=0;Q.push(i);}
+while(qi<Q.length){var c=Q[qi++],cx=c%n,cz=(c/n)|0;if(dist[c]>=K.reach)continue;[cx>0?c-1:-1,cx<n-1?c+1:-1,cz>0?c-n:-1,cz<n-1?c+n:-1].forEach(function(j){if(j>=0&&dist[j]<0){dist[j]=dist[c]+1;Q.push(j);}});}
+var hf=new Float32Array(N);for(i=0;i<N;i++)hf[i]=dist[i]<0?1e9:h[i];
+return (D._fldG={v:v,n:n,ext:ext,h:h,hf:hf,seed:seed,L:L,own:own,idx:idx});
+}
+function _d3fldFill(cause,pack){
+var G=_d3fldGrid();if(!G)return null;var D=_D3,S=D._nutS,K=_D3_FLD,n=G.n,i,L0=new Float32Array(n*n);
+var road=0;try{(D.roadGraph&&D.roadGraph.E||[]).forEach(function(e){var P=e.pts||[];for(var k=1;k<P.length;k++)road+=Math.hypot(P[k].x-P[k-1].x,P[k].z-P[k-1].z);});}catch(_r){}
+var pave=road*K.pave/Math.max(1,(D.islandHalf||60)/60),sp={},C=D._ws;
+for(i=0;i<n*n;i++){if(!G.seed[i])continue;var x=-G.ext+(i%n)*K.cell,z=-G.ext+((i/n)|0)*K.cell,b=(S&&S.lab)?S.lab(x,z):-1,key=b+':'+G.own[i];
+if(sp[key]==null){var area=(C&&C.B&&C.B[b]&&C.B[b].cells)?C.B[b].cells*C.step*C.step:4000;sp[key]=_d3floodHOf(cause,pack,pave,(typeof _d3wetSponge==='function'&&b>=0)?_d3wetSponge(b,area):1,G.own[i]>=0&&typeof _d3barFloodCtl==='function'&&_d3barFloodCtl(G.own[i]));}
+L0[i]=G.L[i]+sp[key];}
+var wall=new Float32Array(n*n).fill(-Infinity),marsh=new Uint8Array(n*n);return {lv:_d3seaFloodOf(n,G.hf,G.seed,marsh,wall,L0,0),H:sp};
+}
+function _d3fldStart(cause,pack,jamAt){
+var D=_D3,T=window.THREE,K=_D3_FLD,F=jamAt?_d3fldJam(jamAt):_d3fldFill(cause,pack),G=D._fldG;if(!F||!G)return null;var cells=[],i;
+for(i=0;i<F.lv.length;i++)if(!isNaN(F.lv[i]))cells.push(i);if(!cells.length)return {cells:0};
+_d3fldClear();var I=new T.InstancedMesh(new T.PlaneGeometry(K.cell,K.cell),new T.MeshStandardMaterial({color:0x6a6146,roughness:0.3,transparent:true,opacity:0.86}),cells.length);I.count=0;I.name='flood';
+I.raycast=function(){};I.userData.noMerge=true;D.scene.add(I);D._fld={I:I,cells:cells,lv:F.lv,t:0,cause:jamAt?'jam':cause,called:0};
+var m=_d3map(),hit=-1;(_da.village||[]).some(function(b,k){var j=G.idx((b.x-m.cx)*m.s,(b.y-m.cy)*m.s);if(j<0)return false;for(var dx=-3;dx<=3;dx++)for(var dz=-3;dz<=3;dz++){var q=j+dz*G.n+dx;if(q>=0&&q<F.lv.length&&!isNaN(F.lv[q])){hit=k;return true;}}return false;});
+if(hit>=0){D._fld.hit=hit;try{if(typeof _d3emgCall==='function'&&_d3emgOn()){_d3fldKind();_d3emgCall('flood',hit);D._fld.called=1;}}catch(_c){}}
+try{_d3waterCardOnce(jamAt?'icejam':'flood');}catch(_w){}try{showToast(jamAt?'🧊 An ice jam at the bridge is backing the river up':(cause==='melt'?'🌊 The spring melt is flooding the low ground':'🌊 Flash flood: the rain is running off faster than the streams can carry it'));}catch(_t){}
+return {cells:cells.length,hit:hit,called:D._fld.called};
+}
+function _d3fldClear(){var D=_D3;if(D._fld&&D._fld.I){if(D._fld.I.parent)D._fld.I.parent.remove(D._fld.I);D._fld.I.geometry.dispose();}D._fld=null;}
+function _d3fldShow(f){var D=_D3,F=D._fld,G=D._fldG;if(!F||!G)return 0;var T=window.THREE,mx=new T.Matrix4(),q=new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),-Math.PI/2),sc=new T.Vector3(1,1,1),p=new T.Vector3(),k=0;
+F.cells.forEach(function(i){var top=F.lv[i],y=G.h[i]+(top-G.h[i])*f;if(G.seed[i]||!(G.h[i]<y))return;p.set(-G.ext+(i%G.n)*_D3_FLD.cell,y,-G.ext+((i/G.n)|0)*_D3_FLD.cell);mx.compose(p,q,sc);F.I.setMatrixAt(k++,mx);});
+F.I.count=k;F.I.instanceMatrix.needsUpdate=true;F.shown=k;return k;}
+function _d3fldJam(B){
+var G=_d3fldGrid();if(!G)return null;var n=G.n,K=_D3_FLD,L0=new Float32Array(n*n),seed=new Uint8Array(n*n),i,any=0;
+for(i=0;i<n*n;i++){if(!G.seed[i])continue;var x=-G.ext+(i%n)*K.cell,z=-G.ext+((i/n)|0)*K.cell;if(Math.hypot(x-B.x,z-B.z)>K.jamR)continue;seed[i]=1;L0[i]=G.L[i]+K.jam;any=1;}
+if(!any)return null;return {lv:_d3seaFloodOf(n,G.hf,seed,new Uint8Array(n*n),new Float32Array(n*n).fill(-Infinity),L0,0)};
+}
+function _d3fldDress(){
+var D=_D3,T=window.THREE,K=_D3_FLD;if(D._fldD){if(D._fldD.parent)D._fldD.parent.remove(D._fldD);D._fldD=null;}if(!D.scene||D._noFloods)return;
+var s=0;try{s=(typeof _d3season==='function')?_d3season():0;}catch(_s){}var Gr=new T.Group(),G=_d3fldGrid();Gr.name='floodsDress';
+if(s===2&&G){var ice=[];for(var i=0;i<G.n*G.n;i++)if(G.seed[i]&&G.own[i]<=-2&&G.own[i]!==-3)ice.push(i);if(ice.length){var I=new T.InstancedMesh(new T.PlaneGeometry(K.cell*1.02,K.cell*1.02),_mat(0xe2eef4,{r:0.3,t:true,op:0.9}),ice.length),mx=new T.Matrix4(),q=new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),-Math.PI/2),sc=new T.Vector3(1,1,1),p=new T.Vector3();
+ice.forEach(function(j,k){p.set(-G.ext+(j%G.n)*K.cell,G.L[j]+0.015,-G.ext+((j/G.n)|0)*K.cell);mx.compose(p,q,sc);I.setMatrixAt(k,mx);});I.name='riverIce';Gr.add(I);}D._fldIce=ice.length;}else D._fldIce=0;
+var P=_d3vernalPools();P.forEach(function(v){var g=+_d3drawnH(v.x,v.z),full=(s===3),disc=new T.Mesh(new T.CircleGeometry(K.poolR,24),full?new T.MeshStandardMaterial({color:0x4d6b5a,roughness:0.15,transparent:true,opacity:0.85}):_mat(0x5a4a38,{r:1}));
+disc.rotation.x=-Math.PI/2;disc.position.set(v.x,g+0.02,v.z);disc.name=full?'vernalPool':'vernalDry';Gr.add(disc);
+if(full)for(var e=0;e<4;e++){var egg=new T.Mesh(new T.SphereGeometry(0.05,20,14),_mat(0xd8dccb,{t:true,op:0.7,r:0.4}));egg.position.set(v.x+Math.cos(e*1.6)*0.5,g+0.03,v.z+Math.sin(e*1.6)*0.5);Gr.add(egg);}});
+Gr.traverse(function(o){if(o.isMesh){o.raycast=function(){};o.userData.noMerge=true;}});D.scene.add(Gr);D._fldD=Gr;
+}
+function _d3vernalPools(){
+var D=_D3,R=D.islandHalf,K=_D3_FLD;if(!R)return [];if(D._vp&&D._vp.bc===D.buildCount)return D._vp.L;var C=[],st=2,n=Math.floor(R*1.8/st),x0=-R*0.9;
+for(var u=1;u<n-1;u++)for(var v=1;v<n-1;v++){var x=x0+u*st,z=x0+v*st,g=+_d3drawnH(x,z),rim=Infinity;for(var a=0;a<8;a++)rim=Math.min(rim,+_d3drawnH(x+Math.cos(a*0.785)*2.5,z+Math.sin(a*0.785)*2.5));if(!(rim-g>0.06))continue;C.push({x:x,z:z,d:rim-g});}
+C.sort(function(a,b){return b.d-a.d;});var L=[];
+for(var i=0;i<C.length&&L.length<K.pools;i++){var c=C[i],ok=true;for(var a2=0;a2<8&&ok;a2++){var lv=_d3waterLevelAt(c.x+Math.cos(a2*0.785)*6,c.z+Math.sin(a2*0.785)*6);if(typeof lv==='number'&&isFinite(lv))ok=false;}
+if(!ok||L.some(function(o){return Math.hypot(o.x-c.x,o.z-c.z)<15;})||(typeof _d3wetBusy==='function'&&_d3wetBusy(c.x,c.z,2))||(typeof _d3inAnyWater==='function'&&_d3inAnyWater(c.x,c.z)))continue;L.push(c);}
+D._vp={bc:D.buildCount,L:L};return L;
+}
+function _d3fldStep(dt){
+var D=_D3;if(!D||D._building||D._noFloods)return;dt=dt||0.016;var s=0,rain=0;try{s=(typeof _d3season==='function')?_d3season():0;var X=_d3wx();rain=X.rain|0;}catch(_s){}
+var key=D.buildCount+':'+s;if(D._fldKey!==key){D._fldKey=key;try{_d3fldDress();}catch(_e){D._fldErr=String(_e&&_e.message||_e);}}
+if(s===2){if(D._fldSeason!=null&&D._fldSeason!==2)D._pack=0;D._pack=Math.min(1,_d3snowPack()+dt*_D3_FLD.packRate*(1+rain));D._packT=(D._packT||0)+dt;if(D._packT>5){D._packT=0;var W=_d3fldLoad();W.pack=D._pack;_d3fldSave(W);}}
+if(s===3&&D._fldSeason===2){var W2=_d3fldLoad();W2.last=_d3snowPack();_d3fldSave(W2);D._gwB=null;_d3fldSpring(W2.last);}
+D._fldSeason=s;
+if(rain>=3&&s!==2){D._rainT=(D._rainT||0)+dt;if(D._rainT>=_D3_FLD.rainT&&!D._fld){D._rainT=-1e9;_d3fldStart('rain',0);}}else D._rainT=0;
+if(D._fld){D._fld.t+=dt;var f=Math.sin(Math.PI*Math.min(1,D._fld.t/_D3_FLD.T));D._fld.acc=(D._fld.acc||0)+dt;if(D._fld.acc>0.5){D._fld.acc=0;_d3fldShow(f);}if(D._fld.t>=_D3_FLD.T)_d3fldClear();}
+}
+function _d3fldSpring(pack){
+var out={melt:null,jam:null},K=_D3_FLD;if(_d3floodHOf('melt',pack,0,1,0)>=K.min)out.melt=_d3fldStart('melt',pack);
+var B=(_D3._waterBridges||[])[0];if(B&&pack>0.3&&!_D3._fld)out.jam=_d3fldStart('jam',pack,B);else if(B&&pack>0.3){_d3fldClear();out.jam=_d3fldStart('jam',pack,B);}
+_D3._fldLast=out;return out;
+}
+function driftFloodsPanel(){
+var W=_d3fldLoad(),s=0;try{s=_d3season();}catch(_s){}var pk=Math.round((s===2?_d3snowPack():W.last)*100),d=_d3waterCard('flood',{title:'Floods & snow',lines:[(s===2?'This winter\u2019s snowpack: ':'Last winter\u2019s snowpack: ')+pk+'% - '+(pk>60?'a deep one: a big spring melt':pk>30?'an ordinary one':'a thin one: a weak spring and a dry summer'),
+_d3vernalPools().length+' vernal pool'+(_d3vernalPools().length===1?'':'s')+' in the hollows'+(s===3?', full now':s===0||s===1?', dry now':'')]});if(!d)return;
+var box=document.createElement('div');box.innerHTML='<button type="button" data-a="p" style="margin:6px 6px 0 0;padding:3px 8px;border-radius:6px;border:1px solid #3d7f8f;background:transparent;color:#e8f4f6">Show the floodplain</button><button type="button" data-a="v" style="margin:6px 0 0;padding:3px 8px;border-radius:6px;border:1px solid #3d7f8f;background:transparent;color:#e8f4f6">\u24d8 Vernal pools</button>';d.appendChild(box);
+box.querySelectorAll('button').forEach(function(el){el.onclick=function(){if(el.getAttribute('data-a')==='v'){_d3waterCard('vernal');return;}d.remove();var r=_d3fldStart('melt',1);if(!r||!r.cells)try{showToast('No river or stream here to flood');}catch(_t){}};});
 }
 var _D3_WP_SHELF=-1.45,_D3_WP_DEEP=-4.0,_D3_WP_RIVER=0.6;
 function _d3wpInPoly(x,z,P){
@@ -93197,7 +93289,7 @@ try{if(typeof _d3gwStep==='function'){var _gn=performance.now();_d3gwStep(_D3._g
 try{if(typeof _d3wellsStep==='function')_d3wellsStep();}catch(_wl9){}
 try{if(typeof _d3lakesStep==='function')_d3lakesStep();}catch(_lk9){}
 try{if(typeof _d3nutStep==='function'){if(!_D3._nutLd){_D3._nutLd=1;_d3nutLoad();}var _nn=performance.now();_d3nutStep(_D3._nutT?(_nn-_D3._nutT)/1000:0.016);_D3._nutT=_nn;}}catch(_nu9){}
-try{if(typeof _d3baysStep==='function'){var _bn=performance.now();_d3baysStep(_D3._bayFT?(_bn-_D3._bayFT)/1000:0.016);_D3._bayFT=_bn;}}catch(_by9){} try{if(typeof _d3wetStep==='function')_d3wetStep();}catch(_wt9){} try{if(typeof _d3barStep==='function'){var _brn=performance.now();_d3barStep(_D3._barFT?(_brn-_D3._barFT)/1000:0.016);_D3._barFT=_brn;}}catch(_br9){} try{if(typeof _d3bvrStep==='function')_d3bvrStep();}catch(_bv9){} try{if(typeof _d3seaStep==='function'){var _sen=performance.now();_d3seaStep(_D3._seaFT?(_sen-_D3._seaFT)/1000:0.016);_D3._seaFT=_sen;}}catch(_se9){} try{if(typeof _d3karstStep==='function')_d3karstStep();if(typeof _d3ageStep==='function')_d3ageStep();}catch(_ka9){}
+try{if(typeof _d3baysStep==='function'){var _bn=performance.now();_d3baysStep(_D3._bayFT?(_bn-_D3._bayFT)/1000:0.016);_D3._bayFT=_bn;}}catch(_by9){} try{if(typeof _d3wetStep==='function')_d3wetStep();}catch(_wt9){} try{if(typeof _d3barStep==='function'){var _brn=performance.now();_d3barStep(_D3._barFT?(_brn-_D3._barFT)/1000:0.016);_D3._barFT=_brn;}}catch(_br9){} try{if(typeof _d3bvrStep==='function')_d3bvrStep();}catch(_bv9){} try{if(typeof _d3seaStep==='function'){var _sen=performance.now();_d3seaStep(_D3._seaFT?(_sen-_D3._seaFT)/1000:0.016);_D3._seaFT=_sen;}}catch(_se9){} try{if(typeof _d3karstStep==='function')_d3karstStep();if(typeof _d3ageStep==='function')_d3ageStep();}catch(_ka9){} try{if(typeof _d3fldStep==='function'){var _fln=performance.now();_d3fldStep(_D3._fldFT?(_fln-_D3._fldFT)/1000:0.016);_D3._fldFT=_fln;}}catch(_fl9){}
 if(_D3._exp){try{_d3expStep(0.016);}catch(_xs9){}}
 if(!_frz&&((_D3.riverShoals&&_D3.riverShoals.length)||(_D3.riverLife&&_D3.riverLife.length))){
 try{_d3riverLifeStep(now*0.001);}catch(_rls9){}}
