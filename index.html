@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='74582d8';
+var RCG_BUILD='20dde56';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -46620,6 +46620,7 @@ sh.uniforms.uLeafNear=_d3leafU().uLeafNear;
 sh.fragmentShader='uniform float uLeafNear;\n'+sh.fragmentShader.replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\n  if(length(vViewPosition)<uLeafNear) discard;');
 return true;
 }
+var _fhkV=null,_fhkS=null;
 var _D3_FLK={rows:[0.25,0.5,0.75],step:24,jump:38,same:14,max:12};
 function _d3flkOn(){try{if(typeof location!=='undefined'&&/[?&]flicker=1/.test(location.search))return true;}catch(_l){}return false;}
 function _d3flkDiff(a,b){if(!a||!b||a.length!==b.length)return 0;var s=0,i;for(i=0;i<a.length;i++)s+=Math.abs(a[i]-b[i]);return s/a.length;}
@@ -46634,6 +46635,10 @@ s.forest=K?{why:K.why,valid:!!K.valid,quad:!!(K.quad&&K.quad.visible)}:null;
 s.cloudIn=D._cloudIn||0;s.building=!!D._building;s.walking=!!(D.me&&D.me.on);s.driving=!!(D.drive&&D.drive.on);
 s.camGuard=D._camGuardT!=null?+(+D._camGuardT).toFixed(3):null;s.leaves=D._leafDrawn|0;
 try{s.season=(typeof _d3season==='function')?_d3season():null;s.tier=(typeof _d3tier==='function')?_d3tier():null;}catch(_t){}
+try{var T=window.THREE,wp=_fhkV||(_fhkV=new T.Vector3());cam.updateMatrixWorld();wp.setFromMatrixPosition(cam.matrixWorld);s.camW=[+wp.x.toFixed(3),+wp.y.toFixed(3),+wp.z.toFixed(3)];
+var R=D.ride;if(R&&R.on){var mv=0;if(R.obj)R.obj.traverseVisible(function(o){if(o.isMesh)mv++;});s.ride={kind:R.kind,hidShown:(R.hid||[]).filter(function(o){return o.visible;}).length,hid:(R.hid||[]).length,meshes:mv,camIn:!!(R.cam&&R.cam.parent===R.obj)};}
+var nr=[],sp=_fhkS||(_fhkS=new T.Sphere());D.scene.traverseVisible(function(o){if(nr.length>=8||!o.isMesh||o.isInstancedMesh)return;var g=o.geometry;if(!g||!g.boundingSphere)return;
+sp.copy(g.boundingSphere).applyMatrix4(o.matrixWorld);if(sp.radius<0.8&&sp.distanceToPoint(wp)<0.02){var nm='',q=o;for(var u=0;u<4&&q&&!nm;u++){nm=q.name||'';q=q.parent;}var mc=o.material&&o.material.color;nr.push((nm||'?')+'~'+(+sp.radius.toFixed(2))+(mc?'#'+mc.getHexString():''));}});s.atEye=nr;}catch(_n){}
 return s;
 }
 function _d3flkFrame(cam){
