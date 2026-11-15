@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='6b3dcc5';
+var RCG_BUILD='a717590';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -5028,7 +5028,7 @@ ev.target.value='';
 };
 rd.readAsText(fl);
 }
-function driftTrackKeyList(id){var P=['rcgDWP_','rcgDWPs_','rcgSX_','rcgSY_','rcgStartF_','rcgWorldO_','rcgKerb_','rcgScene_','rcgBiome_','rcgSceneDens_','rcgRiver_','rcgRivers_','rcgRiverW_','rcgRivMix_','rcgStreams_','rcgStreamW_','rcgStreamWs_','rcgWells_','rcgNut_','rcgBays_','rcgWet_','rcgBar_','rcgBvr_','rcgKey_','rcgLake_','rcgLakes_','rcgLakeDock_','rcgLWP_','rcgLamps_','rcgRocks_','rcgVillage_','rcgScenery_','rcgMtn_','rcgSigns_','rcgBldRoads_','rcgBldStyle_','rcgGrand_','rcgGrandX_','rcgSpans_','rcgRail_','rcgRailLoop_','rcgRail2Track_','rcgRailType2_','rcgRailCarMult_','rcgTrainType_','rcgTrainType2_','rcgTrainSpeed_','rcgScales_','rcgScaleBase_','rcgFitView_','rcgD3Cars_','rcgDots_','rcgRoadWS_','rcgAircraft_','rcgRunway_','rcgHarbour_','rcgSpeedMul_','rcgDriftSpd_', 'rcgTerr_','rcgLand_','rcgLakeSalt_','rcgMarkers_','rcgRailElev_','rcgRailScale_','rcgRailsX_','rcgVillScale_','rcgLastView_', 'rcgRpgT_','rcgRpgLv_', 'rcgHome_', 'rcgMineOps_', 'rcgMineUG_', 'rcgDrill_', 'rcgMineSite_', 'rcgCountry_', 'rcgBldArchive_'],o=[],i;for(i=0;i<P.length;i++){o.push(P[i]+id);o.push(P[i]+id+'~3d');}o.push('rcgSeed3d_'+id);return o;}
+function driftTrackKeyList(id){var P=['rcgDWP_','rcgDWPs_','rcgSX_','rcgSY_','rcgStartF_','rcgWorldO_','rcgKerb_','rcgScene_','rcgBiome_','rcgSceneDens_','rcgRiver_','rcgRivers_','rcgRiverW_','rcgRivMix_','rcgStreams_','rcgStreamW_','rcgStreamWs_','rcgWells_','rcgNut_','rcgBays_','rcgWet_','rcgBar_','rcgBvr_','rcgKey_','rcgSea_','rcgLake_','rcgLakes_','rcgLakeDock_','rcgLWP_','rcgLamps_','rcgRocks_','rcgVillage_','rcgScenery_','rcgMtn_','rcgSigns_','rcgBldRoads_','rcgBldStyle_','rcgGrand_','rcgGrandX_','rcgSpans_','rcgRail_','rcgRailLoop_','rcgRail2Track_','rcgRailType2_','rcgRailCarMult_','rcgTrainType_','rcgTrainType2_','rcgTrainSpeed_','rcgScales_','rcgScaleBase_','rcgFitView_','rcgD3Cars_','rcgDots_','rcgRoadWS_','rcgAircraft_','rcgRunway_','rcgHarbour_','rcgSpeedMul_','rcgDriftSpd_', 'rcgTerr_','rcgLand_','rcgLakeSalt_','rcgMarkers_','rcgRailElev_','rcgRailScale_','rcgRailsX_','rcgVillScale_','rcgLastView_', 'rcgRpgT_','rcgRpgLv_', 'rcgHome_', 'rcgMineOps_', 'rcgMineUG_', 'rcgDrill_', 'rcgMineSite_', 'rcgCountry_', 'rcgBldArchive_'],o=[],i;for(i=0;i<P.length;i++){o.push(P[i]+id);o.push(P[i]+id+'~3d');}o.push('rcgSeed3d_'+id);return o;}
 function driftWipeTrackKeys(id){var K=driftTrackKeyList(id),i;for(i=0;i<K.length;i++){try{__LS.removeItem(K[i]);}catch(e){}}try{var a=driftTrackAliases();if(a[id]){delete a[id];_driftPutJSON('rcgTrackAlias',a);}}catch(e){}}
 function driftArchiveList(){try{var s=__LS.getItem('rcgArchive');if(s){var o=JSON.parse(s);if(o&&typeof o==='object')return o;}}catch(e){}return {};}
 function driftArchiveSave(o){return _driftPutJSON('rcgArchive',o);}
@@ -7630,7 +7630,8 @@ spring:['⛲','Tap a hillside: a brook runs from the spring down to the water'],
 cutaway:['🪨','Tap the land to see a slice through the ground and its water table'],
 wetland:['🌾','Tap the land at the water\u2019s edge where the wetland should go'],
 barrier:['🧱','Tap a stream where the dam should stand'],
-beaver:['🦫','Tap a brook or a creek for the beavers to dam']};
+beaver:['🦫','Tap a brook or a creek for the beavers to dam'],
+seawall:['🧱','Tap the shore where the seawall should stand']};
 function _dwSeedAt(k,c){
 var s=null;
 try{
@@ -7678,6 +7679,7 @@ if(typeof _da==='undefined'||!_da)return false;
 if((_da._waterPlace==='streamDots'||_da._waterPlace==='riverDots')&&typeof driftWaterDrawTap==='function'){try{driftWaterDrawTap(xy);}catch(e){}return true;}
 var k=_da._waterPlace;_da._waterPlace=null;
 if(k==='cutaway'){try{_d3gwCutaway(xy);}catch(e){}try{if(typeof driftModeBanner==='function')driftModeBanner();}catch(e){}return true;}
+if(k==='seawall'){try{driftSeawallAt(xy);}catch(e){}try{if(typeof driftModeBanner==='function')driftModeBanner();}catch(e){}return true;}
 if(k==='beaver'){try{driftBeaverAt(xy);}catch(e){}try{if(typeof driftModeBanner==='function')driftModeBanner();}catch(e){}return true;}
 if(k==='barrier'){try{driftBarrierAt(xy);}catch(e){}try{if(typeof driftModeBanner==='function')driftModeBanner();}catch(e){}return true;}
 if(k==='wetland'){try{driftWetlandAt(xy);}catch(e){}try{if(typeof driftModeBanner==='function')driftModeBanner();}catch(e){}return true;}
@@ -60843,7 +60845,7 @@ nature:{t:'Land & Water',rows:[
 {sec:'Water',grid:2,i:'\ud83c\udfd6\ufe0f',l:'Ocean',d:'Shape the coast \u2014 sand, surf and swell',flag:'lmode',menu:function(b){driftOceanTool(b);}},
 {i:'\ud83c\udf0a',l:'River',d:'Draw and shape rivers',flag:'rmode',fn:'driftRiverToggle'},
 {i:'\u3030\ufe0f',l:'Stream',d:'A clear creek that follows the ground \u2014 trout in its pools',flag:'stmode',fn:'driftStreamToggle'},
-{i:'\ud83d\udca7',l:'Lake',d:'Add \u00b7 move \u00b7 resize \u00b7 delete lakes',flag:'lmode',menu:function(b){driftLakeTool(b);}},{i:'\ud83d\uddfa\ufe0f',l:'Watershed',d:'Where every drop drains: basins, divides and outlets',flag:'wshed',fn:'driftWatershedToggle'},{i:'\ud83e\udea8',l:'Aquifer cutaway',d:'Tap the land: a slice through the ground, its water table and aquifer',menu:function(){driftCutawayArm();}},{i:'\ud83e\udea3',l:'Wells & pumping',d:'Each farm\u2019s well: shallow or deep, how hard it pumps, dry or salty',menu:function(){driftWellsPanel();}},{i:'\ud83e\udda0',l:'Nutrients',d:'What feeds each lake: farms, homes and roads - and the blooms too much brings',menu:function(){driftNutPanel();}},{i:'\ud83e\uddaa',l:'Bays & coves',d:'Sounds, bays and coves: clarity, eelgrass, shellfish, the tide - crab, clam and scallop',menu:function(){driftBaysPanel();}},{i:'\ud83c\udf3e',l:'Wetlands',d:'Swamps, marshes and bogs: the land\u2019s sponge and filter - boardwalks and cranberries',menu:function(){driftWetlandsPanel();}},{i:'\ud83d\udc1f',l:'Dams & runs',d:'Dams, mill dams and culverts; fish ladders and eel passes; the herring and eel runs',menu:function(){driftBarriersPanel();}},{i:'\ud83e\uddab',l:'Keystones',d:'Beavers, herring, eels, mussels, otters, oysters - what each gives, and what goes without it',menu:function(){driftKeystonesPanel();}},
+{i:'\ud83d\udca7',l:'Lake',d:'Add \u00b7 move \u00b7 resize \u00b7 delete lakes',flag:'lmode',menu:function(b){driftLakeTool(b);}},{i:'\ud83d\uddfa\ufe0f',l:'Watershed',d:'Where every drop drains: basins, divides and outlets',flag:'wshed',fn:'driftWatershedToggle'},{i:'\ud83e\udea8',l:'Aquifer cutaway',d:'Tap the land: a slice through the ground, its water table and aquifer',menu:function(){driftCutawayArm();}},{i:'\ud83e\udea3',l:'Wells & pumping',d:'Each farm\u2019s well: shallow or deep, how hard it pumps, dry or salty',menu:function(){driftWellsPanel();}},{i:'\ud83e\udda0',l:'Nutrients',d:'What feeds each lake: farms, homes and roads - and the blooms too much brings',menu:function(){driftNutPanel();}},{i:'\ud83e\uddaa',l:'Bays & coves',d:'Sounds, bays and coves: clarity, eelgrass, shellfish, the tide - crab, clam and scallop',menu:function(){driftBaysPanel();}},{i:'\ud83c\udf3e',l:'Wetlands',d:'Swamps, marshes and bogs: the land\u2019s sponge and filter - boardwalks and cranberries',menu:function(){driftWetlandsPanel();}},{i:'\ud83d\udc1f',l:'Dams & runs',d:'Dams, mill dams and culverts; fish ladders and eel passes; the herring and eel runs',menu:function(){driftBarriersPanel();}},{i:'\ud83e\uddab',l:'Keystones',d:'Beavers, herring, eels, mussels, otters, oysters - what each gives, and what goes without it',menu:function(){driftKeystonesPanel();}},{i:'\ud83c\udf0a',l:'The sea',d:'Sea level, storm surge, seawalls - ghost forests and marshes moving inland',menu:function(){driftSeaPanel();}},
 {sec:'Plants',grid:2,i:'\ud83c\udf3f',l:'Scenery theme & density',d:'Biome look, tree density, clear rocks',menu:function(b){driftBiomeMenu(b);}},
 {i:'\ud83c\udf33',l:'Place trees & bushes',d:'Tap map to add \u00b7 drag to move',flag:'scmode',fn:'driftSceneryToggle'},
 {sec:'Animals',i:'\ud83e\udd8c',l:'Wildlife\u2026',d:(typeof driftWildLabel==='function'?driftWildLabel():'Which wild animals live on the map, how many and how big'),menu:function(){driftWildPanel();}},
@@ -66538,6 +66540,9 @@ eel:['American eel','Born far out at sea, eels drift to the coast as clear glass
 passage:['Fish passage','Which streams fish from the sea can get up, and how far: green where the herring get, amber where only the eels get, red where nothing gets past a barrier. Every dam, mill dam and perched culvert is a barrier; a ladder, an eel pass, removal or a new culvert opens it.'],
 beaver:['Beaver','A beaver family dams a brook with sticks and mud and lives in a lodge in the pond behind it. The pond raises the water table, filters the water, holds back floods, stops a fire, and its drowned trees stand as snags for woodpeckers, owls and herons. After some years the beavers have eaten the trees in reach and move on; the dam fails and the pond drains to a beaver meadow of grass on rich silt, until the trees grow back and beavers return.'],
 keystone:['Keystone species','A keystone holds up more of its world than its numbers say, like the stone at the top of an arch. Take one away and what it gave goes too: no eels, and the freshwater mussels whose young ride on eels die out, and the water they filtered goes cloudy.'],
+sealevel:['Sea level','The sea is rising as the oceans warm and the ice melts. Set it higher to see what it does: low ground near the shore floods from the sea, the salt line in the ground water moves inland, trees the salt reaches die where they stand - a GHOST FOREST - and a salt marsh moves inland if it has room, or drowns against a wall or a road.'],
+surge:['Storm surge','A hurricane\u2019s winds pile the sea up against the shore: for a few hours the water stands far above the tide, flooding low ground, salting ponds and wells, and cutting new inlets through low strips of beach. A salt marsh takes height off it; a seawall holds it back until it is overtopped.'],
+inlet:['Inlet','A gap through a barrier beach that joins a pond or a bay to the sea, often cut by a storm. The tide runs in and out through it, and the pond behind turns salt.'],
 watershed:['Watershed','All the land that drains to one body of water, like a giant funnel. Its edge is the divide on the ridges: rain on one side runs to this water, on the other side to another. Everything done uphill reaches the water downhill.']
 };
 function _d3waterHintsOff(){try{return __LS.getItem('rcgWaterHints')==='0';}catch(_e){return false;}}
@@ -66634,7 +66639,7 @@ function _d3wellsKey(){return 'rcgWells_'+((typeof _ns==='function')?_ns():'');}
 function _d3wellsLoad(){try{var v=JSON.parse(__LS.getItem(_d3wellsKey())||'{}');return (v&&typeof v==='object')?v:{};}catch(_e){return {};}}
 function _d3wellsSave(W){try{__LS.setItem(_d3wellsKey(),JSON.stringify(W));}catch(_e){}}
 function _d3wellOf(id){var W=_d3wellsLoad(),w=W[id]||{};return {deep:w.deep|0,pump:(w.pump==null?1:w.pump|0)};}
-function _d3seaLv(){try{return (typeof _d3diveLakeY==='function')?_d3diveLakeY():-0.02;}catch(_e){return -0.02;}}
+function _d3seaLv(){try{return ((typeof _d3diveLakeY==='function')?_d3diveLakeY():-0.02)+((typeof _d3seaRise==='function')?_d3seaRise():0);}catch(_e){return -0.02;}}
 function _d3wellStateOf(g,t,sea,head,deep,coast,K){
 K=K||_D3_WELL;
 if(deep)return (head!=null&&g<head)?'flowing':'ok';
@@ -66664,6 +66669,7 @@ function _d3wellState(w){
 if(_D3&&_D3._noWells)return 'ok';
 var g=+_d3drawnH(w.x,w.z)||0,b=_d3gwBaseAt(w.x,w.z),t=(b==null?g:b+_d3gwNow()),R=_D3.islandHalf||100,coast=false;
 try{if(typeof _d3inAnySalt==='function'){for(var a=0;a<8&&!coast;a++){var r=R*0.25;coast=!!_d3inAnySalt(w.x+Math.cos(a*0.785)*r,w.z+Math.sin(a*0.785)*r);}}}catch(_c){}
+if(typeof _d3seaSaltAt==='function'&&_d3seaSaltAt(w.x,w.z))return 'salty';
 return _d3wellStateOf(g,t,_d3seaLv(),_d3wellsHead(),w.deep,coast);
 }
 function _d3wellFill(s){
@@ -67169,6 +67175,102 @@ box.innerHTML='<div style="margin-top:6px">'+b('🦫 Bring a beaver family','B')
 (r.needs.length?'<br>Needs: '+r.needs.map(function(q){return _D3_KEYSTONES.find(function(x){return x.k===q;}).name;}).join(' or '):'')+'<br>Gives: '+r.gives+'<br>'+b(R[r.k]?'Bring back':'Take away','K'+r.k)+'</div>';}).join('');
 d.appendChild(box);box.querySelectorAll('button').forEach(function(el){el.onclick=function(){var a=el.getAttribute('data-a');if(a==='B'){d.remove();driftBeaverArm();return;}
 var k=a.slice(1),Rm=_d3keyRemoved();if(Rm[k])delete Rm[k];else Rm[k]=1;try{__LS.setItem(_d3keyKey(),JSON.stringify(Rm));}catch(_e){}_D3._keyF=null;_D3._bvrDirty=(_D3._bvrDirty|0)+1;_D3._gwB=null;driftKeystonesPanel();};});
+}
+var _D3_SEA={rise:[0,0.05,0.1,0.2],riseName:['Today','+0.5 m','+1 m','+2 m'],cell:1,surge:0.25,surgeT:24,cut:0.012,fringe:0.03,wall:0.32,wallLen:7,wallCost:800,salt:120};
+function _d3seaFloodOf(n,h,salt,marsh,wall,L0,cut){
+var N=n*n,lv=new Float32Array(N).fill(NaN),H=[],i;
+var push=function(k,v){H.push([v,k]);var c=H.length-1;while(c>0){var p=(c-1)>>1;if(H[p][0]>=H[c][0])break;var t=H[p];H[p]=H[c];H[c]=t;c=p;}};
+var pop=function(){var top=H[0],last=H.pop();if(H.length){H[0]=last;var c=0;for(;;){var l=c*2+1,r=l+1,m=c;if(l<H.length&&H[l][0]>H[m][0])m=l;if(r<H.length&&H[r][0]>H[m][0])m=r;if(m===c)break;var t=H[m];H[m]=H[c];H[c]=t;c=m;}}return top;};
+for(i=0;i<N;i++)if(salt[i]){lv[i]=L0;push(i,L0);}
+while(H.length){var e=pop(),v=e[0],k=e[1],x=k%n,z=(k/n)|0;
+[x>0?k-1:-1,x<n-1?k+1:-1,z>0?k-n:-1,z<n-1?k+n:-1].forEach(function(j){if(j<0||salt[j]||!isNaN(lv[j]))return;var w=v-(marsh[j]?cut:0);if(wall[j]>=w||!(h[j]<w))return;lv[j]=w;push(j,w);});}
+for(i=0;i<N;i++)if(salt[i])lv[i]=NaN;return lv;
+}
+function _d3seaKey(){return 'rcgSea_'+((typeof _ns==='function')?_ns():'');}
+function _d3seaLoad(){try{var v=JSON.parse(__LS.getItem(_d3seaKey())||'{}')||{};return {rise:Math.max(0,Math.min(3,v.rise|0)),walls:Array.isArray(v.walls)?v.walls:[]};}catch(_e){return {rise:0,walls:[]};}}
+function _d3seaSave(W){try{__LS.setItem(_d3seaKey(),JSON.stringify(W));}catch(_e){}_D3._seaDirty=(_D3._seaDirty|0)+1;}
+function _d3seaRise(){return (_D3&&_D3._noSea)?0:_D3_SEA.rise[_d3seaLoad().rise];}
+function _d3seaY(){return (typeof _d3diveLakeY==='function')?_d3diveLakeY():0;}
+function _d3seaGrid(){
+var D=_D3,R=D&&D.islandHalf,K=_D3_SEA;if(!R||typeof _d3inAnySalt!=='function')return null;var v=D.buildCount+':'+(D._seaDirty|0)+':'+(D._wetL?D._wetL.length:0);if(D._seaG&&D._seaG.v===v)return D._seaG;
+var ext=R*1.04,n=Math.ceil(ext*2/K.cell)+1,N=n*n,h=new Float32Array(N),salt=new Uint8Array(N),marsh=new Uint8Array(N),wall=new Float32Array(N).fill(-Infinity),wet=new Uint8Array(N),i,any=0;
+for(i=0;i<N;i++){var x=-ext+(i%n)*K.cell,z=-ext+((i/n)|0)*K.cell;if(_d3inAnySalt(x,z)){salt[i]=1;any=1;continue;}var lv=_d3waterLevelAt(x,z);if(typeof lv==='number'&&isFinite(lv)){wet[i]=1;h[i]=1e9;continue;}h[i]=+_d3drawnH(x,z);}
+if(!any)return (D._seaG={v:v,none:1});
+var ribbed=!(typeof _d3keyOn==='function'&&!_d3keyOn('ribbed')),idx=function(x,z){var a=Math.round((x+ext)/K.cell),b=Math.round((z+ext)/K.cell);return (a<0||b<0||a>=n||b>=n)?-1:b*n+a;};
+if(ribbed)(D._wetL||[]).forEach(function(w){if(w.k!=='marsh')return;for(var dx=-w.r;dx<=w.r;dx+=K.cell)for(var dz=-w.r;dz<=w.r;dz+=K.cell){if(dx*dx+dz*dz>w.r*w.r)continue;var j=idx(w.x+dx,w.z+dz);if(j>=0)marsh[j]=1;}});
+var y=_d3seaY();_d3seaLoad().walls.forEach(function(wl){for(var s=-K.wallLen/2;s<=K.wallLen/2;s+=K.cell*0.5){var j=idx(wl.x+Math.cos(wl.a)*s,wl.z+Math.sin(wl.a)*s);if(j>=0)wall[j]=y+K.wall;}});
+return (D._seaG={v:v,n:n,ext:ext,h:h,salt:salt,marsh:marsh,wall:wall,wet:wet,idx:idx});
+}
+function _d3seaFlood(surge){var G=_d3seaGrid();if(!G||G.none)return null;return _d3seaFloodOf(G.n,G.h,G.salt,G.marsh,G.wall,_d3seaY()+_d3seaRise()+(surge||0),_D3_SEA.cut);}
+function _d3seaDress(){
+var D=_D3,T=window.THREE,K=_D3_SEA;if(D._seaGr){if(D._seaGr.parent)D._seaGr.parent.remove(D._seaGr);D._seaGr=null;}if(!D.scene||D._noSea)return;
+var G=_d3seaGrid();if(!G||G.none)return;var Gr=new T.Group();Gr.name='sea';var rise=_d3seaRise(),y=_d3seaY(),i,n=G.n;
+var full=_d3seaFlood(K.surge),now=rise>0?_d3seaFlood(0):null,cells=[];D._seaFull=full;D._seaNow=now;
+for(i=0;i<n*n;i++)if(full&&!isNaN(full[i]))cells.push(i);
+var wat=new T.MeshStandardMaterial({color:0x2f6478,roughness:0.12,metalness:0.1,transparent:true,opacity:0.88}),I=new T.InstancedMesh(new T.PlaneGeometry(K.cell,K.cell),wat,Math.max(1,cells.length));I.count=0;I.name='seaFlood';
+I.userData.cells=cells;Gr.add(I);D._seaI=I;
+var ghost=[];if(now){var flooded=new Uint8Array(n*n);for(i=0;i<n*n;i++)if(!isNaN(now[i]))flooded[i]=1;
+for(i=0;i<n*n;i++){if(flooded[i])continue;var x=i%n,z=(i/n)|0,nb=(x>0&&flooded[i-1])||(x<n-1&&flooded[i+1])||(z>0&&flooded[i-n])||(z<n-1&&flooded[i+n]);if(nb&&G.h[i]<y+rise+K.fringe)flooded[i]=2;}
+var tk=D.parkTrunks,cv=tk&&tk.geometry&&tk.geometry.userData.carve;if(cv&&cv.xz)for(var q=0;q<cv.n;q++){var j=G.idx(cv.xz[q*2],cv.xz[q*2+1]);if(j>=0&&flooded[j])ghost.push([cv.xz[q*2],cv.xz[q*2+1],j]);}
+var done={};ghost.forEach(function(g){if(done[g[2]])return;done[g[2]]=1;var cx=-G.ext+(g[2]%n)*K.cell,cz=-G.ext+((g[2]/n)|0)*K.cell;try{if(typeof _d3carveScatter==='function')_d3carveScatter({x:cx,z:cz,c:1,s:0,h:K.cell/2});}catch(_c){}});}
+if(ghost.length){var gm=_mat(0x9c978d,{r:0.95}),GI=new T.InstancedMesh(new T.CylinderGeometry(0.03,0.05,0.9,16),gm,ghost.length),mx=new T.Matrix4(),q2=new T.Quaternion(),sc=new T.Vector3(1,1,1),p=new T.Vector3();
+ghost.forEach(function(g,k){q2.setFromAxisAngle(new T.Vector3(0,0,1),((k*7)%5-2)*0.04);p.set(g[0],+_d3drawnH(g[0],g[1])+0.42,g[1]);mx.compose(p,q2,sc);GI.setMatrixAt(k,mx);});GI.name='ghostForest';Gr.add(GI);}
+D._seaGhost=ghost.length;
+_d3seaLoad().walls.forEach(function(wl){var g=+_d3drawnH(wl.x,wl.z),top=y+K.wall,hh=Math.max(0.1,top-g+0.05),b=_d3box(K.wallLen,hh,0.25,_mat(0xa8a49a,{r:0.9}));b.position.set(wl.x,g+hh/2-0.05,wl.z);b.rotation.y=-wl.a;b.name='seawall';Gr.add(b);});
+Gr.traverse(function(o){if(o.isMesh){o.raycast=function(){};o.userData.noMerge=true;}});D.scene.add(Gr);D._seaGr=Gr;_d3seaShow(0);
+}
+function _d3seaShow(s){
+var D=_D3,I=D._seaI,full=D._seaFull,G=D._seaG;if(!I||!full||!G)return 0;var T=window.THREE,K=_D3_SEA,mx=new T.Matrix4(),q=new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),-Math.PI/2),sc=new T.Vector3(1,1,1),p=new T.Vector3(),k=0,drop=K.surge*(1-s);
+I.userData.cells.forEach(function(i){var lv=full[i]-drop,now=D._seaNow;if(!(G.h[i]<lv))return;if(s===0&&!(now&&!isNaN(now[i])))return;p.set(-G.ext+(i%G.n)*K.cell,lv,-G.ext+((i/G.n)|0)*K.cell);mx.compose(p,q,sc);I.setMatrixAt(k++,mx);});
+I.count=k;I.instanceMatrix.needsUpdate=true;D._seaShown=k;return k;
+}
+function _d3seaStep(dt){
+var D=_D3;if(!D||D._building||D._noSea)return;var key=D.buildCount+':'+(D._seaDirty|0);if(D._seaKey!==key){D._seaKey=key;try{_d3seaDress();}catch(_e){D._seaErr=String(_e&&_e.message||_e);}}
+var hur=(typeof _d3wxEvent==='function')&&_d3wxEvent()===2;if(hur&&!D._surge&&!D._surgeHur){D._surge={t:0};D._surgeHur=1;}if(!hur)D._surgeHur=0;
+if(!D._surge)return;D._surge.t+=(dt||0.016);var f=Math.sin(Math.PI*Math.min(1,D._surge.t/_D3_SEA.surgeT));
+D._surge.acc=(D._surge.acc||0)+(dt||0.016);if(D._surge.acc>0.5||D._surge.t>=_D3_SEA.surgeT){D._surge.acc=0;_d3seaShow(f);}
+if(D._surge.t>=_D3_SEA.surgeT){var after=_d3seaSurgeEnd();D._surge=null;return after;}
+}
+function driftSeaSurge(){_D3._surge={t:0};try{_d3waterCardOnce('surge');}catch(_c){}try{showToast('🌊 A storm surge is coming in');}catch(_t){}}
+function _d3seaSurgeEnd(){
+var D=_D3,G=D._seaG,full=D._seaFull;if(!G||!full)return null;var n=G.n,i,m=_d3map(),li=-1,tried=0;D._seaSalt={t:performance.now(),f:full};_d3seaShow(0);
+var P=(_da.lakes||[]).map(function(L,k){return (_da.lakeSalt&&_da.lakeSalt[k])?null:L.map(function(p){var q=_d3xy(p);return [(q[0]-m.cx)*m.s,(q[1]-m.cy)*m.s];});});
+var inside=function(Q,wx,wz){var c=false;for(var a=0,b=Q.length-1;a<Q.length;b=a++)if(((Q[a][1]>wz)!==(Q[b][1]>wz))&&(wx<(Q[b][0]-Q[a][0])*(wz-Q[a][1])/(Q[b][1]-Q[a][1])+Q[a][0]))c=!c;return c;};
+for(i=0;i<n*n&&li<0&&tried<400;i++){if(!G.wet[i])continue;var x=i%n,z=(i/n)|0,t=false;[x>0?i-1:-1,x<n-1?i+1:-1,z>0?i-n:-1,z<n-1?i+n:-1].forEach(function(j){if(j>=0&&!isNaN(full[j]))t=true;});if(!t)continue;tried++;
+var wx=-G.ext+x*_D3_SEA.cell,wz=-G.ext+z*_D3_SEA.cell;P.forEach(function(Q,k){if(li<0&&Q&&inside(Q,wx,wz))li=k;});}
+if(li<0)return {inlet:null};
+if(li>=0)_d3seaAsk(li);return {inlet:li};
+}
+function _d3seaAsk(li){
+var d=_d3waterCard('inlet',{title:'The surge broke through to a pond',lines:['Keep the inlet and the pond turns salt - a cove open to the sea; or let the sand close it again.']});if(!d)return;
+var box=document.createElement('div');box.innerHTML='<button type="button" data-a="y" style="margin:6px 6px 0 0;padding:3px 8px;border-radius:6px;border:1px solid #3d7f8f;background:transparent;color:#e8f4f6">Keep the inlet</button><button type="button" data-a="n" style="margin:6px 0 0;padding:3px 8px;border-radius:6px;border:1px solid #3d7f8f;background:transparent;color:#e8f4f6">Let it close</button>';d.appendChild(box);
+box.querySelectorAll('button').forEach(function(el){el.onclick=function(){if(el.getAttribute('data-a')==='y'){_da.lakeSalt=_da.lakeSalt||[];_da.lakeSalt[li]=true;try{driftLakeSave();}catch(_s){}try{_d3buildNow(true);}catch(_b){}}d.remove();};});
+}
+function _d3seaSaltAt(x,z){var D=_D3,S=D&&D._seaSalt,G=D&&D._seaG;if(!S||!G||performance.now()-S.t>_D3_SEA.salt*1000)return false;var j=G.idx(x,z);if(j<0)return false;
+for(var dx=-3;dx<=3;dx++)for(var dz=-3;dz<=3;dz++){var k=j+dz*G.n+dx;if(k>=0&&k<S.f.length&&!isNaN(S.f[k]))return true;}return false;}
+function driftSeaArm(){return typeof driftWaterPlaceArm==='function'&&driftWaterPlaceArm('seawall');}
+function driftSeawallAt(xy){
+var m=_d3map(),G=_d3seaGrid(),x=(xy.x-m.cx)*m.s,z=(xy.y-m.cy)*m.s,best=null;if(!G||G.none){try{showToast('No sea on this map');}catch(_t){}return false;}
+for(var a=0;a<16;a++)for(var r=1;r<=12;r++){if(_d3inAnySalt(x+Math.cos(a*0.3927)*r,z+Math.sin(a*0.3927)*r)){if(!best||r<best.r)best={r:r,a:a*0.3927};break;}}
+if(!best){try{showToast('A seawall goes on the shore - tap nearer the sea');}catch(_t2){}return false;}
+try{var P=_d3rpgLoad();if((P.cash||0)<_D3_SEA.wallCost){showToast('A seawall costs $'+_D3_SEA.wallCost);return false;}P.cash-=_D3_SEA.wallCost;_d3rpgSave();}catch(_p){}
+var W=_d3seaLoad();W.walls.push({x:+x.toFixed(2),z:+z.toFixed(2),a:+(best.a+Math.PI/2).toFixed(3)});_d3seaSave(W);_d3seaStep(0);try{showToast('Seawall built');}catch(_t3){}return true;
+}
+function driftSeaPanel(){
+var W=_d3seaLoad(),K=_D3_SEA,d=_d3waterCard('sealevel',{title:'The sea - '+K.riseName[W.rise]});if(!d)return;var box=document.createElement('div');
+var b=function(l,a,on){return '<button type="button" data-a="'+a+'" style="margin:3px 3px 0 0;padding:3px 8px;border-radius:6px;border:1px solid #3d7f8f;background:'+(on?'#3d7f8f':'transparent')+';color:#e8f4f6">'+l+'</button>';};
+var M=(_D3._wetL||[]).filter(function(w){return w.k==='marsh'&&_d3seaGrid()&&!_d3seaGrid().none;}),ribbed=!(typeof _d3keyOn==='function'&&!_d3keyOn('ribbed'));
+box.innerHTML='<div style="margin-top:6px">Sea level: '+K.riseName.map(function(t,i){return b(t,'L'+i,i===W.rise);}).join('')+'</div><div>'+b('🌊 Storm surge','S')+b('Build a seawall ($'+K.wallCost+')','W')+'</div>'+
+'<div style="margin-top:6px">'+(_D3._seaShown|0)+' cells of low ground under the sea now · '+(_D3._seaGhost|0)+' ghost trees · '+W.walls.length+' seawall'+(W.walls.length===1?'':'s')+'</div>'+
+M.map(function(w,i){return '<div style="margin-top:4px">Marsh '+(i+1)+': '+_d3seaMarshFate(w,W.rise,ribbed)+'</div>';}).join('');
+d.appendChild(box);box.querySelectorAll('button').forEach(function(el){el.onclick=function(){var a=el.getAttribute('data-a');
+if(a[0]==='L'){var W2=_d3seaLoad(),lower=+a.slice(1)<W2.rise;W2.rise=+a.slice(1);_d3seaSave(W2);if(lower){try{_d3buildNow(true);}catch(_b){}}else _d3seaStep(0);driftSeaPanel();}
+else if(a==='S'){d.remove();driftSeaSurge();}else if(a==='W'){d.remove();driftSeaArm();}};});
+}
+function _d3seaMarshFate(w,rise,ribbed){
+if(!rise)return 'holding its own with the sea';if(!ribbed)return 'drowning: with no ribbed mussels to hold its mud it cannot build up';
+var G=_d3seaGrid(),best=null;for(var a=0;a<8;a++){var x=w.x+Math.cos(a*0.785)*(w.r+3),z=w.z+Math.sin(a*0.785)*(w.r+3);if(typeof _d3inAnySalt==='function'&&_d3inAnySalt(x,z))continue;var j=G?G.idx(x,z):-1;if(j>=0&&G.wall[j]===-Infinity&&!(typeof _d3wetBusy==='function'&&_d3wetBusy(x,z,1))){best=1;break;}}
+return best?'moving inland onto the low ground behind it':'squeezed: a wall or a road behind it, so it drowns';
 }
 var _D3_WP_SHELF=-1.45,_D3_WP_DEEP=-4.0,_D3_WP_RIVER=0.6;
 function _d3wpInPoly(x,z,P){
@@ -93007,7 +93109,7 @@ try{if(typeof _d3gwStep==='function'){var _gn=performance.now();_d3gwStep(_D3._g
 try{if(typeof _d3wellsStep==='function')_d3wellsStep();}catch(_wl9){}
 try{if(typeof _d3lakesStep==='function')_d3lakesStep();}catch(_lk9){}
 try{if(typeof _d3nutStep==='function'){if(!_D3._nutLd){_D3._nutLd=1;_d3nutLoad();}var _nn=performance.now();_d3nutStep(_D3._nutT?(_nn-_D3._nutT)/1000:0.016);_D3._nutT=_nn;}}catch(_nu9){}
-try{if(typeof _d3baysStep==='function'){var _bn=performance.now();_d3baysStep(_D3._bayFT?(_bn-_D3._bayFT)/1000:0.016);_D3._bayFT=_bn;}}catch(_by9){} try{if(typeof _d3wetStep==='function')_d3wetStep();}catch(_wt9){} try{if(typeof _d3barStep==='function'){var _brn=performance.now();_d3barStep(_D3._barFT?(_brn-_D3._barFT)/1000:0.016);_D3._barFT=_brn;}}catch(_br9){} try{if(typeof _d3bvrStep==='function')_d3bvrStep();}catch(_bv9){}
+try{if(typeof _d3baysStep==='function'){var _bn=performance.now();_d3baysStep(_D3._bayFT?(_bn-_D3._bayFT)/1000:0.016);_D3._bayFT=_bn;}}catch(_by9){} try{if(typeof _d3wetStep==='function')_d3wetStep();}catch(_wt9){} try{if(typeof _d3barStep==='function'){var _brn=performance.now();_d3barStep(_D3._barFT?(_brn-_D3._barFT)/1000:0.016);_D3._barFT=_brn;}}catch(_br9){} try{if(typeof _d3bvrStep==='function')_d3bvrStep();}catch(_bv9){} try{if(typeof _d3seaStep==='function'){var _sen=performance.now();_d3seaStep(_D3._seaFT?(_sen-_D3._seaFT)/1000:0.016);_D3._seaFT=_sen;}}catch(_se9){}
 if(_D3._exp){try{_d3expStep(0.016);}catch(_xs9){}}
 if(!_frz&&((_D3.riverShoals&&_D3.riverShoals.length)||(_D3.riverLife&&_D3.riverLife.length))){
 try{_d3riverLifeStep(now*0.001);}catch(_rls9){}}
