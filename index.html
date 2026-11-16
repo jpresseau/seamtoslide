@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='ad38d37';
+var RCG_BUILD='0ec5e42';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -47202,6 +47202,9 @@ ren.toneMapping=real?T.CustomToneMapping:T.ACESFilmicToneMapping;ren.toneMapping
 function _d3lookRing(R,K){K=K||_D3_LOOK;var o=K.seaR,q,out=[],i;R=Math.max(0,R-(K.seaIn||0));q=[[-o,-o,-R,-R],[o,-o,R,-R],[o,o,R,R],[-o,o,-R,R]];
 for(i=0;i<4;i++){var a=q[i],b=q[(i+1)%4];out.push(a[0],a[1],b[2],b[3],b[0],b[1], a[0],a[1],a[2],a[3],b[2],b[3]);}
 return out;}
+function _d3lookSeaOf(bm,deep,K){K=K||_D3_LOOK;
+if(!bm||!bm.color||!deep)return {rgb:[((K.seaC>>16)&255)/255,((K.seaC>>8)&255)/255,(K.seaC&255)/255],ro:K.seaRo,me:0.05};
+return {rgb:[bm.color.r*deep[0],bm.color.g*deep[1],bm.color.b*deep[2]],ro:bm.roughness,me:bm.metalness};}
 function _d3lookSea(){
 var D=_D3,T=window.THREE;if(!D||!D.scene||!T)return null;
 var on=_d3look()==='real',S=D._lookSea,K=_D3_LOOK,R=(D.islandHalf>0)?D.islandHalf:44;
@@ -47213,6 +47216,9 @@ if(S&&on&&S.userData.R!==R){var xz=_d3lookRing(R,K),n=xz.length/2,P=new Float32A
 for(i=0;i<n;i++){P[i*3]=xz[i*2];P[i*3+2]=xz[i*2+1];N[i*3+1]=1;}
 var g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(P,3));g.setAttribute('normal',new T.BufferAttribute(N,3));
 if(S.geometry)S.geometry.dispose();S.geometry=g;S.userData.R=R;}
+if(S&&on){var B=null;if(!D._noSeaMatch)(D._lakeDrawn||[]).some(function(r){if(r&&r.salt&&r.m&&r.m.material&&r.m.material.color){B=r.m.material;return true;}return false;});
+var q=_d3lookSeaOf(B,(typeof _D3_WDEEP!=='undefined'&&_D3_WDEEP.sea)?_D3_WDEEP.sea.deep:null,K),m=S.material;
+if(m.color.r!==q.rgb[0]||m.color.g!==q.rgb[1]||m.color.b!==q.rgb[2])m.color.setRGB(q.rgb[0],q.rgb[1],q.rgb[2]);if(m.roughness!==q.ro)m.roughness=q.ro;if(m.metalness!==q.me)m.metalness=q.me;}
 if(S){if(S.parent!==D.scene)D.scene.add(S);if(S.visible!==on)S.visible=on;}
 return S;
 }
