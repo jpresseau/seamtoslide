@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='e99d0ca';
+var RCG_BUILD='024765f';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -45113,10 +45113,11 @@ var _D3_FALLS_FS='uniform float uWT;uniform vec3 uFallL;varying vec4 vF;varying 
 'float H(vec2 p){vec3 q=fract(p.xyx*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}'+
 'float N(vec2 p){vec2 i=floor(p),f=fract(p);f*=f*(3.-2.*f);return mix(mix(H(i),H(i+vec2(1.,0.)),f.x),mix(H(i+vec2(0.,1.)),H(i+1.),f.x),f.y);}'+
 'void main(){float t=uWT-vF.x,c=vU.x,w=fwidth(c),e=smoothstep(0.,1.,vF.y),d=clamp(2.-4.*w,0.,1.)*min(1.,vF.y*3.),'+
-'s=mix(.5,N(vec2(c,t*1.6))*.62+N(vec2(c*2.3+5.1,t*3.7))*.38,d),g=mix(1.,smoothstep(.3,.6,s),vF.z*d),f,a;'+
+'s=mix(.5,N(vec2(c,t*1.6))*.62+N(vec2(c*2.3+5.1,t*3.7))*.38,d),g=mix(1.,smoothstep(.3,.6,s),vF.z*d),f,a,'+
+'k=clamp(2.-w*.5,0.,1.)*e,pk=smoothstep(.4,.75,N(vec2(c*.25+3.7,t*1.1))*.65+N(vec2(c*.6+1.3,t*2.3))*.35)*k,ch=N(vec2(c*.05+7.3,.5));'+
 's+=(N(vec2(c*.14+9.,t*.6))-.5)*.7*clamp(2.-w/7.,0.,1.);f=min(.15*vU.y,(.2+.8*e+1.8*vF.z)*(.4+.6*s));'+
-'a=mix(.38,.88,e)*(.62+.38*s)*g*smoothstep(f,f+max(1.5*w,min(1.,.1*vU.y)),vU.y-abs(c))*vF.w;'+
-'if(a<.01)discard;gl_FragColor=vec4(uFallL*mix(vec3(.36,.52,.54),vec3(1.13,1.16,1.2),e*(.75+.25*s)),a);'+
+'a=mix(.38,.88,e)*(.62+.38*s)*g*(1.-.42*k+.62*pk)*(.8+.3*ch)*smoothstep(f,f+max(1.5*w,min(1.,.1*vU.y)),vU.y-abs(c))*vF.w;'+
+'if(a<.01)discard;gl_FragColor=vec4(uFallL*mix(vec3(.30,.46,.49),vec3(1.15,1.18,1.22),e*(.55+.2*s+.35*pk)),min(a,.97));'+
 '\n#include <tonemapping_fragment>\n#include <encodings_fragment>\n#include <fog_fragment>\n}';
 function _d3fallsSheet(F,B,gy){
 var M=B.cols,P=[],U=[],A=[],G=[],I=[],n=0,i,k,j,bk,C,a,p,c;
@@ -46297,41 +46298,72 @@ if(dusk){g.addColorStop(0,'#232a48');g.addColorStop(0.55,'#5a4a6a');g.addColorSt
 else{g.addColorStop(0,'#8fc0e8');g.addColorStop(0.6,'#bcd9ea');g.addColorStop(1,'#dfeef2');}
 x.fillStyle=g;x.fillRect(0,0,8,256);var t=new window.THREE.CanvasTexture(c);t.needsUpdate=true;return t;
 }
-var _D3_SOIL_BANK={step:0.25,max:7,min:0.5,margin:0.4,clear:0.05,last:true};
-function _d3soilBankOut(lp,hAt,top,K){K=K||_D3_SOIL_BANK;var M=lp.length,i,a=0,g=[],P=[];
+function _d3soilInPoly(x,z,P){var c=false,i,j;for(i=0,j=P.length-1;i<P.length;j=i++){var xi=P[i].x,zi=P[i].z!=null?P[i].z:P[i].y,xj=P[j].x,zj=P[j].z!=null?P[j].z:P[j].y;
+if(((zi>z)!==(zj>z))&&(x<(xj-xi)*(z-zi)/(zj-zi)+xi))c=!c;}return c;}
+var _D3_SOIL_MASK={cs:0.45,clear:0.05,max:320};
+function _d3soilMaskOf(H,hAt,lid,x0,cs,n){var M=new Uint8Array(n*n),i,j,k,o;
+var mark=function(x,z){var gi=Math.floor((x-x0)/cs),gj=Math.floor((z-x0)/cs),a,b;for(b=gj;b<=gj+1;b++)for(a=gi;a<=gi+1;a++)if(a>=0&&b>=0&&a<n&&b<n)M[b*n+a]=1;};
+(H||[]).forEach(function(P){if(!P||P.length<3)return;var m=P.length;
+for(j=0;j<n;j++){var z=x0+j*cs,X=[];for(k=0;k<m;k++){var a=P[k],b=P[(k+1)%m];if((a.y>z)!==(b.y>z))X.push(a.x+(z-a.y)*(b.x-a.x)/(b.y-a.y));}
+if(X.length<2)continue;X.sort(function(p,q){return p-q;});
+for(k=0;k+1<X.length;k+=2){var i0=Math.max(0,Math.ceil((X[k]-x0)/cs)),i1=Math.min(n-1,Math.floor((X[k+1]-x0)/cs));for(i=i0;i<=i1;i++)M[j*n+i]=1;}}
+for(k=0;k<m;k++){var a=P[k],b=P[(k+1)%m],ns=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)/(cs*0.5)));for(var t=0;t<ns;t++)mark(a.x+(b.x-a.x)*t/ns,a.y+(b.y-a.y)*t/ns);}});
+if(hAt)for(j=0;j<n;j++)for(i=0;i<n;i++){o=j*n+i;if(M[o])continue;var h=hAt(x0+i*cs,x0+j*cs);if(h===h&&h<lid)M[o]=1;}
+var D=new Uint8Array(n*n);for(j=0;j<n;j++)for(i=0;i<n;i++){o=j*n+i;if(M[o]){D[o]=1;continue;}
+for(var dj=-1;dj<=1&&!D[o];dj++)for(var di=-1;di<=1;di++){var a2=i+di,b2=j+dj;if(a2>=0&&b2>=0&&a2<n&&b2<n&&M[b2*n+a2]){D[o]=1;break;}}}
+var Q=[],seen=new Uint8Array(n*n),add=function(q){if(!D[q]&&!seen[q]){seen[q]=1;Q.push(q);}};
+for(i=0;i<n;i++){add(i);add((n-1)*n+i);add(i*n);add(i*n+n-1);}
+if(!Q.length)return null;
+while(Q.length){o=Q.pop();var x=o%n,y=(o/n)|0;if(x>0)add(o-1);if(x<n-1)add(o+1);if(y>0)add(o-n);if(y<n-1)add(o+n);}
+for(o=0;o<n*n;o++)if(!D[o]&&!seen[o])D[o]=1;
+return D;}
+function _d3maskLoops(M,n,x0,cs){
+var at=function(i,j){return (i<0||j<0||i>=n||j>=n)?0:M[j*n+i];},S={},pt={},i,j,out=[];
+var add=function(a,b){(S[a]=S[a]||[]).push(b);(S[b]=S[b]||[]).push(a);};
+for(j=-1;j<n;j++)for(i=-1;i<n;i++){var c=at(i,j)|(at(i+1,j)<<1)|(at(i+1,j+1)<<2)|(at(i,j+1)<<3);if(!c||c===15)continue;
+var B='h'+i+','+j,Rt='v'+(i+1)+','+j,Tp='h'+i+','+(j+1),L='v'+i+','+j;
+pt[B]=[x0+(i+0.5)*cs,x0+j*cs];pt[Rt]=[x0+(i+1)*cs,x0+(j+0.5)*cs];pt[Tp]=[x0+(i+0.5)*cs,x0+(j+1)*cs];pt[L]=[x0+i*cs,x0+(j+0.5)*cs];
+switch(c){case 1:case 14:add(L,B);break;case 2:case 13:add(B,Rt);break;case 3:case 12:add(L,Rt);break;case 4:case 11:add(Rt,Tp);break;
+case 6:case 9:add(B,Tp);break;case 7:case 8:add(L,Tp);break;case 5:add(L,Tp);add(B,Rt);break;case 10:add(L,B);add(Rt,Tp);break;}}
+var done={};
+for(var k0 in S){if(done[k0])continue;var loop=[],prev=null,cur=k0;
+while(cur&&!done[cur]){done[cur]=1;loop.push(pt[cur]);var nb=S[cur],nx=(nb[0]!==prev&&!done[nb[0]])?nb[0]:((nb[1]!==prev&&nb[1]&&!done[nb[1]])?nb[1]:null);prev=cur;cur=nx;}
+var P=[],m=loop.length;for(var q=0;q<m;q++){var a=loop[(q+m-1)%m],b=loop[q],d=loop[(q+1)%m];if(Math.abs((b[0]-a[0])*(d[1]-b[1])-(b[1]-a[1])*(d[0]-b[0]))>1e-9)P.push({x:b[0],z:b[1]});}
+if(P.length>=3)out.push(P);}
+return out;}
+function _d3soilBanks(){try{
+var T=window.THREE,sh=_D3._soilShape;if(!sh||!_D3.soil||!_D3.hillMesh)return 0;if(!sh._holes0)sh._holes0=sh.holes.slice();
+var back=function(){if(_D3._soilBankKey){_D3._soilBankKey=null;sh.holes=sh._holes0.slice();_d3soilReExtrude(sh);}_D3._soilMask=null;return 0;};
+if(_D3._noSoilBanks)return back();
+var K=_D3_SOIL_MASK,t0=performance.now(),R=(_D3.islandHalf>0?_D3.islandHalf:44)-0.03,cs=Math.max(K.cs,2*R/K.max),n=Math.floor(2*R/cs)+1,x0=-(n-1)*cs/2;
+var lo=(typeof _d3drawnLo==='function')?_d3drawnLo:_d3drawnH;
+var M=_d3soilMaskOf(sh._holes0.map(function(h){return h.getPoints();}),function(x,z){return +lo(x,z);},_D3_SOIL_TOP+K.clear,x0,cs,n);
+if(!M)return back();
+var hsh=2166136261,o,op=0;for(o=0;o<M.length;o++){hsh=Math.imul(hsh^M[o],16777619);op+=M[o];}var key=(hsh>>>0).toString(36)+':'+n+':'+cs.toFixed(3);
+if(key===_D3._soilBankKey)return _D3._soilBankN;
+var area=function(P,kz){var a=0;for(var q=0;q<P.length;q++){var p=P[q],r=P[(q+1)%P.length];a+=p.x*r[kz]-r.x*p[kz];}return a;},cw=area(sh.getPoints(),'y')>0,H=[];
+_d3maskLoops(M,n,x0,cs).forEach(function(P){P=_d3polyClipRect(P,R);if(!P||P.length<3)return;if((area(P,'z')>0)===cw)P.reverse();
+var hp=new T.Path();P.forEach(function(v,q){if(q)hp.lineTo(v.x,v.z);else hp.moveTo(v.x,v.z);});hp.closePath();H.push(hp);});
+sh.holes=H;_D3._soilBankKey=key;_D3._soilBankN=H.length;_d3soilReExtrude(sh);
+_D3._soilMask={n:n,cs:cs,open:op,holes:H.length,carve:sh._holes0.length,ms:+(performance.now()-t0).toFixed(1)};return H.length;
+}catch(_sb9){_D3._soilBankErr=(_sb9&&_sb9.message)||String(_sb9);return 0;}}
+function _d3soilReExtrude(sh){var T=window.THREE,g=new T.ExtrudeGeometry(sh,{depth:_D3_SOIL_MIN,bevelEnabled:false});if(_D3.soil.geometry)_D3.soil.geometry.dispose();_D3.soil.geometry=g;}
+var _D3_LAKE_WATERLINE={step:0.1,max:3.5,min:0,margin:0.15,clear:0.01};
+function _d3waterlineOut(lp,hAt,top,K){K=K||_D3_LAKE_WATERLINE;var M=lp.length,i,a=0,g=[],P=[];
 for(i=0;i<M;i++){var p=lp[i],q=lp[(i+1)%M];a+=p.x*q.z-q.x*p.z;}var sg=a>0?1:-1;
 var nr=[];for(i=0;i<M;i++){var p0=lp[(i+M-1)%M],p1=lp[i],p2=lp[(i+1)%M],e1x=p1.x-p0.x,e1z=p1.z-p0.z,e2x=p2.x-p1.x,e2z=p2.z-p1.z,l1=Math.hypot(e1x,e1z)||1,l2=Math.hypot(e2x,e2z)||1;
 var nx=sg*(e1z/l1+e2z/l2),nz=-sg*(e1x/l1+e2x/l2),nl=Math.hypot(nx,nz)||1;nr.push([nx/nl,nz/nl]);}
-for(i=0;i<M;i++){var s,o=K.min;for(s=K.step;s<=K.max+1e-9;s+=K.step){var h=hAt(lp[i].x+nr[i][0]*s,lp[i].z+nr[i][1]*s);if(h===h&&h>=top+K.clear){if(K.last)continue;break;}o=s;}
+for(i=0;i<M;i++){var s,o=K.min;for(s=K.step;s<=K.max+1e-9;s+=K.step){var h=hAt(lp[i].x+nr[i][0]*s,lp[i].z+nr[i][1]*s);if(h===h&&h>=top+K.clear)break;o=s;}
 g.push(Math.min(K.max,Math.max(K.min,o+K.margin)));}
-var gm=K.nb===false?g:g.map(function(v,j){return Math.max(v,g[(j+M-1)%M],g[(j+1)%M]);});
-for(i=0;i<M;i++)P.push({x:lp[i].x+nr[i][0]*gm[i],z:lp[i].z+nr[i][1]*gm[i]});
-return {pts:P,out:gm};}
-function _d3soilInPoly(x,z,P){var c=false,i,j;for(i=0,j=P.length-1;i<P.length;j=i++){var xi=P[i].x,zi=P[i].z!=null?P[i].z:P[i].y,xj=P[j].x,zj=P[j].z!=null?P[j].z:P[j].y;
-if(((zi>z)!==(zj>z))&&(x<(xj-xi)*(z-zi)/(zj-zi)+xi))c=!c;}return c;}
-function _d3soilBanks(){try{
-var T=window.THREE,sh=_D3._soilShape,L=(_D3._soilLakeHoles||[]).concat(_D3._soilRiverHoles||[]);if(!sh||!L.length||!_D3.soil||!_D3.hillMesh)return 0;
-if(_D3._noSoilBanks){if(_D3._soilBankKey){_D3._soilBankKey=null;L.forEach(function(e){sh.holes[e.hi]=e.p0;});_d3soilReExtrude(sh);}return 0;}
-var R=(_D3.islandHalf>0?_D3.islandHalf:44),top=_D3_SOIL_TOP,hAt=function(x,z){return +_d3drawnH(x,z);},key=[],n=0;
-var lakeHi={};L.forEach(function(e){lakeHi[e.hi]=1;});
-var rest=sh.holes.map(function(h,k){return lakeHi[k]?null:h.getPoints();}).filter(Boolean),G=L.map(function(e){return _d3soilBankOut(e.lp,hAt,top);});
-L.forEach(function(e,i){var o=G[i],P=[],j;
-for(j=0;j<o.pts.length;j++){var q=o.pts[j],bad=rest.some(function(H){return _d3soilInPoly(q.x,q.z,H);})||G.some(function(g2,k){return k!==i&&(_d3soilInPoly(q.x,q.z,g2.pts)||_d3soilInPoly(q.x,q.z,L[k].lp));});
-if(bad){var p=e.lp[j],dx=q.x-p.x,dz=q.z-p.z,dl=Math.hypot(dx,dz)||1,m0=e.riv?0:_D3_SOIL_BANK.min;q={x:p.x+dx/dl*m0,z:p.z+dz/dl*m0};} else if(o.out[j]>_D3_SOIL_BANK.min+_D3_SOIL_BANK.margin)n++;P.push(q);}
-P=_d3polyClipRect(P,R-0.03);if(!P||P.length<3)return;
-var hp=new T.Path();for(j=0;j<P.length;j++){if(j)hp.lineTo(P[j].x,P[j].z);else hp.moveTo(P[j].x,P[j].z);}hp.closePath();
-sh.holes[e.hi]=hp;key.push(P.map(function(v){return v.x.toFixed(2)+','+v.z.toFixed(2);}).join(';'));});
-var k=key.join('|');_D3._soilBankN=n;if(k===_D3._soilBankKey)return n;_D3._soilBankKey=k;_d3soilReExtrude(sh);return n;
-}catch(_sb9){_D3._soilBankErr=(_sb9&&_sb9.message)||String(_sb9);return 0;}}
-function _d3soilReExtrude(sh){var T=window.THREE,g=new T.ExtrudeGeometry(sh,{depth:_D3_SOIL_MIN,bevelEnabled:false});if(_D3.soil.geometry)_D3.soil.geometry.dispose();_D3.soil.geometry=g;}
-var _D3_LAKE_WATERLINE={step:0.1,max:3.5,min:0,margin:0.15,clear:0.01,nb:false};
+for(i=0;i<M;i++)P.push({x:lp[i].x+nr[i][0]*g[i],z:lp[i].z+nr[i][1]*g[i]});
+return {pts:P,out:g};}
 function _d3lakeShores(){try{
 var T=window.THREE,L=_D3._lakeDrawn;if(!L||!L.length||!_D3.hillMesh||_D3._noLakeShores)return 0;
 var wl=(typeof _d3diveLakeY==='function')?_d3diveLakeY():-0.02,hAt=function(x,z){return +_d3drawnH(x,z);},sh=_D3._soilShape,lk={};
 (_D3._soilLakeHoles||[]).forEach(function(e){lk[e.hi]=1;});
-var rest=sh?sh.holes.map(function(h,k){return lk[k]?null:h.getPoints();}).filter(Boolean):[],key=[],n=0;
+var rest=sh?(sh._holes0||sh.holes).map(function(h,k){return lk[k]?null:h.getPoints();}).filter(Boolean):[],key=[],n=0;
 L.forEach(function(r,i){if(r.salt||!r.pts||r.pts.length<3||!r.m)return;
-var o=_d3soilBankOut(r.pts,hAt,wl,_D3_LAKE_WATERLINE),P=[],j,far=0;
+var o=_d3waterlineOut(r.pts,hAt,wl),P=[],j,far=0;
 for(j=0;j<o.pts.length;j++){var q=o.pts[j],bad=rest.some(function(H){return _d3soilInPoly(q.x,q.z,H);})||L.some(function(f,k){return k!==i&&f.pts&&_d3soilInPoly(q.x,q.z,f.pts);});
 if(bad)q={x:r.pts[j].x,z:r.pts[j].z};else far=Math.max(far,o.out[j]);P.push(q);}
 if(!(far>_D3_LAKE_WATERLINE.margin+0.25))return;
