@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='64e6c68';
+var RCG_BUILD='2075117';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -67850,7 +67850,7 @@ var b=function(l,a){return '<button type="button" data-a="'+a+'" style="margin:3
 box.innerHTML='<div style="margin-top:6px">'+(W.on?(_D3._ageSt||[]).map(function(o,i){return 'Water '+(i+1)+': '+o.stage+' ('+Math.round(Math.min(1,o.fill)*100)+'% filled)';}).join('<br>')+'<br>':'')+b(W.on?'Stop aging':'Let the water age','T')+(W.on?b('Dredge it all back','D'):'')+'</div>';
 d.appendChild(box);box.querySelectorAll('button').forEach(function(el){el.onclick=function(){var a=el.getAttribute('data-a'),W2=_d3ageLoad();if(a==='T')W2.on=W2.on?0:1;else W2.f={};_d3ageSave(W2);_D3._lkKey=null;_d3ageStep();driftAgingPanel();};});
 }
-var _D3_FLD={reach:25,cell:1,packRate:0.012,melt:0.22,rain:0.16,rainT:20,min:0.05,T:30,pave:0.004,gw:[0.06,0,0,0.12],ctl:0.5,jam:0.18,jamR:9,pools:4,poolR:1.1};
+var _D3_FLD={icePad:0.3,reach:25,cell:1,packRate:0.012,melt:0.22,rain:0.16,rainT:20,min:0.05,T:30,pave:0.004,gw:[0.06,0,0,0.12],ctl:0.5,jam:0.18,jamR:9,pools:4,poolR:1.1};
 var _D3_FLD_CALL={k:'flood',i:'\ud83c\udf0a',lbl:'Flood',svc:'firestation',crew:'Fire engine',scene:18,good:70,late:160,cash:190,xp:40,stat:'floodRescues',ok:'Everyone is out of the water',bad:'The water got there first',what:'flooding'};
 function _d3fldKind(BY){BY=BY||((typeof _D3_EMG_BY!=='undefined')?_D3_EMG_BY:null);if(BY&&!BY.flood)BY.flood=_D3_FLD_CALL;return BY;}
 function _d3floodHOf(cause,pack,pave,sponge,ctl,K){K=K||_D3_FLD;var h=cause==='melt'?K.melt*Math.max(0,Math.min(1,pack)):K.rain*(1+Math.max(0,Math.min(1,pave)));return h*(sponge==null?1:sponge)*(ctl?K.ctl:1);}
@@ -67910,9 +67910,14 @@ function _d3fldDress(){
 var D=_D3,T=window.THREE,K=_D3_FLD;if(D._fldD){_d3groupFree(D._fldD);D._fldD=null;}if(!D.scene||D._noFloods)return;
 var s=0;try{s=(typeof _d3season==='function')?_d3season():0;}catch(_s){}var Gr=new T.Group(),G=_d3fldGrid();Gr.name='floodsDress';
 if(s===2&&G&&typeof _d3wlOn==='function'&&_d3wlOn()){
-var R2=new Uint8Array(G.n*G.n),i2;for(i2=0;i2<G.n*G.n;i2++)if(G.seed[i2]&&G.own[i2]<=-2&&G.own[i2]!==-3)for(var dx=-3;dx<=3;dx++)for(var dz=-3;dz<=3;dz++){var j2=i2+dz*G.n+dx;if(j2>=0&&j2<R2.length&&G.seed[j2])R2[j2]=1;}
-var it=_d3isoTris(G.n,G.n,function(q){return R2[q]?1:-1;},function(q){return R2[q]?G.L[q]+0.015:0;},-G.ext,-G.ext,K.cell);D._fldIce=0;for(i2=0;i2<R2.length;i2++)D._fldIce+=R2[i2];
-if(it.d.length){var ig=new T.BufferGeometry();ig.setAttribute('position',new T.Float32BufferAttribute(it.p,3));ig.computeVertexNormals();var IM=new T.Mesh(ig,new T.MeshStandardMaterial({color:0xdce9f0,roughness:0.25,metalness:0.05,transparent:true,opacity:0.92,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}));
+var hm=0;(typeof _d3riversAll==='function'?_d3riversAll():[]).forEach(function(r){(r.H||[]).forEach(function(v){if(v>hm)hm=v;});});
+var rc=Math.ceil(hm+0.2+K.icePad+1.5),NR={},near=function(q){if(!(q in NR)){var r=_d3riverNear(-G.ext+(q%G.n)*K.cell,-G.ext+((q/G.n)|0)*K.cell);NR[q]=(r&&isFinite(r.d))?r:null;}return NR[q];},iv=function(q){var r=R2[q]?near(q):null;return r?r.half+0.2+K.icePad-r.d:-1;};
+var R2=new Uint8Array(G.n*G.n),i2;for(i2=0;i2<G.n*G.n;i2++)if(G.seed[i2]&&G.own[i2]<=-2&&G.own[i2]!==-3)for(var dx=-rc;dx<=rc;dx++)for(var dz=-rc;dz<=rc;dz++){var j2=i2+dz*G.n+dx;if(j2>=0&&j2<R2.length&&Math.abs((i2%G.n)+dx-(j2%G.n))<1)R2[j2]=1;}
+var it=_d3isoTris(G.n,G.n,iv,function(q){var r=near(q);return r?r.surf+0.015:0;},-G.ext,-G.ext,K.cell);D._fldIce=0;for(i2=0;i2<R2.length;i2++)if(R2[i2]&&iv(i2)>0)D._fldIce++;
+if(it.d.length){var ig=new T.BufferGeometry();ig.setAttribute('position',new T.Float32BufferAttribute(it.p,3));ig.computeVertexNormals();
+var ivc=(typeof _d3iceCol==='function'),wa=0;try{wa=((typeof _d3wx==='function')?_d3wx().dir:35)*Math.PI/180;}catch(_w){}
+if(ivc){var nv=it.p.length/3,IC=new Float32Array(nv*4),vi;for(vi=0;vi<nv;vi++){var cc=_d3iceCol(it.p[vi*3],it.p[vi*3+2],41,wa);IC[vi*4]=cc[0];IC[vi*4+1]=cc[1];IC[vi*4+2]=cc[2];IC[vi*4+3]=cc[3];}ig.setAttribute('color',new T.BufferAttribute(IC,4));}
+var IM=new T.Mesh(ig,new T.MeshStandardMaterial({color:ivc?0xffffff:0xdce9f0,vertexColors:ivc,roughness:0.25,metalness:0.05,transparent:true,opacity:ivc?1:0.92,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}));
 try{if(window._d3EnvTex)IM.material.envMap=window._d3EnvTex;}catch(_e){}IM.name='riverIce';Gr.add(IM);}}
 else if(s===2&&G){var ice=[];for(var i=0;i<G.n*G.n;i++)if(G.seed[i]&&G.own[i]<=-2&&G.own[i]!==-3)ice.push(i);if(ice.length){var I=new T.InstancedMesh(new T.PlaneGeometry(K.cell*1.02,K.cell*1.02),_mat(0xe2eef4,{r:0.3,t:true,op:0.9}),ice.length),mx=new T.Matrix4(),q=new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),-Math.PI/2),sc=new T.Vector3(1,1,1),p=new T.Vector3();
 ice.forEach(function(j,k){p.set(-G.ext+(j%G.n)*K.cell,G.L[j]+0.015,-G.ext+((j/G.n)|0)*K.cell);mx.compose(p,q,sc);I.setMatrixAt(k,mx);});I.name='riverIce';Gr.add(I);}D._fldIce=ice.length;}else D._fldIce=0;
