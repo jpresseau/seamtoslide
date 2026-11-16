@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='7a4a3dc';
+var RCG_BUILD='7071d48';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -44735,7 +44735,7 @@ function _d3saltNote(pts){(_D3.saltPts=_D3.saltPts||[]).push(pts);_D3.saltN=(_D3
 function _d3inSalt(x,z){var S=_D3&&_D3.saltPts;if(!S||!S.length)return false;var k;for(k=0;k<S.length;k++){var P=S[k],ins=false,a,b,n=P.length;for(a=0,b=n-1;a<n;b=a++){var pa=P[a],pb=P[b];if(((pa.z>z)!==(pb.z>z))&&(x<(pb.x-pa.x)*(z-pa.z)/((pb.z-pa.z)||1e-9)+pa.x))ins=!ins;}if(ins)return true;}return false;}
 function _d3lakeWaves(pts,parent){try{var T=window.THREE;if(!pts||pts.length<3)return;var n=pts.length,cx=0,cz=0,i;for(i=0;i<n;i++){cx+=pts[i].x;cz+=pts[i].z;}cx/=n;cz/=n;
 var Y=0.06;var verts=[],amp=[],pha=[];verts.push(cx,Y,cz);amp.push(0.030);pha.push(0);for(i=0;i<n;i++){var mx=cx+(pts[i].x-cx)*0.55,mz=cz+(pts[i].z-cz)*0.55;verts.push(mx,Y,mz);amp.push(0.022);pha.push(mx*0.7+mz*0.9);}for(i=0;i<n;i++){verts.push(pts[i].x,Y,pts[i].z);amp.push(0.010);pha.push(pts[i].x*0.7+pts[i].z*0.9);}var idx=[],MID=1,OUT=1+n;for(i=0;i<n;i++){var a=MID+i,b=MID+((i+1)%n);idx.push(0,a,b);var oa=OUT+i,ob=OUT+((i+1)%n);idx.push(a,oa,b,b,oa,ob);}var geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(verts,3));geo.setIndex(idx);geo.computeVertexNormals(); var mat=_mat(0x14618f,{t:true,op:0.22,r:0.14,m:0.45,ds:true});var mesh=new T.Mesh(geo,mat);mesh.userData.noMerge=true;mesh.renderOrder=3;parent.add(mesh);_D3.lakeWaves={geo:geo,base:verts.slice(),amp:amp,pha:pha,n:1+2*n,mesh:mesh};}catch(e){}}
-function _d3lakeTrench(pts,parent,WY){var T=window.THREE;if(!pts||pts.length<3)return;var earthM=_mat(0x8a6b45,{r:0.97,flat:true}),sandM=_mat(0xbfa877,{r:0.97,flat:true}),n=pts.length,cx=0,cz=0,i;for(i=0;i<n;i++){cx+=pts[i].x;cz+=pts[i].z;}cx/=n;cz/=n;var nrm=[];for(i=0;i<n;i++){var a=pts[(i-1+n)%n],b=pts[i],c=pts[(i+1)%n];var tx=c.x-a.x,tz=c.z-a.z,tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;var nx=-tz,nz=tx;if((nx*(b.x-cx)+nz*(b.z-cz))<0){nx=-nx;nz=-nz;}nrm.push({x:nx,z:nz});}var wy=-WY-0.12;function ring(o0,y0,o1,y1,mat){var pos=[],idx=[],k;for(k=0;k<=n;k++){var j=k%n,b=pts[j],nn=nrm[j];pos.push(b.x+nn.x*o0,y0,b.z+nn.z*o0,b.x+nn.x*o1,y1,b.z+nn.z*o1);}for(k=0;k<n;k++){var i0=k*2,i1=k*2+1,j0=(k+1)*2,j1=(k+1)*2+1;idx.push(i0,j0,i1,i1,j0,j1);}var geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setIndex(idx);geo.computeVertexNormals();var mm=new T.Mesh(geo,mat);mm.receiveShadow=true;parent.add(mm);}ring(0.5,0.0,0.16,-WY*0.5,earthM);ring(0.16,-WY*0.5,-0.05,wy,sandM);var rkA=_mat(0x9a9387,{r:0.96,flat:true}),rkB=_mat(0x847d70,{r:0.96,flat:true}),sd=29;function rr(){sd=(sd*9301+49297)%233280;return sd/233280;}var _lbrk=0;for(i=0;i<n;i+=4){if(_lbrk<(_D3.lite?0:12)&&rr()<0.6){_lbrk++;var o=0.05+rr()*0.4,sz=0.05+rr()*0.1,nn=nrm[i],wyL=wy*((0.5-o)/0.55)+sz*0.25;var rkm=new T.Mesh(new T.IcosahedronGeometry(sz,0),rr()<0.5?rkA:rkB);rkm.position.set(pts[i].x+nn.x*o,wyL,pts[i].z+nn.z*o);rkm.rotation.set(rr()*3,rr()*3,rr()*3);rkm.castShadow=true;parent.add(rkm);}}}
+function _d3lakeTrench(pts,parent,WY){var T=window.THREE,_tr9=[];if(!pts||pts.length<3)return _tr9;var earthM=_mat(0x8a6b45,{r:0.97,flat:true}),sandM=_mat(0xbfa877,{r:0.97,flat:true}),n=pts.length,cx=0,cz=0,i;for(i=0;i<n;i++){cx+=pts[i].x;cz+=pts[i].z;}cx/=n;cz/=n;var nrm=[];for(i=0;i<n;i++){var a=pts[(i-1+n)%n],b=pts[i],c=pts[(i+1)%n];var tx=c.x-a.x,tz=c.z-a.z,tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;var nx=-tz,nz=tx;if((nx*(b.x-cx)+nz*(b.z-cz))<0){nx=-nx;nz=-nz;}nrm.push({x:nx,z:nz});}var wy=-WY-0.12;function ring(o0,y0,o1,y1,mat){var pos=[],idx=[],k;for(k=0;k<=n;k++){var j=k%n,b=pts[j],nn=nrm[j];pos.push(b.x+nn.x*o0,y0,b.z+nn.z*o0,b.x+nn.x*o1,y1,b.z+nn.z*o1);}for(k=0;k<n;k++){var i0=k*2,i1=k*2+1,j0=(k+1)*2,j1=(k+1)*2+1;idx.push(i0,j0,i1,i1,j0,j1);}var geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setIndex(idx);geo.computeVertexNormals();var mm=new T.Mesh(geo,mat);mm.receiveShadow=true;parent.add(mm);_tr9.push(mm);}ring(0.5,0.0,0.16,-WY*0.5,earthM);ring(0.16,-WY*0.5,-0.05,wy,sandM);var rkA=_mat(0x9a9387,{r:0.96,flat:true}),rkB=_mat(0x847d70,{r:0.96,flat:true}),sd=29;function rr(){sd=(sd*9301+49297)%233280;return sd/233280;}var _lbrk=0;for(i=0;i<n;i+=4){if(_lbrk<(_D3.lite?0:12)&&rr()<0.6){_lbrk++;var o=0.05+rr()*0.4,sz=0.05+rr()*0.1,nn=nrm[i],wyL=wy*((0.5-o)/0.55)+sz*0.25;var rkm=new T.Mesh(new T.IcosahedronGeometry(sz,0),rr()<0.5?rkA:rkB);rkm.position.set(pts[i].x+nn.x*o,wyL,pts[i].z+nn.z*o);rkm.rotation.set(rr()*3,rr()*3,rr()*3);rkm.castShadow=true;parent.add(rkm);_tr9.push(rkm);}}return _tr9;}
 function _d3railBoreHW(SC,gap){
 var ballastHalf=_d3railBedHW(SC);
 var off=(typeof gap==='number'&&gap>0)?gap:0;
@@ -45360,14 +45360,14 @@ for(_si=0;_si<4;_si++){_sa=_sq[_si];_sb=_sq[(_si+1)%4];
 _sn=Math.max(1,Math.round(Math.hypot(_sb[0]-_sa[0],_sb[1]-_sa[1])/_sp));
 for(_sj=0;_sj<_sn;_sj++){var _t=_sj/_sn,_x=_sa[0]+(_sb[0]-_sa[0])*_t,_y=_sa[1]+(_sb[1]-_sa[1])*_t;
 if(_si===0&&_sj===0)shape.moveTo(_x,_y);else shape.lineTo(_x,_y);}}
-shape.closePath();})(); _RV9.forEach(function(_rv9){var pts=_rv9.P,hA=_rv9.H,n=pts.length,i,Lr=[],Rr=[];for(i=0;i<n;i++){var a=pts[Math.max(0,i-1)],b=pts[i],c=pts[Math.min(n-1,i+1)];var tx=c.x-a.x,tz=c.z-a.z,tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;var nx=-tz,nz=tx,Wr=hA[i]+0.40;Lr.push({x:b.x+nx*Wr,z:b.z+nz*Wr});Rr.push({x:b.x-nx*Wr,z:b.z-nz*Wr});}var ring=Lr.concat(Rr.reverse()),hp=new T.Path();hp.moveTo(ring[0].x,ring[0].z);for(i=1;i<ring.length;i++)hp.lineTo(ring[i].x,ring[i].z);hp.closePath();shape.holes.push(hp);});if(hasL){ var _hl=[_D3.lakePts].concat(_D3.lakePtsExtra||[]),_hq;for(_hq=0;_hq<_hl.length;_hq++){var lp=_hl[_hq];if(!lp||lp.length<3)continue;var M=lp.length,cx=0,cz=0,j,grown=[];for(j=0;j<M;j++){cx+=lp[j].x;cz+=lp[j].z;}cx/=M;cz/=M;for(j=0;j<M;j++){var dx=lp[j].x-cx,dz=lp[j].z-cz,dl=Math.hypot(dx,dz)||1;grown.push({x:lp[j].x+dx/dl*0.5,z:lp[j].z+dz/dl*0.5});}grown=_d3polyClipRect(grown,R-0.03);if(!grown||grown.length<3)continue;var lh=new T.Path();for(j=0;j<grown.length;j++){if(j===0)lh.moveTo(grown[j].x,grown[j].z);else lh.lineTo(grown[j].x,grown[j].z);}lh.closePath();shape.holes.push(lh);}}if(hasP){ var _pk;for(_pk=0;_pk<_pits.length;_pk++){var _pr=_d3polyClipRect(_pits[_pk],R-0.03);if(!_pr||_pr.length<3)continue;var _ph9=new T.Path(),_pj;for(_pj=0;_pj<_pr.length;_pj++){if(_pj===0)_ph9.moveTo(_pr[_pj].x,_pr[_pj].z);else _ph9.lineTo(_pr[_pj].x,_pr[_pj].z);}_ph9.closePath();shape.holes.push(_ph9);}}if(hasM){ var _mk;for(_mk=0;_mk<_mines.length;_mk++){var _mr=_d3polyClipRect(_mines[_mk],R-0.03);if(!_mr||_mr.length<3)continue;var _mh9=new T.Path(),_mj;for(_mj=0;_mj<_mr.length;_mj++){if(_mj===0)_mh9.moveTo(_mr[_mj].x,_mr[_mj].z);else _mh9.lineTo(_mr[_mj].x,_mr[_mj].z);}_mh9.closePath();shape.holes.push(_mh9);}}var geo=new T.ShapeGeometry(shape);if(_D3.grass.geometry)_D3.grass.geometry.dispose();_D3.grass.geometry=geo;_D3.grass.rotation.x=Math.PI/2;_D3.grass.position.y=0; try{var _sd9=_D3_SOIL_MIN,_se9=new T.ExtrudeGeometry(shape,{depth:_sd9,bevelEnabled:false}); if(_D3.soil){if(_D3.soil.geometry)_D3.soil.geometry.dispose();_D3.soil.geometry=_se9;_D3.soil.rotation.x=Math.PI/2;_D3.soil.position.y=_D3_SOIL_TOP;_D3.soil.scale.set(1,1,1);}_D3._soilShape=shape;}catch(_so9){}}catch(e){}}
+shape.closePath();})(); _RV9.forEach(function(_rv9){var pts=_rv9.P,hA=_rv9.H,n=pts.length,i,Lr=[],Rr=[];for(i=0;i<n;i++){var a=pts[Math.max(0,i-1)],b=pts[i],c=pts[Math.min(n-1,i+1)];var tx=c.x-a.x,tz=c.z-a.z,tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;var nx=-tz,nz=tx,Wr=hA[i]+0.40;Lr.push({x:b.x+nx*Wr,z:b.z+nz*Wr});Rr.push({x:b.x-nx*Wr,z:b.z-nz*Wr});}var ring=Lr.concat(Rr.reverse()),hp=new T.Path();hp.moveTo(ring[0].x,ring[0].z);for(i=1;i<ring.length;i++)hp.lineTo(ring[i].x,ring[i].z);hp.closePath();shape.holes.push(hp);});_D3._soilLakeHoles=[];_D3._soilBankKey=null;if(hasL){ var _hl=[_D3.lakePts].concat(_D3.lakePtsExtra||[]),_hq;for(_hq=0;_hq<_hl.length;_hq++){var lp=_hl[_hq];if(!lp||lp.length<3)continue;var M=lp.length,cx=0,cz=0,j,grown=[];for(j=0;j<M;j++){cx+=lp[j].x;cz+=lp[j].z;}cx/=M;cz/=M;for(j=0;j<M;j++){var dx=lp[j].x-cx,dz=lp[j].z-cz,dl=Math.hypot(dx,dz)||1;grown.push({x:lp[j].x+dx/dl*0.5,z:lp[j].z+dz/dl*0.5});}grown=_d3polyClipRect(grown,R-0.03);if(!grown||grown.length<3)continue;var lh=new T.Path();for(j=0;j<grown.length;j++){if(j===0)lh.moveTo(grown[j].x,grown[j].z);else lh.lineTo(grown[j].x,grown[j].z);}lh.closePath();_D3._soilLakeHoles.push({lp:lp,hi:shape.holes.length,p0:lh});shape.holes.push(lh);}} if(hasP){ var _pk;for(_pk=0;_pk<_pits.length;_pk++){var _pr=_d3polyClipRect(_pits[_pk],R-0.03);if(!_pr||_pr.length<3)continue;var _ph9=new T.Path(),_pj;for(_pj=0;_pj<_pr.length;_pj++){if(_pj===0)_ph9.moveTo(_pr[_pj].x,_pr[_pj].z);else _ph9.lineTo(_pr[_pj].x,_pr[_pj].z);}_ph9.closePath();shape.holes.push(_ph9);}}if(hasM){ var _mk;for(_mk=0;_mk<_mines.length;_mk++){var _mr=_d3polyClipRect(_mines[_mk],R-0.03);if(!_mr||_mr.length<3)continue;var _mh9=new T.Path(),_mj;for(_mj=0;_mj<_mr.length;_mj++){if(_mj===0)_mh9.moveTo(_mr[_mj].x,_mr[_mj].z);else _mh9.lineTo(_mr[_mj].x,_mr[_mj].z);}_mh9.closePath();shape.holes.push(_mh9);}}var geo=new T.ShapeGeometry(shape);if(_D3.grass.geometry)_D3.grass.geometry.dispose();_D3.grass.geometry=geo;_D3.grass.rotation.x=Math.PI/2;_D3.grass.position.y=0; try{var _sd9=_D3_SOIL_MIN,_se9=new T.ExtrudeGeometry(shape,{depth:_sd9,bevelEnabled:false}); if(_D3.soil){if(_D3.soil.geometry)_D3.soil.geometry.dispose();_D3.soil.geometry=_se9;_D3.soil.rotation.x=Math.PI/2;_D3.soil.position.y=_D3_SOIL_TOP;_D3.soil.scale.set(1,1,1);}_D3._soilShape=shape;}catch(_so9){}}catch(e){}}
 function _d3water(g,m){
 var T=window.THREE;
 var smat=_mat(0x1573a6,{r:0.18,m:0.12,t:true,op:0.56,ds:true});
 var wmat=_mat(0x14b8ec,{r:0.1,m:0.2,t:true,op:0.42,ds:true}) ;
 try{if(typeof _d3waterLookApply==='function')_d3waterLookApply(wmat);}catch(_wl9){}
 try{if(typeof _d3wfxPatch==='function'){_d3wfxPatch(smat,'sea');_d3wfxPatch(wmat,'fresh');}}catch(_wf9){}
-var WY=_D3.WY=0.08;
+_D3._lakeDrawn=[];_D3._lakeShoreKey=null;var WY=_D3.WY=0.08;
 var rg=_D3.riverGrp=new T.Group();rg.position.y=-WY;g.add(rg);
 var lg=_D3.lakeGrp=new T.Group();lg.position.y=-WY;g.add(lg);
 _D3.riverPath=null;_D3.lakePts=null;_D3.riverExtra=[];_D3.riverRib=[];
@@ -45394,7 +45394,7 @@ var lv=_da.lake.map(_d3xy);
 if(_da.lmode){_D3.lakeHandles=[];_D3._lakeM={cx:m.cx,cy:m.cy,s:m.s};for(var _lhi=0;_lhi<_da.lake.length;_lhi++){ var _lcp=_da.lake[_lhi],_lcx=(_lcp.x!=null?_lcp.x:_lcp[0]),_lcy=(_lcp.y!=null?_lcp.y:_lcp[1]);var _lhd=new T.Mesh(new T.CircleGeometry(0.7,22),_mat(0x7fe0ff,{e:0x4ad6ff,ei:0.65,ds:true}));_lhd.rotation.x=-Math.PI/2;_lhd.position.set((_lcx-m.cx)*m.s,0.10,(_lcy-m.cy)*m.s);_lhd.userData.noMerge=true;_lhd.renderOrder=998;g.add(_lhd);var _lhr=new T.Mesh(new T.RingGeometry(0.7,0.88,20),_mat(0xffffff,{e:0xffffff,ei:0.5,t:true,op:0.9,ds:true}));_lhr.rotation.x=-Math.PI/2;_lhr.position.set((_lcx-m.cx)*m.s,0.08,(_lcy-m.cy)*m.s);_lhr.userData.noMerge=true;g.add(_lhr);_D3.lakeHandles[_lhi]={d:_lhd,r:_lhr};}}
 var _salt0=(typeof driftLakeIsSalt==='function')&&driftLakeIsSalt(_da.lakeIdx||0);
 var lpoly=(typeof _catmullClosed==='function')?(_salt0?_catmullOpen(lv,12):_catmullClosed(lv,12)):lv.map(function(p){return {x:p[0],y:p[1]};});var _lwpts=lpoly.map(function(e){return {x:(e.x-m.cx)*m.s,z:(e.y-m.cy)*m.s};}); if(_salt0){_lwpts=_d3seaShape(_lwpts);}var _lwdraw=_salt0?_d3seaDrawPts(_lwpts):_lwpts;var sh=new T.Shape();_lwdraw.forEach(function(p,i){if(i===0)sh.moveTo(p.x,p.z);else sh.lineTo(p.x,p.z);});
-var lgeo=new T.ShapeGeometry(sh); var lake=new T.Mesh(lgeo,_salt0?smat:wmat);lake.rotation.x=Math.PI/2;lake.position.y=0.06;lake.receiveShadow=true;lg.add(lake);_D3.lakePts=_lwpts;if(_salt0){_d3seaFloor(sh,g);} try{_d3lakeTrench(_lwpts,g,WY);}catch(_le){}try{_d3lakeWaves(_lwpts,lg) ;if(_salt0&&_D3.lakeWaves)_D3.lakeWaves.salt=true;}catch(_lw){}if(_salt0)_d3saltNote(_lwpts);if(_da.lakes&&_da.lakes.length>1){var _eli;for(_eli=0;_eli<_da.lakes.length;_eli++){if(_eli===(_da.lakeIdx||0))continue;var _elk=_da.lakes[_eli];if(!_elk||_elk.length<3)continue;try{var _elv=_elk.map(_d3xy),_esalt=(typeof driftLakeIsSalt==='function')&&driftLakeIsSalt(_eli),_elp=(typeof _catmullClosed==='function')?(_esalt?_catmullOpen(_elv,12):_catmullClosed(_elv,12)):_elv.map(function(p){return {x:p[0],y:p[1]};});var _ewp=_elp.map(function(e){return {x:(e.x-m.cx)*m.s,z:(e.y-m.cy)*m.s};});if(_esalt){_ewp=_d3seaShape(_ewp);}var _ewdraw=_esalt?_d3seaDrawPts(_ewp):_ewp;var _esh=new T.Shape();_ewdraw.forEach(function(p,i){if(i===0)_esh.moveTo(p.x,p.z);else _esh.lineTo(p.x,p.z);});var _elg=new T.ShapeGeometry(_esh); var _elake=new T.Mesh(_elg,_esalt?smat:wmat);_elake.rotation.x=Math.PI/2;_elake.position.y=0.06;lg.add(_elake);if(_esalt){_ewp.salt=true; _d3saltNote(_ewp);_d3seaFloor(_esh,g);} (_D3.lakePtsExtra=_D3.lakePtsExtra||[]).push(_ewp);}catch(_ee){}}}
+var lgeo=new T.ShapeGeometry(sh); var lake=new T.Mesh(lgeo,_salt0?smat:wmat);lake.rotation.x=Math.PI/2;lake.position.y=0.06;lake.receiveShadow=true;lg.add(lake);var _lkRec9={m:lake,pts:_lwpts,salt:_salt0,tr:[],act:1};_D3._lakeDrawn.push(_lkRec9);_D3.lakePts=_lwpts;if(_salt0){_d3seaFloor(sh,g);} try{_lkRec9.tr=_d3lakeTrench(_lwpts,g,WY)||[];}catch(_le){}try{_d3lakeWaves(_lwpts,lg) ;if(_salt0&&_D3.lakeWaves)_D3.lakeWaves.salt=true;}catch(_lw){}if(_salt0)_d3saltNote(_lwpts);if(_da.lakes&&_da.lakes.length>1){var _eli;for(_eli=0;_eli<_da.lakes.length;_eli++){if(_eli===(_da.lakeIdx||0))continue;var _elk=_da.lakes[_eli];if(!_elk||_elk.length<3)continue;try{var _elv=_elk.map(_d3xy),_esalt=(typeof driftLakeIsSalt==='function')&&driftLakeIsSalt(_eli),_elp=(typeof _catmullClosed==='function')?(_esalt?_catmullOpen(_elv,12):_catmullClosed(_elv,12)):_elv.map(function(p){return {x:p[0],y:p[1]};});var _ewp=_elp.map(function(e){return {x:(e.x-m.cx)*m.s,z:(e.y-m.cy)*m.s};});if(_esalt){_ewp=_d3seaShape(_ewp);}var _ewdraw=_esalt?_d3seaDrawPts(_ewp):_ewp;var _esh=new T.Shape();_ewdraw.forEach(function(p,i){if(i===0)_esh.moveTo(p.x,p.z);else _esh.lineTo(p.x,p.z);});var _elg=new T.ShapeGeometry(_esh); var _elake=new T.Mesh(_elg,_esalt?smat:wmat);_elake.rotation.x=Math.PI/2;_elake.position.y=0.06;lg.add(_elake);_D3._lakeDrawn.push({m:_elake,pts:_ewp,salt:_esalt,tr:[]});if(_esalt){_ewp.salt=true; _d3saltNote(_ewp);_d3seaFloor(_esh,g);} (_D3.lakePtsExtra=_D3.lakePtsExtra||[]).push(_ewp);}catch(_ee){}}}
 try{if(_D3.waterM&&_D3.waterM.length){
 var _wmA=[];
 (_da.lakes||[]).forEach(function(lk){if(lk&&lk.length>=3)lk.forEach(function(p){var x=(p.x!=null?p.x:p[0]),y=(p.y!=null?p.y:p[1]);_wmA.push({x:(x-m.cx)*m.s,z:(y-m.cy)*m.s});});});
@@ -45544,15 +45544,15 @@ if(d<-0.05||!(x<edge))return 0;var t=Math.max(0,Math.min(1,(x-a)/(edge-a))),s=t*
 }
 function _d3wfxShore(){
 var D=_D3,T=window.THREE,U=_d3wfxU();if(!D||!T)return false;
-var segs=[],L=D.lakePts,i;
-if(L&&L.length>2)_d3wfxSegs(segs,L,!L.salt);
-(D.lakePtsExtra||[]).forEach(function(P){if(P&&P.length>2&&!P.salt)_d3wfxSegs(segs,P,true);});
+var segs=[],L=D.lakePts,i,dr=function(P){return P._drawn||P;},drawn=[];
+if(L&&L.length>2){_d3wfxSegs(segs,dr(L),!L.salt);if(L._drawn)drawn.push(L._drawn);}
+(D.lakePtsExtra||[]).forEach(function(P){if(P&&P.length>2&&!P.salt){_d3wfxSegs(segs,dr(P),true);if(P._drawn)drawn.push(P._drawn);}});
 (D.saltPts||[]).forEach(function(P){if(P&&P!==L)_d3wfxSegs(segs,P,false);});
 if(!segs.length){U.uShoreOn.value=0;D._wfxShore={segs:0};return false;}
 var R=(D.islandHalf>0)?D.islandHalf:44,n=_D3_WFX.grid,x0=-R-2,cs=(2*R+4)/(n-1);
 var key=(typeof _d3fkHash==='function')?_d3fkHash([segs,x0,cs,n]):String(segs.length);
 if(D._wfxShore&&D._wfxShore.key===key&&U.uShore.value){U.uShoreOn.value=1;return true;}
-var t0=performance.now(),dist=_d3wfxDistGrid(segs,x0,x0,cs,n,_D3_WFX.dMax),px=new Uint8Array(n*n*4),wet=(typeof _d3inAnyWater==='function')?_d3inAnyWater:null;
+var t0=performance.now(),dist=_d3wfxDistGrid(segs,x0,x0,cs,n,_D3_WFX.dMax),px=new Uint8Array(n*n*4),wet=(typeof _d3inAnyWater==='function')?_d3inAnyWater:null,w0=wet;if(drawn.length&&w0&&typeof _d3soilInPoly==='function')wet=function(x,z){return w0(x,z)||drawn.some(function(P){return _d3soilInPoly(x,z,P);});};
 for(i=0;i<n*n;i++){var d=dist[i];if(wet&&d<_D3_WFX.dMax&&!wet(x0+(i%n)*cs,x0+Math.floor(i/n)*cs))d=-d;
 var b=_d3wfxPack(d);px[i*4]=b;px[i*4+1]=b;px[i*4+2]=b;px[i*4+3]=255;}
 var tx=U.uShore.value;
@@ -46268,6 +46268,7 @@ return k;
 }
 function _d3islandFloor(){try{
 var T=window.THREE;if(!_D3.scene||_D3._noIslandFloor)return;
+try{if(typeof _d3soilBanks==='function')_d3soilBanks();}catch(_sb9){}try{if(typeof _d3lakeShores==='function')_d3lakeShores();}catch(_ls9){}
 var want=_d3soilDepth(_d3islandDeepest(),_D3_SOIL_TOP,_D3_SOIL_CLEAR,_D3_SOIL_MIN,_D3_SOIL_MAX);
 var need=want-_D3_SOIL_MIN,top=_D3_SOIL_TOP-_D3_SOIL_MIN;
 _D3._soilWant=want;try{if(typeof _d3isleSkirtClamp==='function')_d3isleSkirtClamp();}catch(_ic9){}
@@ -46294,6 +46295,52 @@ if(dusk){g.addColorStop(0,'#232a48');g.addColorStop(0.55,'#5a4a6a');g.addColorSt
 else{g.addColorStop(0,'#8fc0e8');g.addColorStop(0.6,'#bcd9ea');g.addColorStop(1,'#dfeef2');}
 x.fillStyle=g;x.fillRect(0,0,8,256);var t=new window.THREE.CanvasTexture(c);t.needsUpdate=true;return t;
 }
+var _D3_SOIL_BANK={step:0.25,max:7,min:0.5,margin:0.4,clear:0.05,last:true};
+function _d3soilBankOut(lp,hAt,top,K){K=K||_D3_SOIL_BANK;var M=lp.length,i,a=0,g=[],P=[];
+for(i=0;i<M;i++){var p=lp[i],q=lp[(i+1)%M];a+=p.x*q.z-q.x*p.z;}var sg=a>0?1:-1;
+var nr=[];for(i=0;i<M;i++){var p0=lp[(i+M-1)%M],p1=lp[i],p2=lp[(i+1)%M],e1x=p1.x-p0.x,e1z=p1.z-p0.z,e2x=p2.x-p1.x,e2z=p2.z-p1.z,l1=Math.hypot(e1x,e1z)||1,l2=Math.hypot(e2x,e2z)||1;
+var nx=sg*(e1z/l1+e2z/l2),nz=-sg*(e1x/l1+e2x/l2),nl=Math.hypot(nx,nz)||1;nr.push([nx/nl,nz/nl]);}
+for(i=0;i<M;i++){var s,o=K.min;for(s=K.step;s<=K.max+1e-9;s+=K.step){var h=hAt(lp[i].x+nr[i][0]*s,lp[i].z+nr[i][1]*s);if(h===h&&h>=top+K.clear){if(K.last)continue;break;}o=s;}
+g.push(Math.min(K.max,Math.max(K.min,o+K.margin)));}
+var gm=K.nb===false?g:g.map(function(v,j){return Math.max(v,g[(j+M-1)%M],g[(j+1)%M]);});
+for(i=0;i<M;i++)P.push({x:lp[i].x+nr[i][0]*gm[i],z:lp[i].z+nr[i][1]*gm[i]});
+return {pts:P,out:gm};}
+function _d3soilInPoly(x,z,P){var c=false,i,j;for(i=0,j=P.length-1;i<P.length;j=i++){var xi=P[i].x,zi=P[i].z!=null?P[i].z:P[i].y,xj=P[j].x,zj=P[j].z!=null?P[j].z:P[j].y;
+if(((zi>z)!==(zj>z))&&(x<(xj-xi)*(z-zi)/(zj-zi)+xi))c=!c;}return c;}
+function _d3soilBanks(){try{
+var T=window.THREE,sh=_D3._soilShape,L=_D3._soilLakeHoles;if(!sh||!L||!L.length||!_D3.soil||!_D3.hillMesh)return 0;
+if(_D3._noSoilBanks){if(_D3._soilBankKey){_D3._soilBankKey=null;L.forEach(function(e){sh.holes[e.hi]=e.p0;});_d3soilReExtrude(sh);}return 0;}
+var R=(_D3.islandHalf>0?_D3.islandHalf:44),top=_D3_SOIL_TOP,hAt=function(x,z){return +_d3drawnH(x,z);},key=[],n=0;
+var lakeHi={};L.forEach(function(e){lakeHi[e.hi]=1;});
+var rest=sh.holes.map(function(h,k){return lakeHi[k]?null:h.getPoints();}).filter(Boolean),G=L.map(function(e){return _d3soilBankOut(e.lp,hAt,top);});
+L.forEach(function(e,i){var o=G[i],P=[],j;
+for(j=0;j<o.pts.length;j++){var q=o.pts[j],bad=rest.some(function(H){return _d3soilInPoly(q.x,q.z,H);})||G.some(function(g2,k){return k!==i&&(_d3soilInPoly(q.x,q.z,g2.pts)||_d3soilInPoly(q.x,q.z,L[k].lp));});
+if(bad){var p=e.lp[j],dx=q.x-p.x,dz=q.z-p.z,dl=Math.hypot(dx,dz)||1;q={x:p.x+dx/dl*_D3_SOIL_BANK.min,z:p.z+dz/dl*_D3_SOIL_BANK.min};}else if(o.out[j]>_D3_SOIL_BANK.min+_D3_SOIL_BANK.margin)n++;P.push(q);}
+P=_d3polyClipRect(P,R-0.03);if(!P||P.length<3)return;
+var hp=new T.Path();for(j=0;j<P.length;j++){if(j)hp.lineTo(P[j].x,P[j].z);else hp.moveTo(P[j].x,P[j].z);}hp.closePath();
+sh.holes[e.hi]=hp;key.push(P.map(function(v){return v.x.toFixed(2)+','+v.z.toFixed(2);}).join(';'));});
+var k=key.join('|');_D3._soilBankN=n;if(k===_D3._soilBankKey)return n;_D3._soilBankKey=k;_d3soilReExtrude(sh);return n;
+}catch(_sb9){_D3._soilBankErr=(_sb9&&_sb9.message)||String(_sb9);return 0;}}
+function _d3soilReExtrude(sh){var T=window.THREE,g=new T.ExtrudeGeometry(sh,{depth:_D3_SOIL_MIN,bevelEnabled:false});if(_D3.soil.geometry)_D3.soil.geometry.dispose();_D3.soil.geometry=g;}
+var _D3_LAKE_WATERLINE={step:0.1,max:3.5,min:0,margin:0.15,clear:0.01,nb:false};
+function _d3lakeShores(){try{
+var T=window.THREE,L=_D3._lakeDrawn;if(!L||!L.length||!_D3.hillMesh||_D3._noLakeShores)return 0;
+var wl=(typeof _d3diveLakeY==='function')?_d3diveLakeY():-0.02,hAt=function(x,z){return +_d3drawnH(x,z);},sh=_D3._soilShape,lk={};
+(_D3._soilLakeHoles||[]).forEach(function(e){lk[e.hi]=1;});
+var rest=sh?sh.holes.map(function(h,k){return lk[k]?null:h.getPoints();}).filter(Boolean):[],key=[],n=0;
+L.forEach(function(r,i){if(r.salt||!r.pts||r.pts.length<3||!r.m)return;
+var o=_d3soilBankOut(r.pts,hAt,wl,_D3_LAKE_WATERLINE),P=[],j,far=0;
+for(j=0;j<o.pts.length;j++){var q=o.pts[j],bad=rest.some(function(H){return _d3soilInPoly(q.x,q.z,H);})||L.some(function(f,k){return k!==i&&f.pts&&_d3soilInPoly(q.x,q.z,f.pts);});
+if(bad)q={x:r.pts[j].x,z:r.pts[j].z};else far=Math.max(far,o.out[j]);P.push(q);}
+if(!(far>_D3_LAKE_WATERLINE.margin+0.25))return;
+var s=new T.Shape();P.forEach(function(p,k){if(k)s.lineTo(p.x,p.z);else s.moveTo(p.x,p.z);});
+if(!r.g0)r.g0=r.m.geometry;else if(r.m.geometry!==r.g0)r.m.geometry.dispose();r.m.geometry=new T.ShapeGeometry(s);r.out=P;r.pts._drawn=P;n++;
+(r.tr||[]).forEach(function(t){if(t.parent){t.parent.remove(t);r.up=(r.up|0)+1;}});
+var W=r.act&&_D3.lakeWaves,wm=W&&W.mesh;if(wm&&wm.parent&&typeof _d3lakeWaves==='function'){var wp=wm.parent,vis=wm.visible;wp.remove(wm);wm.geometry.dispose();_D3.lakeWaves=null;_d3lakeWaves(P,wp);if(_D3.lakeWaves&&_D3.lakeWaves.mesh)_D3.lakeWaves.mesh.visible=vis;}
+key.push(P.length);});
+if(n&&typeof _d3wfxShore==='function')_d3wfxShore();
+_D3._lakeShoreN=n;return n;
+}catch(_ls9){_D3._lakeShoreErr=(_ls9&&_ls9.message)||String(_ls9);return 0;}}
 var _D3_HOUR_RIGS={
 dawn: {sunC:0xffb070,sunI:1.00,sun:[16.1,6.0,-9.3],hemiC:0x6f7fc0,hemiG:0x3a3540,hemiI:0.26,fillC:0x5a78e0,fillI:0.30,sky:0xe6c4b0,fog:0xd8b6a6,fogN:54,fogF:170},
 dusk: {sunC:0xff7d2e,sunI:0.90,sun:[-16.1,6.0,9.3],hemiC:0x2f3d84,hemiG:0x231f30,hemiI:0.19,fillC:0x4260e0,fillI:0.32,sky:0x5a4a6a,fog:0x6b4d55,fogN:50,fogF:150},
