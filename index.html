@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='2075117';
+var RCG_BUILD='901b326';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -44708,7 +44708,7 @@ var sx=a.x+b.x*2+c.x,sz=a.z+b.z*2+c.z,L2=Math.hypot(sx,sz);
 o.push(L2>0.25?{x:sx/L2,z:sz/L2,from:b.from}:b);}
 return o;})(DIR);
 var OUT=2.6,NV=5,vtx=new Float32Array(nu*(NV+1)*3),col=new Float32Array(nu*(NV+1)*3),idx=[],iv,c=new T.Color();
-var cDry=new T.Color(0xe6d5a6),cWet=new T.Color(0x9c7f52);
+var cDry=_d3sandCol(0xe6d5a6),cWet=_d3sandCol(0x9c7f52);
 var H=function(x,z){try{return (typeof _d3drawnH==='function')?_d3drawnH(x,z):0;}catch(_h){return 0;}};
 for(i=0;i<n;i++){if(!USE[i])continue;var mi=map[i],p=dn[i],_d9=DIR[i],dx=_d9.x,dz=_d9.z;
 var _cbm=(typeof _d3coveBeachAt==='function')?_d3coveBeachAt(p.x,p.z):1;
@@ -45670,6 +45670,7 @@ if(on){_d3waterSpecSet(wmat,_D3_RIVER_WATER);wmat.userData._waterLook='river';}
 try{_D3._freshWater=_d3waterSpecOf(wmat);}catch(_k){}
 return on;
 }
+function _d3sandCol(hex){var T=window.THREE;if(typeof _rwDeepCol==='function'&&!(typeof _D3!=='undefined'&&_D3&&_D3._noSandDeep)){var c=_rwDeepCol(hex);if(c&&c.isColor)return c;}return new T.Color(hex);}
 function _d3boreFaces(PL){
 var _FACEOUT=null;
 try{_D3._tunJoin=0;}catch(_bj9){}
