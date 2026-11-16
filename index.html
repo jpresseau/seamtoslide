@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='024765f';
+var RCG_BUILD='c62dacb';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -48903,6 +48903,13 @@ if(!o||(typeof _D3!=='undefined'&&_D3&&_D3._noGpuFree))return;
 try{if(o.isInstancedMesh)o.dispatchEvent({type:'dispose'});}catch(_i){}
 try{if(o.isSkinnedMesh&&o.skeleton&&o.skeleton.boneTexture)o.skeleton.dispose();}catch(_s){}
 }
+function _d3groupFree(G){
+if(!G)return 0;if(G.parent)G.parent.remove(G);if(typeof _D3!=='undefined'&&_D3&&_D3._noGpuFree)return 0;
+var seen=new Set(),n=0;
+G.traverse(function(o){_d3gpuFree(o);var g=o.geometry,M=o.material;
+if(g&&g.dispose&&!seen.has(g)){seen.add(g);try{g.dispose();n++;}catch(_g){}}
+if(M)(Array.isArray(M)?M:[M]).forEach(function(m){if(m&&!seen.has(m)){seen.add(m);_d3matDrop(m);}});});
+return n;}
 function _d3poolFree(L,own){
 if(typeof _D3!=='undefined'&&_D3&&_D3._noGpuFree)return;
 (L||[]).forEach(function(im){
@@ -66856,7 +66863,7 @@ var now=performance.now();if(now-(D._wellT||0)>4000){D._wellT=now;(D._wellsL||[]
 }
 function _d3artesian(){
 var D=_D3,T=window.THREE,B=(typeof _d3gwBase==='function')?_d3gwBase():null,H=_d3wellsHead();
-if(D._artG){if(D._artG.parent)D._artG.parent.remove(D._artG);D._artG=null;}D._artesian=[];
+if(D._artG){_d3groupFree(D._artG);D._artG=null;}D._artesian=[];
 if(!B||H==null||D._noWells||!D.scene)return;
 var C=[],n=B.n,i;for(i=0;i<n*n;i+=3){var x=-B.ext+(i%n)*B.step,z=-B.ext+((i/n)|0)*B.step,g=+_d3drawnH(x,z)||0;
 if(g>=H-0.05||_d3waterLevelAt(x,z)!=null)continue;var near=false;for(var a=0;a<8&&!near;a++)near=_d3waterLevelAt(x+Math.cos(a*0.785)*2.5,z+Math.sin(a*0.785)*2.5)!=null;
@@ -66900,7 +66907,7 @@ return {i:i,P:P,area:Math.abs(a),cx:cx,cz:cz,depth:depth,raw:raw,kind:(af>=_D3_A
 }
 function _d3lakeSeason(){try{return (typeof _d3season==='function')?_d3season():0;}catch(_e){return 0;}}
 function _d3lakesDress(){
-var D=_D3,T=window.THREE;if(D._lkG){if(D._lkG.parent)D._lkG.parent.remove(D._lkG);D._lkG=null;}
+var D=_D3,T=window.THREE;if(D._lkG){_d3groupFree(D._lkG);D._lkG=null;}
 if(!D.scene||D._noLakeLife)return;var s=_d3lakeSeason(),G=new T.Group();G.name='lakeLife';var lv=(typeof _d3diveLakeY==='function')?_d3diveLakeY():0;
 var LK=_d3lakesFresh();D._lakes=LK;
 LK.forEach(function(L){
@@ -66973,7 +66980,7 @@ if(st!==N.was){N.was=st;N.st=st;try{_d3nutSay(L,st,by);}catch(_s2){}D._nutDirty=
 if(D._nutDirty){D._nutDirty=0;try{_d3nutDress();}catch(_d){}}
 }
 function _d3nutDress(){
-var D=_D3,T=window.THREE;if(D._nutG){if(D._nutG.parent)D._nutG.parent.remove(D._nutG);D._nutG=null;}if(!D.scene)return;
+var D=_D3,T=window.THREE;if(D._nutG){_d3groupFree(D._nutG);D._nutG=null;}if(!D.scene)return;
 var G=new T.Group();G.name='blooms';var lv=(typeof _d3diveLakeY==='function')?_d3diveLakeY():0;
 Object.keys(D._nut||{}).forEach(function(k){var N=D._nut[k],L=N.L;if(!L||N.st==='clear')return;
 var sh=new T.Shape();L.P.forEach(function(p,j){var q=_d3lakeXZ(p);if(j)sh.lineTo(q[0],-q[1]);else sh.moveTo(q[0],-q[1]);});
@@ -67035,7 +67042,7 @@ D._bayT=(D._bayT||0)+(dt||0.016);var days=0;while(D._bayT>=_D3_BAY.day){D._bayT-
 if(days||D._bayDBC!==D.buildCount){B.R.forEach(function(o){var s=_d3bayState(o);for(var d=0;d<days;d++){var r=_d3bayDayOf(s.c,s.e,(typeof _d3keyOn==='function'&&!_d3keyOn('oyster'))?0:s.s,_d3bayPull(o)); s.c=r[0];s.e=r[1];s.s=r[2];}});if(days)_d3baysSave();D._bayDBC=D.buildCount;try{_d3baysDress();}catch(_d){}}
 }
 function _d3baysDress(){
-var D=_D3,T=window.THREE,B=D._bays;if(D._bayG){if(D._bayG.parent)D._bayG.parent.remove(D._bayG);D._bayG=null;}if(!B||!D.scene)return;
+var D=_D3,T=window.THREE,B=D._bays;if(D._bayG){_d3groupFree(D._bayG);D._bayG=null;}if(!B||!D.scene)return;
 var G=new T.Group();G.name='bays';var lv=(typeof _d3diveLakeY==='function')?_d3diveLakeY():0;
 var blade=new T.PlaneGeometry(0.02,0.16),eM=_mat(0x3d7a32,{r:0.8,ds:true}),sG=new T.SphereGeometry(0.03,20,14),sM=_mat(0xb8b0a0,{r:0.7}),mx=new T.Matrix4(),q=new T.Quaternion(),sc=new T.Vector3(),p=new T.Vector3();
 B.R.forEach(function(o){var s=_d3bayState(o);if(typeof _d3wdOn==='function'&&_d3wdOn()){_d3eelgrass(G,o,s,lv);return;}var ne=Math.round(s.e*120),ns=Math.round(s.s*60),r=Math.sqrt(o.area/Math.PI)*0.8;if(!ne&&!ns)return;
@@ -67119,7 +67126,7 @@ return f;
 }
 function _d3wetSponge(b,basinArea){var S=_D3._nutS,a=0;if(S&&S.lab)_d3wetAll().forEach(function(w){if(S.lab(w.x,w.z)===b)a+=Math.PI*w.r*w.r;});if(typeof _d3beaverArea==='function')a+=_d3beaverArea(b,S);return _d3wetSpongeOf(a,basinArea);}
 function _d3wetDress(){
-var D=_D3,T=window.THREE;if(D._wetG){if(D._wetG.parent)D._wetG.parent.remove(D._wetG);D._wetG=null;}if(!D.scene||D._noWetlands)return;
+var D=_D3,T=window.THREE;if(D._wetG){_d3groupFree(D._wetG);D._wetG=null;}if(!D.scene||D._noWetlands)return;
 var G=new T.Group(),W=_d3wetLoad(),L=_d3wetAll();G.name='wetlands';D._wetL=L;
 var mx=new T.Matrix4(),q=new T.Quaternion(),sc=new T.Vector3(),p=new T.Vector3(),up=new T.Vector3(0,1,0);
 var stem=new T.CylinderGeometry(0.006,0.008,0.22,16),head=new T.CylinderGeometry(0.016,0.016,0.06,16),trunk=new T.CylinderGeometry(0.025,0.035,0.5,16),crown=new T.SphereGeometry(0.18,20,14),cone=new T.ConeGeometry(0.07,0.22,16),berry=new T.SphereGeometry(0.014,20,14);
@@ -67213,7 +67220,7 @@ var D=_D3,W=_d3barLoad(),B=_d3barAll();return (D.streams||[]).filter(_d3barSea).
 return {s:s.si,len:L.len,h:_d3runReachOf(mine,L.len,'h'),e:_d3runReachOf(mine,L.len,'e'),n:+W.run[s.si]||0,B:mine};});
 }
 function _d3barDress(){
-var D=_D3,T=window.THREE;if(D._barG){if(D._barG.parent)D._barG.parent.remove(D._barG);D._barG=null;}if(!D.scene||D._noBarriers)return;
+var D=_D3,T=window.THREE;if(D._barG){_d3groupFree(D._barG);D._barG=null;}if(!D.scene||D._noBarriers)return;
 var G=new T.Group();G.name='barriers';var B=_d3barAll(),K=_D3_BAR;D._barL=B;
 var stone=_mat(0x8d877c,{r:0.9}),conc=_mat(0xb9b5ac,{r:0.85}),wat=new T.MeshStandardMaterial({color:0x3f6f86,roughness:0.15,metalness:0.1,transparent:true,opacity:0.85}),tile=new T.PlaneGeometry(K.resCell,K.resCell);
 B.forEach(function(b){if(b.k==='culvert'||b.removed)return;var s=(D.streams||[]).find(function(o){return o.si===b.s;});if(!s)return;var P=s.pts,a=P[Math.max(0,b.i-1)],c=P[Math.min(P.length-1,b.i+1)],dx=c.x-a.x,dz=c.z-a.z,l=Math.hypot(dx,dz)||1;
@@ -67556,7 +67563,7 @@ function _d3beaverRaise(x,z){if(!_D3||!_D3._bvrC)return 0;var r=0;_D3._bvrC.L.fo
 function _d3beaverFilter(L,S){var f=1;if(!S||!S.lab)return 1;_d3bvrAll().forEach(function(b){if(b.stage==='pond'&&S.lab(b.x,b.z)===L.b)f*=1-_D3_BVR.filter;});return f;}
 function _d3beaverArea(b,S){var a=0;if(S&&S.lab)_d3bvrAll().forEach(function(o){if(o.stage==='pond'&&S.lab(o.x,o.z)===b)a+=o.area;});return a;}
 function _d3bvrDress(){
-var D=_D3,T=window.THREE;if(D._bvrG){if(D._bvrG.parent)D._bvrG.parent.remove(D._bvrG);D._bvrG=null;}if(!D.scene)return;
+var D=_D3,T=window.THREE;if(D._bvrG){_d3groupFree(D._bvrG);D._bvrG=null;}if(!D.scene)return;
 var G=new T.Group();G.name='beavers';var K=_D3_BVR,stick=_mat(0x6b4f35,{r:0.95}),snag=_mat(0x9a948a,{r:0.9}),wat=new T.MeshStandardMaterial({color:0x40606a,roughness:0.2,transparent:true,opacity:0.86}),grass=_mat(0x8aa457,{r:0.95}),tile=new T.PlaneGeometry(K.cell,K.cell);
 var sg=new T.CylinderGeometry(0.012,0.016,0.5,16),q=new T.Quaternion(),mx=new T.Matrix4(),sc=new T.Vector3(1,1,1),p=new T.Vector3(),flat=new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),-Math.PI/2);
 var mud=_mat(0x3e3226,{r:1}),rnd=function(k){var x=Math.sin(k*127.1)*43758.5453;return x-Math.floor(x);};
@@ -67663,7 +67670,7 @@ return (D._seaG={v:v,n:n,ext:ext,h:h,salt:salt,marsh:marsh,wall:wall,wet:wet,idx
 }
 function _d3seaFlood(surge){var G=_d3seaGrid();if(!G||G.none)return null;return _d3seaFloodOf(G.n,G.h,G.salt,G.marsh,G.wall,_d3seaY()+_d3seaRise()+(surge||0),_D3_SEA.cut);}
 function _d3seaDress(){
-var D=_D3,T=window.THREE,K=_D3_SEA;if(D._seaGr){if(D._seaGr.parent)D._seaGr.parent.remove(D._seaGr);D._seaGr=null;}if(!D.scene||D._noSea)return;
+var D=_D3,T=window.THREE,K=_D3_SEA;if(D._seaGr){_d3groupFree(D._seaGr);D._seaGr=null;}if(!D.scene||D._noSea)return;
 var G=_d3seaGrid();if(!G||G.none)return;var Gr=new T.Group();Gr.name='sea';var rise=_d3seaRise(),y=_d3seaY(),i,n=G.n;
 var full=_d3seaFlood(K.surge),now=rise>0?_d3seaFlood(0):null,cells=[];D._seaFull=full;D._seaNow=now;
 for(i=0;i<n*n;i++)if(full&&!isNaN(full[i]))cells.push(i);
@@ -67758,7 +67765,7 @@ if(D._ksKey!==key){D._ksKey=key;try{_d3karstDress();}catch(_e){D._ksErr=String(_
 var s=0;try{s=(typeof _d3season==='function')?_d3season():0;}catch(_s){}if(s===3&&D._ksSeason!=null&&D._ksSeason!==3&&_d3karstOn())_d3karstYear();D._ksSeason=s;
 }
 function _d3karstDress(){
-var D=_D3,T=window.THREE;if(D._ksG){if(D._ksG.parent)D._ksG.parent.remove(D._ksG);D._ksG=null;}if(!D.scene||!_d3karstOn())return;
+var D=_D3,T=window.THREE;if(D._ksG){_d3groupFree(D._ksG);D._ksG=null;}if(!D.scene||!_d3karstOn())return;
 var G=new T.Group(),dark=_mat(0x1c1a17,{r:1}),pool=new T.MeshStandardMaterial({color:0x5fa9b8,roughness:0.1,transparent:true,opacity:0.85}),rock=_mat(0xb8b2a3,{r:0.9});G.name='karst';D._ksHoles=[];
 (D.streams||[]).forEach(function(s){var P=s.pts||[],K=P._ks;if(!K)return;var a=P[K.a],b=P[K.b];
 var ga=+_d3drawnH(a.x,a.z),h=new T.Mesh(new T.CylinderGeometry(0.2,0.02,0.22,24,1,true),dark);h.material.side=T.DoubleSide;h.position.set(a.x,ga-0.09,a.z);h.name='swallowHole';G.add(h);
@@ -67804,7 +67811,7 @@ LK.forEach(function(L){var k=Math.round(L.cx)+','+Math.round(L.cz),N=D._nut&&D._
 _d3ageSave(W);return W.f;
 }
 function _d3ageDress(){
-var D=_D3,T=window.THREE;if(D._ageG){if(D._ageG.parent)D._ageG.parent.remove(D._ageG);D._ageG=null;}if(!D.scene||!_d3ageOn())return;
+var D=_D3,T=window.THREE;if(D._ageG){_d3groupFree(D._ageG);D._ageG=null;}if(!D.scene||!_d3ageOn())return;
 var G=new T.Group();G.name='aging';var lv=(typeof _d3diveLakeY==='function')?_d3diveLakeY():0,W=_d3ageW(),light=(typeof _D3_LAKE!=='undefined')?_D3_LAKE.light:0.28;D._ageSt=[];
 var trunks=null;try{var cv=D.parkTrunks.geometry.userData.carve;trunks=cv&&cv.xz;}catch(_t){}
 (typeof _d3lakesFresh==='function'?_d3lakesFresh():[]).forEach(function(L){var k=Math.round(L.cx)+','+Math.round(L.cz),fill=+W.f[k]||0,r=Math.sqrt(L.area/Math.PI),near=0;
@@ -67884,7 +67891,7 @@ for(i=0;i<n*n;i++){if(!G.seed[i])continue;var x=-G.ext+(i%n)*K.cell,z=-G.ext+((i
 if(!any)return null;return {lv:_d3seaFloodOf(n,G.hf,seed,new Uint8Array(n*n),new Float32Array(n*n).fill(-Infinity),L0,0),L0:L0,seed:seed};
 }
 function _d3fldDress(){
-var D=_D3,T=window.THREE,K=_D3_FLD;if(D._fldD){if(D._fldD.parent)D._fldD.parent.remove(D._fldD);D._fldD=null;}if(!D.scene||D._noFloods)return;
+var D=_D3,T=window.THREE,K=_D3_FLD;if(D._fldD){_d3groupFree(D._fldD);D._fldD=null;}if(!D.scene||D._noFloods)return;
 var s=0;try{s=(typeof _d3season==='function')?_d3season():0;}catch(_s){}var Gr=new T.Group(),G=_d3fldGrid();Gr.name='floodsDress';
 if(s===2&&G&&typeof _d3wlOn==='function'&&_d3wlOn()){
 var R2=new Uint8Array(G.n*G.n),i2;for(i2=0;i2<G.n*G.n;i2++)if(G.seed[i2]&&G.own[i2]<=-2&&G.own[i2]!==-3)for(var dx=-3;dx<=3;dx++)for(var dz=-3;dz<=3;dz++){var j2=i2+dz*G.n+dx;if(j2>=0&&j2<R2.length&&G.seed[j2])R2[j2]=1;}
@@ -67969,7 +67976,7 @@ _d3landSave(W);if(ch){try{_d3buildNow(true);}catch(_b){}}return W;
 }
 function _d3landInvaded(k){var W=_d3landW(),a=k==='zebra'?W.zebra:W.phrag,m=0;for(var q in a)m=Math.max(m,+a[q]||0);return m;}
 function _d3landDress(){
-var D=_D3,T=window.THREE;if(D._landG){if(D._landG.parent)D._landG.parent.remove(D._landG);D._landG=null;}if(!D.scene||D._noLand)return;
+var D=_D3,T=window.THREE;if(D._landG){_d3groupFree(D._landG);D._landG=null;}if(!D.scene||D._noLand)return;
 var G=new T.Group();G.name='landWater';var W=_d3landW();
 W.scars.forEach(function(c){var d=null,Rr=(typeof _d3wetRnd==='function')?_d3wetRnd:function(k){return (Math.sin(k*91.7)+1)/2;};
 if(typeof _d3wetGround==='function'&&typeof _d3wetLookOn==='function'&&_d3wetLookOn()){d=_d3wetGround({k:'burn',x:c.x,z:c.z,r:c.r},Math.round(c.x*7+c.z*3));}
