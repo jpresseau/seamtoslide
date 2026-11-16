@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='7071d48';
+var RCG_BUILD='f97bf2e';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -44918,7 +44918,8 @@ function _d3riverSurfLife(W,_rvFall,rv,rg,_rnd,_rks){
 var T=window.THREE,pts=W.P,hA=W.H,_rlen=W.L,_rvY=W.Y||pts.map(function(p){return p.y||0;});
 var _at=function(d){return _d3riverAtOf(W,d);};_D3.rapids=_D3.rapids||[];
 var _nR=_D3.lite?0:Math.min(140,Math.max(60,Math.round(_rlen*4.2)));var _ri;
-for(_ri=0;_ri<_nR;_ri++){var _rd=_rnd()*_rlen,_RP=_at(_rd),_lt=(_rnd()*2-1)*_RP.half*0.82,_pp=_RP.head+Math.PI/2,_rx=_RP.x+Math.cos(_pp)*_lt,_rz=_RP.z+Math.sin(_pp)*_lt,_rr=(0.04+_rnd()*0.08)*_rks;var _rk=new T.Mesh(new T.IcosahedronGeometry(_rr,0),_mat(_rnd()<0.5?0x8d8678:0x9a9387,{r:0.95,flat:true}));_rk.position.set(_rx,(_RP.y||0)+0.16+_rr*0.5,_rz);_rk.rotation.set(_rnd()*3,_rnd()*3,_rnd()*3);_rk.castShadow=true;rg.add(_rk);var _ro9=[_rk];if(_D3.boatObstacles)_D3.boatObstacles.push({x:_rx,z:_rz,r:_rr+0.05});if(_rnd()<0.35){var _moss=new T.Mesh(new T.IcosahedronGeometry(_rr*0.6,0),_mat(0x4f7e3c,{r:0.9,flat:true}));_moss.position.set(_rx,(_RP.y||0)+0.16+_rr*1.3,_rz);rg.add(_moss);_ro9.push(_moss);}if(_rr>0.035){var _nrp=1,_rpk;for(_rpk=0;_rpk<_nrp;_rpk++){var _rps=new T.Sprite(new T.SpriteMaterial({map:_D3.smokeTex,transparent:true,depthWrite:false,depthTest:false,opacity:0,color:0xffffff}));var _rb=Math.max(0.16,_rr*2.6);_rps.scale.set(_rb,_rb*0.5,_rb);_rps.renderOrder=900;rg.add(_rps);_ro9.push(_rps);_D3.rapids.push({sp:_rps,cx:_rx,cz:_rz,cy:(_RP.y||0),r:Math.max(0.1,_rr*1.35),ang:_rnd()*6.28,spd:1.6+_rnd()*1.6,ph:_rnd()*6.28,base:_rb,d:_rd,rv:rv,o:_ro9});}}}
+var _RSG=(typeof _d3creekLookOn==='function'&&_d3creekLookOn())?{g:_d3creekStoneGeos(),m:_d3creekStoneMats(),mm:_d3creekMossMats()}:null;
+for(_ri=0;_ri<_nR;_ri++){var _rd=_rnd()*_rlen,_RP=_at(_rd),_lt=(_rnd()*2-1)*_RP.half*0.82,_pp=_RP.head+Math.PI/2,_rx=_RP.x+Math.cos(_pp)*_lt,_rz=_RP.z+Math.sin(_pp)*_lt,_rr=(0.04+_rnd()*0.08)*_rks;var _rkM0=_mat(_rnd()<0.5?0x8d8678:0x9a9387,{r:0.95,flat:true}),_rk=_RSG?new T.Mesh(_RSG.g[_ri%_RSG.g.length],_RSG.m[(_ri*7)%_RSG.m.length]):new T.Mesh(new T.IcosahedronGeometry(_rr,0),_rkM0);_rk.position.set(_rx,(_RP.y||0)+0.16+_rr*0.5,_rz);_rk.rotation.set(_rnd()*3,_rnd()*3,_rnd()*3);if(_RSG){var _rv9=_d3ckRnd(_ri);_rk.rotation.set(0,_rk.rotation.y*2,0);_rk.scale.set(_rr*(1+_rv9*0.4),_rr*(0.85+_d3ckRnd(_ri*3)*0.3),_rr*(1.1-_rv9*0.3));_rk.position.y-=_rr*0.25;}_rk.castShadow=true;rg.add(_rk);var _ro9=[_rk];if(_D3.boatObstacles)_D3.boatObstacles.push({x:_rx,z:_rz,r:_rr+0.05});if(_rnd()<0.35){var _moss=_RSG?new T.Object3D():new T.Mesh(new T.IcosahedronGeometry(_rr*0.6,0),_mat(0x4f7e3c,{r:0.9,flat:true}));_moss.position.set(_rx,(_RP.y||0)+0.16+_rr*1.3,_rz);if(_RSG){_moss.visible=false;_rk.material=_RSG.mm[(_ri*7)%_RSG.mm.length];_rk.userData.noMerge=true;} rg.add(_moss);_ro9.push(_moss);}if(_rr>0.035){var _nrp=1,_rpk;for(_rpk=0;_rpk<_nrp;_rpk++){var _rps=new T.Sprite(new T.SpriteMaterial({map:_D3.smokeTex,transparent:true,depthWrite:false,depthTest:false,opacity:0,color:0xffffff}));var _rb=Math.max(0.16,_rr*2.6);_rps.scale.set(_rb,_rb*0.5,_rb);_rps.renderOrder=900;rg.add(_rps);_ro9.push(_rps);_D3.rapids.push({sp:_rps,cx:_rx,cz:_rz,cy:(_RP.y||0),r:Math.max(0.1,_rr*1.35),ang:_rnd()*6.28,spd:1.6+_rnd()*1.6,ph:_rnd()*6.28,base:_rb,d:_rd,rv:rv,o:_ro9});}}}
 (function(){
 if(_D3.lite||_d3fallsSeamOn())return;
 var _wasF=false,_kf;
@@ -66149,6 +66150,7 @@ var stoneG=[new T.IcosahedronGeometry(1,1),new T.DodecahedronGeometry(1,1)];
 var stoneM=[_mat(0x6f6a5d,{r:0.95}),_mat(0x5f6b4e,{r:0.96}),_mat(0x7d776a,{r:0.94})];
 var tuftG=new T.ConeGeometry(1,1,14),tuftM=[_mat(0x2f5a22,{r:0.97}),_mat(0x386a28,{r:0.97}),_mat(0x2a5220,{r:0.97})];
 var foamTex=_D3.smokeTex||null;
+var CL=(typeof _d3creekLookOn==='function')&&_d3creekLookOn();if(CL){stoneG=_d3creekStoneGeos();stoneM=_d3creekStoneMats();tuftG=_d3creekTuftGeo();tuftM=_d3creekTuftMats();}
 var cWater=new T.Color(0x2a9fc4),cPool=new T.Color(0x1d6b80),cRiff=new T.Color(0xe6f4f8),cCov=new T.Color(0x2a4a56);
 var cBed=new T.Color(0x857c6e),cBedP=new T.Color(0x4a5a53),cBank=new T.Color(0x3d6b2b),cBankW=new T.Color(0x56472f);
 var tmp=new T.Color();
@@ -66163,7 +66165,7 @@ var c=colf(p,i,s);col[k]=c.r;col[k+1]=c.g;col[k+2]=c.b;}}
 for(i=0;i<n-1;i++){var a=i*2,b=a+1,c2=a+2,d=a+3;idx.push(a,b,c2, b,d,c2);}
 var geo=new T.BufferGeometry();geo.setAttribute('position',new T.BufferAttribute(pos,3));geo.setAttribute('color',new T.BufferAttribute(col,3));geo.setIndex(idx);geo.computeVertexNormals();
 var mesh=new T.Mesh(geo,mat);mesh.receiveShadow=true;mesh.renderOrder=order;return mesh;}
-var stonesN=0,tuftsN=0,fishN=0,foamN=0,CAP_ST=140,CAP_TF=120,CAP_FI=40,CAP_FO=70;
+var stV=0,tC=0,stonesN=0,tuftsN=0,fishN=0,foamN=0,CAP_ST=140,CAP_TF=120,CAP_FI=40,CAP_FO=70;
 var _hOf=function(k){return (_da.streamWs&&_da.streamWs[k]!=null)?_d3streamHalf(_da.streamWs[k]):half0;},_pre=[],_hs=[];
 try{_D3._streamLines=(typeof _d3streamLinesOf==='function'&&!_D3._noTributary)?_d3streamLinesOf(list,m,_hOf):null;}catch(_sl){_D3._streamLines=null;}
 for(si=0;si<list.length;si++){_hs[si]=_hOf(si);_pre[si]=(list[si]&&list[si].length>=2)?_d3streamPath(list[si],m,si):null;}
@@ -66197,6 +66199,7 @@ var bed=ribbon(P,function(p){return p.half*1.35;},function(p,s){return 0.020;},f
 var _gwN=null;try{if(typeof _d3gwStream==='function'&&!_D3._noGroundwater)P._si=si;_gwN=_d3gwStream(P);}catch(_gw){}
 var water=ribbon(P,function(p){return p.half;},function(p,s){return 0.032;},function(p,i,s){tmp.copy(cWater).lerp(cPool,p.pool*0.85).lerp(cRiff,p.rif*0.75);if(p.cov)tmp.copy(cCov);return tmp;},waterM,4,true);
 water.userData.noMerge=true;bank.userData.noMerge=true;bankOuter.userData.noMerge=true;bed.userData.noMerge=true;
+if(CL)_d3creekAttrs(P,[[water,1],[bank,2.5],[bankOuter,3.4],[bed,1.35]]);
 if(_gwN){try{var _gt=new Float32Array(n*2);for(i=0;i<n;i++){_gt[i*2]=_gt[i*2+1]=(P[i].gwT==null?-9:P[i].gwT);}water.geometry.setAttribute('aGwT',new T.BufferAttribute(_gt,1));
 if(!waterM.userData._gw){waterM.userData._gw=1;waterM.onBeforeCompile=_d3gwWaterShader;waterM.customProgramCacheKey=function(){return 'gwWater';};}}catch(_ga){}}
 water.userData.streamWater=si;water.castShadow=false;water.receiveShadow=false;
@@ -66208,17 +66211,17 @@ if(q.d-dlast>1.0&&rr()<0.6&&stonesN<CAP_ST){dlast=q.d;var side=rr()<0.5?-1:1,inW
 var lat=inW?side*q.half*(0.2+rr()*0.35):side*q.half*(1.25+rr()*0.7);
 var sx=q.x+nx*lat,sz=q.z+nz*lat,gy=(typeof _d3drawnTri==='function')?_d3drawnTri(sx,sz):q.g;
 var st=new T.Mesh(stoneG[(rr()*2)|0],stoneM[(rr()*3)|0]);st.scale.set(r*(0.8+rr()*0.5),r*(0.55+rr()*0.35),r*(0.8+rr()*0.5));st.rotation.set(rr()*0.6,rr()*6.28,rr()*0.6);
-st.position.set(sx,(inW?q.wy-0.01:gy+0.012)+r*0.32,sz);st.castShadow=true;grp.add(st);stonesN++;
+st.position.set(sx,(inW?q.wy-0.01:gy+0.012)+r*0.32,sz);st.castShadow=true;grp.add(st);stonesN++;stV=st.geometry.attributes.position.count;
 if(typeof _d3sfCoverAdd==='function')_d3sfCoverAdd(P,q.d,inW?0.55:0.2);
-if(inW&&foamTex&&foamN<CAP_FO){var fs=new T.Sprite(new T.SpriteMaterial({map:foamTex,color:0xf4fbff,transparent:true,opacity:0.55,depthWrite:false}));
+if(inW&&foamTex&&foamN<CAP_FO){var fs=CL?_d3creekFoam(foamTex,0xf4fbff,0.55,q.head+((q.dn<0)?Math.PI:0),false):new T.Sprite(new T.SpriteMaterial({map:foamTex,color:0xf4fbff,transparent:true,opacity:0.55,depthWrite:false}));
 fs.scale.set(q.half*0.9,q.half*0.45,1);fs.position.set(sx+Math.cos(q.head)*r*1.2*(q.dn||1),q.wy+0.02,sz+Math.sin(q.head)*r*1.2*(q.dn||1));grp.add(fs);
 (_D3.streamFoam=_D3.streamFoam||[]).push({sp:fs,ph:rr()*6.28,b:0.55,k:'stone'});foamN++;}}
-if(q.rif>0.25&&q.d-fl>0.7&&foamTex&&foamN<CAP_FO){fl=q.d;var rf=new T.Sprite(new T.SpriteMaterial({map:foamTex,color:0xffffff,transparent:true,opacity:0.4*q.rif,depthWrite:false}));
+if(q.rif>0.25&&q.d-fl>0.7&&foamTex&&foamN<CAP_FO){fl=q.d;var rf=CL?_d3creekFoam(foamTex,0xffffff,0.4*q.rif,q.head,true):new T.Sprite(new T.SpriteMaterial({map:foamTex,color:0xffffff,transparent:true,opacity:0.4*q.rif,depthWrite:false}));
 var rl=(rr()-0.5)*q.half*1.2;rf.scale.set(q.half*1.3,q.half*0.5,1);rf.position.set(q.x+nx*rl,q.wy+0.02,q.z+nz*rl);grp.add(rf);
 (_D3.streamFoam=_D3.streamFoam||[]).push({sp:rf,ph:rr()*6.28,b:0.4*q.rif,k:'riffle'});foamN++;}
 if(q.d-tl>0.8&&rr()<0.4&&tuftsN<CAP_TF){tl=q.d;var ts=rr()<0.5?-1:1,tlat=ts*q.half*(1.6+rr()*0.9),tx=q.x+nx*tlat,tz=q.z+nz*tlat;
 var tg=(typeof _d3drawnTri==='function')?_d3drawnTri(tx,tz):q.g,th=q.half*(1.2+rr()*0.9),tw=q.half*(0.5+rr()*0.4);
-var tf=new T.Mesh(tuftG,tuftM[(rr()*3)|0]);tf.scale.set(tw*1.3,th*0.7,tw*1.3);tf.position.set(tx,tg+th*0.5,tz);tf.rotation.set((rr()-0.5)*0.5,rr()*6.28,-ts*(0.25+rr()*0.3));grp.add(tf);tuftsN++;if(typeof _d3sfCoverAdd==='function')_d3sfCoverAdd(P,q.d,0.2);}
+var tf=new T.Mesh(tuftG,tuftM[(rr()*3)|0]);if(CL)tf.scale.set(th*1.1,th*1.5,th*1.1);else tf.scale.set(tw*1.3,th*0.7,tw*1.3);tf.position.set(tx,CL?tg-0.01:tg+th*0.5,tz);tf.rotation.set((rr()-0.5)*0.5,rr()*6.28,-ts*(0.25+rr()*0.3));grp.add(tf);tuftsN++;if(tf.geometry.type==='ConeGeometry')tC++;if(typeof _d3sfCoverAdd==='function')_d3sfCoverAdd(P,q.d,0.2);}
 }
 var kinds=['brook','brook','brown','brown','rainbow','rainbow','cutthroat'],pl=-9;
 var _RD=(typeof _d3sfReadAll==='function')?_d3sfReadAll(P,half):null,_mo=0,_hab=(_RD&&typeof _d3sfHab==='function'&&typeof _d3sfKindFor==='function'&&!_D3._noSfTrout);
@@ -66244,7 +66247,8 @@ var hd=new T.Mesh(new T.CircleGeometry(0.55,22),_mat(0x9fe6c8,{e:0x3fb98a,ei:0.6
 var hr=new T.Mesh(new T.RingGeometry(0.55,0.72,20),_mat(0xffffff,{e:0xffffff,ei:0.5,t:true,op:0.9,ds:true}));hr.rotation.x=-Math.PI/2;hr.position.set(hx,hy-0.01,hz);hr.userData.noMerge=true;hr.renderOrder=998;g.add(hr);
 _D3.streamHandles[i]={d:hd,r:hr};}}
 }
-_D3._streamStat={streams:_D3.streams.length,stones:stonesN,tufts:tuftsN,fish:fishN,foam:foamN};
+if(CL){_d3creekPatch(waterM,'water');_d3creekPatch(bankM,'bank');_d3creekPatch(bedM,'bed');}
+_D3._streamStat={streams:_D3.streams.length,stones:stonesN,tufts:tuftsN,fish:fishN,foam:foamN,look:CL?1:0,stoneV:stV,coneTufts:tC};
 }
 var _d3stE=null;
 function _d3streamStep(t){
@@ -66351,6 +66355,55 @@ L.reverse();L.i0=r[0];L.i1=r[1];L.dir=d;O.push(L);
 if(j&&r[1]-r[0]>=K.reach&&R[j-1][1]-R[j-1][0]>=K.reach)for(k=1-K.spring;k<K.spring;k++){var w=P[r[0]+k],u=Math.abs(k)/K.spring;if(w){if(d<0)w.pd=1-u;else w.sp=K.thin+(1-K.thin)*u;}}}
 return O;
 }
+var _D3_CREEK_LOOK={flow:0.9,rip:0.10,wetTo:1.7,mud:[0.24,0.21,0.16],shallow:[0.46,0.55,0.50],edgeA:0.42,stones:4,blades:13};
+function _d3creekLookOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noCreekLook);}
+function _d3ckRnd(k){var x=Math.sin(k*127.1+311.7)*43758.5453;return x-Math.floor(x);}
+function _d3creekAttrOf(P,k){var n=P.length,a=new Float32Array(n*8),i;
+for(i=0;i<n;i++){var p=P[i],dn=(p.dn<0)?-1:1,h=(p.head||0)+(dn<0?Math.PI:0);
+for(var s=0;s<2;s++){var o=(i*2+s)*4;a[o]=(p.d||0)*dn;a[o+1]=(s?1:-1)*k;a[o+2]=k;a[o+3]=h;}}
+return a;}
+function _d3creekAttrs(P,R){var T=window.THREE;R.forEach(function(r){if(r[0]&&r[0].geometry)r[0].geometry.setAttribute('aCk',new T.BufferAttribute(_d3creekAttrOf(P,r[1]),4));});}
+function _d3creekStoneGeos(){var T=window.THREE,o=[],j,i;
+for(j=0;j<_D3_CREEK_LOOK.stones;j++){var g=new T.IcosahedronGeometry(1,2),p=g.attributes.position,v=new T.Vector3();
+for(i=0;i<p.count;i++){v.fromBufferAttribute(p,i);var n=1+0.16*Math.sin(v.x*3.1+j*1.7)*Math.cos(v.z*2.7+j)+0.08*Math.sin(v.y*5.3+j*2.3);v.multiplyScalar(n);v.y*=(v.y<0?0.55:0.72);p.setXYZ(i,v.x,v.y,v.z);}
+g.computeVertexNormals();o.push(g);}
+return o;}
+function _d3creekStoneMats(){return [0x4a4740,0x3d3c38,0x55504a,0x434638,0x5a5248].map(function(c){return _mat(c,{r:0.86,m:0.02});});}
+function _d3creekTuftGeo(){var T=window.THREE,P=[],N=[],k,i;
+for(k=0;k<_D3_CREEK_LOOK.blades;k++){var g=new T.ConeGeometry(0.035+0.02*_d3ckRnd(k),1,16,1,true).toNonIndexed(),h=0.6+_d3ckRnd(k*3)*0.4,a=k*2.39996,l=0.25+_d3ckRnd(k*5)*0.45;
+g.translate(0,0.5,0);g.scale(1,h,0.35);g.rotateX(l);g.rotateY(a);g.translate(Math.cos(a)*0.06,0,Math.sin(a)*0.06);
+var p=g.attributes.position.array,nn=g.attributes.normal.array;for(i=0;i<p.length;i++){P.push(p[i]);N.push(nn[i]);}g.dispose();}
+var G=new T.BufferGeometry();G.setAttribute('position',new T.Float32BufferAttribute(P,3));G.setAttribute('normal',new T.Float32BufferAttribute(N,3));return G;}
+function _d3creekTuftMats(){return [0x3a4c22,0x46552a,0x33461e,0x52592c].map(function(c){return _mat(c,{r:0.9,ds:true});});}
+function _d3creekFoam(tex,color,op,head,across){var T=window.THREE,m=new T.Mesh(new T.PlaneGeometry(1,1),new T.MeshBasicMaterial({map:tex,color:color,transparent:true,opacity:op,depthWrite:false}));
+m.rotation.set(-Math.PI/2,0,-(head+(across?Math.PI/2:0)));m.renderOrder=5;m.userData.noMerge=true;m.raycast=function(){};return m;}
+function _d3creekPatch(mat,kind){
+if(!mat||mat.userData._ck)return;mat.userData._ck=kind;var ob=mat.onBeforeCompile,ok=mat.customProgramCacheKey,K=_D3_CREEK_LOOK;
+if(kind!=='water'){mat.transparent=true;mat.depthWrite=false;}mat.extensions=mat.extensions||{};mat.extensions.derivatives=true;
+mat.onBeforeCompile=function(sh,r){if(ob)ob.call(this,sh,r);var U=(typeof _d3wfxU==='function')?_d3wfxU():{uWT:{value:0}};sh.uniforms.uWT=U.uWT;
+sh.vertexShader='attribute vec4 aCk;\nvarying vec4 vCk;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n  vCk=aCk;');
+var f='uniform float uWT;\nvarying vec4 vCk;\n'+sh.fragmentShader,e='abs(vCk.y)';
+if(kind==='water'){
+f=f.replace('#include <normal_fragment_begin>','#include <normal_fragment_begin>\n'+
+'  { float a=vCk.x,s=vCk.y,t=uWT*'+K.flow.toFixed(3)+'; float g=sin((a-t)*13.0+s*2.1+sin(a*2.7)*1.6)*0.6+sin((a-t*1.4)*24.0-s*4.3)*0.4;\n'+
+'    float c=sin((a-t*0.8)*7.0+s*6.0)*0.5; vec2 fl=vec2(cos(vCk.w),sin(vCk.w)),ac=vec2(-fl.y,fl.x); vec2 w=(fl*g+ac*c*0.5)*'+K.rip.toFixed(3)+';\n'+
+'    vec3 up=normalize((viewMatrix*vec4(0.0,1.0,0.0,0.0)).xyz); float sd=dot(normal,up)<0.0?-1.0:1.0; normal=normalize(normal+(viewMatrix*vec4(-w.x,0.0,-w.y,0.0)).xyz*sd); }')
+.replace('#include <color_fragment>','#include <color_fragment>\n'+
+'  { float ed='+e+', dp=1.0-ed*ed; diffuseColor.rgb=mix(vec3('+K.shallow.join(',')+'),diffuseColor.rgb,0.3+0.7*dp); diffuseColor.a*=mix('+K.edgeA.toFixed(2)+',1.08,dp);\n'+
+'    float ln=smoothstep(0.93,1.0,sin((vCk.x-uWT*1.1)*8.0+vCk.y*6.5+sin(vCk.x*1.7+vCk.y*3.0)*2.2)); diffuseColor.rgb+=vec3(0.16)*ln*dp; }');
+}else{
+f=f.replace('#include <color_fragment>','#include <color_fragment>\n'+
+'  { float ed='+e+', wet=1.0-smoothstep(1.0,'+K.wetTo.toFixed(2)+',ed); float br=0.85+0.15*sin(vCk.x*5.3+vCk.y*3.1)*sin(vCk.x*2.1-vCk.y*4.7);\n'+
+'    vec3 dry=mix(vec3(dot(diffuseColor.rgb,vec3(0.3,0.59,0.11))),diffuseColor.rgb,0.55)*0.82*br;\n'+
+'    diffuseColor.rgb=mix(dry,vec3('+K.mud.join(',')+'),wet*'+(kind==='bed'?'0.0':'0.75')+'); diffuseColor.a*=1.0-smoothstep('+(kind==='bed'?'vCk.z*0.62':'1.15')+',vCk.z,ed); }');
+}
+sh.fragmentShader=f;};
+mat.customProgramCacheKey=function(){return 'ck'+kind+(ok?ok.call(this):'');};mat.needsUpdate=true;}
+function _d3creekMossMats(){var T=window.THREE;return _d3creekStoneMats().map(function(m,i){var mm=m.clone(),ob=mm.onBeforeCompile;
+mm.onBeforeCompile=function(sh,r){if(ob)ob.call(this,sh,r);
+sh.vertexShader='varying vec3 vCkN;\n'+sh.vertexShader.replace('#include <beginnormal_vertex>','#include <beginnormal_vertex>\n  vCkN=normalize(mat3(modelMatrix)*objectNormal);');
+sh.fragmentShader='varying vec3 vCkN;\n'+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n  diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.16,0.24,0.10),smoothstep(0.35,0.8,normalize(vCkN).y)*'+(0.75+0.2*(i%2)).toFixed(2)+');');};
+mm.customProgramCacheKey=function(){return 'ckMoss';};return mm;});}
 var _D3_MOUTH={keep:2,reach:2.2};
 function _d3streamMouthOf(P,wet,K){
 K=K||_D3_MOUTH;var n=P?P.length:0;if(n<4)return null;
