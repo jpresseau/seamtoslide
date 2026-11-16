@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='4e80e5d';
+var RCG_BUILD='4a153b1';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -46948,10 +46948,10 @@ t:['Even greens','The Ocean Bluff’s moss drawn into every field and hillside']
 {k:'tshape',l:'Tree shape',c:[['round','Round'],['pines','Pines'],['mixed','Mixed']],build:1,home:['nature','Plants'],i:'\ud83c\udf33',md:'Round trees, pines, or the two together',
 d:'Round: the map’s own trees. Pines: every tree a stack of cones in the Canyon Railway’s greens. Mixed: the two together, tree by tree, the pines in loose groves.',
 t:['The map’s own round trees','Every tree a stack of cones in the Canyon Railway’s greens','The two together, tree by tree, the pines in loose groves']},
-{k:'tcol',l:'Leaf colour',c:[['season','The season’s'],['autumn','Autumn']],build:1,home:['weather','Year'],i:'\ud83c\udf42',md:'The round trees’ leaves: the season’s, or autumn all year',
+{k:'tcol',l:'Leaf colour',c:[['season','The season’s'],['autumn','Autumn']],build:1,home:['seasons','Year'],i:'\ud83c\udf42',md:'The round trees’ leaves: the season’s, or autumn all year',
 d:'The season’s: the round trees turn with the year. Autumn: every round tree in its fall reds, oranges and golds, whatever the season. The pines keep their green.',
 t:['The round trees turn with the year','Every round tree in its fall reds, oranges and golds, whatever the season; the pines keep their green']},
-{k:'tfall',l:'Autumn colours',c:[['vivid','Vivid'],['rich','Rich'],['soft','Soft'],['muted','Muted']],def:'soft',on:['tcol','autumn'],orAutumn:1,build:1,home:['weather','Year'],i:'\ud83c\udfa8',md:'How strong the fall colours are',
+{k:'tfall',l:'Autumn colours',c:[['vivid','Vivid'],['rich','Rich'],['soft','Soft'],['muted','Muted']],def:'soft',on:['tcol','autumn'],orAutumn:1,build:1,home:['seasons','Year'],i:'\ud83c\udfa8',md:'How strong the fall colours are',
 d:'In autumn, or with Leaf colour on Autumn: how strong the fall colours are. Vivid: at full strength. Rich, Soft and Muted: each a step nearer grey, the trees as light as before.',
 t:['The fall colours as bright as they come','A little softer, nearer the grey of their own light','Softer again: the colours the map drew first','Softest: dusty reds and golds']},
 {k:'rcol',l:'Rock colour',c:[['map','The map’s'],['sand','Sandstone']],build:1,home:['nature','Ground'],i:'\ud83c\udfdc\ufe0f',md:'Every crag, cliff and bluff',
@@ -60691,6 +60691,11 @@ setTimeout(gone,9000);
 return true;
 }catch(_th){return false;}
 }
+var _D3_WATERSYS_ROWS=[{sec:'Under and round the water',i:'\ud83e\udea3',l:'Wells & pumping',d:'Each farm\u2019s well: shallow or deep, how hard it pumps, dry or salty',menu:function(){driftWellsPanel();}},{i:'\ud83e\udda0',l:'Nutrients',d:'What feeds each lake: farms, homes and roads - and the blooms too much brings',menu:function(){driftNutPanel();}},
+{sec:'Life',i:'\ud83e\uddaa',l:'Bays & coves',d:'Sounds, bays and coves: clarity, eelgrass, shellfish, the tide - crab, clam and scallop',menu:function(){driftBaysPanel();}},{i:'\ud83c\udf3e',l:'Wetlands',d:'Swamps, marshes and bogs: the land\u2019s sponge and filter - boardwalks and cranberries',menu:function(){driftWetlandsPanel();}},{i:'\ud83d\udc1f',l:'Dams & runs',d:'Dams, mill dams and culverts; fish ladders and eel passes; the herring and eel runs',menu:function(){driftBarriersPanel();}},{i:'\ud83e\uddab',l:'Keystones',d:'Beavers, herring, eels, mussels, otters, oysters - what each gives, and what goes without it',menu:function(){driftKeystonesPanel();}},
+{sec:'The sea and the years',i:'\ud83c\udf0a',l:'The sea',d:'Sea level, storm surge, seawalls - ghost forests and marshes moving inland',menu:function(){driftSeaPanel();}},{i:'\ud83d\udd73\ufe0f',l:'Karst',d:'Put the map on limestone: streams sink and rise again, sinkholes open, caves',menu:function(){driftKarstPanel();}},{i:'\u23f3',l:'Aging',d:'Let the water age: lakes fill to ponds, ponds to marsh, marsh to meadow',menu:function(){driftAgingPanel();}},{i:'\u2744\ufe0f',l:'Floods & snow',d:'The snowpack and the spring melt, the floodplain, river ice, vernal pools',menu:function(){driftFloodsPanel();}},
+{sec:'The land and the town',i:'\ud83c\udfde\ufe0f',l:'Land on the water',d:'Road salt, wildfire, mud, rivers that move, phragmites and zebra mussels',menu:function(){driftLandPanel();}},{i:'\ud83d\udeb0',l:'The town\u2019s water',d:'The tap water and its bill, fishing rules, shellfish closures, setbacks',menu:function(){driftTownWaterPanel();}},
+{i:'\ud83c\udf0a',l:'Land & Water',d:'The ground, the lakes and rivers, the plants and the boats',menu:function(b){driftGrpMenu('nature',b||document.getElementById('grpNatureBtn'));}}];
 function _d3tireEnsure(){var T=window.THREE;if(!_D3.smokeTex&&typeof _d3smokeTex==='function'){_D3.smokeTex=_d3smokeTex();}
 if(!_D3.tire){_D3.tire=[];_D3.tireI=0;var i;for(i=0;i<240;i++){var sp=new T.Sprite(new T.SpriteMaterial({map:_D3.smokeTex,transparent:true,depthWrite:false,opacity:0,color:0xd9d3c9}));sp.scale.set(0.01,0.01,0.01);sp.visible=false;sp.userData.life=0;_D3.tire.push(sp);} var _tpo=false;try{_tpo=(typeof _d3tirePool==='function')&&_d3tirePool();}catch(_tpe){}if(!_tpo&&_D3.trackG)for(i=0;i<_D3.tire.length;i++)_D3.trackG.add(_D3.tire[i]);}
 if(!_D3.skid){var skMat=new T.MeshBasicMaterial({color:0x121212,transparent:true,opacity:0.16,depthWrite:false});
@@ -60845,7 +60850,7 @@ nature:{t:'Land & Water',rows:[
 {sec:'Water',grid:2,i:'\ud83c\udfd6\ufe0f',l:'Ocean',d:'Shape the coast \u2014 sand, surf and swell',flag:'lmode',menu:function(b){driftOceanTool(b);}},
 {i:'\ud83c\udf0a',l:'River',d:'Draw and shape rivers',flag:'rmode',fn:'driftRiverToggle'},
 {i:'\u3030\ufe0f',l:'Stream',d:'A clear creek that follows the ground \u2014 trout in its pools',flag:'stmode',fn:'driftStreamToggle'},
-{i:'\ud83d\udca7',l:'Lake',d:'Add \u00b7 move \u00b7 resize \u00b7 delete lakes',flag:'lmode',menu:function(b){driftLakeTool(b);}},{i:'\ud83d\uddfa\ufe0f',l:'Watershed',d:'Where every drop drains: basins, divides and outlets',flag:'wshed',fn:'driftWatershedToggle'},{i:'\ud83e\udea8',l:'Aquifer cutaway',d:'Tap the land: a slice through the ground, its water table and aquifer',menu:function(){driftCutawayArm();}},{i:'\ud83e\udea3',l:'Wells & pumping',d:'Each farm\u2019s well: shallow or deep, how hard it pumps, dry or salty',menu:function(){driftWellsPanel();}},{i:'\ud83e\udda0',l:'Nutrients',d:'What feeds each lake: farms, homes and roads - and the blooms too much brings',menu:function(){driftNutPanel();}},{i:'\ud83e\uddaa',l:'Bays & coves',d:'Sounds, bays and coves: clarity, eelgrass, shellfish, the tide - crab, clam and scallop',menu:function(){driftBaysPanel();}},{i:'\ud83c\udf3e',l:'Wetlands',d:'Swamps, marshes and bogs: the land\u2019s sponge and filter - boardwalks and cranberries',menu:function(){driftWetlandsPanel();}},{i:'\ud83d\udc1f',l:'Dams & runs',d:'Dams, mill dams and culverts; fish ladders and eel passes; the herring and eel runs',menu:function(){driftBarriersPanel();}},{i:'\ud83e\uddab',l:'Keystones',d:'Beavers, herring, eels, mussels, otters, oysters - what each gives, and what goes without it',menu:function(){driftKeystonesPanel();}},{i:'\ud83c\udf0a',l:'The sea',d:'Sea level, storm surge, seawalls - ghost forests and marshes moving inland',menu:function(){driftSeaPanel();}},{i:'\ud83d\udd73\ufe0f',l:'Karst',d:'Put the map on limestone: streams sink and rise again, sinkholes open, caves',menu:function(){driftKarstPanel();}},{i:'\u23f3',l:'Aging',d:'Let the water age: lakes fill to ponds, ponds to marsh, marsh to meadow',menu:function(){driftAgingPanel();}},{i:'\u2744\ufe0f',l:'Floods & snow',d:'The snowpack and the spring melt, the floodplain, river ice, vernal pools',menu:function(){driftFloodsPanel();}},{i:'\ud83c\udfde\ufe0f',l:'Land on the water',d:'Road salt, wildfire, mud, rivers that move, phragmites and zebra mussels',menu:function(){driftLandPanel();}},{i:'\ud83d\udeb0',l:'The town\u2019s water',d:'The tap water and its bill, fishing rules, shellfish closures, setbacks',menu:function(){driftTownWaterPanel();}},
+{i:'\ud83d\udca7',l:'Lake',d:'Add \u00b7 move \u00b7 resize \u00b7 delete lakes',flag:'lmode',menu:function(b){driftLakeTool(b);}},{i:'\ud83d\uddfa\ufe0f',l:'Watershed',d:'Where every drop drains: basins, divides and outlets',flag:'wshed',fn:'driftWatershedToggle'},{i:'\ud83e\udea8',l:'Aquifer cutaway',d:'Tap the land: a slice through the ground, its water table and aquifer',menu:function(){driftCutawayArm();}},{i:'\ud83e\udd86',l:'Water life & the town',d:'Wells, nutrients, bays, wetlands, dams and runs, keystones, the sea, floods - and the town\u2019s water',menu:function(b){driftGrpMenu('watersys',b||document.getElementById('grpNatureBtn'));}},
 {sec:'Plants',grid:2,i:'\ud83c\udf3f',l:'Scenery theme & density',d:'Biome look, tree density, clear rocks',menu:function(b){driftBiomeMenu(b);}},
 {i:'\ud83c\udf33',l:'Place trees & bushes',d:'Tap map to add \u00b7 drag to move',flag:'scmode',fn:'driftSceneryToggle'},
 {sec:'Animals',i:'\ud83e\udd8c',l:'Wildlife\u2026',d:(typeof driftWildLabel==='function'?driftWildLabel():'Which wild animals live on the map, how many and how big'),menu:function(){driftWildPanel();}},
@@ -60868,10 +60873,11 @@ weather:{t:'Weather Station',rows:[
 {i:'\ud83c\udf25\ufe0f',l:'Cloud type',d:'What the clouds are, or Auto by the cover',pick:'ctype'},
 {sec:'Rain & wind',i:'\ud83c\udf27\ufe0f',l:'Rain',d:'How hard it rains, or in the winter snows - only ever from a cloud',pick:'rain'},
 {i:'\ud83d\udca8',l:'Wind',d:'It blows the cloud, the rain, the sea and the trees',pick:'wind'},
-{i:'\ud83e\udded',l:'Wind from',d:'Which way the weather comes from',pick:'dir'},
-{sec:'Year',i:'\ud83c\udf41',l:'Season',d:'The colour of the land - the leaves, the grass, the snow',pick:'season'},
-{i:'\ud83c\udf42',l:'Autumn stage',d:'Early, the peak of the colours, or late - yellow and brown as the leaves fall',pick:'fall'},{i:'\ud83c\udfdc\ufe0f',l:'Drought',d:'Normal, a dry spell or a drought: the water table falls and streams dry',pick:'drought'},
-{i:'\ud83c\udf00',l:'Natural disaster',d:'A tornado that crosses the map, or a hurricane with an eye that passes over you',pick:'event'}]},
+{i:'\ud83e\udded',l:'Wind from',d:'Which way the weather comes from',pick:'dir'},{i:'\ud83c\udfdc\ufe0f',l:'Drought',d:'Normal, a dry spell or a drought: the water table falls and streams dry',pick:'drought'},
+{sec:'Storms & the year',i:'\ud83c\udf00',l:'Natural disaster',d:'A tornado that crosses the map, or a hurricane with an eye that passes over you',pick:'event'},
+{i:'\ud83c\udf41',l:'Seasons',d:'The season, the autumn stage and the leaves\u2019 colours',menu:function(b){driftGrpMenu('seasons',b||document.getElementById('grpWeatherBtn'));}}]},
+seasons:{t:'Seasons',rows:_D3_SEASON_ROWS},
+watersys:{t:'Water life & the town',rows:_D3_WATERSYS_ROWS},
 fish:{t:'Fish',rows:[
 {i:'\u26f5',l:'From a boat',d:'On the lake \u2014 cast, watch the float, set the hook and play it',menu:function(){drift3DFish();}},
 {i:'\u3030\ufe0f',l:'On the stream',d:'From the bank of a creek \u2014 a lure, live bait or a fly; the trout in its pools rise to it',menu:function(){drift3DStreamFish();}},
@@ -61918,7 +61924,7 @@ function _d3gfxOnSays(S){var O=null,ol=S.on[1],j;for(j=0;j<_D3_GFX.length;j++)if
 if(O)for(j=0;j<O.c.length;j++)if(O.c[j][0]===S.on[1])ol=O.c[j][1];return (S.orAutumn?'in autumn, or ':'')+'with '+(O?O.l:S.on[0])+' on '+ol;}
 function _d3gfxShown(k){if(k==='shadow')return _d3gfxShadowNow();if(k==='res')return _d3gfxResNow();return _d3gfxGet()[k];}
 function _d3gfxElsewhere(auto){
-var M={nature:'Land & Water',weather:'the Weather Station'},by={},o=[],i,c;
+var M={nature:'Land & Water',weather:'the Weather Station',seasons:'the Weather Station\u2019s Seasons'},by={},o=[],i,c;
 for(i=0;i<_D3_GFX.length;i++){var S=_D3_GFX[i];if(!S.home||(auto&&S.c[0][0]!=='auto'))continue;c=S.home[0];if(!by[c]){by[c]=[];o.push(c);}by[c].push(S.l);}
 var js=function(L){return L.length>1?L.slice(0,-1).join(', ')+' and '+L[L.length-1]:L[0];};
 if(auto)return o.length?', and '+o.map(function(c){return js(by[c])+' in '+(M[c]||c);}).join(', '):'';
@@ -62613,6 +62619,9 @@ if(j>=0&&k==='rain')return 'But '+s.slice(j+3).replace(/^but /,'');
 if(j>=0)return (k==='ctype'?'The cover makes it ':'By the calendar it is ')+s.slice(j+3);}
 return '';
 }
+var _D3_SEASON_ROWS=[{sec:'Year',i:'\ud83c\udf41',l:'Season',d:'The colour of the land - the leaves, the grass, the snow',pick:'season'},
+{i:'\ud83c\udf42',l:'Autumn stage',d:'Early, the peak of the colours, or late - yellow and brown as the leaves fall',pick:'fall'},
+{i:'\u2601\ufe0f',l:'Weather Station',d:'The sky, the rain and the wind, and the storms',menu:function(b){driftGrpMenu('weather',b||document.getElementById('grpWeatherBtn'));}}];
 function _d3wxStep(now,dt){
 try{
 if(!_D3||!_D3.scene)return;
@@ -76808,7 +76817,7 @@ _d3guideTab('works','works','Open Works: the town’s works, built from the good
 {k:'world',i:'🗺️',t:'Shape your world',steps:[
 _d3guideMenu('nature','Nature','nature','The rest of the bar shapes the map itself. 🌲 Land & Water: the hills and landforms, the sea, the lakes, rivers and streams, the forest and the boats. Tap it.'),
 _d3guideMenu('roads','Town','town','🏘️ Town holds the roads too, under its buildings: the road network, bridges, lamps, signs and the traffic. Tap it.'),
-_d3guideMenu('weather','Weather','weather','⛅ Weather: the sky, the season and the storms — rain fills the farms. Tap it.'),
+_d3guideMenu('weather','Weather','weather','⛅ Weather: the sky and the storms, and its Seasons — rain fills the farms. Tap it.'),
 _d3guideMenu('course','Course','track','🏁 Drifting: the drift track itself, its shape and its kerbs, and the drift cars that run it. Tap it.'),
 {k:'undo',say:'Change anything you like: every change to the map can be undone with ↶ in the bar.',at:'#trkUndoBtn',ok:'Got it',done:function(F){return F.ack;}}]},
 {k:'long',i:'🏆',t:'The long game',steps:[
