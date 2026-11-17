@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='8ed8340';
+var RCG_BUILD='3db8660';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -40383,7 +40383,13 @@ if(!o.isInstancedMesh||!o.geometry||!o.instanceMatrix||o.frustumCulled)return;
 if(o.userData&&(o.userData._cullUnit||o.userData._live||o.userData._rpgBits))return;
 if(o.instanceMatrix.usage===T.DynamicDrawUsage){skip++;return;}
 for(var p=o;p&&p!==G;p=p.parent){if(mov.has(p)){skip++;return;}}
-var g=o.geometry,ub=_d3poolUnitBox(g),bx=_d3poolBoxOf(o.instanceMatrix.array,o.count,ub);if(!bx)return;
+if(_d3poolCullOne(o,T))n++;});
+if(typeof _D3!=='undefined'&&_D3){_D3._bldCulled=(_D3._bldCulled|0)+n;_D3._bldCullSkip=(_D3._bldCullSkip|0)+skip;}
+return n;
+}catch(_pc){return 0;}
+}
+function _d3poolCullOne(o,T){
+var g=o.geometry,ub=_d3poolUnitBox(g),bx=_d3poolBoxOf(o.instanceMatrix.array,o.count,ub);if(!bx)return false;
 var w=new T.BufferGeometry(),k;if(g.index)w.setIndex(g.index);
 for(k in g.attributes)if(Object.prototype.hasOwnProperty.call(g.attributes,k))w.setAttribute(k,g.attributes[k]);
 for(k=0;k<g.groups.length;k++)w.addGroup(g.groups[k].start,g.groups[k].count,g.groups[k].materialIndex);
@@ -40392,10 +40398,7 @@ w.boundingSphere=new T.Box3(new T.Vector3(bx[0],bx[1],bx[2]),new T.Vector3(bx[3]
 for(k in g.userData)if(Object.prototype.hasOwnProperty.call(g.userData,k))w.userData[k]=g.userData[k];
 w.userData._cullBox=bx;w.type=g.type;w.parameters=g.parameters;
 o.userData=o.userData||{};o.userData._cullUnit=g;if(o.raycast!==T.InstancedMesh.prototype.raycast)o.userData._cullRay=o.raycast;
-o.geometry=w;o.raycast=_d3poolRayUnit;o.frustumCulled=true;n++;});
-if(typeof _D3!=='undefined'&&_D3){_D3._bldCulled=(_D3._bldCulled|0)+n;_D3._bldCullSkip=(_D3._bldCullSkip|0)+skip;}
-return n;
-}catch(_pc){return 0;}
+o.geometry=w;o.raycast=_d3poolRayUnit;o.frustumCulled=true;return true;
 }
 function _d3reRoundSegs(t,p,ask,r){
 if(t==='SphereGeometry'){var s=_d3sphereSegs(r,ask[0],ask[1]);return [Math.min(s[0],p.widthSegments),Math.min(s[1],p.heightSegments)];}
@@ -50036,7 +50039,7 @@ return 2*p*k<th*near;
 function _d3tinyWant(o,O3){
 if(!o||(o.children&&o.children.length)||(o.userData&&o.userData._noTiny))return 0;
 if(o.isSprite)return (o.material&&o.material.sizeAttenuation!==false)?2:0;
-if(!o.isMesh||o.isInstancedMesh||o.isSkinnedMesh||(o.frustumCulled===false&&!(o.userData&&o.userData.partR>0))||!o.geometry)return 0;
+if(!o.isMesh||(o.isInstancedMesh&&!(o.userData&&o.userData._dress&&o.userData.partR>0&&o.frustumCulled))||o.isSkinnedMesh||(o.frustumCulled===false&&!(o.userData&&o.userData.partR>0))||!o.geometry)return 0;
 if(O3&&(o.onBeforeRender!==O3.onBeforeRender||o.onAfterRender!==O3.onAfterRender))return 0;
 return 1;
 }
@@ -50045,17 +50048,17 @@ var a=e[0]*e[0]+e[1]*e[1]+e[2]*e[2],b=e[4]*e[4]+e[5]*e[5]+e[6]*e[6],c=e[8]*e[8]+
 return Math.sqrt(Math.max(a,b,c));
 }
 function _d3tinyList(scene){
-var S=_D3_TINY,T=window.THREE,O3=T.Object3D.prototype,L=[],R=[],C=[],P=[];
+var S=_D3_TINY,T=window.THREE,O3=T.Object3D.prototype,L=[],R=[],C=[],P=[],DR=[];
 (function walk(o){
 var w=_d3tinyWant(o,O3),e;
 if(w===1){var g=o.geometry;if(!g.boundingSphere&&o.visible!==false){try{g.computeBoundingSphere();}catch(_b){}}
 var s=g.boundingSphere;
-if(s&&s.radius>=0&&isFinite(s.radius)){L.push(o);R.push(s.radius*_d3tinyScale(o.matrixWorld.elements));C.push(s.center.x,s.center.y,s.center.z);P.push((o.userData&&o.userData.partR>0)?o.userData.partR:0);}}
+if(s&&s.radius>=0&&isFinite(s.radius)){if(o.isInstancedMesh)DR.push(L.length);L.push(o);R.push(s.radius*_d3tinyScale(o.matrixWorld.elements));C.push(s.center.x,s.center.y,s.center.z);P.push((o.userData&&o.userData.partR>0)?o.userData.partR:0);}}
 else if(w===2){e=o.matrixWorld.elements;
 L.push(o);R.push(0.5*Math.sqrt(e[0]*e[0]+e[1]*e[1]+e[2]*e[2]+e[4]*e[4]+e[5]*e[5]+e[6]*e[6]));C.push(0,0,0);P.push(0);}
 var ch=o.children;for(var i=0,n=ch.length;i<n;i++)walk(ch[i]);
 })(scene);
-S.L=L;S.R=new Float32Array(R);S.C=new Float32Array(C);S.P=new Float32Array(P);S.n=L.length;S.ver++;S.K=null;
+S.L=L;S.R=new Float32Array(R);S.C=new Float32Array(C);S.P=new Float32Array(P);S.dr=DR;S.n=L.length;S.ver++;S.K=null;
 return S.n;
 }
 function _d3tinyHide(ren,scene,cam){
@@ -50070,6 +50073,7 @@ if(!K||K.ppu!==ppu||K.ver!==S.ver||K.pr!==!!PR){var I=[];for(i=0;i<n;i++)if((PR&
 var J=K.I;for(i=0;i<J.length;i++){o=L[J[i]];if(o.visible){o.visible=false;H.push(o);}}
 D._tinyN={listed:n,hid:H.length,ortho:true};
 if(typeof _d3meshLodIn==='function')H.sw=_d3meshLodIn(S,K,ppu,D);
+if(typeof _d3dressLodIn==='function')H.dr=_d3dressLodIn(S,ppu,0,0,0,0);
 }else if(cam.isPerspectiveCamera){
 var k=_d3tinyPerspK(hPx,cam.fov,cam.zoom),ce=cam.matrixWorld.elements,ex=ce[12],ey=ce[13],ez=ce[14],C=S.C;
 for(i=0;i<n;i++){o=L[i];if(!o.visible)continue;
@@ -50079,10 +50083,11 @@ var dd=Math.sqrt(x*x+y*y+z*z);
 if((PR&&PR[i]>0)?_d3tinyPartIs(PR[i],R[i],th,0,k,dd):_d3tinyIs(R[i],th,0,k,dd)){o.visible=false;H.push(o);}}
 D._tinyN={listed:n,hid:H.length,ortho:false};
 D._meshLod=null;
+if(typeof _d3dressLodIn==='function')H.dr=_d3dressLodIn(S,0,k,ex,ey,ez);
 }else D._tinyN=null;
 return H;
 }
-function _d3tinyShow(H){if(H.sw){_d3meshLodOut(H.sw);H.sw=null;}for(var i=0;i<H.length;i++)H[i].visible=true;H.length=0;}
+function _d3tinyShow(H){if(H.sw){_d3meshLodOut(H.sw);H.sw=null;}if(H.dr){_d3dressLodOut(H.dr);H.dr=null;}for(var i=0;i<H.length;i++)H[i].visible=true;H.length=0;}
 function _d3tinyArm(ren){
 if(!ren||ren._tinyWrap||typeof ren.render!=='function')return false;
 var r0=ren.render;ren._tinyWrap=r0;
@@ -50116,7 +50121,7 @@ return E.c[lv]||((lv>1&&E.c[1])?E.c[1]:null);
 function _d3meshLodIn(S,K,ppu,D){
 var T=window.THREE,sw=[],i,L=S.L,R=S.R;
 if(!_D3_MLOD||D._noMeshLod||window._RCG_NO_MESHLOD||!T||typeof _d3poolLodGeo!=='function'){D._meshLod=null;return sw;}
-if(!K.G){var G=[];for(i=0;i<S.n;i++){if(!L[i].isMesh)continue;var lv=_d3poolLodLevel(2*R[i]*ppu,_D3_POOL_LOD);if(lv>0)G.push(i,lv);}K.G=G;}
+if(!K.G){var G=[];for(i=0;i<S.n;i++){if(!L[i].isMesh||L[i].isInstancedMesh)continue; var lv=_d3poolLodLevel(2*R[i]*ppu,_D3_POOL_LOD);if(lv>0)G.push(i,lv);}K.G=G;}
 var Gk=K.G,bud={n:_D3_MESH_LOD_PER,made:0},t0=0,t1=0,nl=0;
 for(i=0;i<Gk.length;i+=2){var o=L[Gk[i]];if(!o.visible)continue;
 var g=o.geometry,c=_d3meshLodCopy(o,g,Gk[i+1],T,bud);if(!c)continue;
@@ -50125,6 +50130,62 @@ D._meshLod={asked:Gk.length/2,lod:nl,made:bud.made,tris0:Math.round(t0),tris:Mat
 return sw;
 }
 function _d3meshLodOut(sw){for(var i=0;i<sw.length;i+=2)sw[i].geometry=sw[i+1];sw.length=0;}
+var _D3_DRESS_LOD={px:12,sph:[8,6],rad:6,box:0.08};
+function _d3dressTris(g){var p=g&&g.attributes&&g.attributes.position;return g?((g.index?g.index.count:(p?p.count:0))/3):0;}
+function _d3dressR(mats,n,ub){
+if(!mats||!(n>0)||!ub)return 0;
+var hx=(ub[3]-ub[0])/2,hy=(ub[4]-ub[1])/2,hz=(ub[5]-ub[2])/2,m=0,i,c,e;
+for(i=0;i<n;i++){e=i*16;
+for(c=0;c<8;c++){var x=(c&1)?hx:-hx,y=(c&2)?hy:-hy,z=(c&4)?hz:-hz,
+px=mats[e]*x+mats[e+4]*y+mats[e+8]*z,py=mats[e+1]*x+mats[e+5]*y+mats[e+9]*z,pz=mats[e+2]*x+mats[e+6]*y+mats[e+10]*z,d=px*px+py*py+pz*pz;
+if(d>m)m=d;}}
+return Math.sqrt(m);
+}
+function _d3dressLoArgs(type,p,K){
+K=K||_D3_DRESS_LOD;if(!p)return null;
+if(type==='SphereGeometry'){if(!(p.widthSegments>K.sph[0]||p.heightSegments>K.sph[1]))return null;
+return ['SphereGeometry',[p.radius,Math.min(p.widthSegments,K.sph[0]),Math.min(p.heightSegments,K.sph[1]),p.phiStart,p.phiLength,p.thetaStart,p.thetaLength]];}
+if(type==='CylinderGeometry'){if(!(p.radialSegments>K.rad))return null;return ['CylinderGeometry',[p.radiusTop,p.radiusBottom,p.height,K.rad,1,p.openEnded,p.thetaStart,p.thetaLength]];}
+if(type==='ConeGeometry'){if(!(p.radialSegments>K.rad))return null;return ['ConeGeometry',[p.radius,p.height,K.rad,1,p.openEnded,p.thetaStart,p.thetaLength]];}
+return null;
+}
+function _d3dressSameBox(a,b,tol){
+if(!a||!b)return false;var s=Math.hypot(a[3]-a[0],a[4]-a[1],a[5]-a[2])||1,i;
+for(i=0;i<6;i++)if(Math.abs(a[i]-b[i])>s*tol)return false;
+return true;
+}
+function _d3dressLo(g,T){
+if(!g||!T)return null;var lo=null,A;
+try{if(g.userData&&typeof g.userData.loOf==='function')lo=g.userData.loOf();
+else if((A=_d3dressLoArgs(g.type,g.parameters))&&typeof T[A[0]]==='function')lo=new (Function.prototype.bind.apply(T[A[0]],[null].concat(A[1])))();}catch(_l){lo=null;}
+if(!lo)return null;
+var ub=_d3poolUnitBox(g),lb=_d3poolUnitBox(lo);
+if(!_d3dressSameBox(ub,lb,_D3_DRESS_LOD.box)||!(_d3dressTris(lo)<_d3dressTris(g)*0.67)){try{lo.dispose();}catch(_d){}return null;}
+return lo;
+}
+function _d3dressMake(I){
+var T=window.THREE,D=(typeof _D3!=='undefined')?_D3:null;
+if(!I||!T||!I.isInstancedMesh||!I.instanceMatrix||(D&&D._noDress)||typeof _d3poolCullOne!=='function')return false;
+var g=I.geometry,r=_d3dressR(I.instanceMatrix.array,I.count,_d3poolUnitBox(g));if(!(r>0))return false;
+if(!_d3poolCullOne(I,T))return false;
+I.userData.partR=r;I.userData._dress=1;
+if(!(D&&D._noDressLo)){var lo=_d3dressLo(g,T),w=I.geometry;
+if(lo){lo.boundingSphere=w.boundingSphere;lo.computeBoundingSphere=function(){};lo.userData._dressLo=1;I.userData._dressLo=lo;
+w.addEventListener('dispose',function(){try{lo.dispose();}catch(_d){}});}}
+if(typeof _D3_TINY!=='undefined'&&_D3_TINY)_D3_TINY.at=-1e9;
+return true;
+}
+function _d3dressPx(p,ppu,k,near){return ppu>0?2*p*ppu:(near>0?2*p*k/near:Infinity);}
+function _d3dressLodIn(S,ppu,k,ex,ey,ez){
+var D=_D3,sw=[],L=S.L,R=S.R,C=S.C,P=S.P,DR=S.dr||[],q,lo=0,n=0,t0=0,t1=0,off=!!D._noDressLo;
+for(q=0;q<DR.length;q++){var i=DR[q],o=L[i];if(!o||!o.visible)continue;n++;
+var near=0;if(!(ppu>0)){var m=o.matrixWorld.elements,j=i*3,x=m[0]*C[j]+m[4]*C[j+1]+m[8]*C[j+2]+m[12]-ex,y=m[1]*C[j]+m[5]*C[j+1]+m[9]*C[j+2]+m[13]-ey,z=m[2]*C[j]+m[6]*C[j+1]+m[10]*C[j+2]+m[14]-ez;near=Math.sqrt(x*x+y*y+z*z)-R[i];}
+var c=o.userData._dressLo,g=o.geometry,t=o.count*_d3dressTris(g);t0+=t;
+if(c&&!off&&g!==c&&_d3dressPx(P[i],ppu,k,near)<_D3_DRESS_LOD.px){sw.push(o,g);o.geometry=c;lo++;t1+=o.count*_d3dressTris(c);}else t1+=t;}
+D._dressN={listed:DR.length,shown:n,lo:lo,tris0:Math.round(t0),tris:Math.round(t1)};
+return sw;
+}
+function _d3dressLodOut(sw){for(var i=0;i<sw.length;i+=2)sw[i].geometry=sw[i+1];sw.length=0;}
 var _D3_SHK_STILL=2;
 var _D3_SHK_ABSORB=60;
 var _D3_SHK_AGAIN=300;
@@ -68408,13 +68469,17 @@ if(e<_d3wetRnd(k*5+seed)*0.6)continue;o.push([x,+_d3drawnH(x,z),z,k,e]);}return 
 function _d3wetInst(G,geo,mat,S,fn,name){
 var T=window.THREE;if(!S.length)return null;var I=new T.InstancedMesh(geo,mat,S.length),mx=new T.Matrix4(),q=new T.Quaternion(),sc=new T.Vector3(),p=new T.Vector3(),c=new T.Color(),e=new T.Euler();
 S.forEach(function(s,j){var o=fn(s,j);e.set(o.tx||0,o.ry||0,o.tz||0);q.setFromEuler(e);p.set(o.x,o.y,o.z);sc.set(o.sx||1,o.sy||1,o.sz||o.sx||1);mx.compose(p,q,sc);I.setMatrixAt(j,mx);if(o.c){c.setRGB(o.c[0],o.c[1],o.c[2]);I.setColorAt(j,c);}});
-if(I.instanceColor)I.instanceColor.needsUpdate=true;I.name=name||'';G.add(I);return I;
+if(I.instanceColor)I.instanceColor.needsUpdate=true;I.name=name||'';G.add(I);
+try{if(typeof _d3dressMake==='function')_d3dressMake(I);}catch(_dm){}
+return I;
 }
-function _d3wetTuft(n,lean,seed){
-var T=window.THREE,P=[],N=[],k,i;for(k=0;k<n;k++){var g=new T.ConeGeometry(0.006+0.004*_d3wetRnd(k+seed),1,16,1,true).toNonIndexed(),h=0.55+_d3wetRnd(k*3+seed)*0.45,a=k*2.39996,l=lean*(0.3+_d3wetRnd(k*5+seed)*0.7);
+function _d3wetTuft(n,lean,seed,rad){
+var T=window.THREE,P=[],N=[],k,i;for(k=0;k<n;k++){var g=new T.ConeGeometry(0.006+0.004*_d3wetRnd(k+seed),1,rad||16,1,true).toNonIndexed(),h=0.55+_d3wetRnd(k*3+seed)*0.45,a=k*2.39996,l=lean*(0.3+_d3wetRnd(k*5+seed)*0.7);
 g.translate(0,0.5,0);g.scale(1,h,1);g.rotateX(l);g.rotateY(a);g.translate(Math.cos(a)*0.012,0,Math.sin(a)*0.012);
 var p=g.attributes.position.array,nn=g.attributes.normal.array;for(i=0;i<p.length;i++){P.push(p[i]);N.push(nn[i]);}g.dispose();}
-var G=new T.BufferGeometry();G.setAttribute('position',new T.Float32BufferAttribute(P,3));G.setAttribute('normal',new T.Float32BufferAttribute(N,3));return G;
+var G=new T.BufferGeometry();G.setAttribute('position',new T.Float32BufferAttribute(P,3));G.setAttribute('normal',new T.Float32BufferAttribute(N,3));
+if(!rad)G.userData.loOf=function(){return _d3wetTuft(n,lean,seed,3);};
+return G;
 }
 function _d3wetLook(G,w){
 var T=window.THREE,seed=Math.round(w.x*13+w.z*7),R=_d3wetRnd,lo=Infinity,k;
@@ -69053,7 +69118,7 @@ if(typeof _d3wetGround==='function'&&typeof _d3wetLookOn==='function'&&_d3wetLoo
 else{d=new T.Mesh(new T.CircleGeometry(c.r,32),_mat(0x2e2722,{r:1}));d.rotation.x=-Math.PI/2;d.position.set(c.x,+_d3drawnH(c.x,c.z)+0.03,c.z);}d.name='burnScar';G.add(d);
 var n=Math.round(c.r*c.r*0.9),I=new T.InstancedMesh(new T.CylinderGeometry(0.012,0.04,1,16),_mat(0x1a1612,{r:1}),Math.max(1,n)),mx=new T.Matrix4(),q=new T.Quaternion(),sc=new T.Vector3(1,1,1),p=new T.Vector3(),e=new T.Euler();
 for(var i=0;i<n;i++){var a=i*2.39996,r=c.r*0.9*Math.sqrt((i+0.5)/n),x=c.x+Math.cos(a)*r,z=c.z+Math.sin(a)*r,hh=0.25+Rr(i*3+c.x)*0.55,fl=Rr(i*7+c.z)<0.15;
-e.set(fl?1.45:(Rr(i*5)-0.5)*0.2,Rr(i*11)*6,fl?0:(Rr(i*13)-0.5)*0.2);q.setFromEuler(e);sc.set(1,hh,1);p.set(x,+_d3drawnH(x,z)+(fl?0.03:hh/2),z);mx.compose(p,q,sc);I.setMatrixAt(i,mx);}I.name='burntSnags';G.add(I);});
+e.set(fl?1.45:(Rr(i*5)-0.5)*0.2,Rr(i*11)*6,fl?0:(Rr(i*13)-0.5)*0.2);q.setFromEuler(e);sc.set(1,hh,1);p.set(x,+_d3drawnH(x,z)+(fl?0.03:hh/2),z);mx.compose(p,q,sc);I.setMatrixAt(i,mx);}I.name='burntSnags';G.add(I);try{if(typeof _d3dressMake==='function')_d3dressMake(I);}catch(_dm){}});
 (D._wetL||[]).forEach(function(w){var s=+W.phrag[Math.round(w.x)+','+Math.round(w.z)]||0;if(w.k!=='marsh'||s<0.05)return;if(typeof _d3wdOn==='function'&&_d3wdOn()){_d3phragDress(G,w,s);return;}var n=Math.round(s*70),I=new T.InstancedMesh(new T.CylinderGeometry(0.008,0.01,0.42,16),_mat(0xb59f6a,{r:0.8}),n),mx=new T.Matrix4(),q=new T.Quaternion(),sc=new T.Vector3(1,1,1),p=new T.Vector3();
 for(var i=0;i<n;i++){var a=i*2.39996+1,r=w.r*Math.sqrt((i+0.5)/n),x=w.x+Math.cos(a)*r,z=w.z+Math.sin(a)*r;p.set(x,+_d3drawnH(x,z)+0.21,z);mx.compose(p,q,sc);I.setMatrixAt(i,mx);}I.name='phragmites';G.add(I);});
 G.traverse(function(o){if(o.isMesh){o.raycast=function(){};o.userData.noMerge=true;}});D.scene.add(G);D._landG=G;
