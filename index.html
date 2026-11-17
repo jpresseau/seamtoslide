@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='d370b1d';
+var RCG_BUILD='9d49f7b';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -50091,7 +50091,8 @@ function _d3tinyShow(H){if(H.sw){_d3meshLodOut(H.sw);H.sw=null;}if(H.dr){_d3dres
 function _d3tinyArm(ren){
 if(!ren||ren._tinyWrap||typeof ren.render!=='function')return false;
 var r0=ren.render;ren._tinyWrap=r0;
-ren.render=function(scene,cam){var H=_d3tinyHide(ren,scene,cam);try{return r0.apply(this,arguments);}finally{_d3tinyShow(H);}};
+ren.render=function(scene,cam){var H=_d3tinyHide(ren,scene,cam),Q=(typeof _d3reefDeepIn==='function')?_d3reefDeepIn(scene,cam):null;
+try{return r0.apply(this,arguments);}finally{if(Q)_d3reefDeepOut(Q);_d3tinyShow(H);}};
 return true;
 }
 var _D3_MESH_LOD_MIN=300;
@@ -93140,6 +93141,41 @@ var keep=reef&&reef.group;
 R.forEach(function(p){if(_d3reefScratchHeld(p,keep))return;A.roots++;A.objects+=_d3reefScratchFree(p);});
 D._reefScratch=A;return A;
 }
+var _D3_REEF_DEEP={n:9,lift:0.05};
+function _d3reefDeepOK(b,levelAt,groundAt,R,ds,n,lift,ring){
+if(!b||!(b.x1>=b.x0)||!(b.z1>=b.z0)||!(R>0)||!(ds>0))return false;
+n=Math.max(2,n|0);lift=lift||0;var i,j;
+for(j=0;j<n;j++)for(i=0;i<n;i++){var x=b.x0+(b.x1-b.x0)*i/(n-1),z=b.z0+(b.z1-b.z0)*j/(n-1),ax=Math.abs(x),az=Math.abs(z);
+if(ring&&(ax>ring.r||az>ring.r)){if(!(b.top<ring.y-lift))return false;continue;}
+if(ax>R||az>R)return false;
+var L=levelAt(x,z);if(L==null||!isFinite(L)||!(b.top<L-lift))return false;
+var g=groundAt(x,z);if(!isFinite(g)||L-g<ds)return false;}
+return true;
+}
+function _d3reefDeepRing(R){
+var D=_D3,S=D&&D._lookSea,K=(typeof _D3_LOOK!=='undefined')?_D3_LOOK:null;
+if(!S||!S.visible||!S.parent||!K||!S.material||(S.material.transparent&&S.material.opacity<1))return null;
+return {r:Math.max(0,R-(K.seaIn||0)),y:K.seaY};
+}
+function _d3reefDeepOf(g){
+var D=_D3,T=window.THREE,K=(typeof _D3_WDEEP!=='undefined')?_D3_WDEEP:null;if(!g||!T||!K||!K.sea)return false;
+var R=(D.islandHalf>0)?D.islandHalf:44,ring=_d3reefDeepRing(R),key=(D.buildCount|0)+'|'+R+'|'+(D._reefLodGen|0)+'|'+(ring?1:0)+'|'+g.position.x.toFixed(2)+','+g.position.z.toFixed(2);
+var c=g.userData._deep;if(c&&c.key===key)return c.ok;
+var ok=false;try{var bb=(typeof _d3solidBB==='function')?_d3solidBB(g,T):new T.Box3().setFromObject(g);
+if(isFinite(bb.min.x))ok=_d3reefDeepOK({x0:bb.min.x,x1:bb.max.x,z0:bb.min.z,z1:bb.max.z,top:bb.max.y},_d3waterLevelAt,_d3drawnH,R,K.sea.ds,_D3_REEF_DEEP.n,_D3_REEF_DEEP.lift,ring);}catch(_b){ok=false;}
+g.userData._deep={key:key,ok:ok};return ok;
+}
+function _d3reefDeepIn(scene,cam){
+var D=(typeof _D3!=='undefined')?_D3:null;if(!D||D._noReefDeep||!scene||scene!==D.scene||!cam||!D.reef||!D.reef.group)return null;
+var U=(typeof _D3_WDEEP_U!=='undefined')?_D3_WDEEP_U:null;if(!U||!U.uDeepOn||!(U.uDeepOn.value>0.5))return null;
+if(typeof _d3waterLevelAt!=='function'||typeof _d3drawnH!=='function')return null;
+var e=cam.matrixWorld.elements,lv=_d3waterLevelAt(e[12],e[14]);if(lv!=null&&isFinite(lv)&&e[13]<lv+_D3_REEF_DEEP.lift)return null;
+var G=[D.reef.group].concat(D.reefMore||[]),H=[],i;
+for(i=0;i<G.length;i++){var g=G[i];if(!g||!g.visible||!g.parent)continue;if(_d3reefDeepOf(g)){g.visible=false;H.push(g);}}
+D._reefDeepN={places:G.length,hid:H.length};
+return H;
+}
+function _d3reefDeepOut(H){if(!H)return;for(var i=0;i<H.length;i++)H[i].visible=true;H.length=0;}
 (function(global){
 global.attachBluffRockDetail=function(T,root){
 let stone=null;root.traverse(o=>{if(o.isMesh&&o.material.name==='Fractured stone')stone=o.material;});
