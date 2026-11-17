@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='d22b9e4';
+var RCG_BUILD='e2289b2';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -61588,9 +61588,20 @@ return K.names.length;
 function _d3preDone(){
 var D=_D3;if(!_d3preOn()||!D||!D._pre||D._pre.done!=null)return;
 if(D._building||D._buildPending||(D._settleQ|0)>0)return;
+if(_d3preReefWait(D))return;
 try{if(typeof _d3warmPrograms==='function')_d3warmPrograms();}catch(_w){}
+try{if(typeof _d3reefLodStep==='function')_d3reefLodStep();}catch(_rl){}
 try{if(D.ren&&D.scene&&D.cam){D.ren.shadowMap.needsUpdate=true;D.ren.render(D.scene,D.cam);}}catch(_r){}
 D._pre.done=Math.round(performance.now()-D._pre.t0);
+}
+var _D3_PRE_REEF={ms:60000,every:250};
+function _d3preReefWait(D){
+if(D._noPreReefWait)return false;
+var Q=D._reefCoarseQ,busy=!!((typeof _reefBusy!=='undefined'&&_reefBusy)||(Q&&Q.jobs&&Q.jobs.length));
+var P=D._pre,now=performance.now();if(!busy){P.reefWait=P.reefT0?Math.round(now-P.reefT0):0;return false;}
+if(!P.reefT0)P.reefT0=now;if(now-P.reefT0>_D3_PRE_REEF.ms){P.reefWait=-1;return false;}
+if(!P.reefT)P.reefT=setTimeout(function(){P.reefT=0;try{_d3preDone();}catch(_p){}},_D3_PRE_REEF.every);
+return true;
 }
 function _d3preTake(){
 if(!window._driftPre||window._driftMapUp)return false;
@@ -93060,8 +93071,22 @@ function _d3reefLetGoUnseen(L){
 var D=_D3,n=0,seen=new Set();if(!L||!D._reefLetGo)return 0;
 L.forEach(function(gm){var nm,at;if(!gm||seen.has(gm))return;seen.add(gm);gm._rNoFull=1;D._reefLetGo.noFull=(D._reefLetGo.noFull|0)+1;
 for(nm in gm.attributes){at=gm.attributes[nm];if(at&&at._rMark){at._rGo=1;n+=_d3reefLetGoDrop(at)?1:0;}}
-at=gm.index;if(at&&at._rMark){at._rGo=1;n+=_d3reefLetGoDrop(at)?1:0;}});
+at=gm.index;if(at&&at._rMark){at._rGo=1;n+=_d3reefLetGoDrop(at)?1:0;}
+_d3reefFullOff(gm);});
 return n;
+}
+function _d3reefFullOff(gm){
+var D=_D3,A=D._reefLetGo,b=_d3reefFullGpu(gm),Q=D._reefCoarseQ;if(!A||!b||D._noReefFreeFull||gm._rFreed)return 0;
+if(Q&&Q.full){var mine=new Set(),k;for(k in gm.attributes)mine.add(gm.attributes[k]);if(gm.index)mine.add(gm.index);
+for(var i=0;i<Q.full.length;i++){var o=Q.full[i];if(!o||o===gm)continue;for(k in o.attributes)if(mine.has(o.attributes[k]))return 0;if(o.index&&mine.has(o.index))return 0;}}
+try{gm.dispose();}catch(_d){return 0;}
+gm._rFreed=1;A.freed=(A.freed|0)+1;A.freedB=(A.freedB||0)+b;
+return b;
+}
+function _d3reefFullGpu(gm){
+if(!gm||!gm.attributes)return 0;var b=0,k,L=[];for(k in gm.attributes)L.push(gm.attributes[k]);if(gm.index)L.push(gm.index);
+L.forEach(function(at){if(at&&at._rUp)b+=(at.count||0)*(at.itemSize||1)*((at.array&&at.array.BYTES_PER_ELEMENT)||4);});
+return b;
 }
 function _d3reefLetGoForm(bg){
 if(!bg||_D3._noReefLetGo)return 0;
@@ -93078,7 +93103,7 @@ function _d3reefLetGoFormat(A,at,places){
 if(!at)return [];
 var l='the reef: built at detail '+(+at.detail).toFixed(2)+' over '+(places|0)+' placements';
 if(!A)l+=', its arrays kept (the switch)';
-else l+=', '+(A.gone|0)+' of its arrays let go by the page ('+(+A.MB||0).toFixed(1)+' MB)'+((A.waiting|0)?', '+(A.waiting|0)+' kept until first drawn':'')+((A.noFull|0)?', '+(A.noFull|0)+' of its pieces at their finest coarse form, none kept full (a phone)':'')+(A.armed?'':', waiting for its coarse forms')+((A.backs|0)?', built again after '+A.backs+' lost context'+(A.backs>1?'s':''):'');
+else l+=', '+(A.gone|0)+' of its arrays let go by the page ('+(+A.MB||0).toFixed(1)+' MB)'+((A.waiting|0)?', '+(A.waiting|0)+' kept until first drawn':'')+((A.noFull|0)?', '+(A.noFull|0)+' of its pieces at their finest coarse form, none kept full (a phone)':'')+((A.freed|0)?', '+(A.freed|0)+' full forms taken off the graphics card ('+((A.freedB||0)/1048576).toFixed(1)+' MB)':'')+(A.armed?'':', waiting for its coarse forms')+((A.backs|0)?', built again after '+A.backs+' lost context'+(A.backs>1?'s':''):'');
 return [l];
 }
 var _D3_REEF_PIECE_KINDS={coral:1,rock:1,vegetation:1};
