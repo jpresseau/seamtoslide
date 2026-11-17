@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='e2289b2';
+var RCG_BUILD='d370b1d';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -89393,7 +89393,7 @@ _D3.ride=_D3.ride||{};
 var R=_D3.ride;
 R.on=true;R.list=list;R.yaw=0;R.pitch=0;R.look=false;R.frames=0;R.lite=_d3rideLite();
 _d3rideTrace('enter');
-if(R.lite){R.cap0=_D3._pxrCap;_D3._pxrCap=1;try{if(typeof _d3resize==='function')_d3resize();}catch(_rz9){}}
+if(R.lite){R.cap0=_D3._pxrCap;_D3._pxrCap=_d3rideLiteCap();try{if(typeof _d3resize==='function')_d3resize();}catch(_rz9){}}
 var _ai9=-1;if(kind==='air'){for(var _k9=0;_k9<list.length;_k9++)if(list[_k9].kind==='air'){_ai9=_k9;break;}if(_ai9<0){R.on=false;try{showToast('No aircraft in the air to ride in.');}catch(_t9){}return;}}
 if(!_d3rideSit(_ai9>=0?_ai9:(R.i!=null&&R.i<list.length?R.i:0))){_D3.ride.on=false;_d3rideTraceOk();_d3rideLiteOff(R);return;}
 _d3rideHUD(true);
@@ -89415,7 +89415,7 @@ for(k=1;k<=n;k++)if(_d3rideSit(R.i+d*k))return;
 function _d3rideStep(){
 var R=_D3&&_D3.ride;
 if(!R||!R.on)return;
-if(R.frames<_D3_RIDE_OKF){R.frames++;if(R.frames===_D3_RIDE_OKF)_d3rideTraceOk();else if(R.frames<=3||R.frames%10===0)_d3rideTrace('frame '+R.frames);}
+if(R.frames<_D3_RIDE_OKF){R.frames++;if(R.frames===_D3_RIDE_OKF){_d3rideTraceOk();if(R.lite&&!_D3._noRideHeal)_d3rideLiteHeal();}else if(R.frames<=3||R.frames%10===0)_d3rideTrace('frame '+R.frames);}
 if(!R.obj||!R.obj.parent||!_D3.scene){
 var fresh=_d3rideList();
 if(!fresh.length){_d3rideEnd();return;}
@@ -89480,6 +89480,12 @@ function _d3rideTrace(step){try{__LS.setItem(_d3rideLsKey('rcgRideTrace'),String
 function _d3rideTraceOk(){try{__LS.removeItem(_d3rideLsKey('rcgRideTrace'));}catch(_t){}}
 function _d3rideLite(){try{return __LS.getItem(_d3rideLsKey('rcgRideLite'))==='1';}catch(_l){return false;}}
 function _d3rideLiteOff(R){if(!R||!R.lite)return;_D3._pxrCap=R.cap0;R.cap0=undefined;try{if(typeof _d3resize==='function')_d3resize();}catch(_rz){}}
+var _D3_RIDE_HEAL=2;
+function _d3rideLiteCap(){return (typeof _D3_PXR_FLOOR==='number'&&_D3_PXR_FLOOR>1)?_D3_PXR_FLOOR:1.25;}
+function _d3rideLiteHeal(){var k=_d3rideLsKey('rcgRideLiteOk'),n=0;
+try{n=(+__LS.getItem(k)||0)+1;if(n>=_D3_RIDE_HEAL){__LS.removeItem(_d3rideLsKey('rcgRideLite'));__LS.removeItem(k);}else __LS.setItem(k,String(n));}catch(_h){}
+return n;}
+try{document.addEventListener('visibilitychange',function(){try{var R=_D3&&_D3.ride;if(document.hidden&&R&&R.on&&R.frames<_D3_RIDE_OKF&&!_D3._noRideHeal)_d3rideTraceOk();}catch(_v){}});}catch(_vl){}
 function _d3rideCrashCheck(){
 var s=null,k=_d3rideLsKey('rcgRideTrace');try{s=__LS.getItem(k);}catch(_c){}
 if(!s)return null;
@@ -89487,7 +89493,7 @@ try{__LS.removeItem(k);__LS.setItem(_d3rideLsKey('rcgRideLite'),'1');__LS.setIte
 return s;
 }
 try{setTimeout(function(){var s=_d3rideCrashCheck();if(!s)return;
-try{if(typeof showToast==='function')showToast('Ride along closed the app last time (it got as far as: '+s+'). It now rides in light mode on this device.');}catch(_ts){}},2500);}catch(_rcc){}
+try{if(typeof showToast==='function')showToast('Ride along closed the app last time (it got as far as: '+s+'). It rides in light mode on this device until two rides go well.');}catch(_ts){}},2500);}catch(_rcc){}
 function _d3rideGlass(R){
 var D=_D3,T=window.THREE;if(!R||!R.obj||!R.cam||!T||(D&&D._noRideGlass))return 0;R.hid=R.hid||[];
 R.obj.updateMatrixWorld(true);var eye=R.cam.getWorldPosition(new T.Vector3()),sp=new T.Sphere(),n=0;
