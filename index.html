@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='aa801c2';
+var RCG_BUILD='a4f6bee';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -5028,7 +5028,7 @@ ev.target.value='';
 };
 rd.readAsText(fl);
 }
-function driftTrackKeyList(id){var P=['rcgDWP_','rcgDWPs_','rcgSX_','rcgSY_','rcgStartF_','rcgWorldO_','rcgKerb_','rcgScene_','rcgBiome_','rcgSceneDens_','rcgRiver_','rcgRivers_','rcgRiverW_','rcgRivMix_','rcgStreams_','rcgStreamW_','rcgStreamWs_','rcgWells_','rcgNut_','rcgBays_','rcgWet_','rcgBar_','rcgBvr_','rcgKey_','rcgSea_','rcgKarst_','rcgAge_','rcgFlood_','rcgLandW_','rcgTown_','rcgLake_','rcgLakes_','rcgLakeDock_','rcgLWP_','rcgLamps_','rcgRocks_','rcgVillage_','rcgScenery_','rcgMtn_','rcgSigns_','rcgBldRoads_','rcgBldStyle_','rcgGrand_','rcgGrandX_','rcgSpans_','rcgRail_','rcgRailLoop_','rcgRail2Track_','rcgRailType2_','rcgRailCarMult_','rcgTrainType_','rcgTrainType2_','rcgTrainSpeed_','rcgScales_','rcgScaleBase_','rcgFitView_','rcgD3Cars_','rcgDots_','rcgRoadWS_','rcgAircraft_','rcgRunway_','rcgHarbour_','rcgSpeedMul_','rcgDriftSpd_', 'rcgTerr_','rcgLand_','rcgLakeSalt_','rcgMarkers_','rcgRailElev_','rcgRailScale_','rcgRailsX_','rcgVillScale_','rcgLastView_', 'rcgRpgT_','rcgRpgLv_', 'rcgHome_', 'rcgMineOps_', 'rcgMineUG_', 'rcgDrill_', 'rcgMineSite_', 'rcgCountry_', 'rcgBldArchive_'],o=[],i;for(i=0;i<P.length;i++){o.push(P[i]+id);o.push(P[i]+id+'~3d');}o.push('rcgSeed3d_'+id);return o;}
+function driftTrackKeyList(id){var P=['rcgDWP_','rcgDWPs_','rcgSX_','rcgSY_','rcgStartF_','rcgWorldO_','rcgKerb_','rcgScene_','rcgBiome_','rcgSceneDens_','rcgRiver_','rcgRivers_','rcgRiverW_','rcgRivMix_','rcgStreams_','rcgStreamW_','rcgStreamWs_','rcgWells_','rcgNut_','rcgBays_','rcgWaterBoats_','rcgWet_','rcgBar_','rcgBvr_','rcgKey_','rcgSea_','rcgKarst_','rcgAge_','rcgFlood_','rcgLandW_','rcgTown_','rcgLake_','rcgLakes_','rcgLakeDock_','rcgLWP_','rcgLamps_','rcgRocks_','rcgVillage_','rcgScenery_','rcgMtn_','rcgSigns_','rcgBldRoads_','rcgBldStyle_','rcgGrand_','rcgGrandX_','rcgSpans_','rcgRail_','rcgRailLoop_','rcgRail2Track_','rcgRailType2_','rcgRailCarMult_','rcgTrainType_','rcgTrainType2_','rcgTrainSpeed_','rcgScales_','rcgScaleBase_','rcgFitView_','rcgD3Cars_','rcgDots_','rcgRoadWS_','rcgAircraft_','rcgRunway_','rcgHarbour_','rcgSpeedMul_','rcgDriftSpd_', 'rcgTerr_','rcgLand_','rcgLakeSalt_','rcgMarkers_','rcgRailElev_','rcgRailScale_','rcgRailsX_','rcgVillScale_','rcgLastView_', 'rcgRpgT_','rcgRpgLv_', 'rcgHome_', 'rcgMineOps_', 'rcgMineUG_', 'rcgDrill_', 'rcgMineSite_', 'rcgCountry_', 'rcgBldArchive_'],o=[],i;for(i=0;i<P.length;i++){o.push(P[i]+id);o.push(P[i]+id+'~3d');}o.push('rcgSeed3d_'+id);return o;}
 function driftWipeTrackKeys(id){var K=driftTrackKeyList(id),i;for(i=0;i<K.length;i++){try{__LS.removeItem(K[i]);}catch(e){}}try{var a=driftTrackAliases();if(a[id]){delete a[id];_driftPutJSON('rcgTrackAlias',a);}}catch(e){}}
 function driftArchiveList(){try{var s=__LS.getItem('rcgArchive');if(s){var o=JSON.parse(s);if(o&&typeof o==='object')return o;}}catch(e){}return {};}
 function driftArchiveSave(o){return _driftPutJSON('rcgArchive',o);}
@@ -5699,7 +5699,7 @@ else{if(typeof driftWaterPlaceCancel==='function')driftWaterPlaceCancel();if(g){
 if(_da.view3d&&typeof _d3build==='function')_d3build();
 driftLakeUI();
 }
-function driftLakeReset(){_da.lake=driftLakeSeed();_da.lakes=[_da.lake];_da.lakeIdx=0;_da.lakeDock=null;driftLakeSave();driftLakeDockSave();driftRenderScene();driftLakeRenderHandles();if(_da.view3d&&typeof _d3build==='function')_d3build();}
+function driftLakeReset(){_da.lake=driftLakeSeed();_da.lakes=[_da.lake];_da.lakeIdx=0;if(typeof _d3bwSplice==='function')_d3bwSplice('L',-1);_da.lakeDock=null;driftLakeSave();driftLakeDockSave();driftRenderScene();driftLakeRenderHandles();if(_da.view3d&&typeof _d3build==='function')_d3build();}
 function driftLakeRenderHandles(){}
 function driftLakeHitPt(xy,rad){rad=rad||14;var v=_da.lake||[],i,best=-1,bd=1e18;for(i=0;i<v.length;i++){var px=(v[i].x!=null?v[i].x:v[i][0]),py=(v[i].y!=null?v[i].y:v[i][1]),dd=Math.hypot(xy.x-px,xy.y-py);if(dd<=rad&&dd<bd){bd=dd;best=i;}}return best;}
 function driftLakeDown(e){
@@ -5717,7 +5717,7 @@ function driftLakeDbl(e){if(!_da.lmode)return;var xy=driftSvgXY(e);if(!xy)return
 function driftLakeDelete(){_da._lakeMove=false;_da._lakeMoving=false;
 var _want9=driftLakeKindWant();
 if(Array.isArray(_da.lakes)&&_da.lakes.length&&_da.lakeIdx!=null&&_da.lakes[_da.lakeIdx]){
-_da.lakes.splice(_da.lakeIdx,1);if(Array.isArray(_da.lakeSalt))_da.lakeSalt.splice(_da.lakeIdx,1);
+_da.lakes.splice(_da.lakeIdx,1);if(Array.isArray(_da.lakeSalt))_da.lakeSalt.splice(_da.lakeIdx,1);if(typeof _d3bwSplice==='function')_d3bwSplice('L',_da.lakeIdx);
 driftLakePickKind(_want9);
 }else{_da.lake=null;_da.lakeIdx=null;}driftLakeSave(true);driftRenderScene();driftLakeRenderHandles();if(_da.view3d&&typeof _d3build==='function')_d3build();driftLakeUI();}
 function driftLakeAdd(ctr){
@@ -7456,8 +7456,8 @@ try{var _m8=(typeof _d3map==='function')?_d3map():null,_bw8=(typeof driftVillage
 if(_m8&&_m8.s>0&&typeof driftRiverWidth==='function')off=_da.rivers.length*(driftRiverWidth(_bw8)*1.24+3/_m8.s);}catch(_ao9){}
 if(ctr)seed=_driftWaterShift(seed,ctr.x,ctr.y);else seed=seed.map(function(p){var x=(p.x!=null?p.x:p[0]),y=(p.y!=null?p.y:p[1]);return [Math.round(x),Math.round(y+off)];});_da.rivers.push(seed);_da.riverIdx=_da.rivers.length-1;_da.river=_da.rivers[_da.riverIdx];if(!_da.rmode){driftRiverToggle();}else{driftRiverSave();driftRenderScene();driftRiverRenderHandles();if(_da.view3d&&typeof _d3build==='function')_d3build();}driftRiverUI();}
 function driftRiverSelect(){if(!Array.isArray(_da.rivers)||_da.rivers.length<2)return;if(_da.river&&_da.riverIdx!=null)_da.rivers[_da.riverIdx]=_da.river;_da.riverIdx=((_da.riverIdx||0)+1)%_da.rivers.length;_da.river=_da.rivers[_da.riverIdx];driftRenderScene();driftRiverRenderHandles();if(_da.view3d&&typeof _d3build==='function')_d3build();driftRiverUI();}
-function driftRiverDelete(){_da._rivMove=false;_da._rivMoving=false;_da._rivPan=null;if(!Array.isArray(_da.rivers)||!_da.rivers.length){_da.river=null;}else{_da.rivers.splice(_da.riverIdx||0,1);_da.riverIdx=Math.min(_da.riverIdx||0,Math.max(0,_da.rivers.length-1));_da.river=_da.rivers[_da.riverIdx]||null;}driftRiverSave();driftRenderScene();driftRiverRenderHandles();if(_da.view3d&&typeof _d3build==='function')_d3build();driftRiverUI();}
-function driftRiverDeleteAll(){_da._rivMove=false;_da._rivMoving=false;_da._rivPan=null;_da.rivers=[];_da.riverIdx=0;_da.river=null;driftRiverSave();driftRenderScene();driftRiverRenderHandles();if(_da.view3d&&typeof _d3build==='function')_d3build();driftRiverUI();}
+function driftRiverDelete(){_da._rivMove=false;_da._rivMoving=false;_da._rivPan=null;if(!Array.isArray(_da.rivers)||!_da.rivers.length){_da.river=null;}else{_da.rivers.splice(_da.riverIdx||0,1);if(typeof _d3bwSplice==='function')_d3bwSplice('R',_da.riverIdx||0); _da.riverIdx=Math.min(_da.riverIdx||0,Math.max(0,_da.rivers.length-1));_da.river=_da.rivers[_da.riverIdx]||null;}driftRiverSave();driftRenderScene();driftRiverRenderHandles();if(_da.view3d&&typeof _d3build==='function')_d3build();driftRiverUI();}
+function driftRiverDeleteAll(){_da._rivMove=false;_da._rivMoving=false;_da._rivPan=null;_da.rivers=[];if(typeof _d3bwSplice==='function')_d3bwSplice('R',-1);_da.riverIdx=0;_da.river=null;driftRiverSave();driftRenderScene();driftRiverRenderHandles();if(_da.view3d&&typeof _d3build==='function')_d3build();driftRiverUI();}
 function driftRiverAddMany(){if(!Array.isArray(_da.rivers))_da.rivers=(_da.river&&_da.river.length?[_da.river]:[]);if(_da.river&&_da.riverIdx!=null&&_da.rivers[_da.riverIdx])_da.rivers[_da.riverIdx]=_da.river;var X=_da.vbx||0,Y=_da.vby||0,W=_da.vbw||660,H=_da.vbh||520,k,i,N=9;
 var _m9=null,_R9=0;try{if(typeof _d3map==='function'){_m9=_d3map();_R9=(typeof _D3!=='undefined'&&_D3)?(_D3.islandHalf||0):0;}}catch(_am9){}
 var _RR9=(_m9&&_m9.s>0&&_R9>0)?Math.max(_R9*0.5,_R9-5):0;var specs=[{y:0.18,amp:0.06,fr:2.3,x0:0.05,x1:0.95,dy:0},{y:0.33,amp:0.10,fr:3.0,x0:0.04,x1:0.96,dy:0},{y:0.66,amp:0.07,fr:2.6,x0:0.06,x1:0.94,dy:0},{y:0.80,amp:0.11,fr:3.4,x0:0.05,x1:0.95,dy:0},{y:0.12,amp:0.05,fr:1.8,x0:0.10,x1:0.58,dy:0.52},{y:0.88,amp:0.05,fr:1.8,x0:0.42,x1:0.92,dy:-0.48},{y:0.50,amp:0.05,fr:2.0,x0:0.30,x1:0.70,dy:0.30}];for(k=0;k<specs.length;k++){var sp=specs[k],pts=[];for(i=0;i<N;i++){var t=i/(N-1),yy=sp.y+sp.dy*t+sp.amp*Math.sin(t*Math.PI*sp.fr+k*1.3),xx=sp.x0+(sp.x1-sp.x0)*t;
@@ -11668,7 +11668,7 @@ dx+=nx*shore*2.4;dz+=nz*shore*2.4;
 if(sdH.d<mrg*2)slow=Math.max(0.3,sdH.d/(mrg*2));
 }
 }
-var give=1-shore*0.85;
+var give=1-shore*0.85;if(b.home&&typeof _d3boatLeash==='function'){var _lh9=_d3boatLeash(b.home,px,pz);if(_lh9){dx+=_lh9.x*give;dz+=_lh9.z*give;}}
 if(avoid)for(i=0;i<avoid.length;i++){
 var o=avoid[i],ax=px-o.x,az=pz-o.z,ad=Math.sqrt(ax*ax+az*az),sf=(o.r||0.45);
 if(ad<sf&&ad>1e-4){var w=((sf-ad)/sf)*give;dx+=(ax/ad)*w*(o.w||1.2);dz+=(az/ad)*w*(o.w||1.2);if(_st9&&ax*fx+az*fz<0)slow=Math.min(slow,Math.max(0.25,ad/sf));}
@@ -44158,11 +44158,179 @@ var D=_D3,O=D.boatObstacles,P=D.riverPath,S=_d3riverGates.S;if(!O||!P||!D.riverC
 if(!S||S.O!==O||S.n!==O.length||S.P!==P)S=_d3riverGates.S={O:O,n:O.length,P:P,G:_d3riverGatesOf(P,D.riverCum,D.riverHalf||[],O)};
 return S.G;
 }
+function _d3riverGatesFor(W){
+var O=_D3.boatObstacles,S=W&&W._gates;if(!W||!O||!_d3boatGatesOn())return [];
+if(!S||S.O!==O||S.n!==O.length)S=W._gates={O:O,n:O.length,G:_d3riverGatesOf(W.P,W.C,W.H||[],O)};
+return S.G;
+}
 function _d3bridgeBoatKeep(b){
-var G=_d3riverGates();if(!G.length||!b)return;var R=b._gch;
+if(!b)return;var W=(b.rvI!=null&&typeof _d3bwRiverWalk==='function')?_d3bwRiverWalk(b.rvI):null;if(b.rvI!=null&&!W)return;
+var G=W?_d3riverGatesFor(W):_d3riverGates();if(!G.length)return;var R=b._gch;
 if(!R||R.G!==G){var SP=[],m=(b.rad||0.3)+_D3_BOAT_GATE.clear;G.forEach(function(g){if(!_d3hullPasses(b,{clr:g.clr}))SP.push({a:g.a,b:g.b,lip:g.a,foot:g.b});});
-R=b._gch=_d3fallsReach(SP,b.d,_D3.riverLen,m,m);R.G=G;}
+R=b._gch=_d3fallsReach(SP,b.d,W?W.L:_D3.riverLen,m,m);R.G=G;}
 if(R.hold)b.d=R.mid;else if(b.d>R.hi){b.d=R.hi;b.dir=-1;}else if(b.d<R.lo){b.d=R.lo;b.dir=1;}
+}
+var _D3_BW_FISH='fishing';
+var _D3_BW_MAX=10;
+function _d3bwOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noWaterBoats);}
+function _d3bwKinds(){var L=[{id:_D3_BW_FISH,label:'Fishing Boat',body:0xe6dcc4,accent:0x2f6f9a}];
+if(typeof DRIFT_BOATS!=='undefined')DRIFT_BOATS.forEach(function(b){if(b&&b.id)L.push(b);});return L;}
+function _d3bwKind(id){var K=_d3bwKinds(),i;for(i=0;i<K.length;i++)if(K[i].id===id)return K[i];return null;}
+function _d3bwSetOf(o,t,i,C){
+var own=o&&o[t]&&o[t][i];if(Array.isArray(own))return own.slice();
+var F=[];if(!C)return F;
+function fleet(){(C.kinds||[]).forEach(function(id){if(id!==_D3_BW_FISH&&C.fleet&&C.fleet[id])F.push(id);});}
+if(t==='L'&&C.lake!=null&&+i===+C.lake){F.push(_D3_BW_FISH);fleet();}
+else if(t==='R'&&C.river!=null&&+i===+C.river){F.push(_D3_BW_FISH);if(!C.nav)fleet();}
+return F;
+}
+function _d3bwToggleOf(o,t,i,id,S){
+var n=JSON.parse(JSON.stringify(o||{})),L=(S||[]).slice(),k=L.indexOf(id);
+if(k>=0)L.splice(k,1);else L.push(id);(n[t]=n[t]||{})[i]=L;return n;
+}
+function _d3bwSpliceOf(o,t,i){
+var n=JSON.parse(JSON.stringify(o||{})),A=n[t],B={},k;if(!A)return n;
+if(i<0){delete n[t];return n;}
+for(k in A){if(!Object.prototype.hasOwnProperty.call(A,k))continue;var j=+k;if(j===i)continue;B[j>i?j-1:j]=A[k];}
+n[t]=B;return n;
+}
+function _d3bwBayMatch(R,key){
+var p=String(key||'').split(','),x=+p[0],z=+p[1],best=null,bd=Infinity,i;if(!R||!(x-x===0)||!(z-z===0))return null;
+for(i=0;i<R.length;i++){var o=R[i];if(!o)continue;if(Math.round(o.cx)===x&&Math.round(o.cz)===z)return o;
+var d=Math.hypot(o.cx-x,o.cz-z),lim=Math.max(2,Math.sqrt(o.area||0)/3);if(d<=lim&&d<bd){bd=d;best=o;}}
+return best;
+}
+function _d3bwBayKey(o){return Math.round(o.cx)+','+Math.round(o.cz);}
+function _d3bwBayReach(o,rad){return Math.max(1.5,Math.sqrt((o&&o.area||0)/Math.PI)*1.15,(rad||0.3)*3);}
+function _d3boatLeash(H,px,pz){
+if(!H||!(H.r>0))return null;var dx=H.x-px,dz=H.z-pz,d=Math.sqrt(dx*dx+dz*dz);if(!(d>H.r))return null;
+var k=Math.min(1.5,(d-H.r)/(H.r*0.5)*1.5);return {x:dx/d*k,z:dz/d*k};
+}
+function _d3bwStore(){
+var raw='';try{raw=__LS.getItem('rcgWaterBoats_'+_ns())||'';}catch(_r){raw='';}
+var S=_d3bwStore.S;if(S&&S.raw===raw)return S.o;
+var o={};try{o=raw?(JSON.parse(raw)||{}):{};}catch(_p){o={};}if(typeof o!=='object'||Array.isArray(o))o={};
+_d3bwStore.S={raw:raw,o:o};return o;
+}
+function _d3bwPut(o){
+var e=!o||!Object.keys(o).some(function(t){return o[t]&&Object.keys(o[t]).length;});
+try{if(e)__LS.removeItem('rcgWaterBoats_'+_ns());else __LS.setItem('rcgWaterBoats_'+_ns(),JSON.stringify(o));}catch(_s){}
+}
+function _d3bwCtx(){
+var a=(typeof _da!=='undefined')?_da:null,D=(typeof _D3!=='undefined')?_D3:null;if(!a)return null;
+if(a.boatfleet===undefined&&typeof driftBoatLoad==='function')driftBoatLoad();
+return {lake:(a.lake&&a.lake.length>2)?(a.lakeIdx||0):null,river:(a.river&&a.river.length>1)?(a.riverIdx||0):null,
+nav:!!(D&&D.lakePts&&D.lakePts.length>2),fleet:a.boatfleet||{},kinds:_d3bwKinds().map(function(k){return k.id;})};
+}
+function _d3bwOwn(t,i){if(!_d3bwOn())return false;var o=_d3bwStore();return !!(o[t]&&Array.isArray(o[t][i]));}
+function _d3bwSet(t,i){return _d3bwSetOf(_d3bwStore(),t,i,_d3bwCtx());}
+function _d3bwToggle(t,i,id){var S=_d3bwSet(t,i),on=S.indexOf(id)<0;_d3bwPut(_d3bwToggleOf(_d3bwStore(),t,i,id,S));return on;}
+function _d3bwClear(t,i){var o=JSON.parse(JSON.stringify(_d3bwStore()));(o[t]=o[t]||{})[i]=[];_d3bwPut(o);}
+function _d3bwSplice(t,i){try{var o=_d3bwStore();if(o[t])_d3bwPut(_d3bwSpliceOf(o,t,i));}catch(_s){}}
+function _d3bwSig(){
+var a=(typeof _da!=='undefined')?_da:null,f=[],k,z='',o='';
+if(a&&a.boatfleet===undefined&&typeof driftBoatLoad==='function')driftBoatLoad();
+if(a&&a.boatfleet)for(k in a.boatfleet)if(a.boatfleet[k])f.push(k);f.sort();
+try{z=__LS.getItem('rcgBoatSizes')||'';}catch(_z){}try{o=JSON.stringify(_d3bwStore());}catch(_o){}
+return f.join(',')+'#'+z+'#'+o+(_d3bwOn()?'':'#off');
+}
+function _d3bwNavOf(P){
+if(!P||P.length<3)return null;var D=_D3,M=_d3bwNavOf.M;
+if(!M||M.bc!==D.buildCount)M=_d3bwNavOf.M={bc:D.buildCount,m:new Map()};
+if(M.m.has(P))return M.m.get(P);
+var LK=(P.salt&&typeof _d3polyClipRect==='function')?_d3polyClipRect(P,_d3islandR()-2):P,nav=null,q;
+if(LK&&LK.length>=3){var cx=0,cz=0,r=0;for(q=0;q<LK.length;q++){cx+=LK[q].x;cz+=LK[q].z;}cx/=LK.length;cz/=LK.length;
+for(q=0;q<LK.length;q++)r=Math.max(r,Math.hypot(LK[q].x-cx,LK[q].z-cz));
+nav={src:P,poly:LK,cx:cx,cz:cz,r:r,inner:(typeof _d3polyInner==='function')?_d3polyInner(LK):null,salt:!!P.salt};}
+M.m.set(P,nav);return nav;
+}
+function _d3bwLakeDrawn(i){var A=_D3._lakeDrawn||[],k;for(k=0;k<A.length;k++)if(A[k]&&A[k].li===i)return A[k];return null;}
+function _d3bwRiverWalk(k){
+var X=(typeof _D3!=='undefined'&&_D3)?(_D3.riverExtra||[]):[],E=null,i;for(i=0;i<X.length;i++)if(X[i]&&X[i].i===k){E=X[i];break;}
+if(!E||!E.P||E.P.length<2||typeof _d3riverWalk!=='function')return null;
+if(!E._wbW){var W=E.W||_d3riverWalk(E.P,E.H||E.P.map(function(){return 0.3;}));if(!W.Y)W.Y=E.Y||null;E._wbW=W;}
+return E._wbW;
+}
+function _d3bwRiverAt(W,d){
+var p=(typeof _d3riverAtOf==='function')?_d3riverAtOf(W,d):null;if(!p)return null;
+if(W.Y&&W.C&&W.P[0]&&W.P[0].y==null){var C=W.C,k=1;while(k<C.length&&C[k]<d)k++;if(k>=C.length)k=C.length-1;
+var s=(C[k]-C[k-1])||1,fr=Math.max(0,Math.min(1,(d-C[k-1])/s)),y0=W.Y[k-1],y1=W.Y[k];if(y0-y0===0&&y1-y1===0)p.y=y0+(y1-y0)*fr;}
+return p;
+}
+function _d3bwRiverOwner(W){var A=(typeof _d3riversAll==='function')?_d3riversAll():[],i;if(W)for(i=0;i<A.length;i++)if(A[i].P===W.P)return i;return -1;}
+function _d3bwBayAt(x,z){
+var B=(typeof _d3baysSort==='function')?_d3baysSort():null,i;if(!B||!B.reg)return null;
+var ix=Math.round((x+B.ext)/B.st),iz=Math.round((z+B.ext)/B.st);if(ix<0||iz<0||ix>=B.n||iz>=B.n)return null;
+var id=B.reg[iz*B.n+ix];if(!(id>=0))return null;for(i=0;i<B.R.length;i++)if(B.R[i].id===id)return B.R[i];return null;
+}
+function _d3bwBayMid(B,o){
+var best=null,bd=Infinity,i;if(!B||!B.reg||!o)return null;
+for(i=0;i<B.reg.length;i++){if(B.reg[i]!==o.id)continue;var x=-B.ext+(i%B.n)*B.st,z=-B.ext+((i/B.n)|0)*B.st,d=(x-o.cx)*(x-o.cx)+(z-o.cz)*(z-o.cz);
+if(d<bd){bd=d;best={x:x,z:z};}}
+return best;
+}
+function _d3bwWet(nav,x,z){
+var s=(typeof _d3polySD==='function')?_d3polySD(nav.poly,x,z):null;if(s&&!s.inside)return false;
+return !(nav.salt&&typeof _d3inAnySalt==='function'&&!_d3inAnySalt(x,z));
+}
+function _d3bwSpot(nav,H,j,br,air,open){
+var cx=H?H.x:nav.cx,cz=H?H.z:nav.cz,wr=H?Math.max(0.3,H.r*0.6):Math.max(0.2,nav.r*0.55),A=_D3.boats3d||[];
+var W=(typeof _d3hbrWorld==='function')?_d3hbrWorld():null,ang=j*2.399+(H?0.7:0),rr=wr*(0.22+0.7*((j%3)/2)),x=cx,z=cz,t,q;
+if(W&&typeof _d3hbrSpawnAng==='function')ang=_d3hbrSpawnAng(W,cx,cz,ang,rr,open?br+1:0.3);
+for(t=0;t<14;t++){x=cx+Math.cos(ang)*rr;z=cz+Math.sin(ang)*rr;
+var ok=!(W&&open&&typeof _d3hbrIn==='function'&&_d3hbrIn(W,x,z,br+1))&&!(typeof _d3hullBlocked==='function'&&_d3hullBlocked(x,z,{rad:br,air:air},br))&&_d3bwWet(nav,x,z);
+for(q=0;ok&&q<A.length;q++){var o=A[q];if(o.px==null||o.hbr)continue;if(Math.hypot(x-o.px,z-o.pz)<br+(o.rad||0.3)+0.5)ok=false;}
+if(ok)break;ang+=0.9;rr=Math.min(wr,rr+wr*0.16);}
+return {x:x,z:z};
+}
+function _d3bwModel(id,bs){
+if(id===_D3_BW_FISH){var g=_d3fishboat();g.scale.setScalar(bs);return g;}
+var bt=_d3bwKind(id);if(!bt||typeof _mkBoatModel!=='function')return null;
+var m=_mkBoatModel(bt);m.scale.multiplyScalar(_d3boatFleetK(bt,bs));return m;
+}
+function _d3bwAdd(E,obj,x,y,z){obj.position.set(x,y,z);(_D3.riverGrp||E.g).add(obj);obj.traverse(function(o){if(o.isMesh)o.userData.noMerge=true;});}
+function _d3bwDrop(obj){try{if(obj.parent)obj.parent.remove(obj);}catch(_d){}}
+function _d3bwAfloat(E,id,nav,H,j){
+var T=window.THREE,obj=_d3bwModel(id,E.bs);if(!obj)return null;
+var sz=new T.Box3().setFromObject(obj).getSize(new T.Vector3()),br=Math.hypot(sz.x,sz.z)/2,fish=id===_D3_BW_FISH;
+var Wh=(typeof _d3hbrWorld==='function')?_d3hbrWorld():null,hb=null;
+if(!fish&&!H&&Wh&&typeof _d3hbrBerthSpawn==='function'&&_d3bwWet(nav,Wh.x+Wh.ux*Wh.D*0.5,Wh.z+Wh.uz*Wh.D*0.5))hb=_d3hbrBerthSpawn(sz.x,sz.z,j);
+var open=!!Wh&&!hb,p=hb?{x:hb.x,z:hb.z}:_d3bwSpot(nav,H,j,br,sz.y,open),Y=(typeof _D3_BOAT_Y!=='undefined')?_D3_BOAT_Y:0.42;
+_d3bwAdd(E,obj,p.x,Y,p.z);
+var r=nav.r,e=fish?{obj:obj,ph:p.x*3+p.z*2,bx:p.x,bz:p.z,lake:true,spd:Math.max(0.08,Math.min(0.22,r*0.04)),lookA:Math.max(0.28,r*0.14)}
+:{obj:obj,ph:p.x*3+p.z*2,px:p.x,pz:p.z,kind:id,open:open,spd:(typeof _d3hullSpd==='function')?_d3hullSpd(id,r):Math.max(0.1,Math.min(0.28,r*0.05))};
+if(!fish)e.lookA=Math.max(0.3,r*0.15,e.spd*2.5);
+e.poly=nav.poly;e.cx=nav.cx;e.cz=nav.cz;e.hd=Math.random()*6.2832;e.wb=1;if(H)e.home={x:H.x,z:H.z,r:H.r};
+if(!E.berth(e,obj,nav)){_d3bwDrop(obj);return null;}
+if(hb){e.hbr=hb.hbr;e.px=e.bx=hb.x;e.pz=e.bz=hb.z;e.hd=hb.hd;obj.position.set(hb.x,obj.position.y,hb.z);obj.rotation.y=-hb.hd;}
+(_D3.boats3d=_D3.boats3d||[]).push(e);return e;
+}
+function _d3bwAstream(E,id,rk,W,j,n){
+var L=W?W.L:_D3.riverLen;if(!(L>0))return null;var d=((j+0.5)/n)*L,p=W?_d3bwRiverAt(W,d):_d3riverAt(d);if(!p)return null;
+var obj=_d3bwModel(id,E.bs);if(!obj)return null;_d3bwAdd(E,obj,p.x,0.05,p.z);
+var e={obj:obj,ph:j*2+rk,river:true,d:d,spd:(id===_D3_BW_FISH?0.4:0.35)+Math.random()*0.4,dir:(j%2?1:-1),wb:1};
+if(id!==_D3_BW_FISH)e.kind=id;if(W){e.rvI=rk;e.rown=_d3bwRiverOwner(W);}
+E.berth(e,obj,null);
+(_D3.boats3d=_D3.boats3d||[]).push(e);return e;
+}
+function _d3bwPlace(E){
+if(!_d3bwOn()||!E||typeof _da==='undefined'||!_da)return 0;var o=_d3bwStore(),n=0,k;
+function each(L,fn){(L||[]).slice(0,_D3_BW_MAX).forEach(function(id,j,A){try{if(fn(id,j,A.length))n++;}catch(_b){}});}
+for(k in (o.L||{})){var rec=_d3bwLakeDrawn(+k),nav=rec&&_d3bwNavOf(rec.pts);if(nav)each(o.L[k],function(id,j){return _d3bwAfloat(E,id,nav,null,j);});}
+for(k in (o.R||{})){var ri=+k,act=(_da.river&&_da.river.length>1&&ri===(_da.riverIdx||0)&&_D3.riverPath&&_D3.riverLen),W=act?null:_d3bwRiverWalk(ri);
+if(!act&&!W)continue;
+var Lr=W?W.L:_D3.riverLen,nf=Math.min(3,Math.max(1,Math.round(Lr/3.2))),list=[];
+o.R[k].forEach(function(id){if(id===_D3_BW_FISH){for(var q=0;q<nf;q++)list.push(id);}else list.push(id);});
+each(list,function(id,j,m){return _d3bwAstream(E,id,ri,W,j,m);});}
+var B=o.B&&Object.keys(o.B).length?((typeof _d3baysSort==='function')?_d3baysSort():null):null;
+if(B)for(k in o.B){var bay=_d3bwBayMatch(B.R,k),mid=bay&&_d3bwBayMid(B,bay),sea=mid&&_d3bwSeaAt(mid.x,mid.z);if(!sea)continue;
+var H={x:mid.x,z:mid.z,r:_d3bwBayReach(bay)};each(o.B[k],function(id,j){return _d3bwAfloat(E,id,sea,H,j);});}
+_D3._wbN=n;return n;
+}
+function _d3bwSeaAt(x,z){
+var A=_D3._lakeDrawn||[],k;
+for(k=0;k<A.length;k++){var r=A[k];if(!r||!r.salt)continue;var nav=_d3bwNavOf(r.pts);if(nav&&_d3bwWet(nav,x,z))return nav;}
+return null;
 }
 function _d3boatHouse(gp,o){
 var T=window.THREE,L=o.L,W=o.W,H=o.H,y0=o.y||0,X=o.x||0;
@@ -45461,7 +45629,8 @@ if(!R||R.A!==A||R.n!==A.length){R=o._rch=_d3fallsReach(_d3fallsSpansOf(A,src,own
 return R;
 }
 function _d3fallsBoatKeep(b){
-var r=b.rad||0.3,K=_D3_FALLS_NEAR,R=_d3fallsReachOf(b,'river',0,_D3.riverLen,r+K.boatLip,r+K.boatFoot);
+var W=(b.rvI!=null&&typeof _d3bwRiverWalk==='function')?_d3bwRiverWalk(b.rvI):null;if(b.rvI!=null&&(!W||!(b.rown>=0)))return;
+var r=b.rad||0.3,K=_D3_FALLS_NEAR,R=_d3fallsReachOf(b,'river',W?b.rown:0,W?W.L:_D3.riverLen,r+K.boatLip,r+K.boatFoot);
 if(R.hold)b.d=R.mid;else if(b.d>R.hi){b.d=R.hi;b.dir=-1;}else if(b.d<R.lo){b.d=R.lo;b.dir=1;}
 }
 function _d3fallsSay(f){return Math.max(1,Math.round(f.h*WORLD_M))+' m '+((f.kind==='cascade')?'cascade':'falls');}
@@ -45501,13 +45670,13 @@ var _rks=((typeof _dsc==='function')?_dsc('rock'):1)*((m&&m.s)?(m.s/(12/660)):1)
 _d3riverSurfLife({P:pts,H:hA,C:_cum,L:_rlen,Y:_rvY},_rvFall,null,rg,_rnd,_rks);
 if(_da.rmode&&_da.river&&_da.river.length){_D3.riverHandles=[];_D3._riverM={cx:m.cx,cy:m.cy,s:m.s};for(var _rhi=0;_rhi<_da.river.length;_rhi++){var _rcp=_da.river[_rhi],_rcx=(_rcp.x!=null?_rcp.x:_rcp[0]),_rcy=(_rcp.y!=null?_rcp.y:_rcp[1]);var _rhd=new T.Mesh(new T.CircleGeometry(0.7,22),_mat(0xffe24a,{e:0xffd24a,ei:0.6,ds:true}));_rhd.rotation.x=-Math.PI/2;_rhd.position.set((_rcx-m.cx)*m.s,0.07,(_rcy-m.cy)*m.s);_rhd.userData.noMerge=true;_rhd.renderOrder=998;g.add(_rhd);var _rhr=new T.Mesh(new T.RingGeometry(0.5,0.66,18),_mat(0xffffff,{e:0xffffff,ei:0.45,t:true,op:0.85,ds:true}));_rhr.rotation.x=-Math.PI/2;_rhr.position.set((_rcx-m.cx)*m.s,0.08,(_rcy-m.cy)*m.s);_rhr.userData.noMerge=true;g.add(_rhr);_D3.riverHandles[_rhi]={d:_rhd,r:_rhr};}}
 }
-if(_da.rivers&&_da.rivers.length>1){var _eri;for(_eri=0;_eri<_da.rivers.length;_eri++){if(_eri===(_da.riverIdx||0))continue;var _erR=_da.rivers[_eri];if(!_erR||_erR.length<2)continue;try{var _erv=_erR.map(_d3xy),_erp=(typeof _catmullOpen==='function')?_catmullOpen(_erv,12):_erv.map(function(p){return {x:p[0],y:p[1]};});var _ept=_erp.map(function(e){return {x:(e.x-m.cx)*m.s,z:(e.y-m.cy)*m.s};});var _ebw=(typeof driftVillageBW==='function')?driftVillageBW():660,_erw=((typeof driftRiverWidth==='function')?driftRiverWidth(_ebw):36)*0.62*m.s;var _eh=[],_eqi;for(_eqi=0;_eqi<_ept.length;_eqi++)_eh.push(_erw); var _eY=null;if(_d3riverFullOn()){var _es=_d3riverShape(_ept,_eh);_ept=_es.pts;_eh=_es.half;_eY=_es.y;}var _ehw=_eh.map(function(v){return v+0.20;});(_D3.riverExtra=_D3.riverExtra||[]).push(_eY?{P:_ept,H:_eh,Y:_eY}:{P:_ept,H:_eh}); _D3.riverRib.push({P:_ept,M:_d3ribbonV(_ept,_ehw,0.20,wmat,rg),a:0,w:1});if(_eY&&_d3riverLifeOn()){ var _ew9=_d3riverWalk(_ept,_eh);_ew9.Y=_eY;_ew9.F=_d3riverFallOf(_ept,_eY);_D3.riverExtra[_D3.riverExtra.length-1].W=_ew9;var _esd9=((((_da._rivMixSeed||7)+_eri*31)*131)%9973)+1;_d3riverSurfLife(_ew9,_ew9.F,_ew9,rg,function(){_esd9=(_esd9*9301+49297)%233280;return _esd9/233280;},((typeof _dsc==='function')?_dsc('rock'):1)*((m&&m.s)?(m.s/(12/660)):1)*((typeof _dsc==='function')?_dscLink():1));}if(_eY)_d3riverWhite(_ept,_eh,_eY,_d3riverFallOf(_ept,_eY),rg,(_da._rivMixSeed||7)+_eri*31);else _d3ribbonV(_ept,_ehw,-0.14,_mat(0x0c6a86,{r:0.5,flat:true}),rg); try{_d3riverTrench(_ept,_eh,g,WY);}catch(_be){}}catch(_ee){}}}
+if(_da.rivers&&_da.rivers.length>1){var _eri;for(_eri=0;_eri<_da.rivers.length;_eri++){if(_eri===(_da.riverIdx||0))continue;var _erR=_da.rivers[_eri];if(!_erR||_erR.length<2)continue;try{var _erv=_erR.map(_d3xy),_erp=(typeof _catmullOpen==='function')?_catmullOpen(_erv,12):_erv.map(function(p){return {x:p[0],y:p[1]};});var _ept=_erp.map(function(e){return {x:(e.x-m.cx)*m.s,z:(e.y-m.cy)*m.s};});var _ebw=(typeof driftVillageBW==='function')?driftVillageBW():660,_erw=((typeof driftRiverWidth==='function')?driftRiverWidth(_ebw):36)*0.62*m.s;var _eh=[],_eqi;for(_eqi=0;_eqi<_ept.length;_eqi++)_eh.push(_erw); var _eY=null;if(_d3riverFullOn()){var _es=_d3riverShape(_ept,_eh);_ept=_es.pts;_eh=_es.half;_eY=_es.y;}var _ehw=_eh.map(function(v){return v+0.20;});(_D3.riverExtra=_D3.riverExtra||[]).push(_eY?{P:_ept,H:_eh,Y:_eY,i:_eri}:{P:_ept,H:_eh,i:_eri}); _D3.riverRib.push({P:_ept,M:_d3ribbonV(_ept,_ehw,0.20,wmat,rg),a:0,w:1});if(_eY&&_d3riverLifeOn()){ var _ew9=_d3riverWalk(_ept,_eh);_ew9.Y=_eY;_ew9.F=_d3riverFallOf(_ept,_eY);_D3.riverExtra[_D3.riverExtra.length-1].W=_ew9;var _esd9=((((_da._rivMixSeed||7)+_eri*31)*131)%9973)+1;_d3riverSurfLife(_ew9,_ew9.F,_ew9,rg,function(){_esd9=(_esd9*9301+49297)%233280;return _esd9/233280;},((typeof _dsc==='function')?_dsc('rock'):1)*((m&&m.s)?(m.s/(12/660)):1)*((typeof _dsc==='function')?_dscLink():1));}if(_eY)_d3riverWhite(_ept,_eh,_eY,_d3riverFallOf(_ept,_eY),rg,(_da._rivMixSeed||7)+_eri*31);else _d3ribbonV(_ept,_ehw,-0.14,_mat(0x0c6a86,{r:0.5,flat:true}),rg); try{_d3riverTrench(_ept,_eh,g,WY);}catch(_be){}}catch(_ee){}}}
 if(_da.lake&&_da.lake.length>2){
 var lv=_da.lake.map(_d3xy);
 if(_da.lmode){_D3.lakeHandles=[];_D3._lakeM={cx:m.cx,cy:m.cy,s:m.s};for(var _lhi=0;_lhi<_da.lake.length;_lhi++){ var _lcp=_da.lake[_lhi],_lcx=(_lcp.x!=null?_lcp.x:_lcp[0]),_lcy=(_lcp.y!=null?_lcp.y:_lcp[1]);var _lhd=new T.Mesh(new T.CircleGeometry(0.7,22),_mat(0x7fe0ff,{e:0x4ad6ff,ei:0.65,ds:true}));_lhd.rotation.x=-Math.PI/2;_lhd.position.set((_lcx-m.cx)*m.s,0.10,(_lcy-m.cy)*m.s);_lhd.userData.noMerge=true;_lhd.renderOrder=998;g.add(_lhd);var _lhr=new T.Mesh(new T.RingGeometry(0.7,0.88,20),_mat(0xffffff,{e:0xffffff,ei:0.5,t:true,op:0.9,ds:true}));_lhr.rotation.x=-Math.PI/2;_lhr.position.set((_lcx-m.cx)*m.s,0.08,(_lcy-m.cy)*m.s);_lhr.userData.noMerge=true;g.add(_lhr);_D3.lakeHandles[_lhi]={d:_lhd,r:_lhr};}}
 var _salt0=(typeof driftLakeIsSalt==='function')&&driftLakeIsSalt(_da.lakeIdx||0);
 var lpoly=(typeof _catmullClosed==='function')?(_salt0?_catmullOpen(lv,12):_catmullClosed(lv,12)):lv.map(function(p){return {x:p[0],y:p[1]};});var _lwpts=lpoly.map(function(e){return {x:(e.x-m.cx)*m.s,z:(e.y-m.cy)*m.s};}); if(_salt0){_lwpts=_d3seaShape(_lwpts);}var _lwdraw=_salt0?_d3seaDrawPts(_lwpts):_lwpts;var sh=new T.Shape();_lwdraw.forEach(function(p,i){if(i===0)sh.moveTo(p.x,p.z);else sh.lineTo(p.x,p.z);});
-var lgeo=new T.ShapeGeometry(sh); var lake=new T.Mesh(lgeo,_salt0?smat:wmat);lake.rotation.x=Math.PI/2;lake.position.y=0.06;lake.receiveShadow=true;lg.add(lake);var _lkRec9={m:lake,pts:_lwpts,salt:_salt0,tr:[],act:1};_D3._lakeDrawn.push(_lkRec9);_D3.lakePts=_lwpts;if(_salt0){_d3seaFloor(sh,g);} try{_lkRec9.tr=_d3lakeTrench(_lwpts,g,WY)||[];}catch(_le){}try{_d3lakeWaves(_lwpts,lg) ;if(_salt0&&_D3.lakeWaves)_D3.lakeWaves.salt=true;}catch(_lw){}if(_salt0)_d3saltNote(_lwpts);if(_da.lakes&&_da.lakes.length>1){var _eli;for(_eli=0;_eli<_da.lakes.length;_eli++){if(_eli===(_da.lakeIdx||0))continue;var _elk=_da.lakes[_eli];if(!_elk||_elk.length<3)continue;try{var _elv=_elk.map(_d3xy),_esalt=(typeof driftLakeIsSalt==='function')&&driftLakeIsSalt(_eli),_elp=(typeof _catmullClosed==='function')?(_esalt?_catmullOpen(_elv,12):_catmullClosed(_elv,12)):_elv.map(function(p){return {x:p[0],y:p[1]};});var _ewp=_elp.map(function(e){return {x:(e.x-m.cx)*m.s,z:(e.y-m.cy)*m.s};});if(_esalt){_ewp=_d3seaShape(_ewp);}var _ewdraw=_esalt?_d3seaDrawPts(_ewp):_ewp;var _esh=new T.Shape();_ewdraw.forEach(function(p,i){if(i===0)_esh.moveTo(p.x,p.z);else _esh.lineTo(p.x,p.z);});var _elg=new T.ShapeGeometry(_esh); var _elake=new T.Mesh(_elg,_esalt?smat:wmat);_elake.rotation.x=Math.PI/2;_elake.position.y=0.06;lg.add(_elake);_D3._lakeDrawn.push({m:_elake,pts:_ewp,salt:_esalt,tr:[]});if(_esalt){_ewp.salt=true; _d3saltNote(_ewp);_d3seaFloor(_esh,g);} (_D3.lakePtsExtra=_D3.lakePtsExtra||[]).push(_ewp);}catch(_ee){}}}
+var lgeo=new T.ShapeGeometry(sh); var lake=new T.Mesh(lgeo,_salt0?smat:wmat);lake.rotation.x=Math.PI/2;lake.position.y=0.06;lake.receiveShadow=true;lg.add(lake);var _lkRec9={m:lake,pts:_lwpts,salt:_salt0,tr:[],act:1,li:(_da.lakeIdx||0)};_D3._lakeDrawn.push(_lkRec9);_D3.lakePts=_lwpts;if(_salt0){_d3seaFloor(sh,g);} try{_lkRec9.tr=_d3lakeTrench(_lwpts,g,WY)||[];}catch(_le){}try{_d3lakeWaves(_lwpts,lg) ;if(_salt0&&_D3.lakeWaves)_D3.lakeWaves.salt=true;}catch(_lw){}if(_salt0)_d3saltNote(_lwpts);if(_da.lakes&&_da.lakes.length>1){var _eli;for(_eli=0;_eli<_da.lakes.length;_eli++){if(_eli===(_da.lakeIdx||0))continue;var _elk=_da.lakes[_eli];if(!_elk||_elk.length<3)continue;try{var _elv=_elk.map(_d3xy),_esalt=(typeof driftLakeIsSalt==='function')&&driftLakeIsSalt(_eli),_elp=(typeof _catmullClosed==='function')?(_esalt?_catmullOpen(_elv,12):_catmullClosed(_elv,12)):_elv.map(function(p){return {x:p[0],y:p[1]};});var _ewp=_elp.map(function(e){return {x:(e.x-m.cx)*m.s,z:(e.y-m.cy)*m.s};});if(_esalt){_ewp=_d3seaShape(_ewp);}var _ewdraw=_esalt?_d3seaDrawPts(_ewp):_ewp;var _esh=new T.Shape();_ewdraw.forEach(function(p,i){if(i===0)_esh.moveTo(p.x,p.z);else _esh.lineTo(p.x,p.z);});var _elg=new T.ShapeGeometry(_esh); var _elake=new T.Mesh(_elg,_esalt?smat:wmat);_elake.rotation.x=Math.PI/2;_elake.position.y=0.06;lg.add(_elake);_D3._lakeDrawn.push({m:_elake,pts:_ewp,salt:_esalt,tr:[],li:_eli}); if(_esalt){_ewp.salt=true; _d3saltNote(_ewp);_d3seaFloor(_esh,g);} (_D3.lakePtsExtra=_D3.lakePtsExtra||[]).push(_ewp);}catch(_ee){}}}
 try{if(_D3.waterM&&_D3.waterM.length){
 var _wmA=[];
 (_da.lakes||[]).forEach(function(lk){if(lk&&lk.length>=3)lk.forEach(function(p){var x=(p.x!=null?p.x:p[0]),y=(p.y!=null?p.y:p[1]);_wmA.push({x:(x-m.cx)*m.s,z:(y-m.cy)*m.s});});});
@@ -49807,9 +49976,9 @@ if(t===1){bd=new T.Mesh(new T.ConeGeometry(0.14,0.022,3),_mat(0xf2b01e,{r:0.5,fl
 else{bd=new T.Mesh(new T.CylinderGeometry(0.12,0.12,0.022,(t===0?8:16)),_mat(0xd0342b,{r:0.5,flat:true}));bd.rotation.x=Math.PI/2;}
 bd.position.y=0.62;gr.add(bd);gr.scale.setScalar(ss);gr.position.set((S.x-m.cx)*m.s,0,(S.y-m.cy)*m.s);g.add(gr);}}catch(_dce){}
 try{if(_da.rocks)for(i=0;i<_da.rocks.length;i++){var R=_da.rocks[i];if(R.x==null||R.y==null)continue;var rr=(R.sz==='s'?0.16:R.sz==='l'?0.36:0.25)*rs;var rwx=(R.x-m.cx)*m.s,rwz=(R.y-m.cy)*m.s,_rcol=[0x8d8678,0x7a7468,0x9a9488,0x6e6a60][Math.abs(Math.round((R.x||0)+(R.y||0)))%4];var _wy3=0.26-(_D3.WY||0.34);var rk=new T.Mesh(new T.IcosahedronGeometry(rr,2),_mat(_rcol,{r:0.95,flat:true}));rk.position.set(rwx,_wy3-rr*0.38,rwz);rk.rotation.set((R.x%7)*0.3,(R.y%5)*0.5,0.4);rk.castShadow=true;g.add(rk);if(_D3.boatObstacles)_D3.boatObstacles.push({x:rwx,z:rwz,r:rr+0.09});var _ns=2+(Math.abs(Math.round((R.x||0)*2+(R.y||0)))%2),_ri2;for(_ri2=0;_ri2<_ns;_ri2++){var _aa=_ri2*2.1+(R.x||0)*0.1,_dd=rr*(1.1+_ri2*0.5),_sr=rr*(0.34+(_ri2%2)*0.12);var sk=new T.Mesh(new T.IcosahedronGeometry(_sr,2),_mat(_rcol,{r:0.95,flat:true}));sk.position.set(rwx+Math.cos(_aa)*_dd,_wy3-_sr*0.28,rwz+Math.sin(_aa)*_dd);sk.rotation.set(_aa,_aa*0.7,0.3);sk.castShadow=true;g.add(sk);}var _rrb=Math.max(0.18,rr*2.7);var _rps2=new T.Sprite(new T.SpriteMaterial({map:_D3.smokeTex,transparent:true,depthWrite:false,depthTest:false,opacity:0,color:0xffffff}));_rps2.scale.set(_rrb,_rrb*0.5,_rrb);_rps2.renderOrder=900;(_D3.riverGrp||g).add(_rps2);_D3.rapids=_D3.rapids||[];_D3.rapids.push({sp:_rps2,cx:rwx,cz:rwz,r:Math.max(0.12,rr*1.4),ang:(R.x||0)*0.7,spd:1.5+(Math.abs(R.y||0)%10)*0.08,ph:(R.x||0)*0.3+(R.y||0)*0.2,base:_rrb});}}catch(_dce){}try{if(typeof _d3bridgeObstacles==='function')_d3bridgeObstacles();if(typeof _d3isleObstacles==='function')_d3isleObstacles();}catch(_bo9){}
-try{if(_da.boats){ var _d3lakeNav=function(){var LK0=_D3.lakePts;if(!LK0||LK0.length<3)return null;if(_D3._boatNav&&_D3._boatNav.src===LK0)return _D3._boatNav; var LK=(LK0.salt&&typeof _d3polyClipRect==='function')?_d3polyClipRect(LK0,_d3islandR()-2):LK0;if(!LK||LK.length<3)return null;var _q9,_cx9=0,_cz9=0;for(_q9=0;_q9<LK.length;_q9++){_cx9+=LK[_q9].x;_cz9+=LK[_q9].z;}_cx9/=LK.length;_cz9/=LK.length;var _r9=0;for(_q9=0;_q9<LK.length;_q9++)_r9=Math.max(_r9,Math.hypot(LK[_q9].x-_cx9,LK[_q9].z-_cz9));_D3._boatNav={src:LK0,poly:LK,cx:_cx9,cz:_cz9,r:_r9,inner:(typeof _d3polyInner==='function')?_d3polyInner(LK):null};return _D3._boatNav;}; var _d3boatBerth=function(e,obj,nav){var _h9=(typeof _d3boatHull==='function')?_d3boatHull(obj):{rad:0.3,beam:0.12};if(e.poly&&nav&&nav.inner&&nav.inner.r>0){var _rm9=nav.inner.r*0.75-0.25;if(_rm9<0.12)return null;if(_h9.rad>_rm9){var _fk9=Math.max(0.3,_rm9/_h9.rad);obj.userData.boatFit=(obj.userData.boatFit||1)*_fk9; obj.scale.multiplyScalar(_fk9);_h9=(typeof _d3boatHull==='function')?_d3boatHull(obj):_h9;if(_h9.rad>_rm9)return null;}}e.beam=_h9.beam;e.rad=_h9.rad;if(_h9.air>0)e.air=_h9.air;if(e.turn==null)e.turn=Math.max(0.25,Math.min(1.2,0.36/_h9.rad)); if(!e.poly)return e;e.margin=Math.max(0.12,_h9.rad+0.25);if(nav&&nav.inner)e.safe=nav.inner;if(e.px==null){e.px=obj.position.x;e.pz=obj.position.z;}var _c9=(typeof _d3boatConfine==='function')?_d3boatConfine(e.poly,e.margin,e.px,e.pz,e.hd||0,e.safe):null;if(_c9){e.px=_c9.x;e.pz=_c9.z;}e.bx=e.px;e.bz=e.pz;obj.position.set(e.px,obj.position.y,e.pz);return e;};var mkBoat=function(x,z,opt){var gr=_d3fishboat();gr.scale.setScalar(bs);gr.position.set(x,(typeof _D3_BOAT_Y!=='undefined')?_D3_BOAT_Y:0.42,z);(_D3.riverGrp||g).add(gr);gr.traverse(function(o){if(o.isMesh)o.userData.noMerge=true;});var e={obj:gr,ph:x*3+z*2};if(opt){for(var _k in opt)e[_k]=opt[_k];}if(!e.river){e.bx=x;e.bz=z;}if(e.lake&&!e.poly){var _nv9=_d3lakeNav();if(_nv9){e.poly=_nv9.poly;e.cx=_nv9.cx;e.cz=_nv9.cz;e.hd=Math.random()*6.2832;e.spd=Math.max(0.08,Math.min(0.22,_nv9.r*0.04));e.lookA=Math.max(0.28,_nv9.r*0.14);}}if(!_d3boatBerth(e,gr,_d3lakeNav())){try{gr.parent&&gr.parent.remove(gr);}catch(_rm8){}return;}_D3.boats3d=_D3.boats3d||[];_D3.boats3d.push(e);};
-if(_da.lake&&_da.lake.length>2){var _nvB=_d3lakeNav();if(_nvB)mkBoat(_nvB.cx,_nvB.cz,{lake:true});}
-if(_da.river&&_da.river.length>1){if(_D3.riverPath&&_D3.riverLen){var _nb=Math.min(3,Math.max(1,Math.round(_D3.riverLen/3.2))),_bk;for(_bk=0;_bk<_nb;_bk++){var _d0=(_bk+0.5)/_nb*_D3.riverLen,_bp0=_d3riverAt(_d0);if(_bp0)mkBoat(_bp0.x,_bp0.z,{river:true,d:_d0,spd:0.4+Math.random()*0.45,dir:(_bk%2===0?1:-1)});}}else{var rm=_da.river[Math.floor(_da.river.length/2)],rx=(rm.x!=null?rm.x:rm[0]),ry=(rm.y!=null?rm.y:rm[1]);mkBoat((rx-m.cx)*m.s,(ry-m.cy)*m.s,{lake:true});}}try{if(typeof DRIFT_BOATS!=='undefined'){if(_da.boatfleet===undefined&&typeof driftBoatLoad==='function')driftBoatLoad();if(_da.boatfleet){var _bsel=[],_bj;for(_bj=0;_bj<DRIFT_BOATS.length;_bj++){if(_da.boatfleet[DRIFT_BOATS[_bj].id])_bsel.push(DRIFT_BOATS[_bj]);}if(_bsel.length){var _nvF=_d3lakeNav();if(_nvF){var _wcx=_nvF.cx,_wcz=_nvF.cz,_lrw=_nvF.r,_wr=Math.max(0.2,_lrw*0.55),_lpolyW=_nvF.poly;for(_bj=0;_bj<_bsel.length&&_bj<10;_bj++){var _ang=_bj*2.399,_rr=_wr*(0.22+0.7*((_bj%3)/2)),_bx=_wcx+Math.cos(_ang)*_rr,_bz=_wcz+Math.sin(_ang)*_rr;if(typeof _d3hbrSpawnAng==='function'){_ang=_d3hbrSpawnAng(_d3hbrWorld(),_wcx,_wcz,_ang,_rr);_bx=_wcx+Math.cos(_ang)*_rr;_bz=_wcz+Math.sin(_ang)*_rr;} var _bm=_mkBoatModel(_bsel[_bj]);_bm.scale.multiplyScalar(_d3boatFleetK(_bsel[_bj],bs)); var _hbS=null,_bs9=new T.Box3().setFromObject(_bm).getSize(new T.Vector3());if(typeof _d3hbrBerthSpawn==='function'){_hbS=_d3hbrBerthSpawn(_bs9.x,_bs9.z,_bj);if(_hbS){_bx=_hbS.x;_bz=_hbS.z;}} var _open9=false;if(!_hbS){ _open9=(typeof _d3hbrWorld==='function')&&!!_d3hbrWorld(); var _br9=Math.hypot(_bs9.x,_bs9.z)/2,_tr9,_cl9,_ok9,_o9;for(_tr9=0;_tr9<14;_tr9++){_cl9=!(_open9&&_d3hbrIn(_d3hbrWorld(),_bx,_bz,_br9+1))&&!(typeof _d3hullBlocked==='function'&&_d3hullBlocked(_bx,_bz,{rad:_br9,air:_bs9.y},_br9));for(_ok9=0;_ok9<_D3.boats3d.length;_ok9++){_o9=_D3.boats3d[_ok9];if(_o9.px==null||_o9.hbr)continue;if(Math.hypot(_bx-_o9.px,_bz-_o9.pz)<_br9+(_o9.rad||0.3)+0.5){_cl9=false;break;}}if(_cl9)break;_ang+=0.9;_rr=Math.min(_wr,_rr+_wr*0.16);if(typeof _d3hbrSpawnAng==='function')_ang=_d3hbrSpawnAng(_d3hbrWorld(),_wcx,_wcz,_ang,_rr,_open9?_br9+1:0.3);_bx=_wcx+Math.cos(_ang)*_rr;_bz=_wcz+Math.sin(_ang)*_rr;}}_bm.position.set(_bx,(typeof _D3_BOAT_Y!=='undefined')?_D3_BOAT_Y:0.4,_bz);(_D3.riverGrp||g).add(_bm);_bm.traverse(function(o){if(o.isMesh)o.userData.noMerge=true;}); var _kd9=_bsel[_bj].id,_sp9=(typeof _d3hullSpd==='function')?_d3hullSpd(_kd9,_lrw):Math.max(0.1,Math.min(0.28,_lrw*0.05)),_eF={obj:_bm,ph:_bx*3+_bz*2,px:_bx,pz:_bz,poly:_lpolyW,cx:_wcx,cz:_wcz,hd:Math.random()*6.2832,spd:_sp9,kind:_kd9,lookA:Math.max(0.3,_lrw*0.15,_sp9*2.5),open:_open9} ;if(!_d3boatBerth(_eF,_bm,_nvF)){try{_bm.parent&&_bm.parent.remove(_bm);}catch(_rm7){}continue;}if(_hbS){_eF.hbr=_hbS.hbr;_eF.px=_eF.bx=_hbS.x;_eF.pz=_eF.bz=_hbS.z;_eF.hd=_hbS.hd;_bm.position.set(_hbS.x,_bm.position.y,_hbS.z);_bm.rotation.y=-_hbS.hd;} _D3.boats3d.push(_eF);}}else if(_da.river&&_da.river.length>1&&_D3.riverPath&&_D3.riverLen){for(_bj=0;_bj<_bsel.length&&_bj<8;_bj++){var _d0=((_bj+0.5)/_bsel.length)*_D3.riverLen,_bp0=_d3riverAt(_d0);if(!_bp0)continue;var _bm2=_mkBoatModel(_bsel[_bj]);_bm2.scale.multiplyScalar(_d3boatFleetK(_bsel[_bj],bs));_bm2.position.set(_bp0.x,0.05,_bp0.z);(_D3.riverGrp||g).add(_bm2);_bm2.traverse(function(o){if(o.isMesh)o.userData.noMerge=true;});_D3.boats3d.push({obj:_bm2,ph:_bj*2,river:true,d:_d0,spd:0.35+Math.random()*0.4,dir:(_bj%2?1:-1)});}}}}}}catch(_bfe){}}}catch(_dce){}
+try{if(_da.boats){ var _d3lakeNav=function(){var LK0=_D3.lakePts;return _d3bwNavOf(LK0);}; var _d3boatBerth=function(e,obj,nav){var _h9=(typeof _d3boatHull==='function')?_d3boatHull(obj):{rad:0.3,beam:0.12};if(e.poly&&nav&&nav.inner&&nav.inner.r>0){var _rm9=nav.inner.r*0.75-0.25;if(_rm9<0.12)return null;if(_h9.rad>_rm9){var _fk9=Math.max(0.3,_rm9/_h9.rad);obj.userData.boatFit=(obj.userData.boatFit||1)*_fk9; obj.scale.multiplyScalar(_fk9);_h9=(typeof _d3boatHull==='function')?_d3boatHull(obj):_h9;if(_h9.rad>_rm9)return null;}}e.beam=_h9.beam;e.rad=_h9.rad;if(_h9.air>0)e.air=_h9.air;if(e.turn==null)e.turn=Math.max(0.25,Math.min(1.2,0.36/_h9.rad)); if(!e.poly)return e;e.margin=Math.max(0.12,_h9.rad+0.25);if(nav&&nav.inner)e.safe=nav.inner;if(e.px==null){e.px=obj.position.x;e.pz=obj.position.z;}var _c9=(typeof _d3boatConfine==='function')?_d3boatConfine(e.poly,e.margin,e.px,e.pz,e.hd||0,e.safe):null;if(_c9){e.px=_c9.x;e.pz=_c9.z;}e.bx=e.px;e.bz=e.pz;obj.position.set(e.px,obj.position.y,e.pz);return e;};var mkBoat=function(x,z,opt){var gr=_d3fishboat();gr.scale.setScalar(bs);gr.position.set(x,(typeof _D3_BOAT_Y!=='undefined')?_D3_BOAT_Y:0.42,z);(_D3.riverGrp||g).add(gr);gr.traverse(function(o){if(o.isMesh)o.userData.noMerge=true;});var e={obj:gr,ph:x*3+z*2};if(opt){for(var _k in opt)e[_k]=opt[_k];}if(!e.river){e.bx=x;e.bz=z;}if(e.lake&&!e.poly){var _nv9=_d3lakeNav();if(_nv9){e.poly=_nv9.poly;e.cx=_nv9.cx;e.cz=_nv9.cz;e.hd=Math.random()*6.2832;e.spd=Math.max(0.08,Math.min(0.22,_nv9.r*0.04));e.lookA=Math.max(0.28,_nv9.r*0.14);}}if(!_d3boatBerth(e,gr,_d3lakeNav())){try{gr.parent&&gr.parent.remove(gr);}catch(_rm8){}return;}_D3.boats3d=_D3.boats3d||[];_D3.boats3d.push(e);};
+if(_da.lake&&_da.lake.length>2&&!_d3bwOwn('L',_da.lakeIdx||0)){var _nvB=_d3lakeNav();if(_nvB)mkBoat(_nvB.cx,_nvB.cz,{lake:true});}
+if(_da.river&&_da.river.length>1&&!_d3bwOwn('R',_da.riverIdx||0)){if(_D3.riverPath&&_D3.riverLen){var _nb=Math.min(3,Math.max(1,Math.round(_D3.riverLen/3.2))),_bk;for(_bk=0;_bk<_nb;_bk++){var _d0=(_bk+0.5)/_nb*_D3.riverLen,_bp0=_d3riverAt(_d0);if(_bp0)mkBoat(_bp0.x,_bp0.z,{river:true,d:_d0,spd:0.4+Math.random()*0.45,dir:(_bk%2===0?1:-1)});}}else{var rm=_da.river[Math.floor(_da.river.length/2)],rx=(rm.x!=null?rm.x:rm[0]),ry=(rm.y!=null?rm.y:rm[1]);mkBoat((rx-m.cx)*m.s,(ry-m.cy)*m.s,{lake:true});}}try{if(typeof DRIFT_BOATS!=='undefined'){if(_da.boatfleet===undefined&&typeof driftBoatLoad==='function')driftBoatLoad();if(_da.boatfleet){var _bsel=[],_bj;for(_bj=0;_bj<DRIFT_BOATS.length;_bj++){if(_da.boatfleet[DRIFT_BOATS[_bj].id])_bsel.push(DRIFT_BOATS[_bj]);}if(_bsel.length){var _nvF=_d3lakeNav();if(_nvF&&_d3bwOwn('L',_da.lakeIdx||0)){}else if(_nvF){var _wcx=_nvF.cx,_wcz=_nvF.cz,_lrw=_nvF.r,_wr=Math.max(0.2,_lrw*0.55),_lpolyW=_nvF.poly;for(_bj=0;_bj<_bsel.length&&_bj<10;_bj++){var _ang=_bj*2.399,_rr=_wr*(0.22+0.7*((_bj%3)/2)),_bx=_wcx+Math.cos(_ang)*_rr,_bz=_wcz+Math.sin(_ang)*_rr;if(typeof _d3hbrSpawnAng==='function'){_ang=_d3hbrSpawnAng(_d3hbrWorld(),_wcx,_wcz,_ang,_rr);_bx=_wcx+Math.cos(_ang)*_rr;_bz=_wcz+Math.sin(_ang)*_rr;} var _bm=_mkBoatModel(_bsel[_bj]);_bm.scale.multiplyScalar(_d3boatFleetK(_bsel[_bj],bs)); var _hbS=null,_bs9=new T.Box3().setFromObject(_bm).getSize(new T.Vector3());if(typeof _d3hbrBerthSpawn==='function'){_hbS=_d3hbrBerthSpawn(_bs9.x,_bs9.z,_bj);if(_hbS){_bx=_hbS.x;_bz=_hbS.z;}} var _open9=false;if(!_hbS){ _open9=(typeof _d3hbrWorld==='function')&&!!_d3hbrWorld(); var _br9=Math.hypot(_bs9.x,_bs9.z)/2,_tr9,_cl9,_ok9,_o9;for(_tr9=0;_tr9<14;_tr9++){_cl9=!(_open9&&_d3hbrIn(_d3hbrWorld(),_bx,_bz,_br9+1))&&!(typeof _d3hullBlocked==='function'&&_d3hullBlocked(_bx,_bz,{rad:_br9,air:_bs9.y},_br9));for(_ok9=0;_ok9<_D3.boats3d.length;_ok9++){_o9=_D3.boats3d[_ok9];if(_o9.px==null||_o9.hbr)continue;if(Math.hypot(_bx-_o9.px,_bz-_o9.pz)<_br9+(_o9.rad||0.3)+0.5){_cl9=false;break;}}if(_cl9)break;_ang+=0.9;_rr=Math.min(_wr,_rr+_wr*0.16);if(typeof _d3hbrSpawnAng==='function')_ang=_d3hbrSpawnAng(_d3hbrWorld(),_wcx,_wcz,_ang,_rr,_open9?_br9+1:0.3);_bx=_wcx+Math.cos(_ang)*_rr;_bz=_wcz+Math.sin(_ang)*_rr;}}_bm.position.set(_bx,(typeof _D3_BOAT_Y!=='undefined')?_D3_BOAT_Y:0.4,_bz);(_D3.riverGrp||g).add(_bm);_bm.traverse(function(o){if(o.isMesh)o.userData.noMerge=true;}); var _kd9=_bsel[_bj].id,_sp9=(typeof _d3hullSpd==='function')?_d3hullSpd(_kd9,_lrw):Math.max(0.1,Math.min(0.28,_lrw*0.05)),_eF={obj:_bm,ph:_bx*3+_bz*2,px:_bx,pz:_bz,poly:_lpolyW,cx:_wcx,cz:_wcz,hd:Math.random()*6.2832,spd:_sp9,kind:_kd9,lookA:Math.max(0.3,_lrw*0.15,_sp9*2.5),open:_open9} ;if(!_d3boatBerth(_eF,_bm,_nvF)){try{_bm.parent&&_bm.parent.remove(_bm);}catch(_rm7){}continue;}if(_hbS){_eF.hbr=_hbS.hbr;_eF.px=_eF.bx=_hbS.x;_eF.pz=_eF.bz=_hbS.z;_eF.hd=_hbS.hd;_bm.position.set(_hbS.x,_bm.position.y,_hbS.z);_bm.rotation.y=-_hbS.hd;} _D3.boats3d.push(_eF);}}else if(_da.river&&_da.river.length>1&&_D3.riverPath&&_D3.riverLen&&!_d3bwOwn('R',_da.riverIdx||0)){for(_bj=0;_bj<_bsel.length&&_bj<8;_bj++){var _d0=((_bj+0.5)/_bsel.length)*_D3.riverLen,_bp0=_d3riverAt(_d0);if(!_bp0)continue;var _bm2=_mkBoatModel(_bsel[_bj]);_bm2.scale.multiplyScalar(_d3boatFleetK(_bsel[_bj],bs));_bm2.position.set(_bp0.x,0.05,_bp0.z);(_D3.riverGrp||g).add(_bm2);_bm2.traverse(function(o){if(o.isMesh)o.userData.noMerge=true;});_D3.boats3d.push({obj:_bm2,ph:_bj*2,river:true,d:_d0,spd:0.35+Math.random()*0.4,dir:(_bj%2?1:-1)});}}}}}}catch(_bfe){}try{_d3bwPlace({berth:_d3boatBerth,bs:bs,g:g});}catch(_wbe){} }}catch(_dce){}
 try{if(typeof _d3hbrAfloat==='function')_d3hbrAfloat(g);}catch(_haf){_D3._hbrErr='afloat: '+((_haf&&_haf.message)||_haf);}
 try{if(_da.village&&_da.village.length){var pcols=[0x3a6ea5,0xc0473a,0x4a9a54,0xd0a23a,0x7a52a0,0xe08a3a,0x2e8b8b,0xb85c9a];if(!_D3.walkers)_D3.walkers=[];
 var SW=(function(){
@@ -61905,6 +62074,7 @@ V.push(['↻ Turn',function(){_d3siteAct('turn:'+i);}]);
 V.push(['✣ Move sites…',function(){_d3siteAct('move');}]);
 V.push(['✕ Remove this site',function(){_d3siteAct('del:'+i);},1]);
 }
+if(typeof _d3bwVerbs==='function')_d3bwVerbs(f,V);
 return V;
 }
 function _d3featLandDrop(i){try{var S=_da.terrStamps;if(!S||i<0||i>=S.length)return;var st=S[i];
@@ -61915,7 +62085,7 @@ var _D3_FEAT_NAME={road:'Road',rail:'Railway',river:'River',stream:'Stream',lake
 lamp:'Street lamp',sign:'Street sign',rock:'Rock',land:'Landform',site:'Mining site',bridge:'Bridge',tunnel:'Tunnel',home:'Your home'};
 function _d3featMenu(cx,cy,f){try{
 if(typeof _d3ctxClose==='function')_d3ctxClose();if(!f)return false;
-var V=_d3featVerbs(f);if(!V.length)return false;
+f.sx=cx;f.sy=cy;var V=_d3featVerbs(f);if(!V.length)return false;
 var d=document.createElement('div');d.id='bldCtxMenu';d.setAttribute('data-kind',f.kind);
 d.style.cssText='position:fixed;z-index:100000;background:#191d2b;border:1px solid #313856;border-radius:11px;padding:7px;display:flex;flex-direction:column;gap:5px;box-shadow:0 8px 26px rgba(0,0,0,.45);min-width:152px;';
 if(typeof _d3ctxNoSelect==='function')_d3ctxNoSelect(d);
@@ -61938,6 +62108,69 @@ setTimeout(function(){if(typeof _d3ctxDismiss==='function')document.addEventList
 return true;
 }catch(_fm){return false;}}
 function _d3featCtx(cx,cy){var f=_d3featAt(cx,cy);return f?_d3featMenu(cx,cy,f):false;}
+function _d3bwBodiesAt(f){
+var B=[],m=(typeof _d3map==='function')?_d3map():null,w=f&&(f.w||(f.xy&&m&&m.s?{x:(f.xy.x-m.cx)*m.s,z:(f.xy.y-m.cy)*m.s}:null));
+if(!f||!_d3bwOn())return B;
+if(f.kind==='river'){B.push({t:'R',i:f.i,word:'river'});return B;}
+if(f.kind==='lake'){B.push({t:'L',i:f.i,word:'lake'});return B;}
+if((f.kind!=='ocean'&&f.kind!=='land')||!w)return B;
+if(typeof _d3inAnySalt==='function'&&_d3inAnySalt(w.x,w.z)){
+var bay=(typeof _d3bwBayAt==='function')?_d3bwBayAt(w.x,w.z):null;
+if(bay)B.push({t:'B',i:_d3bwBayKey(bay),word:bay.kind,name:bay.name});
+var si=_d3bwDrawnAt(w.x,w.z,true);if(si<0&&f.kind==='ocean')si=f.i;if(si>=0)B.push({t:'L',i:si,word:'ocean'});
+}else if(f.kind==='land'){var li=_d3bwDrawnAt(w.x,w.z,false);if(li>=0)B.push({t:'L',i:li,word:'lake'});}
+return B;
+}
+function _d3bwDrawnAt(x,z,salt){
+var A=(typeof _D3!=='undefined'&&_D3._lakeDrawn)||[],k;
+for(k=0;k<A.length;k++){var r=A[k];if(!r||!!r.salt!==!!salt||r.li==null)continue;var nav=_d3bwNavOf(r.pts);if(nav&&_d3bwWet(nav,x,z))return r.li;}
+return -1;
+}
+function _d3bwSay(B){return B.t==='B'?(B.name||('this '+B.word)):('this '+B.word);}
+function _d3bwVerbs(f,V){
+var B=_d3bwBodiesAt(f),k=0;if(!B.length||!V)return V;while(k<V.length&&!(V[k]&&V[k][2]))k++;
+B.forEach(function(b,j){V.splice(k+j,0,['⛵ Boats '+(b.t==='B'?'in ':'on ')+_d3bwSay(b)+'…',function(){_d3bwPicker(b,f.sx,f.sy);}]);});
+return V;
+}
+function _d3bwPickClose(){var d=document.getElementById('d3WaterBoats');if(d&&d.parentNode)d.parentNode.removeChild(d);
+if(_d3bwPickClose.off){document.removeEventListener('pointerdown',_d3bwPickClose.off,true);document.removeEventListener('keydown',_d3bwPickClose.key,true);_d3bwPickClose.off=null;}}
+function _d3bwPicker(B,sx,sy){
+_d3bwPickClose();if(typeof _d3ctxClose==='function')_d3ctxClose();if(!B)return null;
+var d=document.createElement('div');d.id='d3WaterBoats';d.setAttribute('data-wb',B.t+':'+B.i);
+d.style.cssText='position:fixed;z-index:100001;background:#191d2b;border:1px solid #313856;border-radius:11px;padding:8px;box-shadow:0 8px 26px rgba(0,0,0,.45);width:330px;max-width:calc(100vw - 12px);font:600 12px system-ui;color:#dfe5f5;';
+if(typeof _d3ctxNoSelect==='function')_d3ctxNoSelect(d);
+var h=document.createElement('div');h.style.cssText='font:700 11px system-ui;color:#8b93b8;padding:2px 4px 2px;letter-spacing:.03em;';
+h.textContent=('Boats '+(B.t==='B'?'in ':'on ')+_d3bwSay(B)).toUpperCase();d.appendChild(h);
+var s=document.createElement('div');s.style.cssText='font:500 11px system-ui;color:#9aa3c4;padding:0 4px 6px;';
+s.textContent='Tap a boat to put it '+(B.t==='B'?'in ':'on ')+_d3bwSay(B)+' or take it off';d.appendChild(s);
+var g=document.createElement('div');g.className='wb-grid';g.style.cssText='display:flex;flex-wrap:wrap;gap:5px;justify-content:center;';d.appendChild(g);
+var ft=document.createElement('div');ft.style.cssText='display:flex;gap:6px;justify-content:flex-end;padding-top:7px;';
+[['None',function(){_d3bwClear(B.t,B.i);_d3bwPickDraw(d,B);_d3bwBuild(false);}],['Done',_d3bwPickClose]].forEach(function(q){
+var b=document.createElement('button');b.type='button';b.textContent=q[0];b.setAttribute('data-act',q[0].toLowerCase());
+b.style.cssText='font:600 12px system-ui;color:#dfe5f5;background:#262c42;border:1px solid #39406090;border-radius:8px;padding:7px 14px;cursor:pointer;';
+b.onclick=function(ev){ev.stopPropagation();q[1]();};ft.appendChild(b);});
+d.appendChild(ft);document.body.appendChild(d);_d3bwPickDraw(d,B);
+if(typeof _d3shSmall==='function')_d3shSmall(d);
+var r=d.getBoundingClientRect(),W=r.width||330,H=r.height||300,x=(sx>=0)?sx:(innerWidth-W)/2,y=(sy>=0)?sy:(innerHeight-H)/2;
+d.style.left=Math.max(6,Math.min(innerWidth-W-6,x))+'px';d.style.top=Math.max(6,Math.min(innerHeight-H-6,y))+'px';
+_d3bwPickClose.off=function(ev){if(!d.contains(ev.target))_d3bwPickClose();};
+_d3bwPickClose.key=function(ev){if(ev.key==='Escape')_d3bwPickClose();};
+setTimeout(function(){if(_d3bwPickClose.off){document.addEventListener('pointerdown',_d3bwPickClose.off,true);document.addEventListener('keydown',_d3bwPickClose.key,true);}},0);
+return d;
+}
+function _d3bwPickDraw(d,B){
+var g=d&&d.querySelector('.wb-grid');if(!g)return;var S=_d3bwSet(B.t,B.i);g.innerHTML='';
+_d3bwKinds().forEach(function(k){var on=S.indexOf(k.id)>=0,b=document.createElement('button'),t=document.createElement('span');
+b.type='button';b.className='trk-ovbtn'+(on?' on':'');b.setAttribute('data-id',k.id);b.setAttribute('aria-pressed',on?'true':'false');
+b.style.cssText='display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 4px 5px;font-size:9.5px;line-height:1.15;width:74px;';
+b.innerHTML=(typeof _boatIcon==='function')?_boatIcon(k):'';t.textContent=(on?'☑ ':'☐ ')+k.label;b.appendChild(t);
+b.onclick=function(ev){ev.stopPropagation();var add=_d3bwToggle(B.t,B.i,k.id);_d3bwPickDraw(d,B);_d3bwBuild(add);};g.appendChild(b);});
+}
+function _d3bwBuild(added){
+try{if(typeof _da==='undefined'||!_da)return;
+if(added&&_da.boats===false&&typeof driftYachtToggle==='function'){driftYachtToggle();return;}
+if(_da.view3d&&typeof _d3build==='function')_d3build();}catch(_b){}
+}
 function _d3uiBuild(){
 if(document.getElementById('trk3dUI')){var _ex0=document.getElementById('trk3dUI');if(!document.getElementById('d3Top')){var _tb=document.createElement('button');_tb.id='d3Top';_tb.className='trk-ovbtn';_tb.textContent='🦅 Top';_tb.onclick=drift3DTopView;_ex0.appendChild(_tb);}
 if(!document.getElementById('d3Qual')){var _qb0=document.createElement('button');_qb0.id='d3Qual';_qb0.className='trk-ovbtn';_qb0.onclick=drift3DQual;(document.getElementById('d3Btns')||_ex0).appendChild(_qb0);drift3DQualUI();}
@@ -62102,6 +62335,7 @@ s+='|bp'+((a.bldRoads&&a.bldRoads.paths)||[]).map(function(q){return (q&&q.pts?q
 s+='|rb'+((a.bldRoads&&a.bldRoads.rb)||[]).map(function(p){return p&&p.length>=2?xy(p[0],p[1]).toFixed(1):'';}).join(',');
 s+='|'+(a.signs?a.signs.length+':'+acc(a.signs,function(p){return xy(p.x,p.y)+(p.t||0);}).toFixed(1):0)+'/'+(a.rocks?a.rocks.length+':'+acc(a.rocks,function(p){return xy(p.x,p.y)+({s:1,m:2,l:3}[p.sz]||2)*0.37;}).toFixed(1):0)+'/'+(a.boats?1:0)+(a.aircraft?1:0)+'b'+((a.bridges||[]).join(','))+'t'+((a.tunnels||[]).join(','))+'|rw'+((a.riverW!=null?a.riverW:1))+'.'+(a._rivMixSeed||0)+'|rl'+(a.rail?a.rail.length+':'+acc(a.rail,pf).toFixed(1):0)+(a.railLoop?'L':'')+(a.railElev?'E':'')+'.'+(a.trainType||0)+(a.rail2Track?'d'+(a.trainType2!=null?a.trainType2:''):'')+'m'+(a.trainCarMult||1) +'x'+((a.railsExtra&&a.railsExtra.length)||0)+':'+acc(a.railsExtra,function(R){var p0=R&&R.rail&&R.rail[0];return (p0?(((p0[0]!=null)?p0[0]:p0.x)+((p0[1]!=null)?p0[1]:p0.y)*1.7):0)+((R&&R.rail)?R.rail.length*13.7:0)+((R&&R.railElev)?991:0)+((R&&R.trainType)||0)*3.3;}).toFixed(1)+'|d3c'+(a.d3cars?(a.d3cars.lead+'.'+a.d3cars.chase+'.'+a.d3cars.lead2+'.'+a.d3cars.chase2):'0')+(a.pair2?'P':'');
 try{s+='|gx'+((typeof _d3tier==='function')?_d3tier():2)+((typeof _d3gfxSig==='function')?':'+_d3gfxSig():'');}catch(_sgx){}
+try{s+='|wb'+((typeof _d3bwSig==='function')?_d3bwSig():'');}catch(_swb){}
 s+='|te'+((function(){var E=a.terrEdits;if(!E||!E.length)return '0';
 var t=0,i,e9;for(i=0;i<E.length;i++){e9=E[i];
 t+=(xy(e9.x,e9.z)*1.3+(e9.r||0)*3.7+(e9.dy||0)*11.3)*(i+1);}
@@ -94004,7 +94238,7 @@ if(!_frz&&_D3.saltFoam&&_D3.saltFoam.length){for(var _sf9=0;_sf9<_D3.saltFoam.le
 try{if(typeof _d3lodApply==='function')_d3lodApply(false);}catch(_lo6){}
 var _slPlay=(_da&&_da.playing===false)?false:true;
 if(_slPlay&&_D3.stoplights&&_D3.stoplights.length){ for(var _sci=0,_L_sci=_D3.stoplights.length;_sci<_L_sci;_sci++){var _scL=_D3.stoplights[_sci];if(_scL.rc){ _d3rcAdvance(_scL,dt*(_D3.speedMul||1));_d3rcLens(_scL);continue;}if(!_scL.heads||!_scL.heads.length)continue;_scL.timer+=dt*(_D3.speedMul||1);var _durs=[4.6,1.3,0.9];if(_scL.timer>=_durs[_scL.state]){_scL.timer=0;_scL.state=(_scL.state+1)%3;if(_scL.state===0)_scL.phase=(_scL.phase+1)%_scL.heads.length;}for(var _shk=0;_shk<_scL.heads.length;_shk++){var _hd=_scL.heads[_shk],_isMine=(_shk===_scL.phase);var _gOn=(_isMine&&_scL.state===0),_yOn=(_isMine&&_scL.state===1),_rOn=!(_gOn||_yOn);_hd.lensG.material.emissiveIntensity=_gOn?1.6:0.08;_hd.lensY.material.emissiveIntensity=_yOn?1.6:0.08;_hd.lensR.material.emissiveIntensity=_rOn?1.6:0.08;}}}
-if(!_frz&&_D3.riverWave){var _RW=_D3.riverWave,_rwp=_RW.geo.attributes.position,_rwa=_rwp.array,_rwt=now*0.0022*(_D3.speedMul||1);for(var _rwj=0;_rwj<_RW.n;_rwj++){var _rwd=_RW.cum[_rwj>>1]||0;_rwa[_rwj*3+1]=_RW.base[_rwj*3+1]+(_RW.ampA?_RW.ampA[_rwj]:_RW.amp)*Math.sin(_rwt-_rwd*0.9+(_rwj&1)*0.6);}_rwp.needsUpdate=true;}if(!_frz&&_D3.boats3d&&_D3.boats3d.length){var _bt=now*0.001,_sM=(_D3.speedMul||1);if(typeof _d3hbrBusyFree==='function')_d3hbrBusyFree(_D3.boats3d); for(var _bii=0,_L_bii=_D3.boats3d.length;_bii<_L_bii;_bii++){var _bo=_D3.boats3d[_bii];if(_bo.pilot)continue; if(!_bo.wake&&_bo.obj&&typeof _d3wakeInit==='function'){try{_d3wakeInit(_bo,_bo.obj.parent);}catch(_wk9){}}if(_bo.obj&&typeof _d3boatHookStep==='function')_d3boatHookStep(_bo.obj,dt,_bt,_bo,_D3.wind); if(_bo.river&&_D3.riverPath){if(_bo.fish==null){_bo.fish=0;_bo.fishCd=3+Math.random()*5;_bo.fishDur=1;}if(_bo.fish>0){_bo.fish-=dt;}else{_bo.fishCd-=dt;if(_bo.fishCd<=0){_bo.fish=5+Math.random()*4;_bo.fishDur=_bo.fish;_bo.fishCd=11+Math.random()*10;if(!_frz&&_D3.fish&&_D3.fish.length){var _ff=_D3.fish[Math.floor(Math.random()*_D3.fish.length)];if(_ff){_ff.state=1;_ff.t=0;_ff.d=_bo.d+(Math.random()*2-1)*1.2;_ff.lat=(Math.random()*2-1)*0.6;}}}}var _bud=_bo.obj&&_bo.obj.userData,_fshg=_bo.fish>0,_cprg=_fshg?(1-_bo.fish/(_bo.fishDur||1)):0;if(_bud){if(_bud.rod)_bud.rod.rotation.z=-1.15+(_fshg?Math.sin(now*0.006)*0.3:0);if(_bud.catch){if(_fshg&&_cprg>0.45){_bud.catch.visible=true;var _rp4=(_cprg-0.45)/0.55;_bud.catch.position.y=-0.34+_rp4*0.3;_bud.catch.rotation.x=Math.sin(now*0.02)*0.6;}else{_bud.catch.visible=false;}}}if(_bo.fish<=0)_bo.d+=_bo.spd*dt*_sM*_bo.dir;try{if(typeof _d3bridgeBoatKeep==='function')_d3bridgeBoatKeep(_bo);}catch(_bg9){} if(_bo.d>=_D3.riverLen){_bo.d=_D3.riverLen;_bo.dir=-1;}else if(_bo.d<=0){_bo.d=0;_bo.dir=1;}try{if(typeof _d3fallsBoatKeep==='function')_d3fallsBoatKeep(_bo);}catch(_fb9){} var _bp=_d3riverAt(_bo.d);if(_bp){var _ppx=Math.cos(_bp.head+1.5708),_ppz=Math.sin(_bp.head+1.5708);_bo.lat=_bo.lat||0;var _baX=_bp.x+_ppx*_bo.lat,_baZ=_bp.z+_ppz*_bo.lat,_push=0,_oi;if(_D3.boatObstacles){for(_oi=0,_L_oi=_D3.boatObstacles.length;_oi<_L_oi;_oi++){var _ob=_D3.boatObstacles[_oi],_dx=_baX-_ob.x,_dz=_baZ-_ob.z,_dd=Math.hypot(_dx,_dz),_safe=_ob.r+0.22;if(_ob.clr>0&&typeof _d3hullPasses==='function'&&_d3hullPasses(_bo,_ob))continue; if(_dd<_safe){var _sd=_dx*_ppx+_dz*_ppz;_push+=(_safe-_dd)*((_sd>=0)?1:-1)*3.6;}}}for(_oi=0,_L_oi=_D3.boats3d.length;_oi<_L_oi;_oi++){if(_oi===_bii)continue;var _o2=_D3.boats3d[_oi];if(!_o2.obj)continue;var _ex=_baX-_o2.obj.position.x,_ez=_baZ-_o2.obj.position.z,_ed=Math.hypot(_ex,_ez);if(_ed<0.32&&_ed>0.001){var _s2=_ex*_ppx+_ez*_ppz;_push+=(0.32-_ed)*((_s2>=0)?1:-1)*2.7;}}var _mx=Math.max(0.02,_bp.half+0.14),_tl=Math.max(-_mx,Math.min(_mx,_bo.lat+_push));_bo.lat+=(_tl-_bo.lat)*Math.min(1,dt*3.5); if(typeof _d3riverLat==='function')_bo.lat=_d3riverLat(_D3.riverPath,_D3.riverHalf,0.20,_bp,_bo.lat,(_bo.beam||0.12));var _fx=_bp.x+_ppx*_bo.lat,_fz=_bp.z+_ppz*_bo.lat; var _rh9=_bp.head+(_bo.dir<0?Math.PI:0);if(_bo.yaw==null)_bo.yaw=_rh9;var _dy9=Math.atan2(Math.sin(_rh9-_bo.yaw),Math.cos(_rh9-_bo.yaw)),_mt9=0.7*dt*_sM,_ty9=Math.max(-_mt9,Math.min(_mt9,_dy9));_bo.yaw+=_ty9;
+if(!_frz&&_D3.riverWave){var _RW=_D3.riverWave,_rwp=_RW.geo.attributes.position,_rwa=_rwp.array,_rwt=now*0.0022*(_D3.speedMul||1);for(var _rwj=0;_rwj<_RW.n;_rwj++){var _rwd=_RW.cum[_rwj>>1]||0;_rwa[_rwj*3+1]=_RW.base[_rwj*3+1]+(_RW.ampA?_RW.ampA[_rwj]:_RW.amp)*Math.sin(_rwt-_rwd*0.9+(_rwj&1)*0.6);}_rwp.needsUpdate=true;}if(!_frz&&_D3.boats3d&&_D3.boats3d.length){var _bt=now*0.001,_sM=(_D3.speedMul||1);if(typeof _d3hbrBusyFree==='function')_d3hbrBusyFree(_D3.boats3d); for(var _bii=0,_L_bii=_D3.boats3d.length;_bii<_L_bii;_bii++){var _bo=_D3.boats3d[_bii];if(_bo.pilot)continue; if(!_bo.wake&&_bo.obj&&typeof _d3wakeInit==='function'){try{_d3wakeInit(_bo,_bo.obj.parent);}catch(_wk9){}}if(_bo.obj&&typeof _d3boatHookStep==='function')_d3boatHookStep(_bo.obj,dt,_bt,_bo,_D3.wind); if(_bo.river&&(_bo.rvI!=null||_D3.riverPath)){var _rW9=(_bo.rvI!=null&&typeof _d3bwRiverWalk==='function')?_d3bwRiverWalk(_bo.rvI):null;if(_bo.rvI!=null&&!_rW9)continue; if(_bo.fish==null){_bo.fish=0;_bo.fishCd=3+Math.random()*5;_bo.fishDur=1;}if(_bo.fish>0){_bo.fish-=dt;}else{_bo.fishCd-=dt;if(_bo.fishCd<=0){_bo.fish=5+Math.random()*4;_bo.fishDur=_bo.fish;_bo.fishCd=11+Math.random()*10;if(!_frz&&!_rW9&&_D3.fish&&_D3.fish.length){var _ff=_D3.fish[Math.floor(Math.random()*_D3.fish.length)];if(_ff){_ff.state=1;_ff.t=0;_ff.d=_bo.d+(Math.random()*2-1)*1.2;_ff.lat=(Math.random()*2-1)*0.6;}}}}var _bud=_bo.obj&&_bo.obj.userData,_fshg=_bo.fish>0,_cprg=_fshg?(1-_bo.fish/(_bo.fishDur||1)):0;if(_bud){if(_bud.rod)_bud.rod.rotation.z=-1.15+(_fshg?Math.sin(now*0.006)*0.3:0);if(_bud.catch){if(_fshg&&_cprg>0.45){_bud.catch.visible=true;var _rp4=(_cprg-0.45)/0.55;_bud.catch.position.y=-0.34+_rp4*0.3;_bud.catch.rotation.x=Math.sin(now*0.02)*0.6;}else{_bud.catch.visible=false;}}}if(_bo.fish<=0)_bo.d+=_bo.spd*dt*_sM*_bo.dir;try{if(typeof _d3bridgeBoatKeep==='function')_d3bridgeBoatKeep(_bo);}catch(_bg9){} var _rL9=_rW9?_rW9.L:_D3.riverLen;if(_bo.d>=_rL9){_bo.d=_rL9;_bo.dir=-1;}else if(_bo.d<=0){_bo.d=0;_bo.dir=1;}try{if(typeof _d3fallsBoatKeep==='function')_d3fallsBoatKeep(_bo);}catch(_fb9){} var _bp=_rW9?_d3bwRiverAt(_rW9,_bo.d):_d3riverAt(_bo.d);if(_bp){var _ppx=Math.cos(_bp.head+1.5708),_ppz=Math.sin(_bp.head+1.5708);_bo.lat=_bo.lat||0;var _baX=_bp.x+_ppx*_bo.lat,_baZ=_bp.z+_ppz*_bo.lat,_push=0,_oi;if(_D3.boatObstacles){for(_oi=0,_L_oi=_D3.boatObstacles.length;_oi<_L_oi;_oi++){var _ob=_D3.boatObstacles[_oi],_dx=_baX-_ob.x,_dz=_baZ-_ob.z,_dd=Math.hypot(_dx,_dz),_safe=_ob.r+0.22;if(_ob.clr>0&&typeof _d3hullPasses==='function'&&_d3hullPasses(_bo,_ob))continue; if(_dd<_safe){var _sd=_dx*_ppx+_dz*_ppz;_push+=(_safe-_dd)*((_sd>=0)?1:-1)*3.6;}}}for(_oi=0,_L_oi=_D3.boats3d.length;_oi<_L_oi;_oi++){if(_oi===_bii)continue;var _o2=_D3.boats3d[_oi];if(!_o2.obj)continue;var _ex=_baX-_o2.obj.position.x,_ez=_baZ-_o2.obj.position.z,_ed=Math.hypot(_ex,_ez);if(_ed<0.32&&_ed>0.001){var _s2=_ex*_ppx+_ez*_ppz;_push+=(0.32-_ed)*((_s2>=0)?1:-1)*2.7;}}var _mx=Math.max(0.02,_bp.half+0.14),_tl=Math.max(-_mx,Math.min(_mx,_bo.lat+_push));_bo.lat+=(_tl-_bo.lat)*Math.min(1,dt*3.5); if(typeof _d3riverLat==='function')_bo.lat=_d3riverLat(_rW9?_rW9.P:_D3.riverPath,_rW9?_rW9.H:_D3.riverHalf,0.20,_bp,_bo.lat,(_bo.beam||0.12));var _fx=_bp.x+_ppx*_bo.lat,_fz=_bp.z+_ppz*_bo.lat; var _rh9=_bp.head+(_bo.dir<0?Math.PI:0);if(_bo.yaw==null)_bo.yaw=_rh9;var _dy9=Math.atan2(Math.sin(_rh9-_bo.yaw),Math.cos(_rh9-_bo.yaw)),_mt9=0.7*dt*_sM,_ty9=Math.max(-_mt9,Math.min(_mt9,_dy9));_bo.yaw+=_ty9;
 if(_d3hullFloat(_bo,_fx,_fz,_bo.yaw,(_bo.fish>0)?0:_bo.spd*_sM,_ty9/Math.max(dt,1e-3),dt,_bt,(_bp.y||0)+0.2,0)){if(_bo.wake&&typeof _d3wakeStep==='function')_d3wakeStep(_bo,_fx,_fz,Math.max(0.06,(_bp.half||0.3)-Math.abs(_bo.lat)));}else{_bo.obj.position.set(_fx,0.12+Math.sin(_bt*1.5+_bo.ph)*0.022,_fz);if(_bo.wake&&typeof _d3wakeStep==='function')_d3wakeStep(_bo,_fx,_fz,Math.max(0.06,(_bp.half||0.3)-Math.abs(_bo.lat)));_bo.obj.rotation.y=-_bp.head+(_bo.dir<0?Math.PI:0);_bo.obj.rotation.z=Math.sin(_bt*1.1+_bo.ph)*0.06;}}}else{if(_bo.fish==null){_bo.fish=0;_bo.fishCd=2+Math.random()*5;_bo.fishDur=1;}if(_bo.fish>0){_bo.fish-=dt;}else{_bo.fishCd-=dt;if(_bo.fishCd<=0){_bo.fish=4+Math.random()*4;_bo.fishDur=_bo.fish;_bo.fishCd=9+Math.random()*9;}}var _lbud=_bo.obj&&_bo.obj.userData,_lfshg=_bo.fish>0,_lcprg=_lfshg?(1-_bo.fish/(_bo.fishDur||1)):0;if(_lbud){if(_lbud.rod)_lbud.rod.rotation.z=-1.15+(_lfshg?Math.sin(now*0.006)*0.3:0);if(_lbud.catch){if(_lfshg&&_lcprg>0.45){_lbud.catch.visible=true;_lbud.catch.position.y=-0.34+((_lcprg-0.45)/0.55)*0.3;_lbud.catch.rotation.x=Math.sin(now*0.02)*0.6;}else{_lbud.catch.visible=false;}}}if(_bo.poly){ if(_bo.px==null){_bo.px=(_bo.bx!=null?_bo.bx:(_bo.cx||0));_bo.pz=(_bo.bz!=null?_bo.bz:(_bo.cz||0));}var _av9=[],_ok;for(_ok=0,_L_ok=_D3.boats3d.length;_ok<_L_ok;_ok++){if(_ok===_bii)continue;var _o3=_D3.boats3d[_ok];if(!_o3.obj)continue; _av9.push({x:(_o3.px!=null?_o3.px:_o3.obj.position.x),z:(_o3.pz!=null?_o3.pz:_o3.obj.position.z),r:Math.max(0.45,(_bo.rad||0.3)+(_o3.rad||0.3)),w:1.2});}if(_D3.boatObstacles){for(_ok=0,_L_ok=_D3.boatObstacles.length;_ok<_L_ok;_ok++){var _ob=_D3.boatObstacles[_ok];if(_ob.clr>0&&_d3hullPasses(_bo,_ob))continue; _av9.push({x:_ob.x,z:_ob.z,r:_ob.r+0.26+((_ob.hr>0)?(_bo.rad||0.3):0),w:_ob.w||2.0});}}if(_bo.hbr&&typeof _d3hbrOpsStep==='function'&&_d3hbrOpsStep(_bo,_av9,dt,_bt,now)){ }else{_bo.throttle=_sM*((_bo.fish>0)?0.3:1);if(typeof _d3hbrOpenWater==='function')_d3hbrOpenWater(_bo,_av9); _d3boatSail(_bo,_bo.poly,_av9,dt,_bt,_D3.wind); if(typeof _d3hullKeepOff==='function')_d3hullKeepOff(_bo,_D3.boatObstacles); if(_d3hullFloat(_bo,_bo.px,_bo.pz,_bo.hd,_bo.v,_bo.w,dt,_bt,(typeof _D3_BOAT_Y!=='undefined')?_D3_BOAT_Y:0.06,_bo.heel||0)){if(_bo.wake&&typeof _d3wakeStep==='function')_d3wakeStep(_bo,_bo.px,_bo.pz);}else{_bo.obj.position.set(_bo.px,((typeof _D3_BOAT_Y!=='undefined')?_D3_BOAT_Y:0.47)+((typeof _d3boatBob==='function')?_d3boatBob(_bo):0.04)*Math.sin(now*0.0016+_bo.ph),_bo.pz);if(_bo.wake&&typeof _d3wakeStep==='function')_d3wakeStep(_bo,_bo.px,_bo.pz);if(_bo.obj.rotation.order!=='YXZ')_bo.obj.rotation.order='YXZ';_bo.obj.rotation.x=_bo.heel||0; _bo.obj.rotation.y=-_bo.hd; _bo.obj.rotation.z=(_bo.roll||0)+Math.sin(_bt*1.05+_bo.ph)*0.02;}}}else{var _wx=_bo.bx+Math.cos(_bt*0.3+_bo.ph)*0.1,_wz=_bo.bz+Math.sin(_bt*0.3+_bo.ph)*0.1,_qx=0,_qz=0,_ok2;for(_ok2=0,_L_ok2=_D3.boats3d.length;_ok2<_L_ok2;_ok2++){if(_ok2===_bii)continue;var _o3b=_D3.boats3d[_ok2];if(!_o3b.obj)continue;var _ax2=_wx-_o3b.obj.position.x,_az2=_wz-_o3b.obj.position.z,_ad2=Math.hypot(_ax2,_az2);if(_ad2<0.34&&_ad2>0.001){_qx+=_ax2/_ad2*(0.34-_ad2);_qz+=_az2/_ad2*(0.34-_ad2);}}_bo.obj.position.set(_wx+_qx*1.5,((typeof _D3_BOAT_Y!=='undefined')?_D3_BOAT_Y:0.47)+0.05*Math.sin(now*0.0016+(_wx*0.7+_wz*0.9)),_wz+_qz*1.5);if(_bo.wake&&typeof _d3wakeStep==='function')_d3wakeStep(_bo,_wx+_qx*1.5,_wz+_qz*1.5); if(!_d3hullFloat(_bo,_bo.obj.position.x,_bo.obj.position.z,(_bo.ph||0)+0.35*Math.sin(_bt*0.05+(_bo.ph||0)),0,0,dt,_bt,(typeof _D3_BOAT_Y!=='undefined')?_D3_BOAT_Y:0.47,0)){_bo.obj.rotation.z=Math.sin(_bt*1.2+_bo.ph)*0.1;_bo.obj.rotation.y=_bt*0.18+_bo.ph;}}}}}
 var _rfL=(typeof _d3riverFoamLit==='function')?_d3riverFoamLit(_D3.sun,_D3.hemi):null;
 if(_D3.flow&&_D3.flow.length){var _ff;for(_ff=0,_L_ff=_D3.flow.length;_ff<_L_ff;_ff++){var _fl=_D3.flow[_ff],_fv=_fl.rv;
