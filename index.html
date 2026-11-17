@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='26bdb7f';
+var RCG_BUILD='880d651';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -42816,10 +42816,10 @@ if(bb.max.y>h&&bb.max.y>1e-4)g.scale.setScalar(h/bb.max.y);
 return g;
 }
 function _d3lakeLife(g,opt){
-var T=window.THREE,LK=_D3&&_D3.lakePts;
-if(!LK||LK.length<3||!T){if(opt&&opt.keep&&typeof _d3lakeKeepDrop==='function')_d3lakeKeepDrop();return 0;}
-if(typeof _d3drawnH!=='function'||typeof _d3inLake!=='function')return 0;
-var sd=7731;function rr(){sd=(sd*9301+49297)%233280;return sd/233280;}
+var T=window.THREE,BD=opt&&opt.body,LK=BD?BD.P:(_D3&&_D3.lakePts);
+if(!LK||LK.length<3||!T){if(!BD&&opt&&opt.keep&&typeof _d3lakeKeepDrop==='function')_d3lakeKeepDrop();return 0;}
+if(typeof _d3drawnH!=='function'||typeof _d3inLake!=='function')return 0;var _inL=BD?BD.inL:_d3inLake;
+var sd=7731+((BD&&BD.seed)|0);function rr(){sd=(sd*9301+49297)%233280;return sd/233280;}
 var x0=1e9,x1=-1e9,z0=1e9,z1=-1e9,i;
 for(i=0;i<LK.length;i++){var p=LK[i];
 if(p.x<x0)x0=p.x;if(p.x>x1)x1=p.x;if(p.z<z0)z0=p.z;if(p.z>z1)z1=p.z;}
@@ -42829,26 +42829,26 @@ var stoneM=[_mat(0x5f5a4e,{r:0.95,flat:true}),_mat(0x6d6757,{r:0.95,flat:true}),
 _mat(0x4c4840,{r:0.96,flat:true})];
 var padM=_mat(0x3f7a3c,{r:0.85,flat:true}),padG=new T.CircleGeometry(1,12);
 var surfY=(_D3.riverGrp&&_D3.riverGrp.position)?(_D3.riverGrp.position.y+0.06):-0.02;
-var _LKB=_d3lakeBudget((x1-x0)*(z1-z0)),_LKL=_LKB.lite;
+var _LKB=(opt&&opt.budget)||_d3lakeBudget((x1-x0)*(z1-z0)),_LKL=_LKB.lite;
 _D3._lkB=_LKB;
 var placed=0,CAP=_LKB.veg;
 var step=Math.max(0.30,Math.max(x1-x0,z1-z0)/(92*Math.min(1.5,Math.max(1,_LKB.mul))));
 var gx,gz;
 var maxDep=0;
 for(gz=z0;gz<=z1;gz+=step)for(gx=x0;gx<=x1;gx+=step){
-if(!_d3inLake(gx,gz))continue;
+if(!_inL(gx,gz))continue;
 var dd=surfY-_d3drawnH(gx,gz);if(dd>maxDep)maxDep=dd;
 }
 if(maxDep<=0.02)maxDep=1;
 var PG=g,_lkV=null,_lkK=null,_lkT=null;
 if(opt&&opt.keep&&typeof _d3lakeKeepOn==='function'&&_d3lakeKeepOn()){
-if(_D3._lakePG&&_D3._lakePG.parent){_d3lakeKeepDrop(_D3._lakePG);_D3._lakePG=null;}
-_lkK=_d3lakeKeepKey(LK,x0,x1,z0,z1,step,surfY,_LKB);_lkT=_d3lakeKeepTake(_lkK,maxDep);
-if(_lkT){g.add(_lkT.pg);_D3._lakePG=_lkT.pg;sd=_lkT.sd;placed=_lkT.placed;}
+if(!BD&&_D3._lakePG&&_D3._lakePG.parent){_d3lakeKeepDrop(_D3._lakePG);_D3._lakePG=null;}
+_lkK=_d3lakeKeepKey(LK,x0,x1,z0,z1,step,surfY,_LKB);_lkT=BD?BD.take(_lkK,maxDep):_d3lakeKeepTake(_lkK,maxDep);
+if(_lkT){g.add(_lkT.pg);if(BD)BD.put(_lkT.pg);else _D3._lakePG=_lkT.pg;sd=_lkT.sd;placed=_lkT.placed;}
 else{PG=new T.Group();PG.name='lakePlants';_lkV=[];_d3lakeKeepN().fresh++;}}
 for(gz=z0;gz<=z1&&placed<CAP&&!_lkT;gz+=step)for(gx=x0;gx<=x1&&placed<CAP;gx+=step){
 var x=gx+(rr()-0.5)*step,z=gz+(rr()-0.5)*step;
-var _in9=_d3inLake(x,z);if(_lkV)_lkV.push([x,z,_in9?1:0,null,null]);
+var _in9=_inL(x,z);if(_lkV)_lkV.push([x,z,_in9?1:0,null,null]);
 if(!_in9)continue;
 var y=_d3drawnH(x,z);if(_lkV)_lkV[_lkV.length-1][3]=y;
 if(y>-0.12)continue;
@@ -42896,14 +42896,14 @@ var cv=_d3wplant('cover',Math.min(head,0.05+rr()*0.045),rr);
 cv.position.set(x,y,z);PG.add(cv);placed+=cv.children.length;
 }
 }
-if(_lkV){_d3lakeKeepSeal(PG);PG.userData._keepRec={key:_lkK,maxDep:maxDep,V:_lkV,sd:sd,placed:placed};g.add(PG);_D3._lakePG=PG;}
-_D3.lakeLife=[];_D3.lakeFauna=[];
+if(_lkV){_d3lakeKeepSeal(PG);PG.userData._keepRec={key:_lkK,maxDep:maxDep,V:_lkV,sd:sd,placed:placed};g.add(PG);if(BD)BD.put(PG);else _D3._lakePG=PG;}
+if(!(opt&&opt.add)){_D3.lakeLife=[];_D3.lakeFauna=[];}
 var nT=(_LKL?1:Math.max(3,Math.round(3*_LKB.mul))),k;
 var mk=function(loF,hiF,minRad){
 var tries,cx,cz,rad,sdv;
 for(tries=0;tries<40;tries++){
 cx=x0+rr()*(x1-x0);cz=z0+rr()*(z1-z0);
-if(!_d3inLake(cx,cz))continue;
+if(!_inL(cx,cz))continue;
 sdv=(typeof _d3polySD==='function')?_d3polySD(LK,cx,cz):null;
 if(!sdv||sdv.d<1.2)continue;
 rad=Math.min(sdv.d-0.9,1.0+rr()*3.5);
@@ -42948,7 +42948,7 @@ acount++;
 }
 try{
 if(typeof _d3fishShoals==='function')
-_d3fishShoals(g,{sites:_sites9,surf:surfY,rr:rr,mk:mk});
+_d3fishShoals(g,{sites:_sites9,surf:surfY,rr:rr,mk:mk,add:!!(opt&&opt.add)});
 }catch(_fs9){_D3._shoalErr=(_fs9&&_fs9.message)||String(_fs9);}
 for(k=0;k<nT&&acount<ACAP;k++){
 var sp2=mk(null,null,0.5);if(!sp2)continue;
@@ -42963,10 +42963,10 @@ acount++;
 try{
 if(typeof _d3lakeFauna==='function')
 placed+=_d3lakeFauna(g,{LK:LK,x0:x0,x1:x1,z0:z0,z1:z1,surf:surfY,maxDep:maxDep,rr:rr,
-inLake:_d3inLake,polySD:(typeof _d3polySD==='function')?_d3polySD:null,drawnH:_d3drawnH,
+inLake:_inL,polySD:(typeof _d3polySD==='function')?_d3polySD:null,drawnH:_d3drawnH,
 cap:_LKB.fauna});
 }catch(_lf9){_D3._faunaErr=(_lf9&&_lf9.message)||String(_lf9);}
-_D3._lakeLifeN=placed;_D3._lakeAnimalN=acount;
+if(BD){BD.placed=placed;BD.animals=acount;}else{_D3._lakeLifeN=placed;_D3._lakeAnimalN=acount;}
 return placed;
 }
 function _d3wakeInit(bo,parent){
@@ -43048,6 +43048,7 @@ if(!D._lakeKeepFresh)_d3lakeKeepN().refused++;_d3lakeKeepDrop();return null;}
 D._lakeKeep=null;_d3lakeKeepN().kept++;return K;
 }
 function _d3lakeKeepStash(){
+try{if(typeof _d3lakeXStash==='function')_d3lakeXStash();}catch(_x9){}
 var D=_D3,P=D&&D._lakePG;if(!P)return 0;D._lakePG=null;
 if(!_d3lakeKeepOn()||!P.parent||!P.userData._keepRec){_d3lakeKeepDrop(P);return 0;}
 P.parent.remove(P);D._lakeKeep=P.userData._keepRec;D._lakeKeep.pg=P;return 1;
@@ -43059,6 +43060,61 @@ if(o.geometry&&o.geometry.dispose&&!(o.geometry.userData&&o.geometry.userData._s
 if(o.material){if(typeof _d3matDrop==='function')_d3matDrop(o.material);else if(o.material.dispose)o.material.dispose();}});}catch(_d9){}
 if(P.parent)P.parent.remove(P);
 _d3lakeKeepN().dropped++;return 1;
+}
+var _D3_LAKE_EVERY={floor:0.12};
+function _d3lakeEveryOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noLakeEvery);}
+function _d3lakeBoxArea(P,iR){
+var x0=1e9,x1=-1e9,z0=1e9,z1=-1e9,i;for(i=0;i<P.length;i++){var p=P[i];if(p.x<x0)x0=p.x;if(p.x>x1)x1=p.x;if(p.z<z0)z0=p.z;if(p.z>z1)z1=p.z;}
+if(iR>0){x0=Math.max(x0,-iR);x1=Math.min(x1,iR);z0=Math.max(z0,-iR);z1=Math.min(z1,iR);}
+return Math.max(0,x1-x0)*Math.max(0,z1-z0);
+}
+function _d3lakeSharesOf(A,K){
+K=K||_D3_LAKE_EVERY;var t=0,i,f=[],s=0;for(i=0;i<A.length;i++)t+=Math.max(0,+A[i]||0);
+for(i=0;i<A.length;i++){f.push(Math.max(K.floor,t>0?Math.max(0,+A[i]||0)/t:1/A.length));s+=f[i];}
+return f.map(function(v){return v/s;});
+}
+function _d3lakeBudgetShare(B,s){
+if(!(s<1))return B;
+return {t:B.t,lite:B.lite,mul:Math.max(0.5,B.mul*s),veg:Math.round(B.veg*s),fauna:Math.round(B.fauna*s),fish:Math.round(B.fish*s),shoal:Math.round(B.shoal*s)};
+}
+function _d3lakePolyIn(P,b,x,z){
+if(x<b[0]||x>b[1]||z<b[2]||z>b[3])return false;var ins=false,a,c,n=P.length;
+for(a=0,c=n-1;a<n;c=a++){var pa=P[a],pc=P[c];if(((pa.z>z)!==(pc.z>z))&&(x<(pc.x-pa.x)*(z-pa.z)/((pc.z-pa.z)||1e-9)+pa.x))ins=!ins;}
+return ins;
+}
+function _d3lakeBodyOf(P,k){
+var D=_D3,b=[1e9,-1e9,1e9,-1e9],i;for(i=0;i<P.length;i++){var p=P[i];b[0]=Math.min(b[0],p.x);b[1]=Math.max(b[1],p.x);b[2]=Math.min(b[2],p.z);b[3]=Math.max(b[3],p.z);}
+return {P:P,k:k,seed:(k+1)*977,inL:function(x,z){return _d3lakePolyIn(P,b,x,z);},
+take:function(key,maxDep){var M=D._lakeXKeep,K=M&&M[key];if(!K||!_d3lakeKeepOn())return null;delete M[key];
+var salt=function(x,z){return (typeof _d3inSalt==='function')&&_d3inSalt(x,z);};
+if(D._lakeKeepFresh||!(Math.abs(K.maxDep-maxDep)<=_D3_LAKE_KEEP_TOL)||!_d3lakeKeepOk(K.V,this.inL,_d3drawnH,salt,_D3_LAKE_KEEP_TOL)){
+if(!D._lakeKeepFresh)_d3lakeKeepN().refused++;_d3lakeKeepDrop(K.pg);return null;}
+_d3lakeKeepN().kept++;return K;},
+put:function(PG){(D._lakeXPG||(D._lakeXPG=[])).push(PG);}};
+}
+function _d3lakeXStash(){
+var D=_D3,L=D._lakeXPG||[],M=D._lakeXKeep||(D._lakeXKeep={});D._lakeXPG=[];
+L.forEach(function(P){var r=P&&P.userData&&P.userData._keepRec;if(!_d3lakeKeepOn()||!P.parent||!r){_d3lakeKeepDrop(P);return;}
+P.parent.remove(P);r.pg=P;if(M[r.key]&&M[r.key].pg!==P)_d3lakeKeepDrop(M[r.key].pg);M[r.key]=r;});
+return L.length;
+}
+function _d3lakeXSweep(){var D=_D3,M=D._lakeXKeep,n=0;if(!M)return 0;Object.keys(M).forEach(function(k){_d3lakeKeepDrop(M[k].pg);n++;});D._lakeXKeep={};return n;}
+function _d3lakesLife(g,opt){
+var D=_D3,o=opt||{},X=_d3lakeEveryOn()?(D.lakePtsExtra||[]).filter(function(P){return P&&P.length>2&&!P.salt;}):[],R=D._lakeEvery={bodies:[],err:''};
+if(!X.length){var n0=_d3lakeLife(g,o);_d3lakeXSweep();return n0;}
+var iR=(typeof _d3islandR==='function')?_d3islandR()-1:0,sel=(D.lakePts&&D.lakePts.length>2)?D.lakePts:null,fr=!!(sel&&!sel.salt);
+var A=X.map(function(P){return _d3lakeBoxArea(P,iR);});if(fr)A.unshift(_d3lakeBoxArea(sel,iR));
+var S=_d3lakeSharesOf(A),B=_d3lakeBudget(A.reduce(function(a,v){return a+v;},0));R.shares=S;R.budget=B;
+D.lakeLife=[];D.lakeFauna=[];
+var used=function(){var u=D._lkB||{};return {fish:u.fish|0,veg:u.veg|0,fauna:u.fauna|0};};
+var n=_d3lakeLife(g,fr?Object.assign({},o,{budget:_d3lakeBudgetShare(B,S[0])}):o);if(fr)R.sel=used();
+if(fr)D._lkB=_d3lakeBudget(A[0]);
+var keepB=D._lkB;
+X.forEach(function(P,k){var BD=_d3lakeBodyOf(P,k),s=S[fr?k+1:k];
+try{_d3lakeLife(g,Object.assign({},o,{body:BD,add:true,budget:_d3lakeBudgetShare(B,s)}));}catch(_e){R.err+=String((_e&&_e.message)||_e)+'; ';}
+R.bodies.push(Object.assign({k:k,share:s,placed:BD.placed|0,animals:BD.animals|0},used()));});
+D._lkB=keepB;_d3lakeXSweep();
+return n;
 }
 var _D3_WAKE={off:[-1,-0.88,-0.7,0,0.7,0.88,1],arm:[0,1,0.16,0.14,0.16,1,0],wash:[0,0,0.35,1,0.35,0,0],w0:0.16,tan:0.3,max:2.1,washK:0.34,brk:0.45};
 function _d3wakeDie(x,z){var v=Math.sin(x*12.9898+z*78.233)*43758.5453;return v-Math.floor(v);}
@@ -58661,7 +58717,7 @@ if(typeof _d3inSiteCut==='function'&&_d3inSiteCut(_cx7,_cz7))return false;
 if(!(_D3&&_D3._noSiteRock)&&typeof _d3inSiteGrade==='function'&&_d3inSiteGrade(_cx7,_cz7))return false;
 if(!_bw7&&_d3lakeShore(_cx7,_cz7))return false;return farRoad(_cx7,_cz7)&&farRail(_cx7,_cz7)&&farRd(_cx7,_cz7);});}catch(_rk8){_D3._rockErr=(_rk8&&_rk8.message)||String(_rk8);}
 yield 'rockscatter';
-try{if(typeof _d3lakeLife==='function'&&!_d3draft())_d3lakeLife(g,{keep:1});}catch(_ll9){_D3._lakeLifeErr=(_ll9&&_ll9.message)||String(_ll9);}
+try{if(typeof _d3lakeLife==='function'&&!_d3draft())((typeof _d3lakesLife==='function')?_d3lakesLife:_d3lakeLife)(g,{keep:1});}catch(_ll9){ _D3._lakeLifeErr=(_ll9&&_ll9.message)||String(_ll9);}
 yield 'lakelife';
 try{if(typeof _d3riverLife==='function')_d3riverLife(g);}catch(_rl9){_D3._riverLifeErr=(_rl9&&_rl9.message)||String(_rl9);}
 try{if(typeof _d3reefLife==='function'&&!(typeof _d3reefDesignedOK==='function'&&_d3reefDesignedOK()))_d3reefLife(g);}catch(_rf9){_D3._reefLifeErr=(_rf9&&_rf9.message)||String(_rf9);}
