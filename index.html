@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='2525c84';
+var RCG_BUILD='49cfa42';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -49829,6 +49829,38 @@ im.setMatrixAt(k,_bspM.compose(_bspP,_bspQ,_bspS).premultiply(_bspI));A.array[k]
 im.count=n;im.instanceMatrix.needsUpdate=true;A.needsUpdate=true;if(im.instanceColor)im.instanceColor.needsUpdate=true;
 if(im.frustumCulled&&typeof _d3poolBounds==='function')_d3poolBounds(im);
 }
+var _D3_FLOW_LAYER=22;
+var _flM=null,_flP=null,_flQ=null,_flS=null,_flI=null,_flR=null,_flL=[];
+function _d3flowShown(o){var h=0;while(o&&h++<48){if(o.visible===false)return false;o=o.parent;}return true;}
+function _d3flowPoolStep(){
+var D=_D3,T=window.THREE,F=D.flow,i;if(!T||!T.InstancedMesh)return;
+if(!_flM){_flM=new T.Matrix4();_flP=new T.Vector3();_flQ=new T.Quaternion();_flS=new T.Vector3();_flI=new T.Matrix4();_flR=new T.Matrix4();}
+var live=_flL,n=0,cx=0,cy=0,cz=0,ro=899,host=D.trackG||D.scene,im=D._flowIM;
+var off=!!D._noFlowPool;
+if(F)for(i=0;i<F.length;i++){var f=F[i],sp=f&&f.sp;if(!sp||!sp.isMesh||!sp.material||!sp.parent)continue;
+if(off){if(f._fpL){sp.layers.set(0);f._fpL=0;}continue;}
+if(!f._fpL){sp.layers.set(_D3_FLOW_LAYER);f._fpL=1;}
+var op=sp.material.opacity;if(!sp.visible||!(op>0)||!_d3flowShown(sp.parent))continue;
+sp.parent.updateWorldMatrix(true,false);_flM.compose(sp.position,sp.quaternion,sp.scale).premultiply(sp.parent.matrixWorld);
+var q=live[n]||(live[n]={m:new T.Matrix4(),a:0,c:null});q.m.copy(_flM);q.a=op;q.c=sp.material.color;n++;
+cx+=_flM.elements[12];cy+=_flM.elements[13];cz+=_flM.elements[14];ro=sp.renderOrder;}
+D._flowPoolN=n;
+if(!n){if(im)im.count=0;return;}
+if(!im||im.parent!==host||im.userData._cap<n){
+if(im){if(im.parent)im.parent.remove(im);if(typeof _d3poolFree==='function')_d3poolFree([im],true);}
+var cap=Math.max(32,Math.ceil(n*1.25));
+im=_d3spriteIM(cap,{map:D.smokeTex,color:new T.Color(1,1,1),fog:true},'flowPool');im.userData._cap=cap;
+im.material.polygonOffset=true;im.material.polygonOffsetFactor=-1;im.material.polygonOffsetUnits=-2;
+host.add(im);D._flowIM=im;}
+im.renderOrder=ro;
+_flP.set(cx/n,cy/n,cz/n);im.parent.updateWorldMatrix(true,false);im.parent.worldToLocal(_flP);im.position.copy(_flP);
+im.updateMatrixWorld(true);_flI.copy(im.matrixWorld).invert();
+_flR.makeRotationX(-Math.PI/2);
+var A=im.geometry.attributes.iAlpha;
+for(i=0;i<n;i++){var e=live[i];im.setMatrixAt(i,_flM.multiplyMatrices(e.m,_flR).premultiply(_flI));A.array[i]=e.a;im.setColorAt(i,e.c);}
+im.count=n;im.instanceMatrix.needsUpdate=true;A.needsUpdate=true;if(im.instanceColor)im.instanceColor.needsUpdate=true;
+if(im.frustumCulled&&typeof _d3poolBounds==='function')_d3poolBounds(im);
+}
 var _D3_GLOW_LAYER=29;
 function _d3glowPoolArm(){var D=(typeof _D3!=='undefined')?_D3:null,sc=D&&D.scene;if(!sc||sc.userData._gpArm)return;sc.userData._gpArm=1;var ob=sc.onBeforeRender;
 sc.onBeforeRender=function(ren,scene,cam){try{_d3glowPoolStep(cam);}catch(_g){}if(ob)return ob.apply(this,arguments);};}
@@ -95267,6 +95299,7 @@ _flS=1+(_fF9[_fi9]||0)*2.6;
 var _fdd=_fl.spd*dt*(_D3.speedMul||1)*0.7*_flS,_fo9=-1;if(_fl.q)_fo9=_d3riverFleckStep(_fl,_fdd,_fL9,Math.random);else{_fl.d+=_fdd;if(_fl.d>_fL9)_fl.d-=_fL9;}var _fp=_fv?_d3riverAtOf(_fv,_fl.d):_d3riverAt(_fl.d),_fc9=typeof _d3fallsCutAt==='function'&&_d3fallsCutAt(_fv,_fl.d);if(_fl.sp.visible===_fc9)_fl.sp.visible=!_fc9;if(_fp&&!_fc9){var _pp2=_fp.head+Math.PI/2,_of=_fl.lat*_fp.half;_fl.sp.position.set(_fp.x+Math.cos(_pp2)*_of,(_fp.y||0)+(_fo9>=0?0.23:0.21),_fp.z+Math.sin(_pp2)*_of);
 if(_fo9>=0){ var _fk9=_D3_RIVER_FOAM;_fl.sp.rotation.y=-_fp.head;_fl.sp.scale.set(_fk9.len*(1+_fl.tr*_fk9.grow),1,_fk9.wid);_fl.sp.material.opacity=_fo9;if(typeof _d3riverFoamTint==='function')_d3riverFoamTint(_fl.sp,_rfL);}
 else _fl.sp.material.opacity=0.45+0.35*(0.5+0.5*Math.sin(now*0.004+_ff*1.3));}}}
+try{_d3flowPoolStep();}catch(_fp9){}
 if(_D3.contrails&&_D3.contrails.length){
 for(var _cti=_D3.contrails.length-1;_cti>=0;_cti--){
 var _ctr=_D3.contrails[_cti];_ctr.age+=dt*(_D3.speedMul||1);
