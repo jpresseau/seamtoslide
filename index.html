@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='7605809';
+var RCG_BUILD='b5e8c5d';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -49599,7 +49599,7 @@ var T=window.THREE,D=(typeof _D3!=='undefined')?_D3:null;if(!im||!T||!T.DynamicD
 [im.instanceMatrix].concat(more||[]).forEach(function(a){if(a&&a.setUsage)a.setUsage(T.DynamicDrawUsage);});
 return im;
 }
-var _D3_POOL_LOD=[{px:16,div:8},{px:6,div:3}];
+var _D3_POOL_LOD=[{px:16,div:8},{px:6,div:3},{px:1.5,div:1}];
 var _D3_POOL_LOD_FINER=2;
 var _D3_POOL_LOD_PER=3;
 function _d3poolLodLevel(px,L){var lv=0;for(var i=0;i<L.length;i++)if(px<L[i].px)lv=i+1;return lv;}
@@ -49624,20 +49624,21 @@ return g;
 function _d3poolLod(){
 var D=_D3,IM=D&&D._crowdIM,T=window.THREE;if(!IM||!T)return;
 var cam=D.cam,on=!D._noPoolLod&&cam&&cam.isOrthographicCamera&&cam.zoom>0&&D.ren&&!(D.drive&&D.drive.on)&&!((typeof _d3focus==='function')&&_d3focus().mode!=='map');
-var ppu=on?D.ren.domElement.height/((cam.top-cam.bottom)/cam.zoom):0,made=0,n1=0,n2=0,i;
+var ppu=on?D.ren.domElement.height/((cam.top-cam.bottom)/cam.zoom):0,made=0,n1=0,n2=0,n3=0,i;
 var K=_d3poolLod.K;
-if(K&&!D._noPoolLodKeep&&K.IM===IM&&K.n===IM.length&&K.on===!!on&&K.ppu===ppu&&K.made===0){D._poolLodKept=(D._poolLodKept|0)+1;return;}
+if(K&&!D._noPoolLodKeep&&K.IM===IM&&K.n===IM.length&&K.on===!!on&&K.ppu===ppu&&K.made===0&&K.tiny===!!D._noPoolLodTiny){D._poolLodKept=(D._poolLodKept|0)+1;return;}
 for(i=0;i<IM.length;i++){var im=IM[i],u=im.userData,base=u._lod0||im.geometry;
 if(!u._lod0){if(!base.userData||!(base.userData._rs>0)||!base.boundingSphere){u._lod0=base;u._lodNo=1;}else u._lod0=base;}
 var lv=0;
-if(on&&!u._lodNo){var px=2*base.userData._rs*(u._sm||1)*ppu;lv=_d3poolLodLevel(px,_D3_POOL_LOD);}
+if(on&&!u._lodNo){var px=2*base.userData._rs*(u._sm||1)*ppu;lv=_d3poolLodLevel(px,_D3_POOL_LOD);if(lv>2&&D._noPoolLodTiny)lv=2;}
 if(lv>0){var L=u._lods||(u._lods=[]);
-if(L[lv]===undefined){if(made<_D3_POOL_LOD_PER){made++;var st=_D3_POOL_LOD[lv-1];try{L[lv]=_d3poolLodGeo(base,base.userData._rs/st.div,T);}catch(_lg){L[lv]=null;}}else lv=0;}
-if(lv>0&&!L[lv])lv=(L[1]&&lv>1)?1:0;}
+while(lv>0&&L[lv]===null)lv--;
+if(lv>0&&L[lv]===undefined){if(made<_D3_POOL_LOD_PER){made++;var st=_D3_POOL_LOD[lv-1];try{L[lv]=_d3poolLodGeo(base,base.userData._rs/st.div,T);}catch(_lg){L[lv]=null;}}else lv=0;}
+if(lv>0&&!L[lv]){var d=lv-1;while(d>0&&!L[d])d--;lv=d;}}
 var g=lv>0?u._lods[lv]:base;if(im.geometry!==g)im.geometry=g;
-if(lv===1)n1++;else if(lv===2)n2++;}
-D._poolLod={on:!!on,pools:IM.length,lod1:n1,lod2:n2,made:made};
-_d3poolLod.K={IM:IM,n:IM.length,on:!!on,ppu:ppu,made:made};
+if(lv===1)n1++;else if(lv===2)n2++;else if(lv===3)n3++;}
+D._poolLod={on:!!on,pools:IM.length,lod1:n1,lod2:n2,lod3:n3,made:made};
+_d3poolLod.K={IM:IM,n:IM.length,on:!!on,ppu:ppu,made:made,tiny:!!D._noPoolLodTiny};
 }
 function _d3poolLodDrop(){
 var D=_D3;
