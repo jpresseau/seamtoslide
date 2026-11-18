@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='49cfa42';
+var RCG_BUILD='728f78c';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -50234,6 +50234,7 @@ function _d3dressLodOut(sw){for(var i=0;i<sw.length;i+=2)sw[i].geometry=sw[i+1];
 var _D3_SHK_STILL=2;
 var _D3_SHK_ABSORB=60;
 var _D3_SHK_AGAIN=300;
+var _D3_SHK_LATE=12;
 var _D3_SHK_WHY=64;
 var _shkCh={},_shkChN=0;
 function _d3shkKey(lm,tm,sc,mw,mh,type,layers,mapId){
@@ -50273,14 +50274,19 @@ function _d3shkDyn(o){if(o.isSkinnedMesh||o.morphTargetInfluences)return true;va
 function _d3shkSkip(o){
 var K=_D3&&_D3._shk;if(!K||!K.mode||!o)return false;
 if(K.mode===1)return o===K.quad||_d3shkDyn(o);
-return K.rec.has(o);
+var r=K.rec.get(o);return !!r&&!r.late;
+}
+function _d3shkLate(K,r,o,g,w){
+r.late=o?1:2;r.ls=o?_d3shkSnap(o,g):null;
+if(!K.late){K.late=1;K.lateAt=K.age;}
+var S=_D3._shKeep;S.late=(S.late|0)+1;_d3shkChanged(r.o,w);
 }
 function _d3shkLine(S,off,why){
 if(off)return 'the sun’s map kept where nothing moves: switched off - the whole pass every frame';
 var w=(why&&why.length)?' - lately '+why.slice(0,4).map(function(x){return x[0]+' '+x[1];}).join(', '):'';
 return 'the sun’s map kept where nothing moves: '+(S.kept|0)+' still casters kept, '+(S.movingDraws|0)+' draws each frame over them; the copy made '+(S.builds|0)
 +' times ('+(S.redo|0)+' of them again within a frame, a kept caster having changed'+w+')'
-+(S.forms?', '+(S.forms|0)+' times a pooled shape drawn from another of its own forms, left to the next copy':'')+', '+(S.plain|0)+' frames drawn whole while the sun’s box moved';
++(S.forms?', '+(S.forms|0)+' times a pooled shape drawn from another of its own forms, left to the next copy':'')+(S.late?', '+(S.late|0)+' kept casters that changed left to the next copy':'')+', '+(S.plain|0)+' frames drawn whole while the sun’s box moved';
 }
 function _d3shkWhy(){
 var K=_D3&&_D3._shk,W=K&&K.whyO;if(!W||!W.length||typeof _d3pfOwners!=='function'||typeof _d3pfOwnerOf!=='function'||typeof _RCGPF==='undefined')return null;
@@ -50301,10 +50307,13 @@ ren.renderBufferDirect=function(cam,sc,g,m,o,grp){
 if(K.mode&&o){
 if(K.mode===1){if(o===K.quad||_d3shkDyn(o))return;var r=K.rec.get(o);if(!r){r=_d3shkSnap(o,g);K.rec.set(o,r);K.list.push(r);}r.n0++;}
 else{var q=K.rec.get(o);
-if(q){if(q.f!==K.stamp){q.f=K.stamp;q.n=0;var d=_d3shkDiff(q,o,g);
+if(q&&q.late){
+if(q.f!==K.stamp){q.f=K.stamp;K.drawn++;if(q.late===1&&_d3shkDiff(q.ls,o,g)){q.late=2;_d3shkChanged(o,'moved');}}}
+else if(q){if(q.f!==K.stamp){q.f=K.stamp;q.n=0;var d=_d3shkDiff(q,o,g);
 if(d===3&&!D._noShkForms){if(!K.stale){K.stale=1;D._shKeep.forms=(D._shKeep.forms|0)+1;}}
+else if(d&&!D._noShkLate){_d3shkLate(K,q,o,g,d===1?'moved':'changed');K.drawn++;return rb.call(this,cam,sc,g,m,o,grp);}
 else if(d){K.bad=1;_d3shkChanged(o,d===1?'moved':'changed');}}q.n++;return;}
-if(o!==K.quad){K.drawn++;if(!_d3shkDyn(o))K.unknown++;}}}
+else if(o!==K.quad){K.drawn++;if(!_d3shkDyn(o))K.unknown++;}}}
 return rb.call(this,cam,sc,g,m,o,grp);};
 return true;
 }
@@ -50342,6 +50351,7 @@ var mp=sh.map,k=_d3shkKey(sun.matrixWorld.elements,sun.target.matrixWorld.elemen
 if(_d3shkSameKey(K.key,k))K.still++;else{K.key=k;K.still=0;K.valid=false;}
 if(!K.valid&&K.still<_D3_SHK_STILL){S.plain++;return r0.apply(self,args);}
 if(K.valid&&(K.unknown||K.stale)&&K.age>=_D3_SHK_ABSORB)K.valid=false;
+if(K.valid&&K.late&&K.age-K.lateAt>=_D3_SHK_LATE)K.valid=false;
 if(!K.valid)_d3shkMake(r0,self,args,sh);
 if(_d3shkMoving(r0,self,args,sh))return;
 S.redo++;_d3shkMake(r0,self,args,sh);
@@ -50357,7 +50367,7 @@ var prev=ren.getRenderTarget(),face=ren.getActiveCubeFace(),lvl=ren.getActiveMip
 ren.setRenderTarget(mp);
 try{ren.copyFramebufferToTexture(K.v0||(K.v0=new window.THREE.Vector2(0,0)),_d3shkTex(K,mp.width,mp.height));}
 finally{ren.setRenderTarget(prev,face,lvl);}
-K.valid=true;K.age=0;K.unknown=0;K.stale=0;D._shKeep.builds++;D._shKeep.kept=K.list.length;
+K.valid=true;K.age=0;K.unknown=0;K.stale=0;K.late=0;D._shKeep.builds++;D._shKeep.kept=K.list.length;
 }
 function _d3shkMoving(r0,self,args,sh){
 var D=_D3,K=D._shk,q=_d3shkQuad(K),mp=sh.map,dm=q.customDepthMaterial,i;
@@ -50365,7 +50375,8 @@ dm.uniforms.tMap.value=K.tex;dm.uniforms.uSize.value.set(mp.width,mp.height);
 K.stamp++;K.bad=0;K.unknown=0;K.drawn=0;K.mode=2;q.visible=true;q.updateMatrixWorld();
 self.needsUpdate=true;
 try{r0.apply(self,args);}finally{K.mode=0;q.visible=false;}
-for(i=0;i<K.list.length;i++){var r=K.list[i];if(r.f!==K.stamp||r.n!==r.n0){K.bad=1;_d3shkChanged(r.o,r.f!==K.stamp?'not drawn':'drawn again');}}
+for(i=0;i<K.list.length;i++){var r=K.list[i];if(r.late)continue;if(r.f!==K.stamp||r.n!==r.n0){var w=r.f!==K.stamp?'not drawn':'drawn again';
+if(D._noShkLate){K.bad=1;_d3shkChanged(r.o,w);}else _d3shkLate(K,r,null,null,w);}}
 K.age++;var S=D._shKeep;S.keptDraws=K.list.length;S.movingDraws=K.drawn;S.unknown=K.unknown;
 if(K.bad){K.valid=false;return false;}
 S.frames=(S.frames|0)+1;
