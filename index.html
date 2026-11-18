@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='c87be57';
+var RCG_BUILD='61a82b8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -93306,15 +93306,17 @@ else l+=', '+(A.gone|0)+' of its arrays let go by the page ('+(+A.MB||0).toFixed
 return [l];
 }
 var _D3_REEF_PIECE_KINDS={coral:1,rock:1,vegetation:1};
+var _D3_REEF_COLONY=/^coral_[a-z_]+_[0-9]+$/;
 function _d3reefScratchWatch(){
 var T=window.THREE,P=T&&T.Object3D&&T.Object3D.prototype,D=_D3;
 if(!P||!D||D._noReefScratch||P.add.__rsW)return null;
-var add0=P.add,roots=new Set(),id0=new T.Object3D().id;
+var add0=P.add,roots=new Set(),loose=new Set(),id0=new T.Object3D().id,lo=!D._noReefLoose;
 var w=function(o){
-try{if(arguments.length===1&&o&&o.userData&&_D3_REEF_PIECE_KINDS[o.userData.kind]===1&&this.id>id0)roots.add(this);}catch(_w){}
+try{if(arguments.length===1&&o&&this.id>id0){if(o.userData&&_D3_REEF_PIECE_KINDS[o.userData.kind]===1)roots.add(this);
+if(lo&&typeof this.name==='string'&&this.name.lastIndexOf('coral_',0)===0)loose.add(this);}}catch(_w){}
 return add0.apply(this,arguments);};
 w.__rsW=1;P.add=w;
-return {stop:function(){if(P.add===w)P.add=add0;return roots;}};
+return {stop:function(){if(P.add===w)P.add=add0;return roots;},loose:loose};
 }
 function _d3reefScratchHeld(o,keep){
 for(var q=o,d=0;q&&d<4096;q=q.parent,d++){if(q===keep)return true;if(!q.parent)return !!q.isScene;}
@@ -93328,9 +93330,11 @@ if(root.parent){var c=root.parent.children,k=c.indexOf(root);if(k>=0)c.splice(k,
 return all.length;
 }
 function _d3reefScratchDone(W,reef){
-var D=_D3,R=W?W.stop():null,A={roots:0,objects:0};if(!R)return null;
+var D=_D3,R=W?W.stop():null,A={roots:0,objects:0,loose:0},C=[];if(!R)return null;
 var keep=reef&&reef.group;
+if(W.loose)W.loose.forEach(function(o){if(!o.parent&&o!==keep&&!o.isScene&&_D3_REEF_COLONY.test(o.name))C.push(o);});
 R.forEach(function(p){if(_d3reefScratchHeld(p,keep))return;A.roots++;A.objects+=_d3reefScratchFree(p);});
+C.forEach(function(o){if(o.parent||!o.children.length)return;A.loose++;A.objects+=_d3reefScratchFree(o);});
 D._reefScratch=A;return A;
 }
 var _D3_REEF_DEEP={n:9,lift:0.05};
