@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='61a82b8';
+var RCG_BUILD='a3e0c00';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -52628,7 +52628,11 @@ function _d3hwExitEdge(e,E){if(!e||e.c!=='ramp')return false;if(e._ex!==undefine
 var A=(_D3.roadGraph&&_D3.roadGraph.A&&_D3.roadGraph.A[e.a])||[],i;e._ex=false;
 for(i=0;i<A.length;i++){var L=E[A[i]];if(L&&L.c==='highway'){e._ex=true;break;}}
 return e._ex;}
-var _D3_LC={cool:4,glide:1.1,slant:0.15,creep:0.04,nose:0.27,want:0.85,look:8,let:12};
+var _D3_LC={cool:4,glide:1.1,slant:0.15,creep:0.04,nose:0.27,want:0.85,look:8,let:12,ask:0.3};
+function _d3lcAgain(tc){
+_D3._lcIdle=(_D3._lcIdle|0)+1;
+if(!_D3._noLcAsk){if(tc._lcPh==null)tc._lcPh=((_D3._lcPhN=(_D3._lcPhN|0)+1)*0.6180339887)%1;tc.lcCool=_D3_LC.ask*(0.75+0.5*tc._lcPh);}
+return false;}
 function _d3lcBeside(E,ed,x,z,rw){
 var L=ed._lcN;if(!L){L=ed._lcN=[];E.forEach(function(o,i){if(o&&o!==ed&&o.c==='highway'&&o.hw===ed.hw&&o.hdir===ed.hdir&&o.lane!==ed.lane)L.push(i);});}
 var best=null,k;for(k=0;k<L.length;k++){var o=E[L[k]],q=_d3rjProject(o.pts,o.cum,x,z);
@@ -52642,14 +52646,14 @@ var ed=E[tc.e];if(_D3._noLC||!ed||ed.c!=='highway'||ed.hw==null||tc.lcCool>0||tc
 if(!_D3._noTermLc&&typeof _d3hwZipAt==='function'){var Zt=ed._zp;if(Zt===undefined)Zt=ed._zp=_d3hwZipAt(E,ed,rw);
 if(Zt&&ed.len-tc.s<Zt.z+rw*_D3_LC.look*2)return false;}
 var me=tc.obj.position,q0=_d3pathAt(ed.pts,ed.cum,tc.s),fx=Math.cos(q0.head),fz=-Math.sin(q0.head),vMe=(tc.spd||1)*(ed.spdK||1),half=(tc.len||rw*3.6)*0.5;
-var lead=null,la=1e9,i;
+var lead=null,la=1e9,i;_D3._lcLook=(_D3._lcLook|0)+1;
 for(i=0;i<V.length;i++){var o=V[i];if(!o||o===tc||!o.obj)continue;var oe=E[o.e];if(!oe||oe.c!=='highway'||oe.hw!==ed.hw||oe.hdir!==ed.hdir||oe.lane!==ed.lane)continue;
 var al=(o.obj.position.x-me.x)*fx+(o.obj.position.z-me.z)*fz;if(al>0&&al<la){la=al;lead=o;}}
 var pass=lead&&la<rw*_D3_LC.look&&_d3lcV(lead,E)<vMe*_D3_LC.want,back=!pass&&ed.lane===0&&(!lead||la>rw*_D3_LC.look*1.5);
 if(!pass&&!back&&ed.lane===1){for(i=0;i<V.length&&!pass;i++){var oc=V[i];if(!oc||!oc.obj||oc===tc)continue;var ec=E[oc.e];if(!ec||ec.c!=='ramp'||_d3hwExitEdge(ec,E))continue;
 var ac=(oc.obj.position.x-me.x)*fx+(oc.obj.position.z-me.z)*fz,lc=Math.abs((oc.obj.position.x-me.x)*(-fz)+(oc.obj.position.z-me.z)*fx);
 if(ac>0&&ac<rw*_D3_LC.let&&lc<rw*3)pass=true;}}
-if(!pass&&!back)return false;
+if(!pass&&!back)return _d3lcAgain(tc);
 var T=_d3lcBeside(E,ed,me.x,me.z,rw);if(!T||T.q.s<=0||T.q.s>=T.e.len)return false;
 var p=_d3pathAt(T.e.pts,T.e.cum,T.q.s),latT=(p.x-me.x)*(-fz)+(p.z-me.z)*fx;
 for(i=0;i<V.length;i++){var o2=V[i];if(!o2||o2===tc||!o2.obj)continue;var e2=E[o2.e];if(!e2)continue;
