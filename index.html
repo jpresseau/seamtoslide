@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='8885d16';
+var RCG_BUILD='311ff8f';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -13984,6 +13984,7 @@ var _cl9=(gltf.animations&&gltf.animations.length)?gltf.animations:null;if(_cl9&
 if(n.indexOf('buildings/')===0&&typeof _d3glbTranslucentClean==='function'){try{_d3glbTranslucentClean(sc,n.slice(10));}catch(_gc9){}}
 if(n.indexOf('buildings/')===0&&typeof _d3bldGlbMerge==='function'){try{_d3bldGlbMerge(sc,n.slice(10));}catch(_gm){}}
 if(n.indexOf('buildings/')===0&&typeof _d3bldGlbSkin==='function'){try{_d3bldGlbSkin(sc,n.slice(10),_cl9);}catch(_gs){try{_D3._glbSkinErr=_gs&&_gs.message;}catch(_){}}}
+if(n.indexOf('buildings/')===0&&typeof _d3bldFinishFold==='function'&&!(typeof _D3_GLB_HOOK!=='undefined'&&_D3_GLB_HOOK[n.slice(10)])){try{_d3bldFinishFold(sc,n.slice(10));}catch(_bf9){try{_D3._bldFoldErr=_bf9&&_bf9.message;}catch(_){}}}
 if((n.indexOf('aircraft/')===0||n.indexOf('airfield/')===0||n.indexOf('harbour/')===0)&&typeof _d3airGlbMerge==='function'){try{_d3airGlbMerge(sc,n);}catch(_ag9){}}
 if((n.indexOf('aircraft/')===0||n.indexOf('airfield/')===0||n.indexOf('harbour/')===0)&&typeof _d3glbFinishFold==='function'){try{_d3glbFinishFold(sc,n,_d3glbMoves);}catch(_gf9){}}
 if(n.indexOf('boats/')===0&&typeof _d3boatGlbMerge==='function'){try{_d3boatGlbMerge(sc,n);}catch(_bg9){}}
@@ -16818,6 +16819,109 @@ if(!((typeof _D3!=='undefined'&&_D3._noGlbCleanPart)||window.__noGlbCleanPart)){
 for(i=0;i<parts.length;i++){var p=parts[i];if(meets[p.m.uuid]&&!met[p.o.uuid]){cp[p.o.uuid]=1;rec.parts++;}}
 sc.userData._glbCleanPart=cp;}
 return rec;
+}
+var _D3FOLDREC=(typeof WeakMap!=='undefined')?new WeakMap():null;
+function _d3foldSig(o){var m=o.material,g=o.geometry;
+return [m.side||0,m.flatShading?1:0,m.envMapIntensity,m.fog!==false?1:0,m.opacity,m.toneMapped!==false?1:0,m.depthTest?1:0,m.depthWrite?1:0,m.colorWrite?1:0,
+m.polygonOffset?[m.polygonOffsetFactor,m.polygonOffsetUnits].join(','):0,m.dithering?1:0,m.shadowSide==null?'':m.shadowSide,
+(o.castShadow?1:0)+''+(o.receiveShadow?1:0),g.attributes.normal?1:0].join('|');}
+function _d3foldTexels(m,out,at){
+out[at]=m.color.r;out[at+1]=m.color.g;out[at+2]=m.color.b;out[at+3]=m.roughness;
+var e=m.emissive,k=m.emissiveIntensity;out[at+4]=e?e.r*k:0;out[at+5]=e?e.g*k:0;out[at+6]=e?e.b*k:0;out[at+7]=m.metalness;
+}
+function _d3foldPatch(sh,tex,w){
+sh.uniforms.finPal={value:tex};sh.uniforms.finPalW={value:w};
+sh.vertexShader='attribute float fpi;\nvarying float vFpi;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n\tvFpi = fpi;');
+sh.fragmentShader='uniform highp sampler2D finPal;\nuniform float finPalW;\nvarying float vFpi;\n'+sh.fragmentShader
+.replace('vec4 diffuseColor = vec4( diffuse, opacity );','float finI = floor( vFpi + 0.5 ) * 2.0;\n\tvec4 finA = texture2D( finPal, vec2( ( finI + 0.5 ) / finPalW, 0.5 ) );\n\tvec4 finB = texture2D( finPal, vec2( ( finI + 1.5 ) / finPalW, 0.5 ) );\n\tvec4 diffuseColor = vec4( diffuse * finA.rgb, opacity );')
+.replace('#include <roughnessmap_fragment>','float roughnessFactor = finA.a;')
+.replace('#include <metalnessmap_fragment>','float metalnessFactor = finB.a;')
+.replace('vec3 totalEmissiveRadiance = emissive;','vec3 totalEmissiveRadiance = finB.rgb;');
+}
+function _d3foldCan(){var r=(typeof _D3!=='undefined'&&_D3)?_D3.ren:null;if(!r||!r.capabilities)return false;
+return !!(r.capabilities.isWebGL2||(r.extensions&&r.extensions.get&&r.extensions.get('OES_texture_float')));}
+function _d3bldFinishFold(sc,key){
+var T=window.THREE,rec={key:key,parts:0,meshes:0,skip:''};
+try{(_D3._bldFold=_D3._bldFold||{})[key]=rec;}catch(_r0){}
+if(!T||!sc||!sc.traverse||!_D3FOLDREC){rec.skip='no three';return rec;}
+if((typeof _D3!=='undefined'&&_D3._noBldFinish)||window.__noBldFinish){rec.skip='off';return rec;}
+if(!_d3foldCan()){rec.skip='no float textures';return rec;}
+sc.updateMatrixWorld(true);
+var inv=new T.Matrix4().copy(sc.matrixWorld).invert(),groups={},list=[],fit=[];
+(function walk(o,h){
+if(_d3glbMoves(o))h=true;
+if(o.isMesh&&!h&&!o.isSkinnedMesh&&!o.isInstancedMesh&&o.visible!==false&&!o.children.length&&!(o.parent&&o.parent.isMesh)&&!(o.userData&&o.userData._shadowProxy)&&!Array.isArray(o.material)&&_d3finishPlain(o.material)){
+var g=o.geometry;
+if(g&&g.attributes&&g.attributes.position&&!(g.morphAttributes&&Object.keys(g.morphAttributes).length)){
+var sig=_d3foldSig(o),gr=groups[sig];if(!gr){gr=groups[sig]={mat:o.material,items:[],v:0,ix:0,vc:false};list.push(gr);}
+var nv=g.attributes.position.count;gr.items.push(o);gr.v+=nv;gr.ix+=g.index?g.index.count:nv;if(o.material.vertexColors&&g.attributes.color)gr.vc=true;}}
+for(var i=0;i<o.children.length;i++)walk(o.children[i],h);
+})(sc,false);
+for(var q=0;q<list.length;q++){var G=list[q],np=G.items.length,j,o;
+if(np<2||np>2048)continue;
+var pal=new Float32Array(np*8),tex=new T.DataTexture(pal,np*2,1,T.RGBAFormat,T.FloatType);tex.magFilter=T.NearestFilter;tex.minFilter=T.NearestFilter;tex.generateMipmaps=false;tex.needsUpdate=true;
+var fm=_d3foldMat(G.mat,tex,np*2,G.vc),cap=(typeof _d3shadowWanted==='function'&&!_d3shadowWanted())?65535:Infinity,ch=[],cur=null;
+for(j=0;j<np;j++){o=G.items[j];var nv=o.geometry.attributes.position.count;_d3foldTexels(o.material,pal,j*8);
+if(!cur||cur.v+nv>cap){cur={items:[],js:[],v:0,ix:0};ch.push(cur);}
+cur.items.push(o);cur.js.push(j);cur.v+=nv;cur.ix+=o.geometry.index?o.geometry.index.count:nv;}
+for(var c=0;c<ch.length;c++){sc.add(_d3foldMesh(T,ch[c],inv,G.vc,np>255,fm,pal,tex,fit));rec.meshes++;}
+for(j=0;j<np;j++){o=G.items[j];if(o.parent)o.parent.remove(o);try{o.geometry.dispose();}catch(_d9){}}
+rec.parts+=np;}
+if(fit.length&&typeof _D3_GLB_BOX!=='undefined'){_D3_GLB_BOX[key]=(_D3_GLB_BOX[key]||[]).concat(fit);sc.userData._glbKey=key;}
+return rec;
+}
+function _d3foldMat(base,tex,w,vc){
+var fm=base.clone();fm.name='glbFold';fm.userData={};fm.color.setRGB(1,1,1);fm.roughness=1;fm.metalness=0;fm.emissive.setRGB(0,0,0);fm.emissiveIntensity=1;fm.vertexColors=!!vc;
+fm.onBeforeCompile=function(sh){_d3foldPatch(sh,tex,w);};fm.customProgramCacheKey=function(){return 'glbFold';};
+return fm;
+}
+function _d3foldMesh(T,C,inv,vc,wide,fm,pal,tex,fit){
+var it=C.items,nor=!!it[0].geometry.attributes.normal,m4=new T.Matrix4(),n3=new T.Matrix3(),v3=new T.Vector3(),bx=new T.Box3(),box=new T.Box3(),
+pos=new Float32Array(C.v*3),nrm=nor?new Float32Array(C.v*3):null,col=vc?new Float32Array(C.v*3):null,fpi=wide?new Uint16Array(C.v):new Uint8Array(C.v),
+idx=(C.v>65535)?new Uint32Array(C.ix):new Uint16Array(C.ix),vo=0,io=0,parts=[],R=[],k,t,b;
+for(k=0;k<it.length;k++){var o=it[k],j=C.js[k],ge=o.geometry,n=ge.attributes.position.count,mt=o.material,pa=ge.attributes.position,na=ge.attributes.normal;
+m4.multiplyMatrices(inv,o.matrixWorld);n3.getNormalMatrix(m4);var flip=m4.determinant()<0;parts.push([mt.name||'',vo,n]);
+if(!ge.boundingBox)ge.computeBoundingBox();bx.copy(ge.boundingBox).applyMatrix4(m4);box.union(bx);
+var ca=(mt.vertexColors&&ge.attributes.color)?ge.attributes.color:null,cd=(ca&&ca.normalized&&typeof _d3glbNormDiv==='function')?_d3glbNormDiv(ca.array):1;
+for(t=0;t<n;t++){v3.fromBufferAttribute(pa,t).applyMatrix4(m4);b=(vo+t)*3;pos[b]=v3.x;pos[b+1]=v3.y;pos[b+2]=v3.z;fpi[vo+t]=j;
+if(nor){v3.fromBufferAttribute(na,t).applyMatrix3(n3).normalize();nrm[b]=v3.x;nrm[b+1]=v3.y;nrm[b+2]=v3.z;}
+if(col){if(ca){col[b]=ca.getX(t)/cd;col[b+1]=ca.getY(t)/cd;col[b+2]=ca.getZ(t)/cd;}else{col[b]=1;col[b+1]=1;col[b+2]=1;}}}
+if(ge.index){var ia=ge.index.array,L=ia.length;
+if(flip){for(t=0;t<L;t+=3){idx[io+t]=ia[t]+vo;idx[io+t+1]=ia[t+2]+vo;idx[io+t+2]=ia[t+1]+vo;}}
+else{for(t=0;t<L;t++)idx[io+t]=ia[t]+vo;}io+=L;}
+else{for(t=0;t<n;t+=3){idx[io+t]=vo+t;idx[io+t+1]=vo+t+(flip?2:1);idx[io+t+2]=vo+t+(flip?1:2);}io+=n;}
+var B=ge.boundingBox,b6=[B.min.x,B.min.y,B.min.z,B.max.x,B.max.y,B.max.z],e16=m4.elements.slice();
+R.push({m:mt,j:j,vo:vo,n:n,vc:ca?1:0,box:b6,m4:e16});
+if(!(o.userData&&o.userData._glbFitSkip))fit.push({min:b6.slice(0,3),max:b6.slice(3),m:e16});
+vo+=n;}
+var bg=new T.BufferGeometry();bg.setAttribute('position',new T.BufferAttribute(pos,3));
+if(nor)bg.setAttribute('normal',new T.BufferAttribute(nrm,3));
+if(col)bg.setAttribute('color',new T.BufferAttribute(col,3));
+bg.setAttribute('fpi',new T.BufferAttribute(fpi,1));
+bg.setIndex(new T.BufferAttribute(idx,1));bg.computeBoundingSphere();bg.boundingBox=box;
+var mm=new T.Mesh(bg,fm);mm.name='glbFold';
+mm.castShadow=it[0].castShadow;mm.receiveShadow=it[0].receiveShadow;mm.userData._glbFitSkip=1;mm.userData._noB=1;
+mm.userData._finishParts=parts;
+_D3FOLDREC.set(bg,{parts:R,pal:pal,tex:tex});
+return mm;
+}
+function _d3finishOf(o){var F=_D3FOLDREC&&o&&o.geometry?_D3FOLDREC.get(o.geometry):null;return F?F.parts:null;}
+function _d3finishRestyle(o,map,seen){
+var F=_D3FOLDREC&&o&&o.geometry?_D3FOLDREC.get(o.geometry):null;if(!F)return false;
+var P=F.parts,A=F.pal,dirty=false,i,m,h,c;
+for(i=0;i<P.length;i++){m=P[i].m;var at=P[i].j*8;
+if(map&&seen&&!seen[m.uuid]){seen[m.uuid]=1;h=m.color.getHex();if(map[h]!=null&&map[h]!==h)m.color.setHex(map[h]);}
+c=m.color;if(A[at]===Math.fround(c.r)&&A[at+1]===Math.fround(c.g)&&A[at+2]===Math.fround(c.b))continue;
+A[at]=c.r;A[at+1]=c.g;A[at+2]=c.b;dirty=true;}
+if(dirty)F.tex.needsUpdate=true;
+return true;
+}
+function _d3finishPalette(o,add){
+var P=_d3finishOf(o);if(!P)return false;
+var T=window.THREE,b=new T.Box3(),M=new T.Matrix4();o.updateWorldMatrix(false,false);
+for(var i=0;i<P.length;i++){var p=P[i],x=p.box;b.min.set(x[0],x[1],x[2]);b.max.set(x[3],x[4],x[5]);
+M.fromArray(p.m4).premultiply(o.matrixWorld);b.applyMatrix4(M);add(p.m,b);}
+return true;
 }
 var _D3_TS_KEYS=['map','specularMap','displacementMap','normalMap','bumpMap','roughnessMap','metalnessMap','alphaMap','emissiveMap','clearcoatMap','clearcoatNormalMap','clearcoatRoughnessMap'];
 function _d3texShareLead(m){for(var i=0;i<_D3_TS_KEYS.length;i++){var t=m&&m[_D3_TS_KEYS[i]];if(t&&t.isTexture)return t;}return null;}
@@ -39615,12 +39719,15 @@ return out;}
 function _rwRebuildQueue(){try{return JSON.parse(__LS.getItem('rcgRebuildQueue')||'[]');}catch(_e){return[];}}
 function _rwRebuildQueueAdd(key){try{var q=_rwRebuildQueue();if(q.indexOf(key)<0){q.push(key);__LS.setItem('rcgRebuildQueue',JSON.stringify(q));}}catch(_e){}}
 function _rwExtractPalette(g,cap){try{var T=window.THREE,vol={},tot=0;
-g.traverse(function(o){if(!o.isMesh||!o.material||!o.material.color)return;
-var bb;try{bb=new T.Box3().setFromObject(o);}catch(_b){return;}
-if(!isFinite(bb.min.x))return;
+var add=function(m,bb){if(!isFinite(bb.min.x))return;
 var sx=bb.max.x-bb.min.x,sy=bb.max.y-bb.min.y,sz=bb.max.z-bb.min.z;
-var v=Math.max(1e-9,sx*sy*sz);var hex=o.material.color.getHex();
-vol[hex]=(vol[hex]||0)+v;tot+=v;});
+var v=Math.max(1e-9,sx*sy*sz);var hex=m.color.getHex();
+vol[hex]=(vol[hex]||0)+v;tot+=v;};
+g.traverse(function(o){if(!o.isMesh||!o.material||!o.material.color)return;
+if(o.userData&&o.userData._shadowProxy)return;
+if(o.userData&&o.userData._finishParts){if(typeof _d3finishPalette==='function')_d3finishPalette(o,add);return;}
+var bb;try{bb=new T.Box3().setFromObject(o);}catch(_b){return;}
+add(o.material,bb);});
 var arr=[];for(var k in vol)if(vol.hasOwnProperty(k))arr.push({hex:parseInt(k,10),frac:vol[k]/(tot||1)});
 arr.sort(function(a,b){return b.frac-a.frac;});
 return arr.slice(0,cap||12);}catch(_e){return[];}}
@@ -39629,6 +39736,7 @@ var T=window.THREE;
 if(sty.colors){var map={};for(var k in sty.colors)if(sty.colors.hasOwnProperty(k))map[parseInt(k,10)]=sty.colors[k];
 var _seenM={};
 g.traverse(function(o){if(!o.isMesh||!o.material||!o.material.color)return;
+if(o.userData&&o.userData._finishParts){if(typeof _d3finishRestyle==='function')_d3finishRestyle(o,map,_seenM);return;}
 if(_seenM[o.material.uuid])return;_seenM[o.material.uuid]=1;
 var h=o.material.color.getHex();if(map[h]!=null&&map[h]!==h)o.material.color.setHex(map[h]);});}
 if(sty.props&&sty.props.length){var bb=new T.Box3().setFromObject(g);
@@ -48096,21 +48204,22 @@ var lo=[0,0,0,0],hi=[0,0,0,0];
 var v3=new T.Vector3(),m4=new T.Matrix4();
 G.traverse(function(o){
 if(!o.isMesh||!o.geometry||!o.geometry.attributes||!o.geometry.attributes.position)return;
-var ud=o.userData||{};if(ud._lodImp)return;
+var ud=o.userData||{};if(ud._lodImp||ud._shadowProxy)return;
 var pa=o.geometry.attributes.position,ca=o.geometry.attributes.color;
 var mt=o.material;if(Array.isArray(mt))mt=mt[0];
 var mc=(mt&&mt.color)?mt.color:null;
 m4.multiplyMatrices(inv,o.matrixWorld);
-var n=pa.count,step=Math.max(1,Math.floor(n/48)),i;
-for(i=0;i<n;i+=step){
+var RN=ud._finishParts||[[0,0,pa.count]],FR=(ud._finishParts&&typeof _d3finishOf==='function')?_d3finishOf(o):null,q,i;
+for(q=0;q<RN.length;q++){var s0=RN[q][1],n=RN[q][2],step=Math.max(1,Math.floor(n/48)),fc=(FR&&FR[q]&&!FR[q].vc)?FR[q].m.color:null;
+for(i=s0;i<s0+n;i+=step){
 v3.fromBufferAttribute(pa,i).applyMatrix4(m4).applyMatrix4(G.matrixWorld);
 var r,g2,b;
-if(ca){var _cd=(ca.normalized&&typeof _d3glbNormDiv==='function')?_d3glbNormDiv(ca.array):1;r=ca.getX(i)/_cd;g2=ca.getY(i)/_cd;b=ca.getZ(i)/_cd;}
-else if(mc){r=mc.r;g2=mc.g;b=mc.b;}
+if(ca&&!fc){var _cd=(ca.normalized&&typeof _d3glbNormDiv==='function')?_d3glbNormDiv(ca.array):1;r=ca.getX(i)/_cd;g2=ca.getY(i)/_cd;b=ca.getZ(i)/_cd;}
+else if(fc||mc){var cc=fc||mc;r=cc.r;g2=cc.g;b=cc.b;}
 else continue;
 var t=(v3.y>=SPLIT)?hi:lo;
 t[0]+=r;t[1]+=g2;t[2]+=b;t[3]++;
-}
+}}
 });
 function pack(a,fb){if(!a[3])return fb;
 var c=new T.Color(a[0]/a[3],a[1]/a[3],a[2]/a[3]);return c.getHex();}
