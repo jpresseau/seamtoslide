@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='149266a';
+var RCG_BUILD='95545af';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -17280,7 +17280,8 @@ var sd=(o.material&&o.material.side)||0;o.updateMatrix();
 var gk=(_D3._noWheelShadowJoin?o.uuid:sd+'|'+(o.parent?o.parent.uuid:'')+'|'+Array.prototype.join.call(o.matrix.elements,',')+'|'+Array.prototype.join.call(o.bindMatrix.elements,','));
 var G=grp[gk],sb0=o.skeleton.bones,cap=(typeof _d3skinCap==='function')?_d3skinCap():1e9,c9=0,gb=gk;
 while(G&&G.bones.length+sb0.filter(function(b){return !G.bi.has(b);}).length>cap){gk=gb+'#'+(++c9);G=grp[gk];}
-if(!G){G=grp[gk]={o:o,sd:sd,parts:[],nv:0,ni:0,sph:null,bones:[],inv:[],bi:new Map()};keys.push(gk);}
+if(!G){G=grp[gk]={o:o,sd:sd,parts:[],nv:0,ni:0,sph:null,bones:[],inv:[],bi:new Map(),sk:o.skeleton};keys.push(gk);}
+if(G.sk!==o.skeleton)G.sk=null;
 var sb=o.skeleton.bones,sv=o.skeleton.boneInverses,map=[];
 for(j=0;j<sb.length;j++){var at=G.bi.get(sb[j]);if(at===undefined){at=G.bones.length;G.bi.set(sb[j],at);G.bones.push(sb[j]);G.inv.push(sv[j].clone());}map[j]=at;}
 for(j=0;j<SI.length;j++)SI[j]=map[SI[j]]|0;
@@ -17300,7 +17301,7 @@ if(!pm){pm=new T.MeshBasicMaterial({side:+G.sd,colorWrite:false,depthWrite:false
 var sm=new T.SkinnedMesh(bg,pm);sm.name=to;sm.castShadow=true;sm.receiveShadow=false;
 sm.userData._shadowProxy=1;sm.userData._glbFitSkip=1;sm.userData._noB=1;sm.userData.noMerge=true;sm.userData.joined=G.parts.length;
 sm.position.copy(o.position);sm.quaternion.copy(o.quaternion);sm.scale.copy(o.scale);
-o.parent.add(sm);sm.updateMatrixWorld(true);sm.bind(G.parts.length>1?new T.Skeleton(G.bones,G.inv):o.skeleton,o.bindMatrix);n++;});
+o.parent.add(sm);sm.updateMatrixWorld(true);sm.bind((G.sk&&!_D3._noSkinShare)?G.sk:(G.parts.length>1?new T.Skeleton(G.bones,G.inv):o.skeleton),o.bindMatrix);n++;});
 return n;
 }
 function _d3carShadow(root){
@@ -48899,15 +48900,20 @@ if(!opt.morph&&g.morphAttributes&&Object.keys(g.morphAttributes).length)continue
 var names=Object.keys(g.attributes).filter(function(n){return n!=='skinIndex'&&n!=='skinWeight';}).sort(),sig=m.uuid;
 for(k=0;k<names.length;k++)sig+='|'+names[k]+':'+g.attributes[names[k]].itemSize;
 var gr=groups[sig];if(!gr){gr=groups[sig]={mat:m,names:names,items:[]};list.push(gr);}gr.items.push(it);}
-var m4=new T.Matrix4(),n3=new T.Matrix3(),v3=new T.Vector3(),pv=new T.Vector3();
-for(var q=0;q<list.length;q++){var G=list[q];if(G.items.length<(opt.min||2))continue;
+var m4=new T.Matrix4(),n3=new T.Matrix3(),v3=new T.Vector3(),pv=new T.Vector3(),todo=[],q,ch;
+for(q=0;q<list.length;q++){var G=list[q];if(G.items.length<(opt.min||2))continue;
 var chunks=[],cur=null,seen=null;
 for(i=0;i<G.items.length;i++){var c=G.items[i],bs=c.bones||(c.bones=c.b?[c.b]:(c.all||[]));
 var fresh=0;if(cur)for(k=0;k<bs.length;k++)if(!seen.has(bs[k]))fresh++;
 if(!cur||seen.size+fresh>cap){cur=[];seen=new Set();chunks.push(cur);}
 for(k=0;k<bs.length;k++)seen.add(bs[k]);cur.push(c);}
-for(var ch=0;ch<chunks.length;ch++){var its=chunks[ch];if(its.length<(opt.min||2))continue;
-var bones=[],bi=new Map(),nv=0,ni=0;
+for(ch=0;ch<chunks.length;ch++)if(chunks[ch].length>=(opt.min||2))todo.push({G:G,its:chunks[ch]});}
+var SB=null,SBI=null,SK=null;
+if(!(typeof _D3!=='undefined'&&_D3._noSkinShare)){SB=[];SBI=new Map();
+for(q=0;q<todo.length;q++)for(i=0;i<todo[q].its.length;i++)todo[q].its[i].bones.forEach(function(b){if(!SBI.has(b)){SBI.set(b,SB.length);SB.push(b);}});
+if(SB.length>cap){SB=null;SBI=null;}}
+for(var t9=0;t9<todo.length;t9++){var G=todo[t9].G,its=todo[t9].its;{
+var bones=SB||[],bi=SBI||new Map(),nv=0,ni=0;
 for(i=0;i<its.length;i++){its[i].bones.forEach(function(b){if(!bi.has(b)){bi.set(b,bones.length);bones.push(b);}});
 var gg=its[i].o.geometry,c0=gg.attributes.position.count;nv+=c0;ni+=gg.index?gg.index.count:c0;}
 var out={};for(k=0;k<G.names.length;k++)out[G.names[k]]=new Float32Array(nv*G.items[0].o.geometry.attributes[G.names[k]].itemSize);
@@ -48936,7 +48942,7 @@ var sm=new T.SkinnedMesh(bg,mt);sm.name=opt.name||'skinParts';
 sm.castShadow=its[0].o.castShadow;sm.receiveShadow=its[0].o.receiveShadow;
 sm.userData._noB=1;sm.userData.noMerge=true;sm.userData._glbFitSkip=1;
 host.add(sm);sm.updateMatrixWorld(true);
-sm.bind(new T.Skeleton(bones));
+if(SB){if(!SK)SK=new T.Skeleton(SB);sm.bind(SK,sm.matrixWorld);}else sm.bind(new T.Skeleton(bones));
 for(i=0;i<its.length;i++){var po=its[i].o;po.userData._skinHid=po.material;po.material=_D3SKPHIDE;}
 made.push(sm);}
 }
