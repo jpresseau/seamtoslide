@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='62e54af';
+var RCG_BUILD='adda353';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -73038,7 +73038,7 @@ S.read=r;S.perfect=!!(r&&_d3sfPerfect(r.score,R,S.sidx,_D3_STREAM_STEP));
 function _d3sfSpookNear(S,moving){
 var LF=_D3.streamLife||[],now=(_D3._streamT!=null)?_D3._streamT:performance.now()/1000,n=0,i,K=_D3_SF_WADE;
 for(i=0;i<LF.length;i++){var e=LF[i];if(e.si!==S.si||e.hidden||e.spk>now)continue;
-var dRel=(e.d-S.sd)*((_d3streamAt(S.stream,S.sd)||{}).dn||((S.stream._read&&S.stream._read.down<0)?-1:1)),t=_d3sfTroutOf(e.kind);
+var dRel=(e.d-S.sd)*((_d3streamAt(S.stream,e.d)||{}).dn||((S.stream._read&&S.stream._read.down<0)?-1:1)),t=_d3sfTroutOf(e.kind);
 if(Math.abs(dRel)>K.far)continue;
 if(_d3sfSpooks(dRel,!!S.wet,moving,t?t.wary:1)){e.spk=now+K.spookFor[0]+Math.random()*(K.spookFor[1]-K.spookFor[0]);e.spk0=now;n++;}}
 return n;
