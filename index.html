@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='2b3b8cd';
+var RCG_BUILD='8885d16';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -13977,6 +13977,7 @@ if(!sc){_d3carGlbFail(n);return;}
 sc.traverse(function(o){if(o.isMesh){o.castShadow=true;o.receiveShadow=false;}});
 if(_d3glbKeepsQuant(sc))_d3glbQuantBounds(sc);else _d3carGlbDequant(sc);
 _d3carGlbMats(sc);
+if(n.indexOf('buildings/')===0&&typeof _d3glbTexShare==='function'){try{_d3glbTexShare(sc,n);}catch(_ts9){}}
 if(n.indexOf('/')<0&&typeof _rcgSmallDevice==='function'&&_rcgSmallDevice())_d3carGlbTexCap(sc);
 if(n.indexOf('/')<0&&typeof _d3carDecalAtlas==='function'){try{_d3carDecalAtlas(sc,n);}catch(_da9){}try{_d3carCaliperFold(sc,n);}catch(_cf9){}}
 var _cl9=(gltf.animations&&gltf.animations.length)?gltf.animations:null;if(_cl9&&typeof _d3glbAnimMark==='function')try{_d3glbAnimMark(_cl9,sc);}catch(_am){}
@@ -16816,6 +16817,42 @@ sc.userData._glbClean=clean;
 if(!((typeof _D3!=='undefined'&&_D3._noGlbCleanPart)||window.__noGlbCleanPart)){var cp={};
 for(i=0;i<parts.length;i++){var p=parts[i];if(meets[p.m.uuid]&&!met[p.o.uuid]){cp[p.o.uuid]=1;rec.parts++;}}
 sc.userData._glbCleanPart=cp;}
+return rec;
+}
+var _D3_TS_KEYS=['map','specularMap','displacementMap','normalMap','bumpMap','roughnessMap','metalnessMap','alphaMap','emissiveMap','clearcoatMap','clearcoatNormalMap','clearcoatRoughnessMap'];
+function _d3texShareLead(m){for(var i=0;i<_D3_TS_KEYS.length;i++){var t=m&&m[_D3_TS_KEYS[i]];if(t&&t.isTexture)return t;}return null;}
+function _d3texShareSig(t){return [t.wrapS,t.wrapT,t.magFilter,t.minFilter,t.format,t.type,t.encoding,t.flipY?1:0,t.anisotropy,t.generateMipmaps?1:0,t.premultiplyAlpha?1:0,t.unpackAlignment].join('|');}
+function _d3texShareSame(a,b){for(var i=0;i<9;i++)if(a[i]!==b[i])return false;return true;}
+function _d3texShareBake(g,E){
+var a=g.attributes.uv,n=a.count,d=(a.normalized&&typeof _d3glbNormDiv==='function')?_d3glbNormDiv(a.array):1,
+own=(a.array instanceof Float32Array)&&!a.isInterleavedBufferAttribute&&!a.normalized&&a.itemSize===2,out=own?a.array:new Float32Array(n*2),i,u,v;
+for(i=0;i<n;i++){u=a.getX(i)/d;v=a.getY(i)/d;out[i*2]=E[0]*u+E[3]*v+E[6];out[i*2+1]=E[1]*u+E[4]*v+E[7];}
+if(own)a.needsUpdate=true;else g.setAttribute('uv',new window.THREE.BufferAttribute(out,2));
+}
+function _d3glbTexShare(sc,key){
+var T=window.THREE,rec={key:key,slots:0,textures:0,baked:0,copied:0,left:0,skip:''};
+try{(_D3._glbTexShare=_D3._glbTexShare||{})[key]=rec;}catch(_r0){}
+if(!T||!sc||!sc.traverse){rec.skip='no scene';return rec;}
+if((typeof _D3!=='undefined'&&_D3._noGlbTexShare)||window.__noGlbTexShare){rec.skip='off';return rec;}
+var users=new Map(),bad=new Set(),gUse=new Map();
+sc.traverse(function(o){if(!o.isMesh||!o.geometry)return;var M=Array.isArray(o.material)?o.material:[o.material],g=o.geometry;
+var gu=gUse.get(g);if(!gu){gu=[];gUse.set(g,gu);}gu.push(o);
+M.forEach(function(m){if(!m)return;var L=users.get(m);if(!L){L=[];users.set(m,L);}L.push(o);
+if(Array.isArray(o.material)||!g.attributes||!g.attributes.uv||m.aoMap||m.lightMap||m.isShaderMaterial)bad.add(m);});});
+var canon=new Map(),baked=new Map();
+function base(t){var B=canon.get(t.image);if(!B){B={};canon.set(t.image,B);}var k=_d3texShareSig(t);
+if(!B[k]){var c=t.clone();c.offset.set(0,0);c.repeat.set(1,1);c.rotation=0;c.center.set(0,0);c.matrixAutoUpdate=true;c.updateMatrix();c.needsUpdate=true;B[k]=c;rec.textures++;}
+return B[k];}
+users.forEach(function(L,m){
+var lead=_d3texShareLead(m);if(!lead||!lead.image)return;
+if(bad.has(m)){rec.left++;return;}
+if(lead.matrixAutoUpdate)lead.updateMatrix();var E=lead.matrix.elements.slice(),id=_d3texShareSame(E,[1,0,0,0,1,0,0,0,1]);
+if(!id)L.forEach(function(o){var g0=o.geometry,K=baked.get(g0);if(!K){K=[];baked.set(g0,K);}
+for(var i=0;i<K.length;i++)if(_d3texShareSame(K[i].E,E)){o.geometry=K[i].g;return;}
+var only=!K.length&&gUse.get(g0).every(function(p){return p.material===m;}),g=only?g0:g0.clone();if(!only)rec.copied++;
+_d3texShareBake(g,E);K.push({E:E,g:g});o.geometry=g;rec.baked++;});
+for(var k=0;k<_D3_TS_KEYS.length;k++){var t=m[_D3_TS_KEYS[k]];if(t&&t.isTexture&&t.image){m[_D3_TS_KEYS[k]]=base(t);rec.slots++;}}
+m.needsUpdate=true;});
 return rec;
 }
 var _D3_GLB_MERGE_MIN=32;
