@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='b5e8c5d';
+var RCG_BUILD='a24a1c7';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -49572,7 +49572,7 @@ a[o+8]*a[o+8]+a[o+9]*a[o+9]+a[o+10]*a[o+10]);
 if(!(s>0))continue;any++;if(s>sm)sm=s;
 var x=a[o+12],y=a[o+13],z=a[o+14];
 if(x<mnx)mnx=x;if(x>mxx)mxx=x;if(y<mny)mny=y;if(y>mxy)mxy=y;if(z<mnz)mnz=z;if(z>mxz)mxz=z;}
-im.visible=any>0;if(!any)return;
+var u=im.userData;u._any=any>0;im.visible=any>0&&!u._tinyHid;if(!any)return;
 im.userData._sm=Math.sqrt(sm);
 bs.center.set((mnx+mxx)/2,(mny+mxy)/2,(mnz+mxz)/2);
 var dx=mxx-mnx,dy=mxy-mny,dz=mxz-mnz;
@@ -49600,6 +49600,7 @@ var T=window.THREE,D=(typeof _D3!=='undefined')?_D3:null;if(!im||!T||!T.DynamicD
 return im;
 }
 var _D3_POOL_LOD=[{px:16,div:8},{px:6,div:3},{px:1.5,div:1}];
+var _D3_POOL_HIDE_PX=0.5;
 var _D3_POOL_LOD_FINER=2;
 var _D3_POOL_LOD_PER=3;
 function _d3poolLodLevel(px,L){var lv=0;for(var i=0;i<L.length;i++)if(px<L[i].px)lv=i+1;return lv;}
@@ -49624,21 +49625,27 @@ return g;
 function _d3poolLod(){
 var D=_D3,IM=D&&D._crowdIM,T=window.THREE;if(!IM||!T)return;
 var cam=D.cam,on=!D._noPoolLod&&cam&&cam.isOrthographicCamera&&cam.zoom>0&&D.ren&&!(D.drive&&D.drive.on)&&!((typeof _d3focus==='function')&&_d3focus().mode!=='map');
-var ppu=on?D.ren.domElement.height/((cam.top-cam.bottom)/cam.zoom):0,made=0,n1=0,n2=0,n3=0,i;
+var ppu=on?D.ren.domElement.height/((cam.top-cam.bottom)/cam.zoom):0,made=0,n1=0,n2=0,n3=0,i,hd=!!on&&!D._noPoolHide,nh=0;
 var K=_d3poolLod.K;
-if(K&&!D._noPoolLodKeep&&K.IM===IM&&K.n===IM.length&&K.on===!!on&&K.ppu===ppu&&K.made===0&&K.tiny===!!D._noPoolLodTiny){D._poolLodKept=(D._poolLodKept|0)+1;return;}
+if(K&&!D._noPoolLodKeep&&K.IM===IM&&K.n===IM.length&&K.on===!!on&&K.ppu===ppu&&K.made===0&&K.tiny===!!D._noPoolLodTiny&&K.hide===hd){D._poolLodKept=(D._poolLodKept|0)+1;return;}
 for(i=0;i<IM.length;i++){var im=IM[i],u=im.userData,base=u._lod0||im.geometry;
 if(!u._lod0){if(!base.userData||!(base.userData._rs>0)||!base.boundingSphere){u._lod0=base;u._lodNo=1;}else u._lod0=base;}
-var lv=0;
-if(on&&!u._lodNo){var px=2*base.userData._rs*(u._sm||1)*ppu;lv=_d3poolLodLevel(px,_D3_POOL_LOD);if(lv>2&&D._noPoolLodTiny)lv=2;}
+var lv=0,px=Infinity;
+if(on&&!u._lodNo){px=2*base.userData._rs*(u._sm||1)*ppu;lv=_d3poolLodLevel(px,_D3_POOL_LOD);if(lv>2&&D._noPoolLodTiny)lv=2;}
+var tiny=hd&&px<_D3_POOL_HIDE_PX;if(tiny!==!!u._tinyHid){u._tinyHid=tiny?1:0;im.visible=u._any!==false&&!tiny;}if(tiny&&u._any!==false)nh++;
 if(lv>0){var L=u._lods||(u._lods=[]);
 while(lv>0&&L[lv]===null)lv--;
 if(lv>0&&L[lv]===undefined){if(made<_D3_POOL_LOD_PER){made++;var st=_D3_POOL_LOD[lv-1];try{L[lv]=_d3poolLodGeo(base,base.userData._rs/st.div,T);}catch(_lg){L[lv]=null;}}else lv=0;}
 if(lv>0&&!L[lv]){var d=lv-1;while(d>0&&!L[d])d--;lv=d;}}
 var g=lv>0?u._lods[lv]:base;if(im.geometry!==g)im.geometry=g;
 if(lv===1)n1++;else if(lv===2)n2++;else if(lv===3)n3++;}
-D._poolLod={on:!!on,pools:IM.length,lod1:n1,lod2:n2,lod3:n3,made:made};
-_d3poolLod.K={IM:IM,n:IM.length,on:!!on,ppu:ppu,made:made,tiny:!!D._noPoolLodTiny};
+D._poolLod={on:!!on,pools:IM.length,lod1:n1,lod2:n2,lod3:n3,hid:nh,made:made};
+_d3poolLod.K={IM:IM,n:IM.length,on:!!on,ppu:ppu,made:made,tiny:!!D._noPoolLodTiny,hide:hd};
+}
+function _d3poolLodLine(P){
+if(!P||!P.on)return '';var L=_D3_POOL_LOD;
+return '  the crowd’s pools drawn at their size: '+P.pools+' - '+(P.pools-P.lod1-P.lod2-P.lod3)+' whole, from a copy '+P.lod1+' under '+L[0].px+' px, '+P.lod2
++' under '+L[1].px+', '+P.lod3+' under '+L[2].px+'; '+(P.hid|0)+' with something in them under '+_D3_POOL_HIDE_PX+' px, not drawn';
 }
 function _d3poolLodDrop(){
 var D=_D3;
@@ -95039,7 +95046,8 @@ L.push('  '+(PN[k]||k)+' by part (ms a frame): '+PK[k].sort(function(a,b){return
 if(k==='drawing'&&d.dirtyN)L.push('    the scene’s matrices, its last update: '+(d.dirtyN.visited|0)+' objects visited, '+(d.dirtyN.composed|0)+' composed, '+(d.dirtyN.multiplied|0)+' multiplied out ('+(d.dirtyN.hid|0)+' hidden and '+(d.dirtyN.fresh|0)+' crowd bodies left as they were)');
 if(k==='loop'&&d.tfN)L.push('    on the map: '+(d.tfN.cars|0)+' vehicles in the traffic, '+(d.tfN.walkers|0)+' walkers'+(d.tfN.wait?' ('+(d.tfN.wait|0)+' of them not stepped that frame: a small or an unseen one walks on its turn)':''));});
 if(d.crowdN)L.push('  the crowd step’s last frame: '+(d.crowdN.shown|0)+' bodies shown of '+(d.crowdN.bodies|0)+' ('+(d.crowdN.left|0)+' hidden and left whole'+(d.crowdN.turn?', '+d.crowdN.turn+' small walkers waiting their turn of '+d.crowdN.turnN:'')+(d.crowdN.still?', '+d.crowdN.still+' vehicles and lake creatures not moved a pixel since they were written':'')+'), '+(d.crowdN.slots|0)+' slots visited, '+(d.crowdN.written|0)+' written, '+(d.crowdN.uploaded|0)+' pools sent'
-+(d.skinN?('; bones '+(d.skinN.bones|0)+', '+(d.skinN.written|0)+' written, '+(d.skinN.kept|0)+' kept'+(d.skinN.sent?', the texture sent':', the texture not sent')):''));}
++(d.skinN?('; bones '+(d.skinN.bones|0)+', '+(d.skinN.written|0)+' written, '+(d.skinN.kept|0)+' kept'+(d.skinN.sent?', the texture sent':', the texture not sent')):''));
+if(d.lodN&&typeof _d3poolLodLine==='function'){var pl9=_d3poolLodLine(d.lodN);if(pl9)L.push(pl9);}}
 else L.push('no frames measured yet');
 if(d.lastBuild){L.push(_d3pfBuildLine(d.lastBuild));if(d.lastBuild.prof)L.push('  its phases (ms): '+d.lastBuild.prof);}
 var H=d.hitch||[],HN=Math.max(H.length,d.hitchN|0);L.push('hitches over 100 ms since the readout was turned on: '+HN+(H.length?':':''));
@@ -95067,7 +95075,7 @@ w:cv?cv.width:0,h:cv?cv.height:0,dpr:(D.ren&&D.ren.getPixelRatio)?D.ren.getPixel
 lastBuild:_d3pfLastBuild(),hitch:_RCGPF.hitch.map(function(h){var w='';try{if(h.t1!=null&&typeof _d3gapWhy==='function')w=_d3gapWhy(h.t1-h.dt,h.t1,_RCGPF.lt,(typeof _RCGLR!=='undefined'&&_RCGLR.vis)||[]);}catch(_w){}
 return {dt:h.dt,lm:h.lm,rm:h.rm,top:h.top,build:h.build,ago:now-h.at,why:w,dp:h.dp,lp:h.lp};}),hitchN:_RCGPF.hitchN|0,lt:_RCGPF.lt,by:by,load:load,
 shk:(typeof _d3shkLine==='function'&&D._shKeep&&D.ren&&D.ren.shadowMap&&D.ren.shadowMap.enabled)?_d3shkLine(D._shKeep,!!D._noShadowKeep,(typeof _d3shkWhy==='function')?_d3shkWhy():null):null,
-crowdN:D._crowdStepN||null,skinN:D._skinStepN||null,dirtyN:dn,tfN:{cars:(D.traffic||[]).length,walkers:(D.walkers||[]).length,wait:D._walkWait|0},
+crowdN:D._crowdStepN||null,skinN:D._skinStepN||null,lodN:D._poolLod||null,dirtyN:dn,tfN:{cars:(D.traffic||[]).length,walkers:(D.walkers||[]).length,wait:D._walkWait|0},
 fhd:(typeof _d3fhdLine==='function'&&D._fhd)?_d3fhdLine(D._fhd,!!D._noForestHold):null,ffar:ffar,mem:mem,heap:_d3pfHeap(),gpuT:(typeof _d3pfGpuReport==='function')?_d3pfGpuReport():null,ab:(_RCGPF.abRes&&typeof _d3pfAbLines==='function')?_d3pfAbLines(_RCGPF.abRes.R,_D3_PFAB_NAMES,_RCGPF.abRes.why):null});
 }
 function _d3pfShow(){
