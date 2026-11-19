@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='6784912';
+var RCG_BUILD='eed3ebe';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -48776,6 +48776,7 @@ var _D3_CROWD_H={walkers:0.13,traffic:0.34};
 var _D3_CROWD_R={walkers:0.12,traffic:0.45};
 var _D3_CROWD_VIEW_PAD=1.2;
 var _D3_WALK_HID_N=4;
+var _D3_CROWD_MAP_PAD=0.1;
 function _d3crowdSeenOf(P,cx,cy,cz,k,h,r,x,y,z){
 var dx=x-cx,dy=y-cy,dz=z-cz,d=Math.sqrt(dx*dx+dy*dy+dz*dz);
 if(d>1e-6&&k*h/d<_D3_CROWD_PX)return false;
@@ -48784,18 +48785,20 @@ return true;
 }
 function _d3crowdViewCull(){
 var D=_D3,T=window.THREE,prev=D._cvHid||[],kinds=['walkers','traffic'],i,j,n=0,seen=0;
-var cam=(typeof _d3camNow==='function')?_d3camNow():null,on=!!(cam&&cam.isPerspectiveCamera&&!D._noCrowdView&&T);
+var cam=(typeof _d3camNow==='function')?_d3camNow():null,map=!!(cam&&cam.isOrthographicCamera&&!D._noCrowdViewMap);
+var on=!!(cam&&(cam.isPerspectiveCamera||map)&&!D._noCrowdView&&T);
 if(!on){
 for(i=0;i<prev.length;i++){var e=prev[i];if(e.o._cvOff){e.o._cvOff=0;if(e.o.visible===false)e.o.visible=!(e.k==='walkers'?D._crowdHidW:D._crowdHidT);}}
 D._cvHid=[];D._crowdViewN=null;return 0;}
 cam.updateMatrixWorld();
 var M=D._cvM||(D._cvM=new T.Matrix4()),F=D._cvF||(D._cvF=new T.Frustum());
 M.multiplyMatrices(cam.projectionMatrix,cam.matrixWorldInverse);F.setFromProjectionMatrix(M);
-var cv=D.ren&&D.ren.domElement,hpx=(cv&&cv.clientHeight)||760,k=hpx/(2*Math.tan((cam.fov||60)*Math.PI/360)),ce=cam.matrixWorld.elements;
+var cv=D.ren&&D.ren.domElement,hpx=(cv&&cv.clientHeight)||760,k=map?Infinity:hpx/(2*Math.tan((cam.fov||60)*Math.PI/360)),ce=cam.matrixWorld.elements;
+var pad=map?Math.max(_D3_CROWD_VIEW_PAD,_D3_CROWD_MAP_PAD*Math.max(cam.right-cam.left,cam.top-cam.bottom)/(2*(cam.zoom||1))):_D3_CROWD_VIEW_PAD;
 var hid=[],st=D._cvStamp=((D._cvStamp|0)+1)|0;
 for(j=0;j<kinds.length;j++){var kd=kinds[j],L=D[kd];if(!L||!L.length)continue;
 if(kd==='walkers'?D._crowdHidW:D._crowdHidT)continue;
-var h=_D3_CROWD_H[kd],r=_D3_CROWD_R[kd]+_D3_CROWD_VIEW_PAD;
+var h=_D3_CROWD_H[kd],r=_D3_CROWD_R[kd]+pad;
 for(i=0;i<L.length;i++){var w=L[i],o=w&&(w.obj||w.grp);if(!o)continue;o._cvS=st;
 if(o.visible===false&&!o._cvOff)continue;
 var p=o.position,pa=o.parent,x=p.x,y=p.y,z=p.z;
@@ -48803,7 +48806,7 @@ if(pa){var m=pa.matrixWorld.elements;x=m[0]*p.x+m[4]*p.y+m[8]*p.z+m[12];y=m[1]*p
 if(_d3crowdSeenOf(F.planes,ce[12],ce[13],ce[14],k,h,r,x,y,z)){if(o._cvOff){o._cvOff=0;o.visible=true;}seen++;}
 else{if(!o._cvOff){o._cvOff=1;o.visible=false;}hid.push({o:o,k:kd});n++;}}}
 for(i=0;i<prev.length;i++){var q=prev[i];if(q.o._cvOff&&q.o._cvS!==st){q.o._cvOff=0;q.o.visible=!(q.k==='walkers'?D._crowdHidW:D._crowdHidT);}}
-D._cvHid=hid;D._crowdViewN={hid:n,seen:seen,k:+k.toFixed(1)};
+D._cvHid=hid;D._crowdViewN={hid:n,seen:seen,k:map?0:+k.toFixed(1),map:map,pad:+pad.toFixed(2)};
 return n;
 }
 function _d3poolCrowdTake(only){var D=window._D3,P=D._crowdPre;D._crowdPre=null;
