@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='a24a1c7';
+var RCG_BUILD='a2489d8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -49301,8 +49301,16 @@ function _d3bodyBareMark(recs,PG){
 var D=window._D3,a,i,n=0;
 for(a=0;a<recs.length;a++){var A=D[recs[a]];if(!A||!A.length)continue;
 for(i=0;i<A.length;i++){var wk=A[i];if(!wk||!wk._inst||!wk._inst.length)continue;
-wk._kb=_d3bodyBare(wk.obj||wk.grp)?PG:null;if(wk._kb)n++;}}
+wk._kb=_d3bodyBare(wk.obj||wk.grp)?PG:null;if(wk._kb){n++;_d3bodyMeshWatch(wk);}}}
 return n;
+}
+var _D3_MBW=(typeof WeakMap!=='undefined')?new WeakMap():null;
+function _d3bodyMeshOn(e){var wk=_D3_MBW&&e&&_D3_MBW.get(e.target);if(wk)wk._mbD=1;}
+function _d3bodyMeshWatch(wk){
+var sl=wk._inst,k;if(!_D3_MBW||!sl)return;
+for(k=0;k<sl.length;k++){var o=sl[k]&&sl[k].o;if(!o||typeof o.addEventListener!=='function')continue;
+_D3_MBW.set(o,wk);o.addEventListener('added',_d3bodyMeshOn);o.addEventListener('removed',_d3bodyMeshOn);}
+wk._mbW=sl;wk._mbD=1;
 }
 function _d3bodyKidsHide(){
 var D=window._D3,H=_D3_KHS.length?[]:_D3_KH,PG=D&&D._crowdPoolG,recs=(D&&D._crowdRecs)||[],a,i,j;H.length=0;_D3_KHS.push(_D3_KHT);
@@ -49315,7 +49323,12 @@ var ch=r.children;for(j=0;j<ch.length;j++){var c=ch[j];if(c.visible!==false){c.v
 D._kidHideN=H.length;
 return H;
 }
-function _d3bodyMeshBack(wk){var sl=wk._inst;for(var k=0;k<sl.length;k++){var s=sl[k];if(s&&s.o&&s.o.parent)return true;}return false;}
+var _D3_MBN={asked:0,kept:0};
+function _d3bodyMeshBack(wk){
+var sl=wk._inst,D=window._D3;if(wk._mbW===sl&&wk._mbD===0&&!(D&&D._noMeshBackKeep)){_D3_MBN.kept++;return wk._mbB;}
+_D3_MBN.asked++;var b=false;for(var k=0;k<sl.length;k++){var s=sl[k];if(s&&s.o&&s.o.parent){b=true;break;}}
+wk._mbB=b;if(wk._mbW===sl)wk._mbD=0;return b;
+}
 function _d3bodyKidsShow(H){for(var i=0;i<H.length;i++)H[i].visible=true;H.length=0;_D3_KHT=_D3_KHS.length?_D3_KHS.pop():-1;}
 function _d3kidHid(n){var k=n._kh;if(!(k>0))return false;if(k===_D3_KHT)return true;for(var i=0;i<_D3_KHS.length;i++)if(_D3_KHS[i]===k)return true;return false;}
 function _d3bodyKidsWrap(){
