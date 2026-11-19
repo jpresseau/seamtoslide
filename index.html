@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='311ff8f';
+var RCG_BUILD='dc02fa4';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -57281,8 +57281,13 @@ var e=cam.matrixWorld.elements;
 return {rt:[e[0],e[1],e[2]],up:[e[4],e[5],e[6]],fw:[-e[8],-e[9],-e[10]],c:[e[12],e[13],e[14]],
 hx:(cam.right-cam.left)/2,hy:(cam.top-cam.bottom)/2};
 }
+var _D3_FSH_ROOM0=256;
+function _d3fshRoom(have,need){
+if(have>=need&&have<=Math.max(_D3_FSH_ROOM0,need*3))return have;
+return Math.max(_D3_FSH_ROOM0,Math.ceil(need*1.25));
+}
 function _d3fshMake(F,H,cells,cam){
-var T=window.THREE,D=_D3,S=F.mesh,i,j,c,n=0;
+var T=window.THREE,D=_D3,S=F.mesh,i,j,c,n=0,k=0,cl,a,cn;
 var bx=_d3fshBox(cam),wx=bx.hx*_D3_FSH_MARGIN,wy=bx.hy*_D3_FSH_MARGIN;
 var wc=F.wc||(F.wc=new T.OrthographicCamera());
 wc.left=cam.left-wx;wc.right=cam.right+wx;wc.top=cam.top+wy;wc.bottom=cam.bottom-wy;wc.near=cam.near-_D3_FSH_DEEP;wc.far=cam.far+_D3_FSH_DEEP;
@@ -57292,16 +57297,22 @@ pm.multiplyMatrices(wc.projectionMatrix,wc.matrixWorldInverse);fr.setFromProject
 if(!F.gs){F.gs=new T.Sphere();new T.Box3().setFromBufferAttribute(H.geometry.attributes.position).getBoundingSphere(F.gs);}
 var gc=F.gs.center,gr=F.gs.radius,sp=F.sp||(F.sp=new T.Sphere()),total=0;
 for(c=0;c<cells.length;c++)total+=cells[c].count;
-if(!F.buf||F.buf.length<total*16){F.buf=new Float32Array(Math.max(16,Math.ceil(total*1.25))*16);F.fresh=true;}
-var out=F.buf,mix=!!S.geometry.attributes.cpart||(typeof _d3leafDepth==='function');
-if(mix&&(!F.sw||F.sw.length<out.length/8))F.sw=new Uint8Array(out.length/8);
-for(c=0;c<cells.length;c++){var cl=cells[c],a=cl.instanceMatrix.array,cn=cl.count,mw=cl.matrixWorld.elements,csw=mix&&cl.geometry.attributes.swayAP?cl.geometry.attributes.swayAP.array:null;
-var ident=(mw[0]===1&&mw[5]===1&&mw[10]===1&&mw[12]===0&&mw[13]===0&&mw[14]===0&&mw[1]===0&&mw[2]===0&&mw[4]===0&&mw[6]===0&&mw[8]===0&&mw[9]===0);
-for(j=0;j<cn;j++){var q=j*16,s0=Math.hypot(a[q],a[q+1],a[q+2]),s1=Math.hypot(a[q+4],a[q+5],a[q+6]),s2=Math.hypot(a[q+8],a[q+9],a[q+10]);
+if(!F.inb||F.inb.length<total)F.inb=new Uint8Array(Math.ceil(total*1.25));
+var inb=F.inb,ids=[];
+for(c=0;c<cells.length;c++){cl=cells[c];a=cl.instanceMatrix.array;cn=cl.count;var mw=cl.matrixWorld.elements;
+var ident=ids[c]=(mw[0]===1&&mw[5]===1&&mw[10]===1&&mw[12]===0&&mw[13]===0&&mw[14]===0&&mw[1]===0&&mw[2]===0&&mw[4]===0&&mw[6]===0&&mw[8]===0&&mw[9]===0);
+for(j=0;j<cn;j++,k++){var q=j*16,s0=Math.hypot(a[q],a[q+1],a[q+2]),s1=Math.hypot(a[q+4],a[q+5],a[q+6]),s2=Math.hypot(a[q+8],a[q+9],a[q+10]);
 var x=a[q]*gc.x+a[q+4]*gc.y+a[q+8]*gc.z+a[q+12],y=a[q+1]*gc.x+a[q+5]*gc.y+a[q+9]*gc.z+a[q+13],z=a[q+2]*gc.x+a[q+6]*gc.y+a[q+10]*gc.z+a[q+14];
 sp.center.set(x,y,z);sp.radius=gr*Math.max(s0,s1,s2);
 if(!ident)sp.applyMatrix4(cl.matrixWorld);
-if(!fr.intersectsSphere(sp))continue;
+if(fr.intersectsSphere(sp)){inb[k]=1;n++;}else inb[k]=0;}}
+var room=_d3fshRoom(F.buf?F.buf.length/16:0,n);
+if(!F.buf||F.buf.length!==room*16){F.buf=new Float32Array(room*16);F.fresh=true;}
+var out=F.buf,mix=!!S.geometry.attributes.cpart||(typeof _d3leafDepth==='function');
+if(mix&&(!F.sw||F.sw.length!==room*2))F.sw=new Uint8Array(room*2);
+for(c=0,k=0,n=0;c<cells.length;c++){cl=cells[c];a=cl.instanceMatrix.array;cn=cl.count;var csw=mix&&cl.geometry.attributes.swayAP?cl.geometry.attributes.swayAP.array:null;
+ident=ids[c];
+for(j=0;j<cn;j++,k++){if(!inb[k])continue;q=j*16;
 if(ident){for(i=0;i<16;i++)out[n*16+i]=a[q+i];}
 else{var m4=F.m4||(F.m4=new T.Matrix4());m4.fromArray(a,q).premultiply(cl.matrixWorld);m4.toArray(out,n*16);}
 if(csw){F.sw[n*2]=csw[j*2];F.sw[n*2+1]=csw[j*2+1];}
@@ -57309,8 +57320,10 @@ n++;}}
 if(F.fresh||!S.instanceMatrix||S.instanceMatrix.array!==out){
 if(S.instanceMatrix&&S.instanceMatrix.array!==out){try{S.dispatchEvent({type:'dispose'});}catch(_d){}}
 S.instanceMatrix=new T.InstancedBufferAttribute(out,16);F.fresh=false;}
-if(mix){var sa=S.geometry.attributes.swayAP;if(!sa||sa.array!==F.sw)S.geometry.setAttribute('swayAP',(sa=new T.InstancedBufferAttribute(F.sw,2,true)));sa.needsUpdate=true;}
-S.count=n;S.instanceMatrix.needsUpdate=true;
+if(mix){var sa=S.geometry.attributes.swayAP;if(!sa||sa.array!==F.sw)S.geometry.setAttribute('swayAP',(sa=new T.InstancedBufferAttribute(F.sw,2,true)));
+if(n>0){sa.updateRange.offset=0;sa.updateRange.count=n*2;sa.needsUpdate=true;}}
+S.count=n;
+if(n>0){var ur=S.instanceMatrix.updateRange;ur.offset=0;ur.count=n*16;S.instanceMatrix.needsUpdate=true;}
 F.made=bx;F.made.mx=wx*0.98;F.made.my=wy*0.98;F.n=n;F.of=total;F.builds=(F.builds|0)+1;
 return n;
 }
@@ -57353,7 +57366,7 @@ var D=_D3,F=D&&D._fsh;if(!F||!F.on)return;
 try{var cells=F.H.userData.forestCells||[],ck=_d3fshCellsKey(cells),now=_d3fshBox(cam);
 if(ck!==F.key||!_d3fshInside(F.made,now)){_d3fshMake(F,F.H,cells,cam);F.key=ck;}
 F.mesh.visible=true;
-D._forestShadow={n:F.n,of:F.of,builds:F.builds};
+D._forestShadow={n:F.n,of:F.of,builds:F.builds,room:F.buf?F.buf.length/16:0};
 }catch(_sp){F.mesh.visible=false;F.on=false;var c2=F.H.userData.forestCells||[];if(F.cast)for(var i=0;i<c2.length&&i<F.cast.length;i++)c2[i].castShadow=F.cast[i];}
 }
 function _d3fshHook(){
