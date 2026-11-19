@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='dc02fa4';
+var RCG_BUILD='6bac89a';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -58023,14 +58023,15 @@ function _d3wtrKindOf(w,u,v,K){K=K||_D3_WTR;
 if(w===2)return v<K.inWater?(u<0.62?0:1):-1;
 if(w===1)return v<K.atEdge?(u<0.24?2:u<0.46?3:u<0.72?4:u<0.86?5:6):-1;
 return -1;}
+var _D3_WTR_ID=0;
 function _d3wtrShores(){
-var D=_D3,L=D._lakeDrawn||[],M=_d3wtrShores.M;if(M&&M.L===L&&M.n===L.length&&M.bc===D.buildCount)return M.S;
+var D=_D3,L=D._lakeDrawn||[],M=_d3wtrShores.M,id=L._wtrId||(L._wtrId=++_D3_WTR_ID);if(M&&M.id===id&&M.n===L.length&&M.bc===D.buildCount)return M.S;
 var K=_D3_WTR,S=[],wl=_d3wtrWl(),WL=(typeof _D3_LAKE_WATERLINE!=='undefined')?_D3_LAKE_WATERLINE:null,hAt=function(x,z){return +_d3drawnH(x,z);};
 L.forEach(function(r){if(!r||r.salt||!r.pts||r.pts.length<3)return;var P=r.pts;
 try{if(WL&&!D._noLakeShores&&typeof _d3waterlineOut==='function'){var o=_d3waterlineOut(r.pts,hAt,wl);if(Math.max.apply(null,o.out)>WL.margin+0.25)P=o.pts;}}catch(_w){}
 var b={x0:1e18,x1:-1e18,z0:1e18,z1:-1e18};P.forEach(function(p){if(p.x<b.x0)b.x0=p.x;if(p.x>b.x1)b.x1=p.x;if(p.z<b.z0)b.z0=p.z;if(p.z>b.z1)b.z1=p.z;});
 b.x0-=K.edge;b.x1+=K.edge;b.z0-=K.edge;b.z1+=K.edge;S.push({P:P,b:b});});
-_d3wtrShores.M={L:L,n:L.length,bc:D.buildCount,S:S};return S;
+_d3wtrShores.M={id:id,n:L.length,bc:D.buildCount,S:S};return S;
 }
 function _d3wtrWl(){return (typeof _d3diveLakeY==='function')?_d3diveLakeY():-0.02;}
 function _d3wtrAt(x,z){
@@ -61461,7 +61462,8 @@ function _d3treeCut(root){
 var D=(typeof _D3!=='undefined')?_D3:null;
 if(!root||(D&&D._noTreeCut))return 0;
 var all=[],i;root.traverse(function(o){all.push(o);});
-for(i=0;i<all.length;i++){all[i].parent=null;all[i].children=[];}
+for(i=0;i<all.length;i++){var o=all[i],R=o._mwr;o.parent=null;o.children=[];
+if(o._mwp)o._mwp=null;if(R){R.mp=null;R.ch=null;R.kids=null;R.n=-1;}}
 if(D){D._treeCut=all.length;D._castList=null;D._aoIM=null;D._aoSlots=null;}
 try{if(D&&D.ren&&D.ren.renderLists&&D.ren.renderLists.dispose)D.ren.renderLists.dispose();}catch(_rl){}
 return all.length;
