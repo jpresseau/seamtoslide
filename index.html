@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='b051897';
+var RCG_BUILD='a6fa884';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -52879,6 +52879,7 @@ im.instanceColor.needsUpdate=true;return true;
 var _D3_RC_WRONG_ON=3.0;
 function _d3rcWrongOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noWrongWay);}
 function _d3rcTexMore(kind,x){
+if(typeof _d3rcSpeedTex==='function'&&_d3rcSpeedTex(kind,x))return true;
 function txt(t,y,sz){x.fillStyle='#ffffff';x.font='bold '+sz+'px Arial,Helvetica,sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(t,64,y);}
 if(kind==='dne'){x.beginPath();x.arc(64,64,63,0,Math.PI*2);x.fillStyle='#ffffff';x.fill();
 x.beginPath();x.arc(64,64,59,0,Math.PI*2);x.fillStyle='#c8102e';x.fill();
@@ -52910,10 +52911,44 @@ _d3rcPlate(B,M,p[1],x,y,z,-at.ux,-at.uz,p[2],p[3]);n++;st[p[1]]=(st[p[1]]|0)+1;
 W.push({kind:p[1],x:x,z:z,y:y,fx:-at.ux,fz:-at.uz,e:a.e,jx:jn.x,jz:jn.z});}});
 return n;
 }
+var _D3_RC_SPEED_BASE=30;
+function _d3rcSpeedOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noSpeedSigns);}
+function _d3rcSpeedOf(rc){
+if(!rc||rc.pick===false||(rc.pave===false&&!rc.big))return 0;
+return Math.round(_D3_RC_SPEED_BASE*(rc.spd||1)/5)*5;
+}
+function _d3rcSpeedAt(L,t0,t1,first,every,last){
+var out=[],s;if(!(every>0))return out;for(s=t0+first;s<=L-t1-last+1e-9;s+=every)out.push(s);return out;
+}
+function _d3rcSpeedTex(kind,x){
+var m=/^spd(\d+)$/.exec(kind);if(!m)return false;
+x.fillStyle='#111111';x.fillRect(22,6,84,116);x.fillStyle='#ffffff';x.fillRect(26,10,76,108);
+x.fillStyle='#111111';x.fillRect(29,13,70,102);x.fillStyle='#ffffff';x.fillRect(31,15,66,98);
+x.fillStyle='#111111';x.textAlign='center';x.textBaseline='middle';
+x.font='bold 15px Arial,Helvetica,sans-serif';x.fillText('SPEED',64,30);x.fillText('LIMIT',64,47);
+x.font='bold 40px Arial,Helvetica,sans-serif';x.fillText(m[1],64,86);return true;
+}
+function _d3rcSpeedSigns(B,M,rw,st){
+var W=_D3._rcSpeed=[];if(!_d3rcSpeedOn())return 0;
+var A=(_D3._rsRoads)||[],hx=_d3hwX(rw),n=0;
+A.forEach(function(R){if(!R||!R.P||R.P.length<2||!R.rc)return;var mph=_d3rcSpeedOf(R.rc);if(!mph)return;
+var hwy=R.rc.id==='highway',kind='spd'+mph,w=hwy?0.09:0.06,h=hwy?0.12:0.075,every=hwy?60:40,L=R.L;
+if(!M[kind]){M[kind]=_d3rcFaceMat(kind);_d3rsBin(B,M[kind]).u=[];}
+var off=hwy?hx.hw+0.1:(R.pave?R.pOut-0.03:R.hw+rw*0.3),Y=R.Y,ov=Y&&Y._ovp,bo=Y&&Y._bore,vi=Y&&Y._via;
+[1,-1].forEach(function(dir){if(R.ow&&dir<0)return;
+var t0=R.trim[dir>0?0:1],t1=R.trim[dir>0?1:0];
+_d3rcSpeedAt(L,t0,t1,rw*2.2,every,rw*2).forEach(function(d){var s=dir>0?d:L-d,q=_d3rjAt(R.P,R.cum,s),j=q.i;
+if((ov&&(ov[j]||ov[j-1]))||(bo&&(bo[j]||bo[j-1]))||(vi&&(vi[j]||vi[j-1])))return;
+var ux=q.tx*dir,uz=q.tz*dir,x=q.x-uz*off,z=q.z+ux*off;
+if(!_d3rlClearOf(A,R,x,z,rw*0.1))return;
+var y=((Y&&Y.length===R.P.length)?Y[j-1]+(Y[j]-Y[j-1])*q.f:0)+_D3_RS_LIFT+(R.pave?Math.max(0.02,rw*0.035):0);
+_d3rcPlate(B,M,kind,x,y,z,-ux,-uz,w,h);n++;W.push({x:x,z:z,y:y,mph:mph,fx:-ux,fz:-uz,ux:ux,uz:uz,e:R.i,c:R.rc.id});});});});
+st.speed=n;return n;
+}
 function _d3rcPlace(g,rw,geOf){
 var T=window.THREE,J=_D3.roadJ||[],st={stop:0,yield:0,signal:0,heads:0,lens:0};
 _D3.roadCtlE={};if(!_D3.stoplights)_D3.stoplights=[];_D3._rcWrong=[];
-if(!T||!g||!J.length){_D3._rcStat=st;return st;}
+if(!T||!g){_D3._rcStat=st;return st;}
 var B=new Map(),L=[],recs=[];
 var M={post:_mat(0x9ea3a8,{r:0.45,m:0.6}),back:_mat(0x8d9196,{r:0.5,m:0.5}),pole:_mat(0x5a5f63,{r:0.5,m:0.55}),
 head:_mat(0x1a1c1f,{r:0.6}),plate:_mat(0x101113,{r:0.7}),
@@ -52942,6 +52977,7 @@ rec.heads.push({e:ge,ph:C.ph[i],k:s.heads,ped:s.ped,aim:Math.atan2(uz,ux),x:bx,z
 });
 if(rec&&rec.heads.length)recs.push(rec);
 });
+if(typeof _d3rcSpeedSigns==='function')_d3rcSpeedSigns(B,M,rw,st);
 var fl=_d3rsFlush(B,g,'roadKit');st.meshes=fl.meshes;st.tris=fl.tris;
 g.children.forEach(function(me){if(!me.userData||!me.userData.roadKit||!me.material||!me.material.map)return;
 var b=B.get(me.material);if(b&&b.u&&b.u.length)me.geometry.setAttribute('uv',new T.Float32BufferAttribute(b.u,2));});
