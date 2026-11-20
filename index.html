@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='eed3ebe';
+var RCG_BUILD='23b0ce4';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -50400,8 +50400,9 @@ function _d3tinyShow(H){if(H.sw){_d3meshLodOut(H.sw);H.sw=null;}if(H.dr){_d3dres
 function _d3tinyArm(ren){
 if(!ren||ren._tinyWrap||typeof ren.render!=='function')return false;
 var r0=ren.render;ren._tinyWrap=r0;
-ren.render=function(scene,cam){var H=_d3tinyHide(ren,scene,cam),Q=(typeof _d3reefDeepIn==='function')?_d3reefDeepIn(scene,cam):null;
-try{return r0.apply(this,arguments);}finally{if(Q)_d3reefDeepOut(Q);_d3tinyShow(H);}};
+ren.render=function(scene,cam){var H=_d3tinyHide(ren,scene,cam),Q=(typeof _d3reefDeepIn==='function')?_d3reefDeepIn(scene,cam):null,
+V=(typeof _d3reefViewIn==='function')?_d3reefViewIn(scene,cam):null;
+try{return r0.apply(this,arguments);}finally{if(V)_d3reefViewOut(V);if(Q)_d3reefDeepOut(Q);_d3tinyShow(H);}};
 return true;
 }
 var _D3_MESH_LOD_MIN=300;
@@ -93937,6 +93938,53 @@ D._reefDeepN={places:G.length,hid:H.length};
 return H;
 }
 function _d3reefDeepOut(H){if(!H)return;for(var i=0;i<H.length;i++)H[i].visible=true;H.length=0;}
+var _D3_RV_SCH=(typeof WeakMap==='function')?new WeakMap():null;
+var _D3_RV_SPH=(typeof WeakMap==='function')?new WeakMap():null;
+function _d3reefSchoolSphere(a,n,gx,gy,gz,gr){
+var i,q,x,y,z,s,x0=Infinity,y0=Infinity,z0=Infinity,x1=-Infinity,y1=-Infinity,z1=-Infinity,k=0;
+if(!a||!(n>0))return null;
+for(i=0;i<n;i++){q=i*16;s=Math.max(a[q]*a[q]+a[q+1]*a[q+1]+a[q+2]*a[q+2],a[q+4]*a[q+4]+a[q+5]*a[q+5]+a[q+6]*a[q+6],a[q+8]*a[q+8]+a[q+9]*a[q+9]+a[q+10]*a[q+10]);
+if(!(s>0))continue;k++;
+x=a[q]*gx+a[q+4]*gy+a[q+8]*gz+a[q+12];y=a[q+1]*gx+a[q+5]*gy+a[q+9]*gz+a[q+13];z=a[q+2]*gx+a[q+6]*gy+a[q+10]*gz+a[q+14];
+if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;if(z<z0)z0=z;if(z>z1)z1=z;}
+if(!k)return null;
+var cx=(x0+x1)/2,cy=(y0+y1)/2,cz=(z0+z1)/2,r=0;
+for(i=0;i<n;i++){q=i*16;s=Math.max(a[q]*a[q]+a[q+1]*a[q+1]+a[q+2]*a[q+2],a[q+4]*a[q+4]+a[q+5]*a[q+5]+a[q+6]*a[q+6],a[q+8]*a[q+8]+a[q+9]*a[q+9]+a[q+10]*a[q+10]);
+if(!(s>0))continue;
+x=a[q]*gx+a[q+4]*gy+a[q+8]*gz+a[q+12]-cx;y=a[q+1]*gx+a[q+5]*gy+a[q+9]*gz+a[q+13]-cy;z=a[q+2]*gx+a[q+6]*gy+a[q+10]*gz+a[q+14]-cz;
+var d=Math.sqrt(x*x+y*y+z*z)+gr*Math.sqrt(s);if(d>r)r=d;}
+return [cx,cy,cz,r];
+}
+function _d3reefSchools(g){
+var L=_D3_RV_SCH?_D3_RV_SCH.get(g):null;if(L)return L;
+L=[];g.traverse(function(o){if(o.isInstancedMesh&&o.frustumCulled===false)L.push(o);});
+if(_D3_RV_SCH)_D3_RV_SCH.set(g,L);return L;
+}
+function _d3reefSchoolS(o){
+var g=o.geometry,im=o.instanceMatrix;if(!g||!im)return null;
+if(!g.boundingSphere)g.computeBoundingSphere();var gs=g.boundingSphere;if(!gs)return null;
+var C=_D3_RV_SPH?_D3_RV_SPH.get(o):null;
+if(C&&C.v===im.version&&C.n===o.count&&C.g===gs&&C.r===gs.radius)return C.S;
+var S=_d3reefSchoolSphere(im.array,o.count,gs.center.x,gs.center.y,gs.center.z,gs.radius);
+if(_D3_RV_SPH)_D3_RV_SPH.set(o,{v:im.version,n:o.count,g:gs,r:gs.radius,S:S});
+return S;
+}
+function _d3reefViewIn(scene,cam){
+var D=(typeof _D3!=='undefined')?_D3:null,T=window.THREE;
+if(!D||D._noReefView||!T||!scene||scene!==D.scene||!cam||!cam.projectionMatrix||!D.reef||!D.reef.group)return null;
+var G=[D.reef.group].concat(D.reefMore||[]),H=[],n=0,i,j;
+var F=D._rvF||(D._rvF={f:new T.Frustum(),m:new T.Matrix4(),s:new T.Sphere()});
+cam.updateMatrixWorld();F.m.multiplyMatrices(cam.projectionMatrix,cam.matrixWorldInverse);F.f.setFromProjectionMatrix(F.m);
+for(i=0;i<G.length;i++){var g=G[i];if(!g||g.visible===false||!g.parent)continue;
+var L=_d3reefSchools(g);
+for(j=0;j<L.length;j++){var o=L[j];if(o.visible===false||!(o.count>0))continue;n++;
+var S=_d3reefSchoolS(o);if(!S)continue;
+F.s.center.set(S[0],S[1],S[2]).applyMatrix4(o.matrixWorld);F.s.radius=S[3]*o.matrixWorld.getMaxScaleOnAxis();
+if(!F.f.intersectsSphere(F.s)){o.visible=false;H.push(o);}}}
+D._reefViewN={schools:n,hid:H.length};
+return H;
+}
+function _d3reefViewOut(H){if(!H)return;for(var i=0;i<H.length;i++)H[i].visible=true;H.length=0;}
 var _D3_REEF_PACE={n:2,cap:0.25};
 function _d3reefDeepNow(D){
 if(D._noReefDeep||typeof _d3reefDeepOf!=='function')return false;
