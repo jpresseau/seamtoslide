@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='23b0ce4';
+var RCG_BUILD='21c93d0';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -48617,7 +48617,11 @@ D._crowdPoolG=null;D._crowdIM=null;D._crowdShIM=null;D._skinIM=null;
 var W=[],RG=[],a,b9;for(a=0;a<recs.length;a++){var arr=D[recs[a]],rg=!!(rigid&&rigid.indexOf(recs[a])>=0);if(arr&&arr.length)for(b9=0;b9<arr.length;b9++){W.push(arr[b9]);RG.push(rg);}}
 if(!W.length)return 0;
 var ext=_d3crowdWritten(recs),groups={},list=[],i,j,skOn=(typeof _d3skinPoolOn==='function')&&_d3skinPoolOn(),skb={},skw=new Map();
-for(i=0;i<W.length;i++){
+var ord=null;if(!D._noPoolOrder&&typeof _d3poolOrder==='function'){var PX=[],PZ=[];
+for(i=0;i<W.length;i++){var r9=W[i]&&(W[i].obj||W[i].grp),e9=null;try{if(r9&&r9.updateWorldMatrix){r9.updateWorldMatrix(true,false);e9=r9.matrixWorld.elements;}}catch(_uw){}
+PX.push(e9?e9[12]:NaN);PZ.push(e9?e9[14]:NaN);}
+ord=_d3poolOrder(PX,PZ);}
+for(var q9=0;q9<W.length;q9++){i=ord?ord[q9]:q9;
 var wk=W[i],root=wk&&(wk.obj||wk.grp);if(!root||!root.traverse)continue;
 if(!wk._inst){
 var held=_d3crowdHeld(root,RG[i]),found=[],live=[];
@@ -48753,14 +48757,18 @@ var sv=vis,q=s.p,qh=0,mv=(vis&&vm)?_d3crowdVisUp(q,root,vst):null;if(mv!=null)sv
 if(s.live){if(s.o.visible===false)sv=false;else{s.o.updateMatrix();s.l.copy(s.o.matrix);}}
 var pc=s.p._mwc,pv=pc?pc[10]:-1;
 if(dm&&!s.live&&pc&&s._mv===pv&&s._vs===sv&&s._im===s.im&&s._ix===s.ix){sk++;continue;}
-s._mv=pv;s._vs=sv;s._im=s.im;s._ix=s.ix;s.im._cpw=1;wr++;
+s._mv=pv;s._vs=sv;s._im=s.im;s._ix=s.ix;var i3=s.im;if(i3._cpw!==1){i3._cpw=1;i3._cpL=i3._cpH=s.ix;}else if(s.ix<i3._cpL)i3._cpL=s.ix;else if(s.ix>i3._cpH)i3._cpH=s.ix;wr++;
 s.im.setMatrixAt(s.ix,sv?m4.multiplyMatrices(s.p.matrixWorld,s.ln||s.l):_d3cpZ);}
 if(!vis&&cs){wk._hz=PG;wk._hzN=nz;}else wk._hz=null;
 wk._cpT=vis?PG:null;
 }
 mark('bodies');
-var IM=D._crowdIM||[],up=0;for(i=0;i<IM.length;i++){if(dm&&!IM[i]._cpw)continue;IM[i]._cpw=0;up++;IM[i].instanceMatrix.needsUpdate=true;if(IM[i].frustumCulled)_d3poolBounds(IM[i]);}
-D._crowdStepN={written:wr,skipped:sk,uploaded:up,pools:IM.length,hidden:hb,left:hz,bodies:W.length,shown:vb,slots:vs,turn:tw,turnN:pN,still:mw};
+var IM=D._crowdIM||[],up=0,spn=dm&&!D._noPoolSpan&&typeof _d3poolSpan==='function',sF=0,aF=0;
+for(i=0;i<IM.length;i++){var im=IM[i],ia=im.instanceMatrix;if(dm&&!im._cpw)continue;up++;aF+=ia.array.length;
+if(spn&&im._cpw===1){_d3poolSpan(ia,im._cpL*16,(im._cpH+1)*16);sF+=(im._cpH-im._cpL+1)*16;}
+else{if(typeof _d3poolSpan==='function')_d3poolSpan(ia,0,ia.array.length);sF+=ia.array.length;}
+im._cpw=0;ia.needsUpdate=true;if(im.frustumCulled)_d3poolBounds(im);}
+D._crowdStepN={written:wr,skipped:sk,uploaded:up,pools:IM.length,hidden:hb,left:hz,bodies:W.length,shown:vb,slots:vs,turn:tw,turnN:pN,still:mw,spanKB:sF*4/1024,wholeKB:aF*4/1024};
 mark('upload');
 try{if(typeof _d3poolLod==='function')_d3poolLod();}catch(_pl){}
 mark('lod');
@@ -49777,6 +49785,21 @@ function _d3poolDyn(im,more){
 var T=window.THREE,D=(typeof _D3!=='undefined')?_D3:null;if(!im||!T||!T.DynamicDrawUsage||(D&&D._noPoolDyn))return im;
 [im.instanceMatrix].concat(more||[]).forEach(function(a){if(a&&a.setUsage)a.setUsage(T.DynamicDrawUsage);});
 return im;
+}
+function _d3poolSpan(a,o,e){
+var u=a.updateRange;if(u.count>=0){var o0=u.offset,e0=o0+u.count;if(o0<o)o=o0;if(e0>e)e=e0;}
+u.offset=o;u.count=e-o;return a;
+}
+function _d3poolOrder(X,Z){
+var n=X.length,i,b,x0=Infinity,x1=-Infinity,z0=Infinity,z1=-Infinity,K=new Array(n),o=new Array(n);
+for(i=0;i<n;i++){var x=X[i],z=Z[i];if(!(x===x&&z===z))continue;if(x<x0)x0=x;if(x>x1)x1=x;if(z<z0)z0=z;if(z>z1)z1=z;}
+var s=Math.max(x1-x0,z1-z0);
+for(i=0;i<n;i++){o[i]=i;var x2=X[i],z2=Z[i];if(!(x2===x2&&z2===z2)){K[i]=Infinity;continue;}if(!(s>0)){K[i]=0;continue;}
+var qx=Math.min(1023,Math.floor((x2-x0)/s*1024)),qz=Math.min(1023,Math.floor((z2-z0)/s*1024)),k=0;
+for(b=0;b<10;b++)k+=(((qx>>b)&1)+2*((qz>>b)&1))*Math.pow(4,b);
+K[i]=k;}
+o.sort(function(a,c){var d=K[a]-K[c];return (d===d&&d!==0)?d:a-c;});
+return o;
 }
 var _D3_POOL_LOD=[{px:16,div:8},{px:6,div:3},{px:1.5,div:1}];
 var _D3_POOL_HIDE_PX=0.5;
