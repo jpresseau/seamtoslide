@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='5010320';
+var RCG_BUILD='fdf9be8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -12574,6 +12574,7 @@ y[_dkI]=_d3railLandY(pts[_dkI].x,pts[_dkI].z,y[_dkI]);
 }
 }
 var _rgL=(typeof _d3tunGrade==='function')?_d3tunGrade('road'):0.34;
+if(typeof _d3hwGradeOf==='function')_rgL=_d3hwGradeOf(pts,_rgL);
 var _rgP=_d3gradeProfile(y,seg,Math.max(1,Math.round(0.5/Math.max(seg,1e-3))),_rgL,closed);
 var _rgB=y._bore,_rgI;
 for(_rgI=0;_rgI<y.length;_rgI++)if(!(_rgB&&_rgB[_rgI]))y[_rgI]=_rgP[_rgI];
@@ -53527,6 +53528,11 @@ var K=_D3_HW_SMOOTH,r;
 try{r=_d3hwHold(T,rw*K.lanes,rw*2,!!closed,K.per,K.passes,K.share,rw*K.cap);}catch(_hs9){return T;}
 try{(_D3._hwHold=_D3._hwHold||[]).push({taps:T.length,held:r.held,moved:+r.moved.toFixed(3),passes:r.passes,min0:+(r.min0/rw).toFixed(2),min:+(r.min/rw).toFixed(2)});}catch(_hr9){}
 return r.T;
+}
+function _d3hwGradeOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noHwGrade);}
+function _d3hwGradeOf(pts,L){
+if(!pts||!pts._hw||!_d3hwGradeOn()||typeof _D3_HW_GRADE==='undefined'||!(_D3_HW_GRADE>0))return L;
+return Math.min(L,_D3_HW_GRADE);
 }
 var _D3_SL_FILL=9;
 function _d3slipClaimOn(){
