@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='7503f20';
+var RCG_BUILD='b051897';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -52208,7 +52208,7 @@ var fl=_d3rsFlush(B,g,'roadSurf');st.meshes=fl.meshes;st.tris=fl.tris;
 if(typeof _d3raFlush==='function')_d3raFlush(g);st.arrows=(_D3._raAt||[]).length;
 var lh=(ML&&LL.length)?_d3rlHeads(g,LL):null;st.lights={posts:nPost,heads:LL.length,exits:_D3._rlExits||0,lit:!!lh,ramp:(_D3._rlRamp||[]).length};
 _D3.roadJ=J.map(function(jn){return {x:jn.x,z:jn.z,ctl:jn.C,arms:jn.A.map(function(a){return {e:a.r.i,end:a.end,s:a.s,m:a.m,hw:a.hw,rc:a.r.rc.id,
-ctl:a.ctl,ph:a.ph,cw:a.cw,pave:a.r.pave,kerb:o.kerb};}),
+ctl:a.ctl,ph:a.ph,cw:a.cw,pave:a.r.pave,kerb:o.kerb,ow:!!a.r.ow};}),
 ring:jn.ring?jn.ring.map(function(p){return {x:p.x,z:p.z};}):null,pw:jn.A.reduce(function(w,a){return a.r.pave?Math.max(w,a.r.pOut-a.hw):w;},0)};});
 st.ctl={};J.forEach(function(jn){st.ctl[jn.C.kind]=(st.ctl[jn.C.kind]||0)+1;});
 return st;
@@ -52810,6 +52810,7 @@ if(kind==='stop'){poly(8,63,Math.PI/8,'#ffffff');poly(8,58,Math.PI/8,'#c8102e');
 else if(kind==='yield'){poly(3,62,Math.PI/2,'#c8102e');poly(3,40,Math.PI/2,'#ffffff');txt('YIELD',44,15,'#c8102e');}
 else if(kind==='allway'){x.fillStyle='#c8102e';x.fillRect(0,40,128,48);x.fillStyle='#ffffff';x.fillRect(4,44,120,40);txt('ALL WAY',65,24,'#c8102e');}
 else if(kind==='street'){x.fillStyle='#1d6b3a';x.fillRect(0,44,128,40);x.strokeStyle='#ffffff';x.lineWidth=3;x.strokeRect(3,47,122,34);}
+else if(typeof _d3rcTexMore==='function')_d3rcTexMore(kind,x);
 var t=new T.CanvasTexture(c);t.anisotropy=4;
 return (_D3_RC_TEX[kind]=t);
 }
@@ -52875,15 +52876,50 @@ rec.heads.forEach(function(h){var on=_d3rcAspect(rec,h.ph);
 if(h.ped){var w=_d3rcWalk(rec,h.ph);im.setColorAt(h.ped[0],c.setHex(_D3_RC_LENS[3][w?1:0]));im.setColorAt(h.ped[1],c.setHex(_D3_RC_LENS[4][w?0:1]));}});
 im.instanceColor.needsUpdate=true;return true;
 }
+var _D3_RC_WRONG_ON=3.0;
+function _d3rcWrongOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noWrongWay);}
+function _d3rcTexMore(kind,x){
+function txt(t,y,sz){x.fillStyle='#ffffff';x.font='bold '+sz+'px Arial,Helvetica,sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(t,64,y);}
+if(kind==='dne'){x.beginPath();x.arc(64,64,63,0,Math.PI*2);x.fillStyle='#ffffff';x.fill();
+x.beginPath();x.arc(64,64,59,0,Math.PI*2);x.fillStyle='#c8102e';x.fill();
+x.fillStyle='#ffffff';x.fillRect(16,54,96,20);txt('DO NOT',35,19);txt('ENTER',94,19);return true;}
+if(kind==='wrongway'){x.fillStyle='#ffffff';x.fillRect(2,22,124,84);x.fillStyle='#c8102e';x.fillRect(6,26,116,76);
+txt('WRONG',48,27);txt('WAY',82,27);return true;}
+return false;
+}
+function _d3rcPlate(B,M,kind,x,y,z,fx,fz,w,h){
+var T=window.THREE,F=_d3rcFrame(x,y,z,fx,fz),H=0.21,top=H+h;
+_d3rcPut(B,M.post,new T.CylinderGeometry(0.0035,0.0035,top,16),_d3rcAt(F,0,top/2,0));
+var face=new T.PlaneGeometry(w,h),uv=face.attributes.uv,su=Math.min(1,w/Math.max(w,h)),sv=Math.min(1,h/Math.max(w,h)),i;
+for(i=0;i<uv.count;i++)uv.setXY(i,0.5+(uv.getX(i)-0.5)*su,0.5+(uv.getY(i)-0.5)*sv);
+_d3rcPut(B,M[kind],face,_d3rcAt(F,0,H+h/2,0.0045));
+var back=new T.PlaneGeometry(w*0.94,h*0.94);back.rotateY(Math.PI);_d3rcPut(B,M.back,back,_d3rcAt(F,0,H+h/2,0.0035));
+}
+function _d3rcAlong(e,end,d){
+var A=(typeof _D3!=='undefined'&&_D3&&_D3._rsRoads)||[],R=null,k;for(k=0;k<A.length;k++)if(A[k]&&A[k].i===e){R=A[k];break;}
+if(!R||!R.P||R.P.length<2)return null;var L=R.cum[R.cum.length-1],s=end?L-d:d;if(s<0||s>L)return null;
+var q=_d3rjAt(R.P,R.cum,s),y=(R.Y&&R.Y.length===R.P.length)?R.Y[q.i-1]+(R.Y[q.i]-R.Y[q.i-1])*q.f:null,sg=end?-1:1;
+return {x:q.x,z:q.z,y:y,ux:q.tx*sg,uz:q.tz*sg,hw:R.hw};
+}
+function _d3rcWrongWay(B,M,jn,a,rw,line,st){
+if(!_d3rcWrongOn()||!a.ow||a.end!==1)return 0;var n=0,W=(_D3._rcWrong=_D3._rcWrong||[]);
+[[line+rw*0.35,'dne',0.075,0.075],[line+rw*(0.35+_D3_RC_WRONG_ON),'wrongway',0.09,0.06]].forEach(function(p){
+var at=_d3rcAlong(a.e,a.end,p[0]);if(!at)return;var y=((at.y!=null)?at.y:a.m.y)+_D3_RS_LIFT,o=at.hw*1.06,sd;
+for(sd=-1;sd<=1;sd+=2){var nx=-at.uz*sd,nz=at.ux*sd,x=at.x+nx*o,z=at.z+nz*o;
+_d3rcPlate(B,M,p[1],x,y,z,-at.ux,-at.uz,p[2],p[3]);n++;st[p[1]]=(st[p[1]]|0)+1;
+W.push({kind:p[1],x:x,z:z,y:y,fx:-at.ux,fz:-at.uz,e:a.e,jx:jn.x,jz:jn.z});}});
+return n;
+}
 function _d3rcPlace(g,rw,geOf){
 var T=window.THREE,J=_D3.roadJ||[],st={stop:0,yield:0,signal:0,heads:0,lens:0};
-_D3.roadCtlE={};if(!_D3.stoplights)_D3.stoplights=[];
+_D3.roadCtlE={};if(!_D3.stoplights)_D3.stoplights=[];_D3._rcWrong=[];
 if(!T||!g||!J.length){_D3._rcStat=st;return st;}
 var B=new Map(),L=[],recs=[];
 var M={post:_mat(0x9ea3a8,{r:0.45,m:0.6}),back:_mat(0x8d9196,{r:0.5,m:0.5}),pole:_mat(0x5a5f63,{r:0.5,m:0.55}),
 head:_mat(0x1a1c1f,{r:0.6}),plate:_mat(0x101113,{r:0.7}),
-stop:_d3rcFaceMat('stop'),yield:_d3rcFaceMat('yield'),allway:_d3rcFaceMat('allway'),street:_d3rcFaceMat('street')};
-[M.stop,M.yield,M.allway,M.street].forEach(function(m){_d3rsBin(B,m).u=[];});
+stop:_d3rcFaceMat('stop'),yield:_d3rcFaceMat('yield'),allway:_d3rcFaceMat('allway'),street:_d3rcFaceMat('street'),
+dne:_d3rcFaceMat('dne'),wrongway:_d3rcFaceMat('wrongway')};
+[M.stop,M.yield,M.allway,M.street,M.dne,M.wrongway].forEach(function(m){_d3rsBin(B,m).u=[];});
 J.forEach(function(jn,q){
 var C=jn.ctl;if(!C)return;var node='j'+q,jr=0,rec=null;
 jn.arms.forEach(function(a){if(a.s>jr)jr=a.s;});jr+=rw*0.2;
@@ -52894,6 +52930,7 @@ var ge=geOf(a.e),kind=C.ctl[i];if(ge==null)return;
 var line=a.s+(a.cw||0)+(a.cw?rw*0.12:rw*0.05);
 var cE=(_D3.roadCtlE[ge]=_D3.roadCtlE[ge]||[null,null]);
 cE[a.end]={kind:kind,line:line,node:node,jx:jn.x,jz:jn.z,jr:jr,ph:C.ph[i],rec:rec};
+if(a.ow&&typeof _d3rcWrongWay==='function')_d3rcWrongWay(B,M,jn,a,rw,line,st);
 if(kind==='free')return;
 var ux=a.m.tx,uz=a.m.tz,nx=-uz,nz=ux,side=a.hw+(a.pave?rw*0.16:rw*0.3),at=line-rw*0.02;
 var bx=a.m.x+ux*(at-a.s)-nx*side,bz=a.m.z+uz*(at-a.s)-nz*side,by=a.m.y+_D3_RS_LIFT+(a.pave?a.kerb:0);
