@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='9824ca0';
+var RCG_BUILD='4cf4ad8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -9714,9 +9714,29 @@ return V;
 }
 function _ptInPoly(px,py,poly){var inside=false,i,j,n=poly.length;for(i=0,j=n-1;i<n;j=i++){var xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1];if(((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi))inside=!inside;}return inside;}
 function _distSegPt(px,py,ax,ay,bx,by){var dx=bx-ax,dy=by-ay,L2=dx*dx+dy*dy,t=L2?((px-ax)*dx+(py-ay)*dy)/L2:0;t=Math.max(0,Math.min(1,t));return Math.hypot(px-(ax+dx*t),py-(ay+dy*t));}
-function _segWet(x1,y1,x2,y2,lake,rvpts,rvw){var k,t,px,py,z,m;for(k=0;k<=10;k++){t=k/10;px=x1+(x2-x1)*t;py=y1+(y2-y1)*t;
-if(lake&&lake.length>=3&&_ptInPoly(px,py,lake))return true;
-if(rvpts&&rvpts.length>1){m=1e9;for(z=1;z<rvpts.length;z++){var d=_distSegPt(px,py,rvpts[z-1].x,rvpts[z-1].y,rvpts[z].x,rvpts[z].y);if(d<m)m=d;}if(m<rvw*0.62)return true;}}
+var _SEGWET_IX=(typeof WeakMap==='function')?new WeakMap():null;
+function _segWetOn(){return !!_SEGWET_IX&&!(typeof _D3!=='undefined'&&_D3&&_D3._noSegWetIx);}
+function _segWetIx(P,thr){
+var e=_SEGWET_IX&&_SEGWET_IX.get(P);if(e&&e.thr===thr&&e.n===P.length)return e;
+var C=Math.max(thr*2,1e-6),G=new Map(),z,ix,iy;
+for(z=1;z<P.length;z++){var a=P[z-1],c=P[z],x0=Math.floor((Math.min(a.x,c.x)-thr)/C),x1=Math.floor((Math.max(a.x,c.x)+thr)/C),
+y0=Math.floor((Math.min(a.y,c.y)-thr)/C),y1=Math.floor((Math.max(a.y,c.y)+thr)/C);
+for(ix=x0;ix<=x1;ix++)for(iy=y0;iy<=y1;iy++){var k=ix*1048576+iy,L=G.get(k);if(!L)G.set(k,L=[]);L.push(z);}}
+e={thr:thr,n:P.length,C:C,G:G};if(_SEGWET_IX)_SEGWET_IX.set(P,e);return e;
+}
+function _segWetBox(Q){
+var e=_SEGWET_IX&&_SEGWET_IX.get(Q);if(e&&e.n===Q.length&&e.box)return e;
+var b={n:Q.length,box:1,x0:1e18,y0:1e18,x1:-1e18,y1:-1e18},i;
+for(i=0;i<Q.length;i++){var q=Q[i];if(q[0]<b.x0)b.x0=q[0];if(q[0]>b.x1)b.x1=q[0];if(q[1]<b.y0)b.y0=q[1];if(q[1]>b.y1)b.y1=q[1];}
+if(_SEGWET_IX)_SEGWET_IX.set(Q,b);return b;
+}
+function _segWet(x1,y1,x2,y2,lake,rvpts,rvw){var k,t,px,py,z,m,thr=rvw*0.62,on=_segWetOn(),wl=lake&&lake.length>=3,wr=rvpts&&rvpts.length>1;
+var lb=(wl&&on)?_segWetBox(lake):null,ix=(wr&&on)?_segWetIx(rvpts,thr):null;
+for(k=0;k<=10;k++){t=k/10;px=x1+(x2-x1)*t;py=y1+(y2-y1)*t;
+if(wl&&(!lb||(px>=lb.x0&&px<=lb.x1&&py>=lb.y0&&py<=lb.y1))&&_ptInPoly(px,py,lake))return true;
+if(ix){var L=ix.G.get(Math.floor(px/ix.C)*1048576+Math.floor(py/ix.C));if(!L)continue;m=1e9;
+for(var q=0;q<L.length;q++){z=L[q];var d0=_distSegPt(px,py,rvpts[z-1].x,rvpts[z-1].y,rvpts[z].x,rvpts[z].y);if(d0<m)m=d0;}if(m<thr)return true;continue;}
+if(wr){m=1e9;for(z=1;z<rvpts.length;z++){var d=_distSegPt(px,py,rvpts[z-1].x,rvpts[z-1].y,rvpts[z].x,rvpts[z].y);if(d<m)m=d;}if(m<rvw*0.62)return true;}}
 return false;}
 function driftRoadRoute(ax,ay,bx,by,blds,skip,rw){var pts=[[ax,ay],[bx,by]],guard=0;while(guard++<10){var did=false,s;for(s=0;s<pts.length-1;s++){var Pp=pts[s],Qp=pts[s+1],dx=Qp[0]-Pp[0],dy=Qp[1]-Pp[1],L2=dx*dx+dy*dy;if(L2<1)continue;var L=Math.sqrt(L2),aux=dx/L,auy=dy/L;var bestPen=0,bC=null,bqx=0,bqy=0,bR=0,ci;for(ci=0;ci<blds.length;ci++){if(skip&&skip[ci])continue;var C=blds[ci];if(!C)continue;var _ckk=((C.k||0)%BLD_TYPES.length+BLD_TYPES.length)%BLD_TYPES.length;var _cbk=(BLD_TYPES[_ckk]&&BLD_TYPES[_ckk].key)||'';var _cpm=(typeof _BLDR!=='undefined'&&_BLDR[_cbk])||0.8; var R=(C.w||60)*_cpm+rw*0.5+4;var t=((C.x-Pp[0])*dx+(C.y-Pp[1])*dy)/L2;if(t<0.04||t>0.96)continue;var qx=Pp[0]+t*dx,qy=Pp[1]+t*dy,dC=Math.hypot(qx-C.x,qy-C.y);if(dC<R){var pen=R-dC;if(pen>bestPen){bestPen=pen;bC=C;bqx=qx;bqy=qy;bR=R;}}}if(bC){var dC2=Math.hypot(bqx-bC.x,bqy-bC.y),nx,ny;if(dC2>0.5){nx=(bqx-bC.x)/dC2;ny=(bqy-bC.y)/dC2;}else{nx=-auy;ny=aux;}var pp=bR*1.05,ll=bR*0.55;pts.splice(s+1,0,[bC.x+nx*pp-aux*ll,bC.y+ny*pp-auy*ll],[bC.x+nx*pp+aux*ll,bC.y+ny*pp+auy*ll]);did=true;break;}}if(!did)break;}return pts;}
 function driftSignKey(){return 'rcgSigns_'+_ns();}
