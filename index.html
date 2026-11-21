@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='09cc60c';
+var RCG_BUILD='3859a89';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -13003,6 +13003,7 @@ var Orig=T[name];if(typeof Orig!=='function')return;
 (T.__rcgOrig=T.__rcgOrig||{})[name]=Orig;
 var W=function(){var a=Array.prototype.slice.call(arguments),ask=null;try{ask=fix(a);}catch(_w){}
 if(typeof _D3LAZY!=='undefined'&&_D3LAZY){var lz=null;try{lz=_d3lazyGeo(name,a,Orig);}catch(_lz){}if(lz){if(ask&&lz.userData)lz.userData._rcgAsk=ask;return lz;}}
+if(typeof _d3geoTpl==='function'){var gt=null;try{gt=_d3geoTpl(name,a,Orig);}catch(_gt){}if(gt){if(ask&&gt.userData)gt.userData._rcgAsk=ask;return gt;}}
 var inst=new (Function.prototype.bind.apply(Orig,[null].concat(a)))();if(ask&&inst.userData)inst.userData._rcgAsk=ask;return inst;};
 W.prototype=Orig.prototype;T[name]=W;
 }
@@ -16642,6 +16643,43 @@ var grid=document.getElementById('bldPopGrid');
 if(grid)grid._initStyle=null;
 if(typeof driftBldGrid==='function')driftBldGrid();
 }catch(_e){}
+}
+var _D3_GEOTPL_MAX=24*1048576;
+function _d3geoTplKey(name,a){
+var k=name,i,v,t;
+for(i=0;i<a.length;i++){v=a[i];t=typeof v;
+if(t==='number')k+='|'+((v===0&&1/v<0)?'-0':v);else if(t==='boolean')k+=v?'|T':'|F';else if(v===undefined)k+='|u';else return null;}
+return k;
+}
+function _d3geoTplCls(T,c){return c===T.Float32BufferAttribute||c===T.Uint16BufferAttribute||c===T.Uint32BufferAttribute;}
+function _d3geoTplOf(T,g){
+if(!g||g.name||g.morphTargetsRelative||Object.keys(g.morphAttributes).length||Object.keys(g.userData||{}).length)return null;
+if(g.drawRange.start!==0||g.drawRange.count!==Infinity||g.boundingBox||g.boundingSphere)return null;
+if(g.index&&!_d3geoTplCls(T,g.index.constructor))return null;
+var n=0,k,A=g.attributes;for(k in A){var s=A[k];if(!s||!_d3geoTplCls(T,s.constructor)||s.name||s.usage!==T.StaticDrawUsage)return null;n+=s.array.byteLength;}
+return {g:g,bytes:n+(g.index?g.index.array.byteLength:0)};
+}
+function _d3geoTplCopy(T,t,O){
+var s=t.g,g=Reflect.construct(T.BufferGeometry,[],O),k,i;
+g.type=s.type;g.parameters=Object.assign({},s.parameters);
+for(i=0;i<s.groups.length;i++)g.addGroup(s.groups[i].start,s.groups[i].count,s.groups[i].materialIndex);
+if(s.index)g.setIndex(new s.index.constructor(s.index.array,1));
+for(k in s.attributes){var a=s.attributes[k];g.setAttribute(k,new a.constructor(a.array,a.itemSize,a.normalized));}
+return g;
+}
+function _d3geoTpl(name,a,O){
+var D=(typeof _D3!=='undefined')?_D3:null,B=D&&D._bm,T=window.THREE;
+if(!B||D._noGeoTpl||!T||typeof Reflect==='undefined')return null;
+var k=_d3geoTplKey(name,a);if(k==null)return null;
+var C=B.geoTpl;if(!C)C=B.geoTpl={seen:{},tpl:{},st:(D._geoTpl={made:0,copies:0,no:0,bytes:0})};
+var t=C.tpl[k],st=C.st;
+if(t===undefined){
+if(!C.seen[k]||st.bytes>=_D3_GEOTPL_MAX){C.seen[k]=1;return null;}
+t=_d3geoTplOf(T,new (Function.prototype.bind.apply(O,[null].concat(a)))());C.tpl[k]=t;
+if(!t){st.no++;return null;}
+st.bytes+=t.bytes;st.made++;}
+if(!t)return null;
+st.copies++;return _d3geoTplCopy(T,t,O);
 }
 function _d3bldGlbWire(root,fw){
 var T=window.THREE,V=new T.Vector3();
@@ -51900,12 +51938,12 @@ return _mch2;
 var _D3_WELD_EPS=1e-6;
 function _d3rjCum(P){var c=[0],i;for(i=1;i<P.length;i++)c.push(c[i-1]+Math.hypot(P[i].x-P[i-1].x,P[i].z-P[i-1].z));return c;}
 function _d3rjProject(P,cum,x,z){
-var best={d:1e18,s:0,x:0,z:0},i;
+var bd=1e18,bs=0,bx=0,bz=0,i;
 for(i=1;i<P.length;i++){var a=P[i-1],b=P[i],vx=b.x-a.x,vz=b.z-a.z,L2=vx*vx+vz*vz;
 var t=L2>1e-12?((x-a.x)*vx+(z-a.z)*vz)/L2:0;if(t<0)t=0;else if(t>1)t=1;
 var px=a.x+vx*t,pz=a.z+vz*t,d=Math.hypot(x-px,z-pz);
-if(d<best.d)best={d:d,s:cum[i-1]+(cum[i]-cum[i-1])*t,x:px,z:pz};}
-return best;
+if(d<bd){bd=d;bs=cum[i-1]+(cum[i]-cum[i-1])*t;bx=px;bz=pz;}}
+return {d:bd,s:bs,x:bx,z:bz};
 }
 function _d3rjCrossings(P,cP,Q,cQ){
 var out=[],i,j;
