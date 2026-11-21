@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='8b15cfd';
+var RCG_BUILD='09cc60c';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -68364,6 +68364,8 @@ function _d3streamCover(x,z){
 try{
 var p=(typeof _d3padAt==='function')?_d3padAt(x,z):null;if(p&&p.t<0.5)return 1;
 var i,k,P,rw;
+var X=(typeof _d3coverIx==='function')?_d3coverIx():null;
+if(X)return _d3coverNear(X.road,x,z)?2:_d3coverNear(X.track,x,z)?3:_d3coverNear(X.rail,x,z)?4:0;
 var RG=_D3&&_D3.roadGraph;if(RG&&RG.E){rw=(_D3.roadW||0.3)*0.5+0.18;
 for(i=0;i<RG.E.length;i++){P=RG.E[i].pts;if(!P)continue;
 for(k=0;k<P.length-1;k++){if(_d3segDist(x,z,P[k].x,P[k].z,P[k+1].x,P[k+1].z)<rw)return 2;}}}
@@ -68546,6 +68548,33 @@ _d3stE.set(0,-q.head+((q.dn<0)?0:Math.PI)+Math.sin(t*1.9+e.ph)*0.08,Math.sin(t*3
 e.obj.rotation.copy(_d3stE);}
 var RG=_D3.streamRings;if(RG&&RG.length){for(i=RG.length-1;i>=0;i--){var r=RG[i],a=t-r.t0;if(a>1.4){if(r.m.parent)r.m.parent.remove(r.m);r.m.geometry.dispose();r.m.material.dispose();RG.splice(i,1);continue;}
 var s=1+a*r.r0*40;r.m.scale.set(s,s,1);r.m.material.opacity=0.7*(1-a/1.4);}}
+}
+function _d3coverGrid(L,r,ring){
+var C=Math.max(r*2,1e-6),G=new Map(),i,k;
+function put(a,b){var x0=Math.floor((Math.min(a.x,b.x)-r)/C),x1=Math.floor((Math.max(a.x,b.x)+r)/C),z0=Math.floor((Math.min(a.z,b.z)-r)/C),z1=Math.floor((Math.max(a.z,b.z)+r)/C),ix,iz;
+for(ix=x0;ix<=x1;ix++)for(iz=z0;iz<=z1;iz++){var key=ix*1048576+iz,S=G.get(key);if(!S)G.set(key,S=[]);S.push(a.x,a.z,b.x,b.z);}}
+for(i=0;i<L.length;i++){var P=L[i];if(!P||P.length<2)continue;
+for(k=0;k<P.length-1;k++)put(P[k],P[k+1]);if(ring)put(P[P.length-1],P[0]);}
+return {r:r,C:C,G:G};
+}
+function _d3coverNear(g,x,z){
+var S=g.G.get(Math.floor(x/g.C)*1048576+Math.floor(z/g.C)),q;if(!S)return false;
+for(q=0;q<S.length;q+=4)if(_d3segDist(x,z,S[q],S[q+1],S[q+2],S[q+3])<g.r)return true;
+return false;
+}
+function _d3coverSrc(){
+var D=_D3,RG=D.roadGraph,E=RG&&RG.E,TP=D.path,RA=D.railPtsAll,n=0,i;
+if(E)for(i=0;i<E.length;i++)n+=(E[i]&&E[i].pts)?E[i].pts.length:0;
+if(RA)for(i=0;i<RA.length;i++)n+=RA[i]?RA[i].length:0;
+return [E,E?E.length:0,TP,TP?TP.length:0,RA,RA?RA.length:0,n,(D.roadW||0.3)*0.5+0.18,(D.trackHalf||0.55)+0.15,((D.railSC||0.3)*1.1)+0.12];
+}
+function _d3coverIx(){
+var D=(typeof _D3!=='undefined')?_D3:null,BM=D&&D._bm;if(!BM||D._noCoverIx)return null;
+var src=_d3coverSrc(),X=BM.coverIx,i;
+if(X){for(i=0;i<src.length;i++)if(X.src[i]!==src[i])break;if(i===src.length)return X;}
+var E=src[0],roads=[];if(E)for(i=0;i<E.length;i++)if(E[i]&&E[i].pts)roads.push(E[i].pts);
+X={src:src,road:_d3coverGrid(roads,src[7],false),track:_d3coverGrid(src[2]&&src[2].length>1?[src[2]]:[],src[8],true),rail:_d3coverGrid(src[4]||[],src[9],false)};
+BM.coverIx=X;return X;
 }
 var _D3_CREEK_BR={over:0.085,thick:0.05,post:0.075,pad:0.22,mouthH:0.04,mouthW:2.3,deep:0.06,maxLen:6,in:-0.02};
 function _d3creekBrOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noCreekBridge);}
