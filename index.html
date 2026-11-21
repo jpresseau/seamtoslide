@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='d192a83';
+var RCG_BUILD='4c4b3d8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -3387,8 +3387,14 @@ cap=low;
 try{__LS.removeItem('rcgarage_qprobe');}catch(e){}
 const used=_lsUsedBytes();
 _quotaProbed=cap>0?used+cap*2:used;
+try{if(cap>0)__LS.setItem('rcgarage_quota',JSON.stringify({q:_quotaProbed,t:Date.now()}));}catch(e){}
 updateStorageMeter();
 return _quotaProbed;
+}
+function probeQuotaCached(){
+try{const c=JSON.parse(__LS.getItem('rcgarage_quota')||'null');
+if(c&&c.q>0&&Date.now()-c.t<30*864e5){_quotaProbed=c.q;updateStorageMeter();return _quotaProbed;}}catch(e){}
+return probeQuota();
 }
 const LS_LABELS={rcgarage_parts:'Parts data',rcgarage_buildimages:'Build photos',rcgarage_partimages:'Part photos',rcgarage_brandlogos:'Brand logos',rcgarage_compositions:'Compositions',rcgarage_buildstatus:'Build statuses',rcgarage_buildneeds:'Build needs',rcgarage_drifttuning:'Drift tuning',rcgarage_driftlog:'Drift logs',rcgarage_driftsetup:'My drift setups'};
 function _lsBreakdown(){
@@ -52208,6 +52214,7 @@ _d3rsStrip(B,MT.kerb,inner,up);_d3rsStrip(B,MT.pave,up,outer);_d3rsStrip(B,MT.li
 });
 var fl=_d3rsFlush(B,g,'roadSurf');st.meshes=fl.meshes;st.tris=fl.tris;
 if(typeof _d3raFlush==='function')_d3raFlush(g);st.arrows=(_D3._raAt||[]).length;
+if(ML&&typeof _d3rlJunctions==='function')nPost+=_d3rlJunctions(B,ML,LL,J,E,rw);
 var lh=(ML&&LL.length)?_d3rlHeads(g,LL):null;st.lights={posts:nPost,heads:LL.length,exits:_D3._rlExits||0,lit:!!lh,ramp:(_D3._rlRamp||[]).length};
 _D3.roadJ=J.map(function(jn){return {x:jn.x,z:jn.z,ctl:jn.C,arms:jn.A.map(function(a){return {e:a.r.i,end:a.end,s:a.s,m:a.m,hw:a.hw,rc:a.r.rc.id,
 ctl:a.ctl,ph:a.ph,cw:a.cw,pave:a.r.pave,kerb:o.kerb,ow:!!a.r.ow};}),
@@ -54968,6 +54975,7 @@ function _d3rlKit(){return typeof _d3lkStreet==='function'&&!(typeof _D3!=='unde
 function _d3rlRoad(B,M,L,R,S,rw){
 var id=R.rc.id,n=0;
 var ov=R.Y&&R.Y._ovp,bo=R.Y&&R.Y._bore,skip=function(s){var st=_d3rsSub(S,s,s+0.01)[0];return !!(ov&&ov[st.j])||!!(bo&&bo[st.j])||s<S[0].s+rw*1.2||s>S[S.length-1].s-rw*1.2;};
+var sk2=(typeof _d3rlOnDeck==='function')?_d3rlOnDeck(R,S,rw,ov,bo):null;if(sk2&&id!=='ramp')skip=sk2;
 var hw=R.hw,ra=_D3_RL_POOL.along;
 if(id==='highway'){n+=_d3rlRow(B,M,L,S,0,_d3hwX(rw).lanes[0]+rw*0.2,1.0,_D3_RL_HWSTEP,_D3_RL_HWSTEP*0.5,skip,
 function(c){return {lo:(c>0)?0:-hw,hi:(c>0)?hw:0,ra:_D3_RL_HWSTEP*ra,hw:hw,e:R.i};});return n;}
@@ -55029,6 +55037,40 @@ function _d3rlGore(e,R,rw,hx){var P=e.pts||[],rh=rw*_d3roadClass('ramp').w,k;
 for(k=0;k<P.length;k++){var pr=_d3rjProject(R.P,R.cum,P[k].x,P[k].z),gap=pr.d-rh-hx.hw;
 if(gap>=rw*0.7)return {s:pr.s,o:hx.hw+gap*0.5};}
 return null;}
+function _d3rlOnDeckOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noBridgeLamps);}
+function _d3rlOnDeck(R,S,rw,ov,bo){
+if(!_d3rlOnDeckOn()||!ov||!S||S.length<2)return null;
+var a=S[0].s+rw*1.2,b=S[S.length-1].s-rw*1.2;
+return function(s){var st=_d3rsSub(S,s,s+0.01)[0];return !!(bo&&bo[st.j])||s<a||s>b;};
+}
+function _d3rlJunctionOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noJunctionLamps);}
+function _d3rlJunctions(B,M,L,J,E,rw){
+var out=(typeof _D3!=='undefined'&&_D3)?(_D3._rlJunc=[]):[];
+if(!_d3rlJunctionOn()||!J||!J.length||typeof _d3rlKit!=='function')return 0;
+var T=window.THREE,kit=_d3rlKit(),A=E.filter(Boolean),n=0,back=rw*0.5,near=rw*2.5,H=0.8;
+var at=L.map(function(r){return [r[0],r[2]];});
+J.forEach(function(jn){if(!jn.A||jn.A.length<3)return;
+jn.A.forEach(function(a){var R=a.r;if(!R||!R.P||R.P.length<2||!R.rc||R.rc.id==='highway')return;
+var tx=a.m.tx,tz=a.m.tz,rx=tz,rz=-tx;
+var side=R.pave?R.pOut-0.03:R.hw*1.18+rw*0.3,arm=R.pave?Math.min(0.2,side-R.hw+rw*0.6):Math.min(0.2,side-R.hw*0.5);
+var px=a.m.x+tx*back-rx*side,pz=a.m.z+tz*back-rz*side;
+var py=a.m.y+_D3_RS_LIFT+0.02,ax=rx,az=rz,hx=px+ax*arm,hz=pz+az*arm;
+for(var k=0;k<at.length;k++)if(Math.hypot(at[k][0]-hx,at[k][1]-hz)<near)return;
+if(typeof _d3rlClearOf==='function'&&!_d3rlClearOf(A,R,px,pz,rw*0.1))return;
+var rec=kit?[hx,py+H+0.004,hz,a.m.y+_D3_RS_LIFT+0.022,px,py,pz,ax,az,H,arm,1]:[hx,py+H-0.021,hz,a.m.y+_D3_RS_LIFT+0.022];
+if(typeof _d3rlPoolMark==='function'&&typeof _d3rsStations==='function'){
+var S=_d3rsStations(R.P,R.Y,R.cum,R.trim[0],R.L-R.trim[1],false),sR=a.end?R.L-a.s-back:a.s+back;
+if(S&&S.length>1&&sR>S[0].s&&sR<S[S.length-1].s){var st=_d3rsSub(S,sR,sR+0.01)[0],c=(hx-st.x)*st.nx+(hz-st.z)*st.nz,hw=R.hw;
+_d3rlPoolMark(rec,S,sR,c,function(){return {lo:-hw,hi:hw,ra:_D3_RL_STEP*_D3_RL_POOL.along,hw:hw,e:R.i};});}}
+if(!rec.pl&&typeof _d3rlPoolOn==='function'&&_d3rlPoolOn())return;
+L.push(rec);at.push([hx,hz]);n++;
+if(!kit){var pole=new T.CylinderGeometry(0.008,0.012,H,12);pole.translate(px,py+H/2,pz);_d3rcPut(B,M.pole,pole,null);
+var am=new T.CylinderGeometry(0.005,0.006,arm,10);am.rotateZ(Math.PI/2);am.translate(arm/2,0,0);
+var Rm=new T.Matrix4().makeRotationY(-Math.atan2(az,ax));Rm.setPosition(px,py+H-0.01,pz);_d3rcPut(B,M.pole,am,Rm);
+var hd=new T.BoxGeometry(0.05,0.012,0.022);hd.rotateY(-Math.atan2(az,ax));hd.translate(hx,py+H-0.014,hz);_d3rcPut(B,M.head,hd,null);}
+out.push({x:px,z:pz,y:py,hx:hx,hz:hz,jx:jn.x,jz:jn.z,e:R.i,c:R.rc.id,arms:jn.A.length,pl:!!rec.pl,kit:kit});});});
+return n;
+}
 var _D3_RL_RAMPH=0.9;
 var _D3_RL_RAMPSTEP=4.0;
 function _d3rlOutside(S){var t=0,i;for(i=1;i<S.length;i++)t+=S[i-1].tx*S[i].tz-S[i-1].tz*S[i].tx;return t>0?-1:1;}
@@ -55089,7 +55131,7 @@ function _d3rlPools(g,L){
 if(!_d3rlPoolOn()||!L.length||!L.every(function(r){return !!r.pl;}))return null;
 var T=window.THREE,P=[],Q=[],I=[],out=_D3._rlPools=[],n=0,y=(typeof _d3rsY==='function')?_d3rsY:function(st){return st.y+0.062;};
 L.forEach(function(r){var v=_d3rlPoolPatch(P,Q,I,r.pl,y);if(!v)return;n++;
-out.push({hx:r[0],hz:r[2],lo:r.pl.lo,hi:r.pl.hi,c:r.pl.c,ra:r.pl.ra,e:r.pl.e,s:r.pl.s,v:v});});
+out.push({hx:r[0],hz:r[2],lo:r.pl.lo,hi:r.pl.hi,c:r.pl.c,ra:r.pl.ra,e:r.pl.e,s:r.pl.s,v:v,py:(r.length>5)?r[5]:null});});
 if(!n)return null;
 var geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(P,3));geo.setAttribute('aPq',new T.Float32BufferAttribute(Q,2));
 geo.setIndex((P.length/3>65535)?new T.Uint32BufferAttribute(I,1):new T.Uint16BufferAttribute(I,1));geo.computeBoundingSphere();
