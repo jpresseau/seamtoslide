@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='e6b3e0a';
+var RCG_BUILD='21797ac';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -53625,7 +53625,8 @@ var R=pts._hwRamp||(pts._hwTerm?{he:pts._hwTerm.he,from:'hw',aux:0,lk:pts._hwTer
 if(!R&&pts._hwTee)R={he:pts._hwTee.he,from:(pts._hwTee.io==='i')?'hw':'road',aux:0,lk:pts._hwTee.lk};
 if(R&&R.lk){var K=R.lk,yA=hwY(K.a.he,K.a.s),yB=hwY(K.b.he,K.b.s);if(yA==null||yB==null)return;
 var L3=cum[cum.length-1]||1,ax3=Math.max(0,Math.min(L3*0.9,R.aux||0)),cH3=_d3rjCum(R.he.pts),lf3=mask('_lift'),y0=y.slice(),Lb=K.Lb||1;
-var GH=pts._hwTerm?((typeof _d3clGroundDrawn==='function')?_d3clGroundDrawn:null):((typeof _d3clGround==='function')?_d3clGround:null);
+var TL=!!(pts._hwTerm&&typeof _d3hwLoopOn==='function'&&_d3hwLoopOn()),gT=TL?[]:null;
+var GH=(pts._hwTerm&&!TL)?((typeof _d3clGroundDrawn==='function')?_d3clGroundDrawn:null):((typeof _d3clGround==='function')?_d3clGround:null);
 function ss(v){v=Math.max(0,Math.min(1,v));return v*v*(3-2*v);}
 var FT=null,ov3=null,ob3=null,or3=null;if(K.fly&&typeof _d3hwFlyY==='function'){FT=[{a:0,b:0,h:yA},{a:K.L,b:K.L,h:yB}];
 K.fly.forEach(function(f){var yb=(f.yb!=null)?f.yb:hwY(f.he,f.sh);if(yb!=null)FT.push({a:f.a,b:f.b,h:yb+(K.flyC||_D3_HW_CLEAR),base:yb,np:f.np,rail:(f.yb!=null)?1:0});});ov3=mask('_ovp');ob3=mask('_ovpB');or3=mask('_ovpRail');}
@@ -53639,7 +53640,8 @@ var wE=1-ss(Math.min(g3,K.L-g3)/Lb);
 y[i]=gr+(yH-gr)*wE;
 if(FT){var hf=_d3hwFlyY(FT,g3,K.flyG||_D3_HW_GRADE,K.flyV),q; if(hf>y[i])y[i]=hf;
 for(q=2;q<FT.length;q++)if(g3>=FT[q].a&&g3<=FT[q].b){ov3[i]=1;ob3[i]=FT[q].base;or3[i]=FT[q].np?1:0;y._ovpBase=FT[q].base;}}
-if(y[i]>gr+0.02)lf3[i]=1;}
+if(gT)gT[i]=gr;else if(y[i]>gr+0.02)lf3[i]=1;}
+if(gT&&typeof _d3hwLoopGrade==='function')_d3hwLoopGrade(y,cum,gT,lf3,_D3_HW_GRADE);
 if(y._pre)for(i=0;i<y.length&&i<y._pre.length;i++)y._pre[i]=y[i];
 return;}
 if(R){var ya=hwY(R.he,R.hs),yt=hwY(R.he,R.sh);if(ya==null||yt==null)return;yt+=R.h;
@@ -54371,6 +54373,17 @@ var nd='ht'+i+'_'+e,at={he:E,s:e?LH:0};
 out.push({pts:lp,a:nd+'i',b:nd+'o',c:'ramp',ow:1,hwTerm:{he:E,end:e,lk:{a:at,b:at,L:L,o:0,M:L/2,Lb:rw*_D3_CL.blend,P:lp,C:cl,s0:0}}});}}
 _D3._hwTermini=out.length;
 return out;
+}
+function _d3hwLoopOn(){return !(typeof _D3!=='undefined'&&_D3&&_D3._noLoopGround);}
+function _d3hwLoopGrade(y,cum,gr,lf,G){
+var n=Math.min(y.length,cum.length),L=cum[n-1]||0,y0=y[0],y1=y[n-1],i;
+if(n<3||!(G>0))return y;
+for(i=1;i<n-1;i++){var lo=Math.max(y0-G*cum[i],y1-G*(L-cum[i])),hi=Math.min(y0+G*cum[i],y1+G*(L-cum[i]));
+if(lo>hi)y[i]=(lo+hi)/2;else if(y[i]<lo)y[i]=lo;else if(y[i]>hi)y[i]=hi;}
+for(i=1;i<n-1;i++){var u=y[i-1]+G*(cum[i]-cum[i-1]);if(y[i]>u)y[i]=u;}
+for(i=n-2;i>=1;i--){var v=y[i+1]+G*(cum[i+1]-cum[i]);if(y[i]>v)y[i]=v;}
+if(lf&&gr)for(i=0;i<n;i++)if(gr[i]!=null&&y[i]>gr[i]+0.02)lf[i]=1;
+return y;
 }
 function _d3hwZipAt(E,ed,rw){
 var A=_D3.roadGraph&&_D3.roadGraph.A&&_D3.roadGraph.A[ed.b],i,lp=-1,oth=[];if(!A)return null;
