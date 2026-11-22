@@ -2962,7 +2962,7 @@ return versioned?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='a6e318d';
+var RCG_BUILD='4e19047';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -63348,11 +63348,11 @@ more:{t:'More',rows:[
 {i:'\ud83d\udcca',l:'Performance',d:'Frame time, draw calls and triangles on screen',pick:'perf'},
 {i:'\u2b0c',l:'Tool bar position',d:'Where the tool bar sits',pick:'bar'},
 {sec:'Save & restore',i:'\ud83d\udce6',l:'Back up\u2026',d:'Every map with its terrain, water, town and railway, the studios, the fleet and your career \u2014 saved to a file, or restored from one',menu:function(){driftBackupMenu();}}]},
-aboard:{t:'Go aboard',rows:(typeof _d3abMenuRows==='function')?_d3abMenuRows():[]},studios:{t:'Studios',rows:(typeof _d3studioRows==='function')?_d3studioRows():[]},
+aboard:{t:'Go aboard',rows:(typeof _d3abMenuRows==='function')?_d3abMenuRows():[]},inside:{t:'Go inside',rows:(typeof _d3inMenuRows==='function')?_d3inMenuRows():[]},studios:{t:'Studios',rows:(typeof _d3studioRows==='function')?_d3studioRows():[]},
 play:{t:'Play',rows:[
 {sec:'Cars',i:'\ud83c\udfce\ufe0f',l:'Drive it yourself\u2026',d:'Steer any car \u00b7 or a scored run for prize money',menu:function(b){driftDriveMenu(b);}},
 {i:'\ud83e\ude91',l:'Ride along',d:'Sit in any car\u2019s driver\u2019s seat and look around',menu:function(){drift3DRide();}},
-{sec:'Yourself',i:'\ud83e\uddcd',l:'Be yourself',d:'Walk the map as your own character',menu:function(){drift3DMe();}},{i:'\ud83c\udfa8',l:'Your character',d:'Choose your name and look',menu:function(){_d3meCreatorOpen();}},{i:'\ud83c\udf31',l:'New game\u2026',d:'A new island, a new character, or both \u2014 nothing is lost',menu:function(){driftNewGameOpen();}}, {sec:'Water & air',i:'\ud83d\udea4',l:'Take the helm',d:'A jet ski, or your own boat \u2014 steer it',menu:function(){drift3DPilot(0);}}, {i:'\u2708\ufe0f',l:'Fly a plane',d:'A plane of the fleet, off the runway \u2014 and land it',menu:function(){drift3DFly(0);}}, {i:'\ud83e\ude91',l:'Ride in a plane',d:'The pilot\u2019s seat of a plane on its circuit \u2014 look around',menu:function(){drift3DRide('air');}}, {i:'\ud83e\udd3f',l:'Dive in\u2026',d:'Swim the lake, the river or the sea',menu:function(b){driftDiveMenu(b);}},
+{sec:'Yourself',i:'\ud83e\uddcd',l:'Be yourself',d:'Walk the map as your own character',menu:function(){drift3DMe();}},{i:'\ud83d\udeaa',l:'Go inside\u2026',d:'Walk into a business or a home on this map \u2014 or walk up to any door as yourself',menu:function(b){if(typeof driftInsideMenu==='function')driftInsideMenu(b);}},{i:'\ud83c\udfa8',l:'Your character',d:'Choose your name and look',menu:function(){_d3meCreatorOpen();}},{i:'\ud83c\udf31',l:'New game\u2026',d:'A new island, a new character, or both \u2014 nothing is lost',menu:function(){driftNewGameOpen();}}, {sec:'Water & air',i:'\ud83d\udea4',l:'Take the helm',d:'A jet ski, or your own boat \u2014 steer it',menu:function(){drift3DPilot(0);}}, {i:'\u2708\ufe0f',l:'Fly a plane',d:'A plane of the fleet, off the runway \u2014 and land it',menu:function(){drift3DFly(0);}}, {i:'\ud83e\ude91',l:'Ride in a plane',d:'The pilot\u2019s seat of a plane on its circuit \u2014 look around',menu:function(){drift3DRide('air');}}, {i:'\ud83e\udd3f',l:'Dive in\u2026',d:'Swim the lake, the river or the sea',menu:function(b){driftDiveMenu(b);}},
 {i:'\ud83c\udfa3',l:'Fish\u2026',d:'From a boat on the lake, or from the bank of a creek',menu:function(b){driftFishMenu(b);}},
 {i:'\ud83d\udea2',l:'Go aboard\u2026',d:'Walk the decks of a cruise liner, a container ship, a naval ship, a yacht \u2014 with things to do on each',menu:function(b){if(typeof driftAboardMenu==='function')driftAboardMenu(b);}},
 ]},
@@ -76671,7 +76671,8 @@ var _D3_STAT_KEYS=['fish','dive','helm','fly','ride','chest','me','walk','emote'
 'spiritTop',
 'contracts','ctrDelivered','ctrLapsed',
 'tourBasics','tour',
-'shipBoard','shipKinds','shipJobs','shipFun','shipBet','shipWon'];
+'shipBoard','shipKinds','shipJobs','shipFun','shipBet','shipWon',
+'inVisit','inKinds','inJobs','inFun'];
 function _d3achGot(P,f){var s=0,k;if(!P||!P.got)return 0;for(k in P.got)if(f(k))s+=P.got[k]||0;return s;}
 function _d3achStat(P,k){return (P&&P.stats&&P.stats[k])||0;}
 function _d3achMystN(P,r){var n=0,i;if(!P||!P.myst)return 0;
@@ -76833,6 +76834,10 @@ count('ship_5','explorer','\u2693','All hands','Go aboard five kinds of ship',30
 count('shipjob_10','explorer','\ud83c\udfd7\ufe0f','Able seaman','Do ten jobs aboard ships',250,10,st('shipJobs'));
 count('shipfun_20','explorer','\ud83c\udf79','Life on the ocean wave','Enjoy twenty things aboard ships',200,20,st('shipFun'));
 count('shipwon_1','explorer','\ud83c\udfb0','Beginner\u2019s luck','Win at a ship\u2019s casino',80,1,st('shipWon'));
+count('in_1','town','\ud83d\udeaa','Come on in','Walk into a building on the map',50,1,st('inVisit'));
+count('in_10','town','\ud83c\udfd8\ufe0f','Pillar of the community','Go into ten different places',300,10,st('inKinds'));
+count('injob_10','town','\ud83e\uddf9','Odd jobs','Do ten jobs indoors',250,10,st('inJobs'));
+count('infun_20','town','\ud83c\udf7b','Out on the town','Enjoy twenty things indoors',200,20,st('inFun'));
 count('fly_1','explorer','✈️','Wheels up','Fly a plane',100,1,st('fly'));
 count('ride_1','explorer','🚂','Along for the ride','Ride along in a vehicle',40,1,st('ride'));
 count('chest_1','explorer','🧰','X marks the spot','Raise a treasure chest',400,1,st('chest'));
@@ -88036,24 +88041,24 @@ var L=M.look,p=_d3person(L.col,{skin:L.skin,hair:L.hair,legc:L.legc,fem:L.fem,cu
 var k=(typeof _d3realK==='function')?_d3realK('person'):0.42;p.grp.scale.setScalar(k);p.grp.userData.me=1;
 return p;
 }
-function drift3DMe(){
+function drift3DMe(at){
 try{
 if(!_D3||!_D3.scene)return;
 if(_D3.me&&_D3.me.on){_d3meEnd();return;}
 try{if(_D3.drive&&_D3.drive.on)_d3drvEnd();}catch(_a){}try{if(_D3.ride&&_D3.ride.on)_d3rideEnd();}catch(_b){}
 try{if(_D3.dive&&_D3.dive.on)_d3diveEnd();}catch(_c){}try{if(_D3.fishing&&_D3.fishing.on)_d3fishEnd();}catch(_d){}
 try{if(_D3.pilot&&_D3.pilot.on)_d3pilotEnd();}catch(_e){}try{if(_D3.fly&&_D3.fly.on&&typeof _d3flyEnd==='function')_d3flyEnd();}catch(_f){}
-var sp=_d3meSpot();if(!sp){try{showToast('Nowhere dry to stand near here.');}catch(_t){}return;}
+var out=!!(at&&typeof at.x==='number'&&typeof at.z==='number'&&_d3meOk(at.x,at.z)),sp=out?{x:at.x,z:at.z}:_d3meSpot();if(!sp){try{showToast('Nowhere dry to stand near here.');}catch(_t){}return;}
 var M=_d3meLoad();M.max=(typeof _d3perkPage==='function')?_d3perkPage().energy:100;
 M.speed=(typeof _d3perkPage==='function')?(_d3perkPage().speed||1):1;
-var H=_D3.me={on:true,M:M,in:{fwd:0,turn:0,run:false},key:{},S:{x:sp.x,z:sp.z,h:0,v:0},lag:null};
+var H=_D3.me={on:true,M:M,in:{fwd:0,turn:0,run:false},key:{},S:{x:sp.x,z:sp.z,h:(out&&typeof at.h==='number'&&isFinite(at.h))?at.h:0,v:0},lag:null};
 var p=_d3meFigure(M);H.p=p;H.obj=p.grp;H.rig=_d3pRig(p.grp);if(H.rig)H.rig.nextE=1e9;
 _D3.scene.add(p.grp);
 try{if(typeof _d3dogStart==='function')_d3dogStart(H);}catch(_dg){}
 _D3.follow=false;_D3.spin=false;
 _d3meCamera();_d3meHUD(true);_d3mePlace(0,0);
 try{_D3._lodZ=null;if(typeof _d3lodApply==='function')_d3lodApply(true);}catch(_lo){}
-try{showToast('Hello, '+M.name+'! Walk with the pads or WASD.');}catch(_h){}
+if(!out)try{showToast('Hello, '+M.name+'! Walk with the pads or WASD.');}catch(_h){}
 }catch(_me){try{if(window.console&&console.warn)console.warn('[RC Garage] be yourself failed:',_me&&_me.message);}catch(_){}try{_d3meEnd();}catch(_){}}
 }
 function _d3meEnd(){
@@ -88094,6 +88099,7 @@ try{if(typeof _d3dogStep==='function')_d3dogStep(H,dt,t);}catch(_dg){}
 try{if(typeof _d3collSeenStep==='function')_d3collSeenStep(H,dt);}catch(_cl){}
 try{if(typeof _d3eventStep==='function')_d3eventStep(H,dt);}catch(_ev){}
 try{if(typeof _d3treasStep==='function')_d3treasStep(H,dt);}catch(_tr){}
+try{if(typeof _d3inDoorTick==='function')_d3inDoorTick(H,dt);}catch(_in){}
 var rg=H.rig;
 if(rg){if(H.S.rest){rg.drive=false;if(!H.sat){H.p.legL.rotation.z=H.p.legR.rotation.z=1.4;H.sat=1;}_d3pLive(rg,t,dt);}
 else{if(H.sat){H.sat=0;H.p.legL.rotation.z=H.p.legR.rotation.z=0;}_d3pStep(rg,{obj:H.obj,sp:1,legL:H.p.legL},t,dt);}}
@@ -88116,7 +88122,7 @@ el=document.createElement('div');el.id='d3MeHUD';
 el.style.cssText='position:fixed;left:0;right:0;z-index:2147482000;display:flex;bottom:calc(78px + env(safe-area-inset-bottom,0px));flex-direction:column;align-items:center;gap:7px;pointer-events:none;';
 var B='pointer-events:auto;height:52px;border-radius:12px;border:1px solid rgba(190,220,255,.3);background:rgba(10,16,26,.7);color:#e6f0ff;font:700 15px system-ui,sans-serif;touch-action:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;';
 var E='pointer-events:auto;height:38px;min-width:38px;border-radius:19px;border:1px solid rgba(190,220,255,.3);background:rgba(10,16,26,.62);font:600 18px system-ui;touch-action:none;';
-el.innerHTML='<div id="d3MeMsg" style="pointer-events:none;padding:6px 12px;border-radius:10px;background:rgba(10,16,26,.62);color:#cfe4ff;font:600 13px system-ui;max-width:86vw;text-align:center"></div>'+
+el.innerHTML='<div id="d3MeDoor" style="display:none;pointer-events:none"></div><div id="d3MeMsg" style="pointer-events:none;padding:6px 12px;border-radius:10px;background:rgba(10,16,26,.62);color:#cfe4ff;font:600 13px system-ui;max-width:86vw;text-align:center"></div>'+
 '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">'+
 [['wave','👋'],['laugh','😂'],['cheer','🎉'],['shrug','🤷'],['point','👉'],['clap','👏']].map(function(e){return '<button data-me="emo:'+e[0]+'" title="'+e[0]+'" style="'+E+'">'+e[1]+'</button>';}).join('')+
 '<button data-me="rest" style="'+E+'font-size:12px;padding:0 10px;color:#e6f0ff">Rest</button></div>'+
@@ -88136,7 +88142,7 @@ var press=function(ev){
 var b=ev.target&&ev.target.closest?ev.target.closest('[data-me]'):null;if(!b)return;
 var a=b.getAttribute('data-me'),H=_D3.me,down=(ev.type==='pointerdown');if(!H)return;if(H.src==='key')_d3meKeysIn(H);H.src='pad';
 if(down){if(a==='out')_d3meEnd();else if(a==='look'){if(typeof _d3meCreatorOpen==='function')_d3meCreatorOpen();}
-else if(a==='rest'){H.S.rest=!H.S.rest;H.S.v=0;}else if(a==='home')_d3meGoHome();else if(a==='dog'){if(typeof _d3dogCall==='function')_d3dogCall(H);}else if(a==='eat')_d3meEat();else if(a==='tav'){if(typeof _d3meTavern==='function')_d3meTavern();}else if(a.indexOf('emo:')===0)_d3meEmote(a.slice(4));
+else if(a==='rest'){H.S.rest=!H.S.rest;H.S.v=0;}else if(a==='home')_d3meGoHome();else if(a==='dog'){if(typeof _d3dogCall==='function')_d3dogCall(H);}else if(a==='eat')_d3meEat();else if(a==='tav'){if(typeof _d3meTavern==='function')_d3meTavern();}else if(a==='door'){if(typeof _d3inGoNear==='function')_d3inGoNear();}else if(a.indexOf('emo:')===0)_d3meEmote(a.slice(4));
 else{try{b.setPointerCapture(ev.pointerId);}catch(_){}if(a==='left')H.in.turn=-1;else if(a==='right')H.in.turn=1;else if(a==='go')H.in.fwd=1;else if(a==='back')H.in.fwd=-1;else if(a==='run'){H.in.fwd=1;H.in.run=true;}}}
 else{if(a==='left'||a==='right')H.in.turn=0;else if(a==='go'||a==='back')H.in.fwd=0;else if(a==='run'){H.in.fwd=0;H.in.run=false;}}
 if(ev.preventDefault)ev.preventDefault();if(ev.stopPropagation)ev.stopPropagation();};
@@ -88190,6 +88196,7 @@ if(!down)return false;
 var emo={'1':'wave','2':'laugh','3':'cheer','4':'shrug','5':'point','6':'clap'}[k];if(emo){_d3meEmote(emo);return true;}
 if(k==='r'){H.S.rest=!H.S.rest;H.S.v=0;return true;}
 if(k==='escape'){_d3meEnd();return true;}
+if(k==='e'&&typeof _d3inGoNear==='function'&&_d3inGoNear())return true;
 return false;
 }
 var _D3_DOG_HEEL=0.22;
@@ -89751,6 +89758,7 @@ if(H.src==='gamepad'){H.in.turn=c.turn;H.in.fwd=c.fwd;H.in.run=c.run;}
 _d3padHint('walk',_d3padLayoutLine('walk'));
 for(var k in _D3_PAD_EMOTE)if(E[k]){try{_d3meEmote(_D3_PAD_EMOTE[k]);}catch(_e){}return true;}
 if(E[1]&&H.S){H.S.rest=!H.S.rest;H.S.v=0;}
+else if(E[5]&&H.door&&typeof _d3inGoNear==='function')_d3inGoNear();
 else if(E[8])_d3meEnd();
 return true;}
 function _d3padHint(m,t){_D3PAD.hint=_D3PAD.hint||{};if(_D3PAD.hint[m])return;_D3PAD.hint[m]=1;try{if(typeof showToast==='function')showToast(t);}catch(_h){}}
@@ -89837,7 +89845,7 @@ var _D3_PAD_LAYOUT=[
 {k:'drive',t:'Driving a drift car',rows:[['Left stick','steers'],['RT','gas'],['LT','brake'],['A or X','handbrake'],['Y','reset'],['LB / RB','car'],['Menu','compete'],['View','done']]},
 {k:'fly',t:'Flying',rows:[['Left stick','flies (pull back to climb)'],['RT / LT','power'],['A','brake'],['Y','view'],['RB','next plane'],['View','done']]},
 {k:'helm',t:'At the helm of a boat',rows:[['Left stick','steers'],['RT','ahead'],['LT','astern'],['RB','next craft'],['View','done']]},
-{k:'walk',t:'On foot',rows:[['Left stick','walks'],['A','runs'],['D-pad, X, Y','emotes'],['B','rest'],['View','done']]},
+{k:'walk',t:'On foot',rows:[['Left stick','walks'],['A','runs'],['D-pad, X, Y','emotes'],['B','rest'],['RB','goes in at a door'],['View','done']]},
 {k:'ship',t:'Aboard a ship',rows:[['Left stick','walks and turns'],['Right stick','looks round'],['A','does what is here'],['X','your eyes or over the shoulder'],['Y','things to do'],['B','closes'],['View','ashore']]},
 {k:'derby',t:'In the fishing derby',rows:[['A','casts (hold), twitches, sets the hook'],['RT','reels'],['Left stick','boat and rod'],['LB / RB','lure'],['Menu','start'],['View','done']]},
 {k:'wade',t:'Wading a creek',rows:[['Left stick','walks the bank, wades'],['Right stick','turns you'],['X','steps in or out'],['A','casts, sets the hook'],['RT','reels'],['LB / RB','tackle'],['Y','the trout book'],['View','done']]}];
@@ -91301,7 +91309,7 @@ function _d3abGrid(T,n,o){
 o=o||{};var u=(o.u>0)?o.u:1,cs=o.cs||_D3_AB_CS*u,head=_D3_AB_HEAD*u,WT=o.wet||null,i,k,x0=o.x0,x1=o.x1,z0=o.z0,z1=o.z1;
 if(x0==null){x0=1e9;x1=-1e9;z0=1e9;z1=-1e9;for(i=0;i<n;i++)for(k=0;k<3;k++){var X=T[i*9+k*3],Z=T[i*9+k*3+2];if(X<x0)x0=X;if(X>x1)x1=X;if(Z<z0)z0=Z;if(Z>z1)z1=Z;}}
 if(!(x1>x0&&z1>z0))return null;
-var nx=Math.max(1,Math.ceil((x1-x0)/cs)),nz=Math.max(1,Math.ceil((z1-z0)/cs)),B=new Array(nx*nz),fl=new Array(nx*nz),gp=new Array(nx*nz),tp=new Float32Array(nx*nz).fill(NaN),nf=0;
+var nx=Math.max(1,Math.ceil((x1-x0)/cs)),nz=Math.max(1,Math.ceil((z1-z0)/cs)),B=new Array(nx*nz),fl=new Array(nx*nz),gp=new Array(nx*nz),tp=new Float32Array(nx*nz).fill(NaN),nf=0,TP=o.tops?new Array(nx*nz):null,BT=o.tops?new Float32Array(nx*nz).fill(NaN):null;
 var WS=(o.walls===false)?null:[],TH=[];
 for(i=0;i<n;i++){var o9=i*9,ax=T[o9],az=T[o9+2],bx=T[o9+3],bz=T[o9+5],cx=T[o9+6],cz=T[o9+8];
 if(WS){var ar=Math.abs((bx-ax)*(cz-az)-(cx-ax)*(bz-az)),lm=Math.max(Math.hypot(bx-ax,bz-az),Math.hypot(cx-bx,cz-bz),Math.hypot(ax-cx,az-cz));
@@ -91321,7 +91329,8 @@ var ux=(By-Ay)*(Cz-Az)-(Bz-Az)*(Cy-Ay),uy=(Bz-Az)*(Cx-Ax)-(Bx-Ax)*(Cz-Az),uz=(Bx
 H.push(yh,uy>0?((fla&&!(WT&&WT[L[k]]))?2:1):(fla?0:3));if(WS&&!fla)WS.push(px,pz,yh);}
 if(!H.length)continue;
 var I=[];for(k=0;k<H.length;k+=2)I.push(k);I.sort(function(p,r){return (H[p]-H[r])||(_d3abIsTop(H[p+1])-_d3abIsTop(H[r+1]));});
-var F=null,GP=null;tp[q2]=H[I[I.length-1]];
+var F=null,GP=null;tp[q2]=H[I[I.length-1]];if(BT)BT[q2]=H[I[0]];
+if(TP){var t2=[];for(k=0;k<I.length;k++)if(H[I[k]+1]===2&&!(t2.length&&H[I[k]]-t2[t2.length-1]<1e-3))t2.push(H[I[k]]);if(t2.length)TP[q2]=new Float32Array(t2);}
 for(k=0;k<I.length;k++){var h=H[I[k]];if(H[I[k]+1]!==2)continue;
 var nb=null,m,lid=false;
 for(m=0;m<I.length;m++){var y2=H[I[m]];if(!_d3abIsTop(H[I[m]+1])&&y2>=h-2e-3&&y2<h+head){lid=true;break;}}
@@ -91330,7 +91339,7 @@ for(m=k+1;m<I.length;m++)if(H[I[m]]>h+1e-3){nb=I[m];break;}
 if(nb!=null&&_d3abIsTop(H[nb+1]))continue;
 if(F&&h-F[F.length-1]<1e-3)continue;(F||(F=[])).push(h);(GP||(GP=[])).push(nb!=null?H[nb]:1e9);}
 if(F){fl[q2]=new Float32Array(F);gp[q2]=new Float32Array(GP);nf++;}}
-var G={x0:x0,z0:z0,cs:cs,nx:nx,nz:nz,fl:fl,gp:gp,tp:tp,cells:nf,u:u,head:head,step:_D3_AB_STEP*u,drop:_D3_AB_DROP*u,r:_D3_AB_R*u,edge:_D3_AB_EDGE*u,wl:new Uint8Array(nx*nz),walls:0};
+var G={x0:x0,z0:z0,cs:cs,nx:nx,nz:nz,fl:fl,gp:gp,tp:tp,tops:TP,bt:BT,cells:nf,u:u,head:head,step:_D3_AB_STEP*u,drop:_D3_AB_DROP*u,r:_D3_AB_R*u,edge:_D3_AB_EDGE*u,wl:new Uint8Array(nx*nz),walls:0};
 if(WS){for(k=0;k<WS.length;k+=3)_d3abWallAt(G,WS[k],WS[k+1],WS[k+2],WS[k+2]);
 for(k=0;k<TH.length;k++)_d3abSheet(G,T,TH[k]);
 for(k=0;k<G.wl.length;k++)if(G.wl[k])G.walls++;}
@@ -91670,8 +91679,9 @@ function _d3abSweep(t,speed){var p=((t*speed)%2+2)%2;return p<1?p:2-p;}
 function _d3abMark(n,seed){var r=Math.sin((n+1)*12.9898+(seed||0)*78.233)*43758.5453;r-=Math.floor(r);return 0.2+r*0.6;}
 function _d3abHit(pos,c,w){var d=Math.abs(pos-c),h=w/2;return d<=h?{ok:true,q:1-d/h}:{ok:false,q:0};}
 function _d3abTimingTake(A,hits,clean){
-var n=Math.max(0,hits|0),c=Math.max(0,Math.min(n,clean|0));
-return {cash:Math.round((A.pay||0)*(n+c*0.2)),xp:Math.round((A.xp||0)*(n+c*0.2)),fish:A.fish?n:0};
+var n=Math.max(0,hits|0),c=Math.max(0,Math.min(n,clean|0)),r={cash:Math.round((A.pay||0)*(n+c*0.2)),xp:Math.round((A.xp||0)*(n+c*0.2)),fish:A.fish?n:0};
+if(A.mood)r.mood=n>0?A.mood:0;if(A.energy)r.energy=A.energy;
+return r;
 }
 var _D3_AB_REEL=['🍒','🍋','🔔','⭐','7️⃣'];
 function _d3abSlots(r1,r2,r3){
@@ -91713,14 +91723,16 @@ el.style.display='block';return el;
 function _d3abBtn(k,txt,hot){return '<button data-ab="'+k+'" style="margin:4px 6px 0 0;padding:9px 13px;border-radius:10px;border:1px solid rgba(255,255,255,0.25);'+
 'background:'+(hot?'#2f7fd1':'rgba(255,255,255,0.08)')+';color:#fff;font:600 14px system-ui,sans-serif;cursor:pointer">'+txt+'</button>';}
 function _d3abEsc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function _d3abActOf(st){var A=st&&_D3_AB_ACTS[st.act];if(!A||!st.over)return A;var o={},k;for(k in A)o[k]=A[k];for(k in st.over)o[k]=st.over[k];o._k=st.act;return o;}
 function _d3abActStart(st){
-var H=_D3.aboard,A=st&&_D3_AB_ACTS[st.act];if(!H||!A)return;
+var H=_D3.aboard,A=_d3abActOf(st);if(!H||!A)return;
 var R=H.act={st:st,A:A,t:A.t,s:0,n:0,hits:0,clean:0,res:null,seed:Math.random()*100};
 H.in.fwd=0;H.in.turn=0;
 if(A.t==='walkto'){var T=_d3abWalkTargets(st);if(!T.length){R.res='There is nowhere to go for that on this ship.';_d3abActDraw();return;}
 R.T=T;R.i=0;R.left=A.secs;_d3abCard(false);try{showToast(A.say,4200);}catch(_t){}if(A.t==='walkto')_d3abSound('horn',0.7);return;}
 if(A.t==='steer')R.S={err:14,v:0,on:0,t:0};
 if(A.t==='talk')R.i=0;
+if(A.t==='look'){try{if(H.rig&&A.emote&&typeof _d3pEmote==='function')_d3pEmote(H.rig,A.emote);}catch(_em){}R.res=_d3abEsc(A.say||'')+' '+_d3abReward(A,{xp:A.xp||0});}
 _d3abActDraw();
 }
 function _d3abActDraw(){
@@ -91760,7 +91772,7 @@ R.res='You made '+R.hits+' of '+A.rounds+(R.clean?' ('+R.clean+' clean)':'')+'. 
 _d3abActDraw();return;}
 if(A.t==='buy'&&k.indexOf('buy:')===0){var it=A.items[+k.slice(4)];if(!it)return;
 var P=_d3abPurse();if((P.cash|0)<it[1]){try{showToast('Not enough cash for the '+it[0].toLowerCase()+' ($'+it[1]+').');}catch(_t){}return;}
-var s2=_d3abReward(A,{spend:it[1],mood:it[2],energy:it[3]});try{showToast(it[0]+' — '+s2);}catch(_t2){}_d3abActDraw();return;}
+var s2=_d3abReward(A,{spend:it[1],mood:it[2],energy:it[3],drink:A.drink?1:0});try{showToast(it[0]+' — '+s2);}catch(_t2){}_d3abActDraw();return;}
 if(A.t==='rest'&&k==='rest'&&!R.s){var P2=_d3abPurse();if(A.price&&(P2.cash|0)<A.price){try{showToast('Not enough cash ($'+A.price+').');}catch(_t3){}return;}R.s=1e-6;_d3abActDraw();return;}
 if(A.t==='bet'){var st=A.stakes[R.k|0]||A.stakes[0],P3=_d3abPurse(),res=null;
 if(k.indexOf('stake:')===0){R.k=+k.slice(6);_d3abActDraw();return;}
@@ -91832,6 +91844,7 @@ try{_D3._carBusy=true;if(typeof _d3rpgSave==='function')_d3rpgSave();}catch(_s){
 try{if(typeof _d3meSave==='function')_d3meSave();}catch(_ms){}
 try{if(A&&A.stat&&typeof _d3careerStat==='function')_d3careerStat(A.stat,1);}catch(_c){}
 try{if(tk.bet&&typeof _d3careerStat==='function'){if(tk.won)_d3careerStat('shipWon',1);}}catch(_b){}
+try{if(tk.drink){P.stats=P.stats||{};P.stats.drinks=(P.stats.drinks||0)+1;_D3._carBusy=true;try{_d3rpgSave();}finally{_D3._carBusy=false;}}}catch(_dr){}
 try{if(fish>0&&typeof _d3careerStat==='function')_d3careerStat('fish',fish);}catch(_cf){}
 try{if(typeof _d3rpgHUD==='function')_d3rpgHUD();}catch(_h){}
 try{var S=_d3abSaved(),k=_d3abActKey(A);if(k){S.done[k]=(S.done[k]||0)+1;_d3abSave();}}catch(_d){}
@@ -91840,7 +91853,7 @@ if(fish>0)said.push(fish+' fish in your basket');
 if(tk.mood||tk.energy)said.push('mood '+Math.round(r.mood)+', energy '+Math.round(r.energy));
 return said.join(' · ')||'Done.';
 }
-function _d3abActKey(A){var k;for(k in _D3_AB_ACTS)if(_D3_AB_ACTS[k]===A)return k;return null;}
+function _d3abActKey(A){if(A&&A._k)return A._k;var k;for(k in _D3_AB_ACTS)if(_D3_AB_ACTS[k]===A)return k;return null;}
 function _d3abSeen(id){
 var S=_d3abSaved();if(!_d3abKind(id))return 0;S.seen[id]=1;_d3abSave();
 var n=Object.keys(S.seen).length;
@@ -91891,16 +91904,17 @@ var r2=_d3abBoats(id)[0]||rec;_d3abBegin(r2,W);});
 }catch(_e){try{if(window.console&&console.warn)console.warn('[RC Garage] aboard failed:',_e&&_e.message);}catch(_){}try{_d3abEnd();}catch(_){}}
 }
 function _d3abBegin(rec,W){
-var root=_d3abRootOf(rec.obj);if(!root)return;
+var root=rec.root||_d3abRootOf(rec.obj);if(!root)return;
 _d3abOthersOff();
 var M=_d3meLoad(),sp=W.spawn;
 var H=_D3.aboard={on:true,id:W.id,K:W.K,W:W,rec:rec,root:root,u:W.u,P:{x:sp.x,y:sp.y,z:sp.z,h:0},in:{fwd:0,turn:0,run:false},key:{},
-view:'third',yaw:0,pitch:-0.16,M:M,near:null,link:null,act:null,go:null,gait:{position:{x:0,z:0},scale:{x:1}},wp:{x:0,z:0},t0:Date.now()};
-H.P.h=0;
+view:'third',yaw:0,pitch:-0.16,M:M,near:null,link:null,act:null,go:null,gait:{position:{x:0,z:0},scale:{x:1}},wp:{x:0,z:0},t0:Date.now(),host:rec.host||null};
+H.P.h=(typeof rec.h==='number')?rec.h:0;
 var p=_d3meFigure(M);H.p=p;H.obj=p.grp;H.rig=_d3pRig(p.grp);if(H.rig)H.rig.nextE=1e9;p.grp.userData.noMerge=true;_D3.scene.add(p.grp);
 _D3.follow=false;_D3.spin=false;
 _d3abCamera();_d3abHUD(true);_d3abPlace(0,0);
 try{_D3._lodZ=null;if(typeof _d3lodApply==='function')_d3lodApply(true);}catch(_lo){}
+if(H.host){try{showToast(H.host.hi(H),5200);}catch(_hh){}return;}
 var n=_d3abSeen(W.id),said=W.K.n+(W.K.kind&&W.K.kind!==W.K.n?' ('+W.K.kind.toLowerCase()+')':'');
 try{showToast('Welcome aboard the '+said+'! Walk with the pads or WASD — 📋 shows what there is to do.'+(n>1?' ('+n+' ships boarded)':''),5200);}catch(_h){}
 }
@@ -91912,6 +91926,7 @@ try{if(typeof _d3meSave==='function')_d3meSave();}catch(_s){}
 _d3abHUD(false);
 try{_D3._lodZ=null;if(typeof _d3lodApply==='function')_d3lodApply(true);}catch(_lo){}
 try{if(typeof _d3updateCam==='function')_d3updateCam();}catch(_){}
+try{if(H.host&&H.host.end)H.host.end(H);}catch(_he){}
 }
 function _d3abCamera(){
 var T=window.THREE,H=_D3.aboard,cv=_D3.ren&&_D3.ren.domElement,a=(cv&&cv.clientHeight)?(cv.clientWidth/cv.clientHeight):1.6;
@@ -91919,6 +91934,7 @@ if(!H.cam)H.cam=new T.PerspectiveCamera(60,a,0.004,900);else{H.cam.aspect=a;H.ca
 return H.cam;
 }
 function _d3abHeld(H){
+if(H.host)return !!H.host.held(H);
 var o=H.rec&&H.rec.obj,p;for(p=H.root;p;p=p.parent)if(p===_D3.scene)return true;
 var R=_d3abBoats(H.id);if(!R.length)return false;var w=H.wp,best=null,bd=1e18;
 R.forEach(function(r){var d=Math.hypot(r.obj.position.x-w.x,r.obj.position.z-w.z);if(d<bd){bd=d;best=r;}});
@@ -91927,7 +91943,7 @@ H.rec=best;H.root=_d3abRootOf(best.obj);return !!H.root;
 function _d3abStep(dt,t){
 var H=_D3&&_D3.aboard;if(!H||!H.on)return;
 if((_D3.me&&_D3.me.on)||(_D3.pilot&&_D3.pilot.on)||(_D3.fly&&_D3.fly.on)||(_D3.drive&&_D3.drive.on)||(_D3.ride&&_D3.ride.on)||(_D3.dive&&_D3.dive.on)||(_D3.fishing&&_D3.fishing.on)||_D3._exp){_d3abEnd();return;}
-if(!_d3abHeld(H)){try{showToast('The ship has gone from the water — back to the map.');}catch(_t){}_d3abEnd();return;}
+if(!_d3abHeld(H)){if(!H.host)try{showToast('The ship has gone from the water — back to the map.');}catch(_t){}_d3abEnd();return;}
 if(!H.obj||!H.obj.parent){var p=_d3meFigure(H.M);H.p=p;H.obj=p.grp;H.rig=_d3pRig(p.grp);_D3.scene.add(p.grp);}
 dt=Math.min(dt||0,0.1);
 if(H.src==='key')_d3abKeysIn(H);
@@ -91935,21 +91951,23 @@ var W=H.W,G=W.G,P=H.P,u=W.u,busy=!!(H.act&&H.act.t!=='walkto'&&!H.act.res);
 if(H.go&&!(H.in.fwd||H.in.turn)&&!busy)_d3abGoStep(H,dt);
 else if(H.in.fwd||H.in.turn)H.go=null;
 var moved=0;
-if(!busy&&!H.goStep){var sp=(H.in.run?_D3_AB_RUN:_D3_AB_WALK)*u*((H.M&&H.M.speed)||1);
+if(!busy&&!H.goStep){var sp=(H.in.run?_D3_AB_RUN:_D3_AB_WALK)*(W.vu||u)*((H.M&&H.M.speed)||1);
 P.h+=(H.in.turn||0)*_D3_AB_TURN*dt;var d=(H.in.fwd||0)*sp*dt*(H.in.fwd<0?0.6:1);
-if(d)moved=_d3abMove(G,P,Math.cos(P.h)*d,Math.sin(P.h)*d);}
+if(d)moved=_d3abMove(G,P,Math.cos(P.h)*d,Math.sin(P.h)*d);
+if(d>0&&!(moved>d*0.5)&&H.host&&H.host.edge&&H.host.edge(H))return;}
 H.goStep=0;
 if(moved>0){H.M.walked=(H.M.walked||0)+moved*W.mpu;H.wk=(H.wk||0)+moved*W.mpu;if(H.wk>=50){H.wk-=50;try{_d3careerStat('walk',50);}catch(_cs){}}}
 _d3abNear(H);
 try{_d3abActTick(dt);}catch(_at){}
+try{if(H.host&&H.host.step)H.host.step(H,dt,t);}catch(_hs){}
 _d3abPlace(dt,t);
 var rg=H.rig;if(rg){if(H.sit){rg.drive=false;_d3pLive(rg,t,dt);}else _d3pStep(rg,{obj:H.gait,sp:1,legL:H.p.legL},t,dt);}
 if((H._hu=(H._hu||0)+1)%6===0)_d3abHUDTick();
 }
 function _d3abNear(H){
-var W=H.W,P=H.P,u=W.u,best=null,bd=2.4*u,i;
+var W=H.W,P=H.P,u=W.u,vu=W.vu||u,best=null,bd=2.4*vu,i;
 for(i=0;i<W.st.length;i++){var s=W.st[i],a=s.a;if(!a)continue;var d=Math.hypot(a.x-P.x,a.z-P.z);if(d<bd&&Math.abs(a.y-P.y)<1.3*u){bd=d;best=s;}}
-H.near=best;H.link=null;var ld=1.8*u;
+H.near=best;H.link=null;var ld=1.8*vu;
 W.links.forEach(function(L){['a','b'].forEach(function(e){var a=L[e];if(!a||!L.a||!L.b)return;var d=Math.hypot(a.x-P.x,a.z-P.z);
 if(d<ld&&Math.abs(a.y-P.y)<1.0*u){ld=d;H.link={L:L,end:e};}});});
 if(H.link&&H.near&&ld<bd)H.near=null;
@@ -91971,7 +91989,7 @@ if(w.jump){P.x=w.x;P.y=w.y;P.z=w.z;g.i++;try{showToast(_d3abLevelName(H.K,w.y*H.
 var dx=w.x-P.x,dz=w.z-P.z,d=Math.hypot(dx,dz);
 if(d<G.cs*0.75){g.i++;if(g.i>=g.path.length){H.go=null;_d3abNear(H);}return;}
 var want=Math.atan2(dz,dx),dh=Math.atan2(Math.sin(want-P.h),Math.cos(want-P.h));P.h+=Math.max(-1,Math.min(1,dh))*Math.min(1,dt*8);
-var s=Math.min(d,_D3_AB_WALK*1.6*u*dt);
+var s=Math.min(d,_D3_AB_WALK*1.6*(H.W.vu||u)*dt);
 if(!_d3abMove(G,P,dx/d*s,dz/d*s)){P.x=w.x;P.z=w.z;P.y=w.y;}
 H.goStep=1;
 }
@@ -91984,11 +92002,13 @@ M.decompose(pos,_d3abQ,_d3abS);var sM=_d3abS.x||1;
 var o=H.obj;
 if(o){_d3abV.set(P.x,P.y,P.z).applyMatrix4(M);o.position.copy(_d3abV);
 _d3abQ2.setFromAxisAngle(_d3abUp.set(0,1,0),-P.h);o.quaternion.copy(_d3abQ).multiply(_d3abQ2);
-var k=(typeof _d3realK==='function')?_d3realK('person'):0.42;o.scale.setScalar(k*sM*10/W.mpu);o.visible=(H.view!=='first');
+var k=(typeof _d3realK==='function')?_d3realK('person'):0.42;o.scale.setScalar(k*sM*10*(W.vu||1/W.mpu));o.visible=(H.view!=='first');
 H.wp.x=_d3abV.x;H.wp.z=_d3abV.z;H.gait.position.x=P.x*sM;H.gait.position.z=P.z*sM;H.gait.scale.x=o.scale.x;}
 var cam=_d3abCamera(),yaw=P.h+H.yaw,cp=Math.cos(H.pitch),eye,look;
-if(H.view==='first'){eye=[P.x,P.y+1.62*u,P.z];look=[eye[0]+Math.cos(yaw)*cp,eye[1]+Math.sin(H.pitch),eye[2]+Math.sin(yaw)*cp];}
-else{var tg=[P.x,P.y+1.5*u,P.z],back=3.6*u,want=[tg[0]-Math.cos(yaw)*back*cp,tg[1]-Math.sin(H.pitch)*back+0.35*u,tg[2]-Math.sin(yaw)*back*cp];
+u=W.vu||u;
+var cl=Infinity;if(W.vu){var nd=_d3abNodeOf(W,P.x,P.z,P.y);if(nd>=0&&G.gp[nd>>2])cl=G.gp[nd>>2][nd&3]-P.y-0.25*W.u;}
+if(H.view==='first'){eye=[P.x,P.y+Math.min(1.62*u,cl),P.z];look=[eye[0]+Math.cos(yaw)*cp,eye[1]+Math.sin(H.pitch),eye[2]+Math.sin(yaw)*cp];}
+else{var tg=[P.x,P.y+Math.min(1.5*u,cl),P.z],back=3.6*u,want=[tg[0]-Math.cos(yaw)*back*cp,tg[1]-Math.sin(H.pitch)*back+0.35*u,tg[2]-Math.sin(yaw)*back*cp];
 var n=Math.ceil(back/(0.2*u)),f=1,i;
 for(i=1;i<=n;i++){var s=i/n,x=tg[0]+(want[0]-tg[0])*s,y=tg[1]+(want[1]-tg[1])*s,z=tg[2]+(want[2]-tg[2])*s;
 if(!_d3abAir(G,x,y,z,0.15*u)){f=Math.max(0.12,(i-1.5)/n);break;}}
@@ -92050,10 +92070,11 @@ top.style.cssText='position:fixed;left:50%;top:calc(58px + env(safe-area-inset-t
 'background:rgba(12,20,28,0.78);color:#eef4f7;border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:6px 12px;font:600 13px/1.35 system-ui,-apple-system,sans-serif;text-align:center;max-width:92vw';
 document.body.appendChild(top);}
 el.style.display='flex';top.style.display='block';_d3abHUDTick(true);
+var ob=el.querySelector('[data-abh="out"]'),Hh=_D3.aboard;if(ob)ob.textContent=(Hh&&Hh.host&&Hh.host.out)||'⚓ Ashore';
 }
 function _d3abHUDTick(force){
 var H=_D3.aboard,top=document.getElementById('d3AbTop'),row=document.getElementById('d3AbDoRow');if(!H||!H.on||!top)return;
-var W=H.W,A=H.near&&_D3_AB_ACTS[H.near.act],lv=_d3abLevelName(H.K,H.P.y*W.mpu),R=H.act,line=H.K.i+' '+H.K.n+' · '+lv;
+var W=H.W,A=H.near&&_d3abActOf(H.near),lv=_d3abLevelName(H.K,H.P.y*W.mpu),R=H.act,line=H.K.i+' '+H.K.n+' · '+lv;
 if(R&&R.t==='walkto'&&!R.res&&R.T){var T=R.T[R.i],d=T?Math.hypot(T.x-H.P.x,T.z-H.P.z)*W.mpu:0;
 line+='<br>'+R.A.i+' '+R.A.verb+': '+Math.max(0,Math.ceil(R.left))+' s · '+(R.i+1)+' of '+R.T.length+' · '+Math.round(d)+' m to go'+(T?' ('+_d3abLevelName(H.K,T.y*W.mpu)+')':'');}
 else if(A)line+='<br>'+A.i+' '+A.lbl;
@@ -92074,15 +92095,15 @@ el=document.createElement('div');el.id='d3AbList';el.className='d3-hwp';
 el.style.cssText='background:rgba(14,22,30,0.95);color:#eef3f6;font:14px/1.35 system-ui,-apple-system,sans-serif';
 el.addEventListener('pointerdown',function(e){var b=e.target.closest&&e.target.closest('[data-abl]');if(!b)return;e.preventDefault();e.stopPropagation();
 var k=b.getAttribute('data-abl'),H2=_D3.aboard;if(k==='x'){_d3abList(false);return;}
-var s=H2&&H2.W.st[+k];if(s&&s.a&&_d3abGoTo(s.a)){_d3abList(false);try{showToast('Walking to '+_D3_AB_ACTS[s.act].lbl.toLowerCase()+'…',1800);}catch(_t){}}});
+var s=H2&&H2.W.st[+k];if(s&&s.a&&_d3abGoTo(s.a)){_d3abList(false);try{showToast('Walking to '+_d3abActOf(s).lbl.toLowerCase()+'…',1800);}catch(_t){}}});
 var W=H.W,S=_d3abSaved(),h='<div data-shtop style="display:flex;align-items:center;justify-content:space-between"><b style="font-size:16px">'+H.K.i+' '+_d3abEsc(H.K.n)+'</b>'+
-'<button data-abl="x" style="border:none;background:none;color:#fff;font-size:20px">✕</button></div><div data-shtop style="opacity:0.75;margin:2px 0 8px">'+_d3abEsc(H.K.kind||'')+' · things to do aboard</div>';
-W.st.forEach(function(s,ix){var A=_D3_AB_ACTS[s.act];if(!A||!s.a)return;var n=S.done[s.act]|0;
+'<button data-abl="x" style="border:none;background:none;color:#fff;font-size:20px">✕</button></div><div data-shtop style="opacity:0.75;margin:2px 0 8px">'+_d3abEsc(H.K.kind||'')+' · things to do '+(H.host?'here':'aboard')+'</div>';
+W.st.forEach(function(s,ix){var A=_d3abActOf(s);if(!A||!s.a)return;var n=S.done[s.act]|0;
 h+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid rgba(255,255,255,0.08)"><div style="font-size:22px;width:28px;text-align:center">'+A.i+'</div>'+
 '<div style="flex:1"><div style="font-weight:600">'+_d3abEsc(A.verb)+'</div><div style="opacity:0.7;font-size:12px">'+_d3abEsc(A.lbl)+' · '+_d3abEsc(_d3abLevelName(H.K,s.a.y*W.mpu))+(n?' · done '+n+'×':'')+'</div></div>'+
 '<button data-abl="'+ix+'" style="padding:7px 11px;border-radius:9px;border:1px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.08);color:#fff;font:600 13px system-ui,sans-serif">Go there</button></div>';});
 el.innerHTML=h;document.body.appendChild(el);
-el.setAttribute('data-shname','Aboard');_d3sheet(el);
+el.setAttribute('data-shname',H.host?(H.host.title||'Inside'):'Aboard');_d3sheet(el);
 }
 function driftAboardMenu(btn){
 if(_D3&&_D3.aboard&&_D3.aboard.on){_d3abEnd();return;}
@@ -92108,6 +92129,491 @@ if(E[1]){if(document.getElementById('d3AbList'))_d3abList(false);else if(H.act)_
 if(E[2])_d3abView();if(E[3])_d3abList(true);if(E[8])_d3abEnd();
 if(H.act&&H.act.t==='steer'&&Math.abs(lx)>0.3)H.in.turn=lx;
 return true;
+}
+var _D3_IN_TINY=0.25;
+var _D3_IN_BOXIT=[24,3];
+var _D3_IN_SPAN=45;
+var _D3_IN_CROWN=[2,1.2];
+var _D3_IN_BOXF=[2,6,7,2,7,3,0,5,4,0,1,5,0,4,6,0,6,2,1,3,7,1,7,5,0,2,3,0,3,1,4,5,7,4,7,6];
+function _d3inSkip(o,g){for(var p=o;p&&p!==g;p=p.parent){var u=p.userData;if(u&&(u._lodImp||u._aoPad||u.person||u.me||u.inSkip))return true;}return false;}
+function _d3inMpu(g){var T=window.THREE,s=new T.Vector3();g.updateMatrixWorld(true);g.getWorldScale(s);return ((typeof WORLD_M!=='undefined')?WORLD_M:10)*(s.x||1);}
+function _d3inTris(g,win){
+var T=window.THREE,inv=new T.Matrix4(),M=new T.Matrix4(),IM=new T.Matrix4(),B=new T.Box3(),S=new T.Vector3();
+var mpu=_d3inMpu(g),L=[],job=[],E=[],tot=0;inv.copy(g.matrixWorld).invert();
+g.traverse(function(o){if(o.isMesh&&o.geometry&&o.geometry.attributes&&o.geometry.attributes.position&&!_d3inSkip(o,g))L.push(o);});
+L.forEach(function(o){
+var gg=o.geometry,n=Math.floor((gg.index?gg.index.count:gg.attributes.position.count)/3),m=o.material,i,k;
+var wet=(m&&!Array.isArray(m)&&m.transparent&&m.opacity<0.95)?1:0,c=o.isInstancedMesh?o.count:1;
+if(!n)return;if(!gg.boundingBox)gg.computeBoundingBox();
+for(i=0;i<c;i++){M.multiplyMatrices(inv,o.matrixWorld);if(o.isInstancedMesh){o.getMatrixAt(i,IM);M.multiply(IM);}
+B.copy(gg.boundingBox).applyMatrix4(M);if(B.isEmpty())continue;
+if(win&&(B.max.x<win.x0||B.min.x>win.x1||B.max.z<win.z0||B.min.z>win.z1))continue;
+var box=0;if(o.isInstancedMesh){B.getSize(S);var big=Math.max(S.x,S.y,S.z)*mpu;if(big<_D3_IN_TINY)continue;box=(n>_D3_IN_BOXIT[0]&&big<_D3_IN_BOXIT[1])?1:0;
+if(c>=20&&n>_D3_IN_BOXIT[0]&&Math.min(S.x,S.y,S.z)*mpu>big*0.5&&B.min.y*mpu>_D3_IN_CROWN[0]&&big>_D3_IN_CROWN[1])continue;}
+job.push(o,box,wet);for(k=0;k<16;k++)E.push(M.elements[k]);tot+=box?12:n;}});
+var out=new Float32Array(tot*9),W=new Uint8Array(tot),t=0,j;
+for(j=0;j<job.length;j+=3){
+var o=job[j],box=job[j+1],wt=job[j+2],e=E.slice(j/3*16,j/3*16+16),flip=_d3inDet(e)<0,gg=o.geometry,P=gg.attributes.position,I=gg.index;
+if(box){var bb=gg.boundingBox,X=[bb.min.x,bb.max.x],Y=[bb.min.y,bb.max.y],Z=[bb.min.z,bb.max.z],f;
+for(f=0;f<36;f+=3){var c3=[_D3_IN_BOXF[f],_D3_IN_BOXF[f+1],_D3_IN_BOXF[f+2]],v;if(flip){v=c3[1];c3[1]=c3[2];c3[2]=v;}
+for(v=0;v<3;v++)_d3inPut(out,t*9+v*3,e,X[c3[v]&1],Y[c3[v]>>1&1],Z[c3[v]>>2&1]);W[t++]=wt;}
+continue;}
+var cnt=I?I.count:P.count,a;
+for(a=0;a+2<cnt;a+=3){var q=[I?I.getX(a):a,I?I.getX(a+1):a+1,I?I.getX(a+2):a+2],v2;if(flip){v2=q[1];q[1]=q[2];q[2]=v2;}
+for(v2=0;v2<3;v2++)_d3inPut(out,t*9+v2*3,e,P.getX(q[v2]),P.getY(q[v2]),P.getZ(q[v2]));W[t++]=wt;}}
+return {T:out,n:t,wet:W,mpu:mpu};
+}
+function _d3inPut(out,b,e,x,y,z){out[b]=e[0]*x+e[4]*y+e[8]*z+e[12];out[b+1]=e[1]*x+e[5]*y+e[9]*z+e[13];out[b+2]=e[2]*x+e[6]*y+e[10]*z+e[14];}
+function _d3inDet(e){return e[0]*(e[5]*e[10]-e[9]*e[6])-e[4]*(e[1]*e[10]-e[9]*e[2])+e[8]*(e[1]*e[6]-e[5]*e[2]);}
+var _D3_IN_STOREY_M=2.7;
+function _d3inScale(G,u){
+var h={},q,k,b,best=0,bn=0;
+for(q=0;q<G.fl.length;q++){var F=G.fl[q];if(!F)continue;
+for(k=0;k<F.length;k++){var c=(G.gp[q][k]-F[k])/u;if(c<2||c>=12)continue;b=Math.round(c*4);h[b]=(h[b]||0)+1;}}
+for(b in h)if(h[b]>bn){bn=h[b];best=(+b)/4;}
+return best?Math.max(1,Math.min(2.5,best/_D3_IN_STOREY_M)):1;
+}
+function _d3inGridOf(g,c){
+var mpu=_d3inMpu(g),u=1/mpu,half=_D3_IN_SPAN*u,o=(c&&Math.hypot(c.x,c.z)>half*0.8)?c:{x:0,z:0};
+var win={x0:o.x-half,x1:o.x+half,z0:o.z-half,z1:o.z+half},tr=_d3inTris(g,win),i;if(!tr.n)return null;
+var x0=1e9,x1=-1e9,z0=1e9,z1=-1e9,T=tr.T;
+for(i=0;i<tr.n*3;i++){var X=T[i*3],Z=T[i*3+2];if(X<x0)x0=X;if(X>x1)x1=X;if(Z<z0)z0=Z;if(Z>z1)z1=Z;}
+var G=_d3abGrid(T,tr.n,{u:u,wet:tr.wet,tops:1,walls:!(typeof _D3!=='undefined'&&_D3&&_D3._noInWalls),
+x0:Math.max(x0,win.x0)-u,x1:Math.min(x1,win.x1)+u,z0:Math.max(z0,win.z0)-u,z1:Math.min(z1,win.z1)+u});
+return G?{G:G,tr:tr,u:u,mpu:mpu}:null;
+}
+var _D3_IN_CEIL=12;
+var _D3_IN_ROOM=3;
+var _D3_IN_OPEN=0.3;
+var _D3_IN_RAY=8;
+var _D3_IN_PORCH=3;
+var _D3_IN_STOREY=1.5;
+var _D3_IN_FLOOR_A=12;
+var _D3_IN_DOOR=1.8;
+var _D3_IN_FURN=[['seat',0.35,0.62],['table',0.62,0.85],['counter',0.85,1.3]];
+var _D3_IN_BED=1.5;
+function _d3inCovered(W,nd){var G=W.G,q=nd>>2,k=nd&3,F=nd>=0&&G.fl[q];return !!(F&&k<F.length&&W.rm[nd]&&G.gp[q][k]-F[k]<_D3_IN_CEIL*(W.vu||W.u));}
+function _d3inPorch(W,nd){return !!(W.sky&&W.sky[nd]>=_D3_IN_PORCH);}
+function _d3inIndoor(W,nd){var r=nd>=0?W.roomOf[nd]:-1;return r>=0&&!W.rooms[r].porch;}
+function _d3inSkies(W){var G=W.G,N=G.nx*G.nz*4,S=new Uint8Array(N),nd;for(nd=0;nd<N;nd++)if(_d3inCovered(W,nd))S[nd]=_d3inSky(W,nd);W.sky=S;return S;}
+function _d3inSky(W,nd){
+var G=W.G,u=W.u,cs=G.cs,lo=_D3_AB_BODY[0]*u,hi=_D3_AB_BODY[1]*u,ceil=_D3_IN_CEIL*(W.vu||u),p=_d3abNodeAt(W,nd),n=0,d;
+var i0=Math.floor((p.x-G.x0)/cs),j0=Math.floor((p.z-G.z0)/cs),DI=[1,1,0,-1,-1,-1,0,1],DJ=[0,1,1,1,0,-1,-1,-1];
+for(d=0;d<8;d++){var di=DI[d],dj=DJ[d],m=Math.ceil(_D3_IN_RAY*u/(cs*Math.hypot(di,dj))),y=p.y,s,sky=false;
+for(s=1;s<=m;s++){var i=i0+di*s,j=j0+dj*s;if(i<0||j<0||i>=G.nx||j>=G.nz){sky=true;break;}
+var q=i*G.nz+j,F=G.fl[q],t=G.tp[q],k,f=-1,b=-1;
+if(F)for(k=0;k<F.length&&k<4;k++){if(F[k]<=y+G.step&&F[k]>=y-G.drop)f=k;else if(F[k]<y)b=k;}
+if(f>=0){if((G.wl[q]>>f)&1)break;y=F[f];if(!(G.gp[q][f]-y<ceil)){sky=true;break;}continue;}
+if(!(t===t)){sky=true;break;}
+if(b>=0){if(G.gp[q][b]<y+hi)break;if(!(G.gp[q][b]-y<ceil)){sky=true;break;}continue;}
+if(G.bt&&G.bt[q]>=y+hi){if(!(G.bt[q]-y<ceil)){sky=true;break;}continue;}
+if(t<y+lo){sky=true;break;}
+break;}
+if(sky)n++;}
+return n;
+}
+function _d3inRooms(W){
+var G=W.G,N=G.nx*G.nz*4,of=new Int32Array(N).fill(-1),R=[],nb=[],nd,k,m2=G.cs*G.cs*W.mpu*W.mpu,seen=new Uint8Array(N),pass,np=0;
+for(pass=0;pass<2;pass++)for(nd=0;nd<N;nd++){if(seen[nd]||!_d3inCovered(W,nd)||_d3inPorch(W,nd)!==!!pass)continue;
+var Q=[nd],h=0,sy=0,sx=0,sz=0,x0=1e9,x1=-1e9,z0=1e9,z1=-1e9;seen[nd]=1;
+while(h<Q.length){var c=Q[h++],p=_d3abNodeAt(W,c);sy+=p.y;sx+=p.x;sz+=p.z;
+if(p.x<x0)x0=p.x;if(p.x>x1)x1=p.x;if(p.z<z0)z0=p.z;if(p.z>z1)z1=p.z;
+_d3abNext(W,c,nb);for(k=0;k<nb.length;k++){var m=nb[k];if(!seen[m]&&_d3inCovered(W,m)&&_d3inPorch(W,m)===!!pass&&Math.abs(G.fl[m>>2][m&3]-p.y)<=G.step){seen[m]=1;Q.push(m);}}}
+if(Q.length*m2<_D3_IN_ROOM)continue;
+var po=(pass||_d3inOpen(W,Q)>_D3_IN_OPEN)?1:0;np+=po;
+var r={i:R.length,n:Q.length,area:Q.length*m2,y:sy/Q.length,cx:sx/Q.length,cz:sz/Q.length,x0:x0,x1:x1,z0:z0,z1:z1,nodes:Q,porch:po};
+for(k=0;k<Q.length;k++)of[Q[k]]=r.i;R.push(r);}
+W.rooms=R;W.roomOf=of;W.porches=np;return R;
+}
+function _d3inOpen(W,Q){
+var G=W.G,u=W.vu||W.u,mine=new Uint8Array(G.nx*G.nz*4),n=0,o=0,i,k,D=[[1,0],[-1,0],[0,1],[0,-1]];
+for(i=0;i<Q.length;i++)mine[Q[i]]=1;
+for(i=0;i<Q.length;i++){var p=_d3abNodeAt(W,Q[i]);
+for(k=0;k<4;k++){var x=p.x+D[k][0]*G.cs,z=p.z+D[k][1]*G.cs,m=_d3abNodeOf(W,x,z,p.y);if(m>=0&&mine[m])continue;n++;
+var ci=Math.floor((x-G.x0)/G.cs),cj=Math.floor((z-G.z0)/G.cs);if(ci<0||cj<0||ci>=G.nx||cj>=G.nz){o++;continue;}
+var q=ci*G.nz+cj,h=_d3abFloor(G,x,z,p.y,G.step,G.drop,1);
+if(!isFinite(h)){if(!(G.tp[q]>p.y+0.3*u))o++;continue;}
+var F=G.fl[q],f;for(f=0;F&&f<F.length&&f<4;f++)if(Math.abs(F[f]-h)<1e-6&&(!(G.gp[q][f]-F[f]<_D3_IN_CEIL*u)||(W.sky&&W.sky[q*4+f]>=_D3_IN_PORCH)))o++;}}
+return n?o/n:0;
+}
+function _d3inStoreyName(n){return n<0?(n===-1?'Cellar':'Lower cellar'):(['Ground floor','First floor','Second floor','Third floor'][n]||('Floor '+n));}
+function _d3inStoreys(W){
+var R=W.rooms.slice().sort(function(a,b){return b.area-a.area;}),S=[],lim=_D3_IN_STOREY*W.u,g0=0,bd=1e18;
+R.forEach(function(r){var s=null,d=lim;S.forEach(function(t){var e=Math.abs(r.y-t.y0);if(e<d){d=e;s=t;}});if(s)s.rooms.push(r);else S.push({y0:r.y,rooms:[r]});});
+S.sort(function(a,b){return a.y0-b.y0;});
+S.forEach(function(s){var a=0,y=0;s.rooms.forEach(function(r){a+=r.area;y+=r.y*r.area;});s.y=y/a;s.area=a;});
+S=S.filter(function(s){return s.area>=_D3_IN_FLOOR_A;});
+var keep=[];S.forEach(function(s,ix){s.i=ix;s.rooms.forEach(function(r){r.s=ix;keep.push(r);});var d=Math.abs(s.y);if(d<bd){bd=d;g0=ix;}});
+if(keep.length<W.rooms.length){W.roomOf.fill(-1);keep.forEach(function(r,ix){r.i=ix;for(var k=0;k<r.nodes.length;k++)W.roomOf[r.nodes[k]]=ix;});W.rooms=keep;}
+S.forEach(function(s,ix){s.lvl=ix-g0;s.name=_d3inStoreyName(ix-g0);});
+W.storeys=S;W.lv=S.map(function(s,ix){return [ix?(S[ix-1].y+s.y)/2*W.mpu:-1e4,(ix<S.length-1)?(s.y+S[ix+1].y)/2*W.mpu:1e4,s.name];});
+return S;
+}
+function _d3inEntry(W,from){
+var I=W.rooms.filter(function(r){return !r.porch;}),R=I.length?I:W.rooms,big=R.some(function(r){return r.area>=8;}),best=-1,bd=1e18,S=1.5*W.u;
+R.forEach(function(r){if(big&&r.area<8)return;r.nodes.forEach(function(nd){
+var p=_d3abNodeAt(W,nd),d=Math.hypot(p.x-from.x,p.z-from.z)+Math.abs(p.y-from.y)*3+((W.sky&&W.sky[nd])?S:0);if(d<bd){bd=d;best=nd;}});});
+return best>=0?_d3abNodeAt(W,best):null;
+}
+function _d3inWallBetween(W,na,nb){
+var G=W.G,a=_d3abNodeAt(W,na),b=_d3abNodeAt(W,nb),n=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)/(G.cs*0.5))),k;
+for(k=1;k<n;k++){var f=k/n,x=a.x+(b.x-a.x)*f,z=a.z+(b.z-a.z)*f,y=a.y+(b.y-a.y)*f,h=_d3abFloor(G,x,z,y,1.3*(W.vu||W.u),G.drop,1);
+if(isFinite(h)&&h>y+G.step)return false;}
+return true;
+}
+function _d3inStairPairs(W,near){
+var S=W.storeys,out=[],i;
+for(i=0;i+1<S.length;i++)S[i+1].rooms.forEach(function(B){if(B.area<6)return;var over={};B.nodes.forEach(function(nd){over[nd>>2]=nd;});
+S[i].rooms.forEach(function(A){var ba=-1,bb=-1,bd=1e18;A.nodes.forEach(function(nd){var m=over[nd>>2];if(m==null)return;
+var p=_d3abNodeAt(W,nd),d=Math.hypot(p.x-near.x,p.z-near.z);if(d<bd){bd=d;ba=nd;bb=m;}});
+if(ba>=0)out.push({A:A.i,B:B.i,d:bd,a:ba,b:bb,up:'Up the stairs to the '+S[i+1].name.toLowerCase(),dn:'Down the stairs to the '+S[i].name.toLowerCase()});});});
+return out;
+}
+function _d3inDoorPairs(W){
+var G=W.G,out=[],rc=Math.ceil(_D3_IN_DOOR*W.u/G.cs);
+W.storeys.forEach(function(s){if(s.rooms.length<2)return;
+var at={},pairs={};s.rooms.forEach(function(r){r.nodes.forEach(function(nd){at[nd>>2]=nd;});});
+s.rooms.forEach(function(A){A.nodes.forEach(function(nd){var q=nd>>2,ci=Math.floor(q/G.nz),cj=q-ci*G.nz,a,b;
+for(a=-rc;a<=rc;a++)for(b=-rc;b<=rc;b++){var i2=ci+a,j2=cj+b;if(i2<0||j2<0||i2>=G.nx||j2>=G.nz)continue;
+var m=at[i2*G.nz+j2];if(m==null)continue;var rB=W.roomOf[m];if(rB<=A.i)continue;
+var d=Math.hypot(a,b)*G.cs;if(d>_D3_IN_DOOR*W.u)continue;var key=A.i+','+rB,P=pairs[key];if(!P||d<P.d)pairs[key]={A:A.i,B:rB,d:d,a:nd,b:m};}});});
+for(var k in pairs)out.push(pairs[k]);});
+return out;
+}
+function _d3inNearPair(W,A,B){
+var sa=Math.max(1,Math.floor(A.nodes.length/300)),sb=Math.max(1,Math.floor(B.nodes.length/300)),best=null,i,j;
+for(i=0;i<A.nodes.length;i+=sa){var p=_d3abNodeAt(W,A.nodes[i]);for(j=0;j<B.nodes.length;j+=sb){var q=_d3abNodeAt(W,B.nodes[j]),d=Math.hypot(p.x-q.x,p.z-q.z);
+if(!best||d<best.d)best={d:d,a:A.nodes[i],b:B.nodes[j]};}}
+return best;
+}
+function _d3inJoin(W,sp){
+var par={},out=[],tried={},gap=function(r,t){return Math.max(0,t.x0-r.x1,r.x0-t.x1,t.z0-r.z1,r.z0-t.z1);};
+function f(x){while(par[x]!=null&&par[x]!==x)x=par[x];return x;}
+function link(p,stair){var a=f(p.A),b=f(p.B);if(a===b)return;par[a]=b;var wall=stair||_d3inWallBetween(W,p.a,p.b),A=_d3abNodeAt(W,p.a),B=_d3abNodeAt(W,p.b);
+out.push(stair?{a:A,b:B,up:p.up,dn:p.dn,ic:null}:{a:A,b:B,up:wall?'Through to the next room':'Squeeze past',dn:wall?'Through to the next room':'Squeeze past',ic:wall?'🚪':'🚶'});}
+(W.doorC||[]).slice().sort(function(x,y){return x.d-y.d;}).forEach(function(p){link(p,false);});
+W.storeys.forEach(function(s){for(var go=1;go;){go=0;var best=null;
+s.rooms.forEach(function(r){s.rooms.forEach(function(t){if(t.i<=r.i||f(t.i)===f(r.i)||tried[r.i+','+t.i])return;var g=gap(r,t);if(g<=8*W.u&&(!best||g<best.g))best={g:g,r:r,t:t};});});
+if(!best)break;tried[best.r.i+','+best.t.i]=1;go=1;var q=_d3inNearPair(W,best.r,best.t);if(q&&q.d<=8*W.u)link({A:best.r.i,B:best.t.i,a:q.a,b:q.b},false);}});
+_d3inStairPairs(W,sp).sort(function(x,y){return x.d-y.d;}).forEach(function(p){link(p,true);});
+W.storeys.forEach(function(s,i){var t=W.storeys[i+1];if(!t)return;
+t.rooms.slice().sort(function(x,y){return y.area-x.area;}).forEach(function(B){if(B.area<6||s.rooms.some(function(A){return f(A.i)===f(B.i);}))return;
+var A=null,g=1e18;s.rooms.forEach(function(r){var e=gap(r,B);if(e<g){g=e;A=r;}});var q=A&&_d3inNearPair(W,A,B);
+if(q)link({A:A.i,B:B.i,a:q.a,b:q.b,up:'Up the stairs to the '+t.name.toLowerCase(),dn:'Down the stairs to the '+s.name.toLowerCase()},true);});});
+return out;
+}
+var _D3_IN_NARROW={seat:0.3,table:0.45,counter:0.4,bed:0.8};
+function _d3inParts(W,st){
+var G=W.G,u=W.vu||W.u,m2=G.cs*G.cs/(u*u),pieces=[];
+W.storeys.forEach(function(s){
+var x0=1e9,x1=-1e9,z0=1e9,z1=-1e9;s.rooms.forEach(function(r){x0=Math.min(x0,r.x0);x1=Math.max(x1,r.x1);z0=Math.min(z0,r.z0);z1=Math.max(z1,r.z1);});
+var i0=Math.max(0,Math.floor((x0-u-G.x0)/G.cs)),i1=Math.min(G.nx-1,Math.floor((x1+u-G.x0)/G.cs)),j0=Math.max(0,Math.floor((z0-u-G.z0)/G.cs)),j1=Math.min(G.nz-1,Math.floor((z1+u-G.z0)/G.cs));
+var cls={},top={},i,j,k;
+for(i=i0;i<=i1;i++)for(j=j0;j<=j1;j++){var q=i*G.nz+j,F=G.tops?G.tops[q]:G.fl[q];if(!F)continue;
+for(k=0;k<F.length;k++){var dh=(F[k]-s.y)/u;if(!(G.tp[q]>F[k]+0.3*u))continue;
+for(var c=0;c<_D3_IN_FURN.length;c++)if(dh>=_D3_IN_FURN[c][1]&&dh<_D3_IN_FURN[c][2]){cls[q]=c;top[q]=F[k];break;}
+if(cls[q]!=null)break;}}
+var done={};Object.keys(cls).forEach(function(q0){q0=+q0;if(done[q0])return;var c=cls[q0],Q=[q0],h=0,a=1e9,b=-1e9,e=1e9,f=-1e9,t=0;done[q0]=1;
+while(h<Q.length){var q=Q[h++],ci=Math.floor(q/G.nz),cj=q-ci*G.nz,cx=G.x0+(ci+0.5)*G.cs,cz=G.z0+(cj+0.5)*G.cs;t+=top[q];
+if(cx<a)a=cx;if(cx>b)b=cx;if(cz<e)e=cz;if(cz>f)f=cz;
+[[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){var i2=ci+d[0],j2=cj+d[1];if(i2<0||j2<0||i2>=G.nx||j2>=G.nz)return;var q2=i2*G.nz+j2;
+if(!done[q2]&&cls[q2]===c&&Math.abs(top[q2]-top[q])<0.06*u){done[q2]=1;Q.push(q2);}});}
+var ar=Q.length*m2;if(ar<0.12||ar>40)return;
+var kind=_D3_IN_FURN[c][0];if(kind==='seat'&&ar>=_D3_IN_BED)kind='bed';
+if(Math.min(b-a,f-e)+G.cs<_D3_IN_NARROW[kind]*u)return;
+pieces.push({kind:kind,area:ar,s:s.i,box:[a-G.cs/2,s.y,e-G.cs/2,b+G.cs/2,t/Q.length,f+G.cs/2],by:_d3inBeside(W,a,b,e,f,s.y)});});});
+pieces.sort(function(p,q){return (q.by-p.by)||(Math.abs(p.s-st)-Math.abs(q.s-st))||(q.area-p.area);});
+var out={},n={};pieces.forEach(function(p){n[p.kind]=(n[p.kind]||0)+1;out[p.kind+(n[p.kind]>1?n[p.kind]:'')]=p.box;});
+return out;
+}
+function _d3inBeside(W,x0,x1,z0,z1,y){
+var G=W.G,m=1.5*(W.vu||W.u),i0=Math.max(0,Math.floor((x0-m-G.x0)/G.cs)),i1=Math.min(G.nx-1,Math.floor((x1+m-G.x0)/G.cs)),j0=Math.max(0,Math.floor((z0-m-G.z0)/G.cs)),j1=Math.min(G.nz-1,Math.floor((z1+m-G.z0)/G.cs)),i,j,k;
+if(!W.reach)return 0;
+for(i=i0;i<=i1;i++)for(j=j0;j<=j1;j++){var q=i*G.nz+j,F=G.fl[q];if(!F)continue;for(k=0;k<F.length&&k<4;k++)if(Math.abs(F[k]-y)<G.step&&W.reach[q*4+k])return 1;}
+return 0;
+}
+function _d3inWho(W){
+var sp=W.spawn;if(!sp)return null;
+if(W.parts.counter){var a=_d3abAnchor(W,{part:'counter'},[sp]);if(a)return a;}
+var r=W.rooms[W.roomOf[sp.node]];if(!r)return null;var best=null,bd=1e18;
+r.nodes.forEach(function(nd){if(!W.reach[nd])return;var p=_d3abNodeAt(W,nd);if(Math.hypot(p.x-sp.x,p.z-sp.z)<1.5*W.u)return;
+var d=Math.hypot(p.x-r.cx,p.z-r.cz);if(d<bd){bd=d;best=p;}});
+return best||sp;
+}
+var _D3_IN_ACTS={
+in_chat:{t:'talk',i:'💬',lbl:'Whoever lives here',verb:'Have a word',xp:2,stat:'inFun',lines:['Hello there.','Make yourself at home.']},
+in_ale:{t:'buy',i:'🍺',lbl:'The bar',verb:'Order a drink',stat:'inFun',drink:1,items:[['Half of ale',4,6,2],['Cider',5,7,2],['Mulled wine',7,9,4],['A round for the house',40,22,0]]},
+in_pie:{t:'buy',i:'🥧',lbl:'A table',verb:'Order a hot meal',stat:'inFun',items:[['A bowl of stew',8,5,45],['Pie and mash',12,6,60],['The Sunday roast',18,8,75]]},
+in_fire:{t:'rest',i:'🔥',lbl:'By the fire',verb:'Sit by the fire',mins:30,mood:12,energy:10,price:0,stat:'inFun',say:'You pull a chair up to the hearth and warm your hands.'},
+in_darts:{t:'timing',i:'🎯',lbl:'The dartboard',verb:'Throw some darts',unit:'dart',rounds:6,speed:1.0,zone:0.16,pay:0,xp:3,mood:3,stat:'inFun',say:'Throw as the sight crosses the bull.'},
+in_bellows:{t:'timing',i:'⚒️',lbl:'The forge',verb:'Work the bellows',unit:'heat',rounds:5,speed:0.8,zone:0.2,pay:9,xp:4,energy:-4,stat:'inJobs',say:'Pump as the coals dim: keep the iron at a working heat.'},
+in_shoe:{t:'buy',i:'🧲',lbl:'The smith',verb:'Buy something forged',stat:'inFun',items:[['A horseshoe, for luck',5,6,0],['A hand-forged hook',12,8,0]]},
+in_bell:{t:'timing',i:'🔔',lbl:'The bell rope',verb:'Ring the bells',unit:'peal',rounds:6,speed:0.7,zone:0.22,pay:0,xp:3,mood:3,stat:'inFun',say:'Pull as the rope comes down: keep the peal in time.'},
+in_pew:{t:'rest',i:'⛪',lbl:'A pew',verb:'Sit quietly a while',mins:20,mood:14,energy:6,price:0,stat:'inFun',say:'It is cool and still in here. You sit and let the day go by.'},
+in_candle:{t:'buy',i:'🕯️',lbl:'The candles',verb:'Light a candle',stat:'inFun',items:[['A candle',1,6,0]]},
+in_churn:{t:'timing',i:'🧈',lbl:'The kitchen table',verb:'Churn the butter',unit:'churn',rounds:6,speed:0.75,zone:0.22,pay:6,xp:3,energy:-3,stat:'inJobs',say:'Plunge as the paddle comes up: the cream turns to butter.'},
+in_eggs:{t:'buy',i:'🥚',lbl:'The farm',verb:'Buy from the farm',stat:'inFun',items:[['A dozen eggs',4,3,20],['A jug of milk',3,3,15],['A round of cheese',9,5,35]]},
+in_kitchen:{t:'rest',i:'🫖',lbl:'The kitchen',verb:'A mug of tea by the range',mins:15,mood:8,energy:10,price:0,stat:'inFun',say:'Warm from the range, a mug of strong tea and the farm dog at your feet.'},
+in_grind:{t:'timing',i:'🌾',lbl:'The millstones',verb:'Grind the flour',unit:'sack',rounds:5,speed:0.7,zone:0.22,pay:8,xp:4,energy:-4,stat:'inJobs',say:'Feed the grain in as the stone comes round.'},
+in_bread:{t:'buy',i:'🍞',lbl:'The mill',verb:'Buy bread',stat:'inFun',items:[['A fresh loaf',3,4,25],['A bag of buns',5,5,30]]},
+in_shop:{t:'buy',i:'🛒',lbl:'The counter',verb:'Buy something',stat:'inFun',items:[['Apples',2,3,15],['A sandwich',5,4,35],['Chocolate',3,6,10],['A newspaper',2,4,0]]},
+in_stock:{t:'timing',i:'📦',lbl:'The shelves',verb:'Stack the shelves',unit:'box',rounds:6,speed:0.8,zone:0.22,pay:7,xp:3,energy:-3,stat:'inJobs',say:'Slot each box in as the gap comes level.'},
+in_stalls:{t:'buy',i:'🧺',lbl:'The stalls',verb:'Browse the stalls',stat:'inFun',items:[['A punnet of berries',3,4,12],['A hot pie',6,5,40],['A bunch of flowers',8,10,0]]},
+in_coffee:{t:'buy',i:'☕',lbl:'The counter',verb:'Order a coffee',stat:'inFun',items:[['Espresso',3,4,14],['Latte',4,5,12],['Hot chocolate',4,6,10],['A slice of cake',5,7,22]]},
+in_paper:{t:'rest',i:'📰',lbl:'A table',verb:'Read the paper',mins:20,mood:9,energy:5,price:2,stat:'inFun',say:'A corner table, a coffee going cold and the island’s news.'},
+in_barista:{t:'timing',i:'☕',lbl:'The espresso machine',verb:'Pull a few shots',unit:'shot',rounds:6,speed:0.95,zone:0.18,pay:6,xp:3,stat:'inJobs',say:'Stop each shot as the crema turns gold.'},
+in_meal:{t:'buy',i:'🍔',lbl:'The counter',verb:'Order at the counter',stat:'inFun',items:[['Fries',3,4,20],['A burger',6,6,45],['A milkshake',4,7,15],['The meal deal',10,9,70]]},
+in_grill:{t:'timing',i:'🔥',lbl:'The grill',verb:'Work a shift on the grill',unit:'order',rounds:8,speed:1.05,zone:0.18,pay:5,xp:3,energy:-5,stat:'inJobs',say:'Flip each patty as it comes up to the mark.'},
+in_booth:{t:'rest',i:'🍟',lbl:'A booth',verb:'Sit in a booth',mins:15,mood:7,energy:6,price:0,stat:'inFun',say:'You slide into a booth by the window and watch the traffic go by.'},
+in_room:{t:'rest',i:'🛏️',lbl:'A room',verb:'Take a room for the night',mins:480,mood:20,energy:100,price:60,stat:'inFun',say:'Crisp sheets, a view of the island and a long, deep sleep.'},
+in_lobby:{t:'buy',i:'🍸',lbl:'The lobby bar',verb:'A drink in the lobby',stat:'inFun',drink:1,items:[['Lemonade',4,4,4],['A gin and tonic',12,10,0],['Champagne',30,15,0]]},
+in_bags:{t:'timing',i:'🛎️',lbl:'The lobby',verb:'Carry the guests’ bags',unit:'bag',rounds:5,speed:0.85,zone:0.2,pay:8,xp:3,energy:-4,stat:'inJobs',say:'Lift each case as the porter’s trolley comes past.'},
+in_lesson:{t:'talk',i:'📚',lbl:'The classroom',verb:'Sit in on a lesson',xp:10,stat:'inFun',lines:['Today: the island’s rocks, and why the gold sits where it does.','“Quartz veins, everyone. Follow the quartz.” You take notes.']},
+in_mark:{t:'timing',i:'✏️',lbl:'The teacher’s desk',verb:'Mark the homework',unit:'book',rounds:6,speed:0.8,zone:0.22,pay:5,xp:4,stat:'inJobs',say:'Tick each answer as your pen reaches it.'},
+in_checkup:{t:'rest',i:'🩺',lbl:'A bed on the ward',verb:'Have a check-up',mins:30,mood:8,energy:40,price:15,stat:'inFun',say:'The doctor listens to your chest, taps your knee and tells you to walk more.'},
+in_canteen:{t:'buy',i:'🥪',lbl:'The canteen',verb:'Eat in the canteen',stat:'inFun',items:[['A cup of tea',1,2,8],['A sandwich',4,3,35],['Soup and a roll',5,4,45]]},
+in_ward:{t:'timing',i:'🛏️',lbl:'The ward',verb:'Help on the ward',unit:'bed',rounds:5,speed:0.8,zone:0.2,pay:9,xp:5,energy:-4,stat:'inJobs',say:'Change each bed as the trolley comes round.'},
+in_polish:{t:'timing',i:'🚒',lbl:'The engine bay',verb:'Polish the engine',unit:'panel',rounds:6,speed:0.8,zone:0.22,pay:6,xp:3,energy:-3,stat:'inJobs',say:'Buff each panel as the cloth comes across.'},
+in_pole:{t:'look',i:'🧯',lbl:'The pole',verb:'Slide down the pole',emote:'cheer',xp:4,stat:'inFun',say:'Hands and knees round the brass, and down you go. The crew cheers.'},
+in_report:{t:'talk',i:'👮',lbl:'The front desk',verb:'Report what you have seen',xp:6,stat:'inFun',lines:['“Anything to report?” You tell them about the traffic on the coast road.','“Good eyes. We’ll keep a car on it.”']},
+in_files:{t:'timing',i:'🗂️',lbl:'The filing',verb:'Do the filing',unit:'file',rounds:6,speed:0.85,zone:0.2,pay:6,xp:3,stat:'inJobs',say:'Drop each file in as its drawer comes level.'},
+in_cooler:{t:'look',i:'🚰',lbl:'The water cooler',verb:'Hang about the water cooler',emote:'laugh',xp:2,stat:'inFun',say:'Someone’s cousin saw a whale off the point. Someone else saw two.'},
+in_tune:{t:'timing',i:'🔧',lbl:'The workshop',verb:'Tune an engine',unit:'cylinder',rounds:6,speed:0.95,zone:0.18,pay:10,xp:4,energy:-3,stat:'inJobs',say:'Set each plug as the timing light flashes.'},
+in_brew:{t:'rest',i:'🫖',lbl:'The kettle',verb:'Have a brew',mins:10,mood:6,energy:10,price:0,stat:'inFun',say:'A chipped mug, sugar from the bag and a sit-down.'},
+in_timetable:{t:'talk',i:'🚂',lbl:'The stationmaster',verb:'Ask about the trains',xp:4,stat:'inFun',lines:['“Next one through is on time. They always are, here.”','The timetable, every line of it in a neat hand.']},
+in_ticket:{t:'buy',i:'🎫',lbl:'The ticket office',verb:'Buy a ticket',stat:'inFun',items:[['A platform ticket',1,3,0],['A day return',6,8,0]]},
+in_brief:{t:'talk',i:'✈️',lbl:'Flight operations',verb:'Hear the weather briefing',xp:5,stat:'inFun',lines:['“Wind’s off the sea at twelve knots. Good flying.”','The chart: the island, the reef, and the way home.']},
+in_flies:{t:'timing',i:'🪰',lbl:'The fly-tying bench',verb:'Tie some flies',unit:'fly',rounds:5,speed:0.8,zone:0.2,pay:4,xp:3,stat:'inJobs',say:'Wrap each turn as the bobbin comes round.'},
+in_dine:{t:'buy',i:'🍷',lbl:'The long table',verb:'Dine in the great hall',stat:'inFun',items:[['Venison stew',20,10,60],['The feast',45,18,90]]},
+in_library:{t:'rest',i:'📖',lbl:'The library',verb:'Read in the library',mins:40,mood:16,energy:8,price:0,stat:'inFun',say:'Leather chairs, a fire, and a book about the island’s first miners.'},
+in_hall:{t:'look',i:'🏰',lbl:'The great hall',verb:'Admire the great hall',emote:'point',xp:4,stat:'inFun',say:'Banners, a gallery and a fireplace you could stand up in.'},
+in_gauges:{t:'look',i:'🛠️',lbl:'The gauges',verb:'Read the gauges',emote:'point',xp:3,stat:'inFun',say:'Pressure good. Checked twice anyway.'},
+in_ride:{t:'timing',i:'🎠',lbl:'The sideshow',verb:'Try the hoopla',unit:'hoop',rounds:5,speed:1.0,zone:0.16,pay:0,xp:3,mood:3,stat:'inFun',say:'Throw as the peg comes round.'},
+in_view:{t:'look',i:'🔭',lbl:'The window',verb:'Take in the view',emote:'point',xp:3,stat:'inFun',say:'The whole island laid out below: the town, the roads and the sea.'},
+in_fortune:{t:'talk',i:'🔮',lbl:'The crystal ball',verb:'Have your fortune told',xp:5,stat:'inFun',lines:['A long look into the glass. “Gold, deep down, where the quartz runs.”','“And a long walk. Wear good boots.”']},
+in_potion:{t:'buy',i:'🧪',lbl:'The shelves',verb:'Buy a potion',stat:'inFun',items:[['A tonic',6,4,30],['Something green',12,12,50]]},
+in_tea:{t:'rest',i:'🫖',lbl:'The kitchen table',verb:'A cup of tea',mins:15,mood:10,energy:8,price:0,stat:'inFun',say:'The kettle on, the good biscuits out, and the news of the street.'},
+in_chores:{t:'timing',i:'🧹',lbl:'The house',verb:'Help with the chores',unit:'job',rounds:5,speed:0.8,zone:0.22,pay:4,xp:3,energy:-3,stat:'inJobs',say:'Sweep, dust, fold: catch each one as it comes.'},
+in_sofa:{t:'rest',i:'🛋️',lbl:'The sofa',verb:'Put your feet up',mins:20,mood:10,energy:12,price:0,stat:'inFun',say:'A soft sofa, a cushion behind your head, and the clock ticking.'},
+in_sleep:{t:'rest',i:'🛏️',lbl:'Your bed',verb:'Sleep in your own bed',mins:480,mood:25,energy:100,price:0,stat:'homeRest',say:'Your own bed, your own pillow. You sleep like a log.'}
+};
+(function(){var k;for(k in _D3_IN_ACTS)_D3_AB_ACTS[k]=_D3_IN_ACTS[k];})();
+var _D3_IN_ROLE={
+innkeeper:[['in_ale','counter'],['in_pie','table'],['in_fire','seat'],['in_darts','room']],
+smith:[['in_bellows','room'],['in_shoe','who']],
+vicar:[['in_bell','room'],['in_pew','seat'],['in_candle','table']],
+farmer:[['in_churn','table'],['in_eggs','who'],['in_kitchen','table']],
+miller:[['in_grind','room'],['in_bread','who']],
+grocer:[['in_shop','counter'],['in_stock','room']],
+cafe:[['in_coffee','counter'],['in_paper','table'],['in_barista','counter']],
+cook:[['in_meal','counter'],['in_grill','counter'],['in_booth','table']],
+hotelier:[['in_room','bed'],['in_lobby','counter'],['in_bags','room']],
+teacher:[['in_lesson','table'],['in_mark','table']],
+doctor:[['in_checkup','bed'],['in_canteen','counter'],['in_ward','room']],
+firechief:[['in_polish','room'],['in_pole','room']],
+constable:[['in_report','who'],['in_files','table']],
+clerk:[['in_files','table'],['in_cooler','room']],
+mechanic:[['in_tune','room'],['in_brew','table']],
+warden:[['in_stalls','counter'],['in_stock','room']],
+stationmaster:[['in_timetable','who'],['in_ticket','counter']],
+miner:[['in_brew','table']],
+pilot:[['in_brief','who']],
+angler:[['in_flies','table'],['in_brew','table']],
+squire:[['in_dine','table'],['in_library','seat'],['in_hall','room']],
+engineer:[['in_gauges','room']],
+showman:[['in_ride','room']],
+groundsman:[['in_brew','table']],
+watchman:[['in_view','room']],
+hermit:[['in_fortune','who'],['in_potion','table']],
+neighbour:[['in_tea','table'],['in_chores','room'],['in_sofa','seat']]
+};
+var _D3_IN_HOME=[['in_sleep','bed'],['in_tea','table'],['in_sofa','seat']];
+function _d3inKind(p){
+var res=p&&p.res,R=res?((typeof _D3_PEOPLE_ROLE!=='undefined'&&_D3_PEOPLE_ROLE[res.role])||null):null,rows;
+if(p&&p.home)rows=_D3_IN_HOME;
+else rows=((res&&!p.away)?[['in_chat','who']]:[]).concat(_D3_IN_ROLE[(res&&res.role)||'neighbour']||_D3_IN_ROLE.neighbour);
+return {n:(p&&p.lbl)||'The house',i:(p&&p.home)?'🏠':((R&&R.i)||'🏠'),
+kind:(p&&p.home)?'Your home':(res?(res.name+(R?', the '+R.lbl:'')+(p.away?' · out '+p.away:'')):''),
+st:rows.map(function(r){return {act:r[0],at:r[1]};})};
+}
+function _d3inSpot(W,at){
+var P=W.parts||{},w=W.who,alt={bed:['bed','seat','table'],seat:['seat','bed','table'],table:['table','counter','seat'],counter:['counter','table']}[at],i;
+if(alt)for(i=0;i<alt.length;i++)if(P[alt[i]])return {part:alt[i]};
+if(at!=='room'&&w)return {at:[w.x,w.y,w.z],r:2.5};
+var r=W.spawn&&W.rooms[W.roomOf[W.spawn.node]];if(r)return {at:[r.cx,r.y,r.cz],r:4};
+return w?{at:[w.x,w.y,w.z],r:3}:null;
+}
+function _d3inStations(W,K){
+var used=[],out=[];W.links.forEach(function(L){if(L.a)used.push(L.a);if(L.b)used.push(L.b);});
+K.st.forEach(function(s,ix){var spec=_d3inSpot(W,s.at),a=spec?_d3abAnchor(W,spec,used):null;
+['who','room'].forEach(function(o){if(!a){spec=_d3inSpot(W,o);a=spec?_d3abAnchor(W,spec,used):null;}});
+if(a)used.push(a);
+out.push({i:ix,act:s.act,part:(spec&&spec.part)||null,a:a,lvl:null,to:null,over:s.over||null});});
+return out;
+}
+var _D3_IN_REACH=3;
+var _D3_IN_KEY='rcgInside';
+var _d3inV=null;
+function _d3inPlaces(){
+var D=_D3,bc=D.buildCount|0,M=D.bldMeshes||[],C=D._inPl;
+if(C&&C.bc===bc&&C.n===M.length&&C.h===(D.homes||[]).length&&!C.wait.some(function(g){return !_d3inWaiting(g);}))return C.L;
+var V=(typeof _d3bldDrawn==='function')?_d3bldDrawn():((typeof _da!=='undefined'&&_da&&_da.village)||[]),byI={},L=[],i;
+try{_d3peopleHere().forEach(function(r){byI[r.i]=r;});}catch(_p){}
+for(i=0;i<V.length;i++){var g=M[i],b=V[i],t=b&&(typeof BLD_TYPES!=='undefined')&&BLD_TYPES[b.k];
+if(!g||!t||t.deleted||(g.userData&&g.userData.bldOnLine))continue;
+L.push({key:'b:'+((b.id!=null)?b.id:i)+':'+(t.custom?'custom':t.key),g:g,i:i,lbl:(t.custom||!t.label)?'Building':t.label,res:byI[i]||null,home:false});}
+(D.homes||[]).forEach(function(h,ix){if(h&&h.obj&&h.obj.parent)L.push({key:'h:'+(h.k||ix),g:h.obj,i:-1,lbl:String(h.lbl||'Your home').replace(/^[^A-Za-z]+/,''),res:null,home:true});});
+L.forEach(function(p){var B=_d3inBoxOf(p.g),T=window.THREE,v=new T.Vector3();p.mpu=_d3inMpu(p.g);
+if(B){v.set((B.min.x+B.max.x)/2,0,(B.min.z+B.max.z)/2);p.g.localToWorld(v);p.c={x:v.x,z:v.z};p.r=Math.hypot(B.max.x-B.min.x,B.max.z-B.min.z)/2*p.mpu/10;}});
+D._inPl={bc:bc,n:M.length,h:(D.homes||[]).length,L:L,wait:L.filter(function(p){return _d3inWaiting(p.g);}).map(function(p){return p.g;})};return L;
+}
+function _d3inWaiting(g){var w=false;g.traverse(function(o){var u=o.userData;if(u&&u.bldGlb&&!u.glbReady)w=true;});return w;}
+function _d3inBoxOf(g){
+var C=_D3._inBox||(_D3._inBox={});if(C[g.uuid]!==undefined)return C[g.uuid];
+var T=window.THREE,inv=new T.Matrix4(),M=new T.Matrix4(),B=new T.Box3(),out=new T.Box3();g.updateMatrixWorld(true);inv.copy(g.matrixWorld).invert();
+g.traverse(function(o){if(!o.isMesh||!o.geometry||_d3inSkip(o,g))return;var gg=o.geometry;if(!gg.boundingBox)gg.computeBoundingBox();
+M.multiplyMatrices(inv,o.matrixWorld);B.copy(gg.boundingBox).applyMatrix4(M);if(!B.isEmpty())out.union(B);});
+out=out.isEmpty()?null:out;if(!_d3inWaiting(g))C[g.uuid]=out;return out;
+}
+function _d3inNearest(x,z){
+var T=window.THREE,v=_d3inV||(_d3inV=new T.Vector3()),best=null,bs=1e18;
+_d3inPlaces().forEach(function(p){if(!p.c||Math.hypot(p.c.x-x,p.c.z-z)>p.r+_D3_IN_REACH/10)return;var B=_d3inBoxOf(p.g);if(!B)return;
+v.set(x,0,z);p.g.worldToLocal(v);var dx=Math.max(B.min.x-v.x,0,v.x-B.max.x),dz=Math.max(B.min.z-v.z,0,v.z-B.max.z),d=Math.hypot(dx,dz)*p.mpu;
+if(d>_D3_IN_REACH)return;var s=d+Math.hypot(v.x-(B.min.x+B.max.x)/2,v.z-(B.min.z+B.max.z)/2)*p.mpu*0.001;if(s<bs){bs=s;best={p:p,d:d};}});
+return best;
+}
+function _d3inDoorTick(H,dt){
+if(!H||!H.on)return;H.inT=(H.inT||0)+(dt||0);if(H.inT<0.25&&H.inT>0)return;H.inT=1e-6;
+var n=null;if(!_D3._noInside)try{n=_d3inNearest(H.S.x,H.S.z);}catch(_n){}
+var p=(n&&!(_D3._inNone&&_D3._inNone[n.p.key]===(_D3.buildCount|0)))?n.p:null;H.door=p;
+var el=document.getElementById('d3MeDoor');if(!el)return;var txt=p?('🚪 Go in · '+p.lbl):'';
+if(el._t!==txt){el._t=txt;el.style.display=txt?'':'none';el.innerHTML=txt?'<button data-me="door" style="pointer-events:auto;height:44px;padding:0 18px;border-radius:22px;border:none;'+
+'background:#2f7fd1;color:#fff;font:700 15px system-ui,-apple-system,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,0.4)">'+_d3abEsc(txt)+'</button>':'';}
+}
+function _d3inGoNear(){var H=_D3&&_D3.me;if(!H||!H.on||!H.door)return false;return _d3inGoIn(H.door,{x:H.S.x,z:H.S.z,h:H.S.h});}
+function _d3inGoIn(p,at){
+if(!p||!_D3||!_D3.scene||_D3._noInside||_D3._inBusy)return false;
+var C=_D3._inWalk,e=C&&C[p.key];if(e&&e.bc===(_D3.buildCount|0)&&e.g===p.g)return _d3inEnter(p,at);
+_D3._inBusy=1;try{showToast('🚪 Going into the '+p.lbl+'…',1600);}catch(_t){}
+setTimeout(function(){_D3._inBusy=0;try{_d3inEnter(p,at);}catch(_e){try{if(window.console&&console.warn)console.warn('[RC Garage] going in failed:',_e&&_e.message);}catch(_){}}},40);
+return true;
+}
+function _d3inWalk(p,from){
+var C=_D3._inWalk||(_D3._inWalk={}),bc=_D3.buildCount|0,e=C[p.key],k;
+if(_d3inWaiting(p.g))return null;
+if(!(e&&e.bc===bc&&e.g===p.g)){for(k in C)delete C[k];e=C[p.key]={bc:bc,g:p.g,B:_d3inBase(p.g,from)};}
+return e.B?_d3inWalkFrom(e.B,from,p.key):null;
+}
+function _d3inBase(g,from){var R=_d3inGridOf(g,from);return R?_d3inBaseOf(R.G,R.u,R.mpu,R.tr.n):null;}
+function _d3inBaseOf(G,u,mpu,n){
+var i,k,s=_d3inScale(G,u),W={G:G,u:u,mpu:mpu,vs:s,vu:u*s,jump:{},tris:n,rm:new Uint8Array(G.nx*G.nz*4)};
+for(i=0;i<G.nx*G.nz;i++){var F=G.fl[i];if(!F)continue;var ci=Math.floor(i/G.nz),cj=i-ci*G.nz,cx=G.x0+(ci+0.5)*G.cs,cz=G.z0+(cj+0.5)*G.cs;
+for(k=0;k<F.length&&k<4;k++)if(_d3abRoom(G,cx,cz,F[k]))W.rm[i*4+k]=1;}
+_d3inSkies(W);_d3inRooms(W);_d3inStoreys(W);W.doorC=_d3inDoorPairs(W);return W;
+}
+function _d3inWalkFrom(B,from,id){
+var W={id:id,K:null,G:B.G,u:B.u,mpu:B.mpu,vs:B.vs,vu:B.vu,rm:B.rm,rooms:B.rooms,roomOf:B.roomOf,porches:B.porches,sky:B.sky,storeys:B.storeys,lv:B.lv,doorC:B.doorC,tris:B.tris,jump:{},links:[],st:[],parts:{},reach:null},i;
+W.spawn=_d3inEntry(W,from);if(!W.spawn)return W;
+_d3inJoin(W,W.spawn).forEach(function(l,ix){var L={i:ix,a:l.a,b:l.b,up:l.up,dn:l.dn,ic:l.ic};W.links.push(L);
+(W.jump[l.a.node]||(W.jump[l.a.node]=[])).push(l.b.node);(W.jump[l.b.node]||(W.jump[l.b.node]=[])).push(l.a.node);});
+var prev=_d3abFlood(W,W.spawn.node,-1),n=0;W.reach=new Uint8Array(prev.length);for(i=0;i<prev.length;i++)if(prev[i]!==-2){W.reach[i]=1;n++;}W.walkable=n;
+W.links=W.links.filter(function(L){return W.reach[L.a.node];});W.links.forEach(function(L,ix){L.i=ix;});
+var r=W.rooms[W.roomOf[W.spawn.node]];W.parts=_d3inParts(W,r?r.s:0);W.who=_d3inWho(W);
+return W;
+}
+function _d3inEnter(p,at){
+var T=window.THREE,g=p.g,f=null,v=new T.Vector3();try{f=_d3meFloor(at.x,at.z);}catch(_f){}
+v.set(at.x,(f&&isFinite(f.y))?f.y:0,at.z);g.worldToLocal(v);
+if(_d3inWaiting(g)){try{showToast('The '+p.lbl+' is still being built — try its door again in a moment.',3200);}catch(_t){}return false;}
+var W=_d3inWalk(p,{x:v.x,y:v.y,z:v.z});
+if(!W||!W.spawn){(_D3._inNone||(_D3._inNone={}))[p.key]=_D3.buildCount|0;try{showToast('There is no way into the '+p.lbl+' — no room inside it to stand in.',3600);}catch(_t){}return false;}
+var away=null;try{if(p.res){var w=_d3peopleWhereNow(p.res);if(w&&(w.at==='tavern'||w.at==='market'))away=w.lbl;}}catch(_w){}
+var q={key:p.key,g:p.g,i:p.i,lbl:p.lbl,res:p.res,home:p.home,mpu:p.mpu,away:away},K=_d3inKind(q);K.lv=W.lv;W.K=K;W.st=_d3inStations(W,K);
+W.st.forEach(function(s){if(s.act==='in_chat'&&p.res){var R=_D3_PEOPLE_ROLE[p.res.role]||{},word='';try{word=_d3peopleSayNow(_d3rpgLoad(),p.res);}catch(_s){}
+s.over={lbl:p.res.name+(R.lbl?', the '+R.lbl:''),lines:[word||'Hello.',((_D3_PEOPLE_REMARK.role[p.res.role]||[])[0])||'Make yourself at home.']};}});
+var h=_d3inHeading(g,at.h||0,true);
+_d3abBegin({root:g,h:h,host:{id:'bld',p:q,at:at,out:'🚪 Go out',title:'Inside',exit:null,fig:null,rig:null,
+held:_d3inHeld,hi:_d3inHi,step:_d3inStep,edge:_d3inEdge,end:_d3inEnd}},W);
+var H=_D3.aboard;if(!H||!H.on||!H.host)return false;
+_d3inFigure(H);_d3inLight(true);_d3inSeen(q);return true;
+}
+function _d3inHeading(g,h,inward){
+var T=window.THREE,v=new T.Vector3(Math.cos(h),0,Math.sin(h)),M=new T.Matrix4();g.updateMatrixWorld(true);
+if(inward)M.copy(g.matrixWorld).invert();else M.copy(g.matrixWorld);v.transformDirection(M);return Math.atan2(v.z,v.x);
+}
+function _d3inHeld(H){
+var h=H.host,o;for(o=h.p.g;o;o=o.parent)if(o===_D3.scene)return true;
+var q=null;_D3._inPl=null;_d3inPlaces().forEach(function(p){if(p.key===h.p.key)q=p;});
+if(!q){try{showToast('The '+h.p.lbl+' has gone from the map — back outside.');}catch(_t){}return false;}
+if(h.fig&&h.fig.grp.parent)h.fig.grp.parent.remove(h.fig.grp);h.p.g=q.g;H.root=q.g;if(h.fig)q.g.add(h.fig.grp);
+return true;
+}
+var _D3_IN_EXP=1.45;
+function _d3inLight(on){
+var R=_D3&&_D3.ren;if(!R)return;
+if(on){if(_D3._inExp==null){_D3._inExp=R.toneMappingExposure;R.toneMappingExposure=_D3._inExp*_D3_IN_EXP;}return;}
+if(_D3._inExp!=null){if(Math.abs(R.toneMappingExposure-_D3._inExp*_D3_IN_EXP)<1e-6)R.toneMappingExposure=_D3._inExp;_D3._inExp=null;}
+}
+function _d3inHi(H){
+var h=H.host,p=h.p,K=H.W.K,n=_d3inSaved().n|0;
+if(p.home)return '🏠 Home — '+p.lbl.toLowerCase()+'. Walk with the pads or WASD — 📋 shows what there is to do.';
+return 'Welcome to the '+K.n+'!'+(p.res?(' '+p.res.name+(p.away?' is out '+p.away+'.':' is in.')):'')+' Walk with the pads or WASD — 📋 shows what there is to do.'+(n>1?' ('+n+' places visited)':'');
+}
+function _d3inStep(H,dt,t){
+var h=H.host,f=h.fig,w=H.W.who;if(!f||!w)return;
+var P=H.P,d=Math.hypot(P.x-w.x,P.z-w.z);if(d<4*H.W.vu)f.grp.rotation.y=-Math.atan2(P.z-w.z,P.x-w.x);
+if(h.rig)try{_d3pLive(h.rig,t,dt);}catch(_l){}
+}
+function _d3inWorld(H,x,y,z){var T=window.THREE,v=new T.Vector3(x,y,z);H.root.updateMatrixWorld(true);return v.applyMatrix4(H.root.matrixWorld);}
+function _d3inEdge(H){
+var W=H.W,G=W.G,P=H.P,u=W.u,x=P.x+Math.cos(P.h)*0.5*u,z=P.z+Math.sin(P.h)*0.5*u,nd=_d3abNodeOf(W,P.x,P.z,P.y);
+if(nd>=0&&_d3inIndoor(W,nd))return false;
+if(isFinite(_d3abFloor(G,x,z,P.y,G.step,G.drop,1)))return false;
+var w=_d3inWorld(H,x,P.y,z),f=null;try{f=_d3meFloor(w.x,w.z);}catch(_f){}
+if(!f||!isFinite(f.y)||Math.abs(f.y-w.y)>0.8/((typeof WORLD_M!=='undefined')?WORLD_M:10))return false;
+H.host.exit={x:w.x,z:w.z,h:_d3inHeading(H.root,P.h,false)};_d3abEnd();return true;
+}
+function _d3inEnd(H){
+var h=H.host;if(h.fig&&h.fig.grp.parent)h.fig.grp.parent.remove(h.fig.grp);h.fig=null;h.rig=null;_d3inLight(false);
+var D=_D3;if((D.me&&D.me.on)||(D.drive&&D.drive.on)||(D.ride&&D.ride.on)||(D.dive&&D.dive.on)||(D.fishing&&D.fishing.on)||(D.pilot&&D.pilot.on)||(D.fly&&D.fly.on)||D._exp)return;
+var e=h.exit||{x:h.at.x,z:h.at.z,h:(h.at.h||0)+Math.PI};
+try{drift3DMe({x:e.x,z:e.z,h:e.h});}catch(_m){}
+}
+function _d3inFigure(H){
+var h=H.host,W=H.W,w=W.who,res=h.p.res;if(!w||!res||h.p.away||typeof _d3person!=='function')return;
+var p=_d3person(res.coat,{skin:res.skin,hair:res.hair,fem:res.fem,seed:(String(res.id).length*7+res.name.length)|0,full:true}),k=(typeof _d3realK==='function')?_d3realK('person'):0.42;
+p.grp.scale.setScalar(k*10*W.vu); p.grp.position.set(w.x,w.y,w.z);p.grp.rotation.y=-Math.atan2(W.spawn.z-w.z,W.spawn.x-w.x);
+p.grp.traverse(function(o){o.userData=o.userData||{};o.userData.noMerge=true;});p.grp.userData.inSkip=1;
+h.p.g.add(p.grp);h.fig=p;h.rig=(typeof _d3pRig==='function')?_d3pRig(p.grp):null;if(h.rig)h.rig.nextE=1e9;
+}
+function _d3inSaved(){
+if(_D3._inSaved)return _D3._inSaved;var v=null;try{v=JSON.parse(__LS.getItem(_D3_IN_KEY)||'null');}catch(_l){}
+var o={seen:{},n:0};if(v&&v.seen&&typeof v.seen==='object')Object.keys(v.seen).forEach(function(k){if(/^[a-z]+:[\w:-]{1,80}$/.test(k))o.seen[k]=1;});
+o.n=Object.keys(o.seen).length;return (_D3._inSaved=o);
+}
+function _d3inSeen(p){
+var S=_d3inSaved();S.seen[p.key]=1;S.n=Object.keys(S.seen).length;try{__LS.setItem(_D3_IN_KEY,JSON.stringify({seen:S.seen}));}catch(_s){}
+try{_d3careerStat('inVisit',1);_d3careerStat('inKinds',S.n,true);}catch(_c){}
+try{if(p.res&&typeof _d3collStampNow==='function')_d3collStampNow('seen',p.res.role);}catch(_cs){}
+return S.n;
+}
+function _d3inMenuRows(){
+var t=_D3.target||{x:0,z:0},S=_d3inSaved();
+return _d3inPlaces().filter(function(p){return !!p.c;}).sort(function(a,b){return Math.hypot(a.c.x-t.x,a.c.z-t.z)-Math.hypot(b.c.x-t.x,b.c.z-t.z);}).map(function(p){
+var R=p.res&&_D3_PEOPLE_ROLE[p.res.role];
+return {i:p.home?'🏠':((R&&R.i)||'🏠'),l:p.lbl,d:(p.home?'Your home':(p.res?p.res.name+(R?', the '+R.lbl:''):''))+(S.seen[p.key]?' · been in':''),
+menu:(function(k){return function(){_d3inVisit(k);};})(p.key)};});
+}
+function driftInsideMenu(btn){
+if(_D3&&_D3.aboard&&_D3.aboard.on&&_D3.aboard.host){_d3abEnd();return;}
+if(!_d3inPlaces().length){try{showToast('There is no building on this map to go into — place one from the buildings.',4200);}catch(_t){}return;}
+try{if(typeof driftGrpMenu==='function')driftGrpMenu('inside',btn);}catch(_m){}
+}
+function _d3inVisit(key){
+var p=null;_d3inPlaces().forEach(function(q){if(q.key===key)p=q;});if(!p)return false;
+var T=window.THREE,B=_d3inBoxOf(p.g);if(!B)return false;
+var v=new T.Vector3((B.min.x+B.max.x)/2,0,B.max.z+1/p.mpu);p.g.localToWorld(v);
+return _d3inGoIn(p,{x:v.x,z:v.z,h:Math.atan2(p.c.z-v.z,p.c.x-v.x)});
 }
 var _D3_FLY={acc:0.32,brake:0.4,rollRate:1.2,rollMax:1.0,pitchRate:0.45,pitchMax:0.42,ceil:300,air:60};
 function _d3flyPhys(F,In,P,dt,ground){
