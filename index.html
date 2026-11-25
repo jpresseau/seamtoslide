@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='7592e88';
+var RCG_BUILD='2842d1a';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -90652,13 +90652,18 @@ if(uz*vx-ux*vz<0){var t=idx[q+1];idx[q+1]=idx[q+2];idx[q+2]=t;n++;}}
 return n;
 }
 function _d3rsTrails(g,R,sv,ski,parts){
-var T=window.THREE,i,K=_D3_RS_TRAIL,meshes=[],k=_d3rsLifeK();meshes.ropes=0;if(!R.trails.length)return meshes;
+var T=window.THREE,i,K=_D3_RS_TRAIL,meshes=[],k=_d3rsLifeK();meshes.ropes=0;meshes.kick=[];if(!R.trails.length)return meshes;
 var mat=ski?new T.MeshStandardMaterial({color:_rwDeepCol(K.snow),map:_d3rsCordTex(),roughness:0.86,metalness:0,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4})
 :new T.MeshStandardMaterial({color:_rwDeepCol(K.summer),roughness:0.95,metalness:0,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4});
 mat.userData._rsOwn=1;var allP=[],allU=[],allI=[],base=0;
 for(i=0;i<R.trails.length;i++){var Tr=R.trails[i],r=(sv&&sv.trails[i])||{cls:1},hw=_d3rsTrailHalf(Tr,r.cls);
 var rb=_d3rsRibbon(Tr.pts,_d3rsHDrawn,hw,K.lift,K.step,K.across),j;
 for(j=0;j<rb.pos.length;j++)allP.push(rb.pos[j]);for(j=0;j<rb.uv.length;j++)allU.push(rb.uv[j]);for(j=0;j<rb.idx.length;j++)allI.push(rb.idx[j]+base);base+=rb.pos.length/3;
+var KL=ski?_d3rsKickers(Tr.pts,r.cls,hw,_d3rsHDrawn):[],Gk=_d3rsGeo(),kk=Math.max(k,0.14);meshes.kick[i]=KL;
+for(j=0;j<KL.length;j++){var kc=KL[j],e2;_d3rsKickMesh(kc,_d3rsHDrawn,K.lift,allP,allU,allI);
+for(e2=-1;e2<=1;e2+=2){var mx=kc.x+kc.ux*kc.len+kc.nx*e2*(kc.w/2+_D3_RS_KICK.taper+0.05),mz=kc.z+kc.uz*kc.len+kc.nz*e2*(kc.w/2+_D3_RS_KICK.taper+0.05),my=_d3rsHDrawn(mx,mz)+K.lift;
+parts.push(_d3rsPart(Gk.cyl8,0xe8662b,mx,my+0.6*kk,mz,0,0,0,0.05*kk,1.2*kk,0.05*kk),_d3rsPart(Gk.cyl8,0xf2f2f2,mx,my+1.12*kk,mz,0,0,0,0.055*kk,0.2*kk,0.055*kk));}}
+base=allP.length/3;
 var o=_d3rsAt(Tr.pts,Math.min(1.4,_d3rsLen(Tr.pts)*0.2),[0,0,1,0]),sx=o[0]-o[3]*(hw+0.25),sz=o[1]+o[2]*(hw+0.25);
 parts.push(_d3rsSignPart(r.cls,sx,_d3rsHDrawn(sx,sz),sz,Math.atan2(-o[2],-o[3]),Math.max(k,0.14)));
 var Lt=_d3rsLen(Tr.pts),G=_d3rsGeo(),pc=K.poleCol[r.cls]||K.poleCol[1],pk=Math.max(k,0.14),q,sd;
@@ -91207,6 +91212,50 @@ for(i=0;i<W.sheave.length;i++){var c=W.sheave[i],a=(c.up?1:-1)*u(c.li)/rs;t.e.se
 t.M.compose(t.p.set(c.x,c.y,c.z),t.q,t.s.set(WH.wu,WH.wu,WH.wu));WH.sheave.setMatrixAt(i,t.M);}
 WH.bull.instanceMatrix.needsUpdate=true;WH.sheave.instanceMatrix.needsUpdate=true;
 }
+var _D3_RS_KICK={
+per:2,
+gap:15,
+ends:3,
+len:0.6,
+h:[0,0.12,0.16,0.18],
+w:0.5,
+taper:0.12,
+lane:0.45,
+run:[0.08,0.5],
+turn:0.26,
+land:2.2,
+rise:1.4
+};
+function _d3rsKickers(P,cls,hw,hf){
+var K=_D3_RS_KICK,out=[],h=K.h[Math.max(0,Math.min(3,cls|0))];if(!(h>0)||!P||P.length<2)return out;
+var L=_d3rsLen(P),o=[0,0,1,0],o2=[0,0,1,0],o3=[0,0,1,0],lane=Math.min(K.lane*hw,hw-0.05-K.w/2-K.taper),s;if(!(lane>=0))return out;
+for(s=K.ends;s<L-K.ends-K.len-K.land&&out.length<K.per;s+=0.5){
+_d3rsAt(P,s,o);_d3rsAt(P,s+K.len,o2);_d3rsAt(P,s+K.len+K.land,o3);
+if(Math.abs(Math.atan2(o[2]*o3[3]-o[3]*o3[2],o[2]*o3[2]+o[3]*o3[3]))>K.turn)continue;
+var nx=-o[3],nz=o[2],ax=o[0]+nx*lane,az=o[1]+nz*lane,bx=o2[0]+nx*lane,bz=o2[1]+nz*lane,cx=o3[0]+nx*lane,cz=o3[1]+nz*lane;
+var run=(hf(ax,az)-hf(bx,bz))/K.len,land=(hf(bx,bz)-hf(cx,cz))/K.land;
+if(run<K.run[0]||run>K.run[1]||land<run)continue;
+out.push({s:s,x:ax,z:az,ux:o[2],uz:o[3],nx:nx,nz:nz,lane:lane,len:K.len,h:h,w:K.w});s+=K.gap-0.5;}
+return out;
+}
+function _d3rsKickH(k,x,z){var dx=x-k.x,dz=z-k.z;return _d3rsKickHAt(k,dx*k.ux+dz*k.uz,dx*k.nx+dz*k.nz);}
+function _d3rsKickHAt(k,a,c){
+var K=_D3_RS_KICK;c=Math.abs(c);if(!(a>=0&&a<=k.len))return 0;
+var side=c<=k.w/2?1:Math.max(0,1-(c-k.w/2)/K.taper);return side>0?k.h*Math.pow(a/k.len,K.rise)*side:0;
+}
+function _d3rsKickNear(L,x,z,pad){for(var i=0;i<(L||[]).length;i++){var k=L[i],dx=x-k.x,dz=z-k.z,a=dx*k.ux+dz*k.uz,c=Math.abs(dx*k.nx+dz*k.nz);
+if(a>-pad&&a<k.len+pad&&c<k.w/2+_D3_RS_KICK.taper+pad)return true;}return false;}
+function _d3rsKickClear(L,s,lat,pad){for(var i=0;i<(L||[]).length;i++){var k=L[i],half=k.w/2+_D3_RS_KICK.taper+pad,ramp=0.8,f=Math.min(1,(s-(k.s-pad-ramp))/ramp,(k.s+k.len+pad+ramp-s)/ramp);
+if(!(f>0))continue;var lo=k.lane-half;if(lat>lo&&lat<k.lane+half)lat+=(lo-lat)*f;}return lat;}
+function _d3rsKickMesh(k,hf,lift,pos,uv,idx){
+var A=7,cs=[-k.w/2-_D3_RS_KICK.taper,-k.w/2,-k.w/6,k.w/6,k.w/2,k.w/2+_D3_RS_KICK.taper],B=cs.length,base=pos.length/3,i,j;
+for(i=0;i<A;i++){var a=k.len*i/(A-1);for(j=0;j<B;j++){var x=k.x+k.ux*a+k.nx*cs[j],z=k.z+k.uz*a+k.nz*cs[j];
+pos.push(x,hf(x,z)+lift+_d3rsKickHAt(k,a,cs[j])+0.004,z);uv.push(j/(B-1),a/3);}}
+for(i=0;i+1<A;i++)for(j=0;j+1<B;j++){var p=base+i*B+j,q=p+1,r=p+B,t=r+1;idx.push(p,q,r,q,t,r);}
+var f0=pos.length/3;for(j=0;j<B;j++){var x2=k.x+k.ux*k.len+k.nx*cs[j],z2=k.z+k.uz*k.len+k.nz*cs[j],g=hf(x2,z2)+lift;
+pos.push(x2,g+_d3rsKickHAt(k,k.len,cs[j])+0.004,z2,x2,g,z2);uv.push(j/(B-1),0,j/(B-1),0.05);}
+for(j=0;j+1<B;j++){var u0=f0+j*2,u1=u0+2;idx.push(u0,u1,u0+1,u1,u1+1,u0+1);}
+}
 var _D3_RS_SNOW={cs:0.5,foot:0.002,belt:0.039};
 function _d3rsSnowGrid(pos,idx,cs){
 cs=cs||_D3_RS_SNOW.cs;var nt=(idx&&idx.length/3)|0,x0=1e9,z0=1e9,x1=-1e9,z1=-1e9,i,t,ix,iz;
@@ -91299,6 +91348,7 @@ g.add(grp);D.resortGrp=grp;
 var rec={resort:1,R:R,sv:sv,season:season,ski:ski,open:SS.open,lifts:lifts,stand:stand,seat:seat,k:k,load:Math.min(1,(sv.capDay>0)?guests*_D3_RS.rides/sv.capDay:0),t:0,save:0};
 rec.flow=_d3rsLiftFlow(R,sv,guests);rec.dayG=guests;
 rec.snow=snow;rec.decks=(typeof _d3skiDecks==='function')?_d3skiDecks(rec):[];
+rec.kick=(tm&&tm.kick)||[];
 rec.gs=rec.sk=_d3rsGuests(rec,nG,open);rec.wheels=wheels;
 if(!D.resortLife)D.resortLife=[];D.resortLife.push(rec);
 D._rsBuilt={season:season,lifts:lifts.length,trails:R.trails.length,skiers:rec.gs.length,steel:parts.length,ropes:(tm&&tm.ropes)||0};
@@ -91338,6 +91388,7 @@ if(S.st==='walk'){var f=S.wd/S.wl,wx=S.w[0]+(S.w[2]-S.w[0])*f,wz=S.w[1]+(S.w[3]-
 _d3rsPutPerson(st,ns++,wx,_d3rsStandY(rec,wx,wz)+_D3_RS_SNOW.foot,wz,Math.atan2(S.w[2]-S.w[0],S.w[3]-S.w[1]),0,k,S.col,M);_d3rsBody(rec,i,wx,wz,dt);continue;}
 if(S.st!=='ski')continue;var TR=rec.R.trails[S.t];if(!TR)continue;
 var a=_d3rsAt(TR.pts,S.s,M.a),ph=S.ph+S.s*S.fq*2.2,lat2=S.fq?S.amp*Math.sin(ph):S.amp,nx=-a[3],nz=a[2],dn=S.down>0;
+if(rec.kick[S.t]&&rec.kick[S.t].length)lat2=_d3rsKickClear(rec.kick[S.t],S.s,lat2,0.1);
 if(yS&&!dn){var ex=yS.x-a[0],ez=yS.z-a[1];lat2=_d3rsGiveWay(S,lat2,-(ex*a[2]+ez*a[3]),ex*nx+ez*nz,S.hw||1,(S.sp||0)-(yS.vx*a[2]+yS.vz*a[3]));}else S.ps=0;
 var x2=a[0]+nx*lat2,z2=a[1]+nz*lat2,turn=S.fq?Math.atan(S.amp*Math.cos(ph)*S.fq*2.2):0,hd=Math.atan2(a[2],a[3])-turn;
 _d3rsPutPerson(st,ns++,x2,_d3rsStandY(rec,x2,z2)+_D3_RS_SNOW.foot+(dn?0.02:0),z2,hd,dn?1.45*(S.downSide||1):(S.fq?-0.4*Math.sin(ph):0),k,S.col,M);_d3rsBody(rec,i,x2,z2,dt);}}
@@ -91674,10 +91725,13 @@ fallT:1.8,
 r:0.03,
 vmax:6,
 e:0.06,
+wall:1.5,
 sub:1/60
 };
 function _d3skiNew(x,z,y,h){return {x:x,y:y,z:z,vx:0,vy:0,vz:0,h:h||0,gnd:true,yb:y,vyb:0,fall:0,air:0,sp:0,alat:0,lean:0,skid:0,deep:0,ev:'',dist:0};}
-function _d3skiGrad(hf,x,z,e,out){out=out||[0,0];e=e||_D3_SKI.e;out[0]=(hf(x+e,z)-hf(x-e,z))/(2*e);out[1]=(hf(x,z+e)-hf(x,z-e))/(2*e);return out;}
+function _d3skiGrad(hf,x,z,e,out){out=out||[0,0];e=e||_D3_SKI.e;var h0=hf(x,z);
+out[0]=_d3skiSide(hf(x+e,z)-h0,h0-hf(x-e,z),e);out[1]=_d3skiSide(hf(x,z+e)-h0,h0-hf(x,z-e),e);return out;}
+function _d3skiSide(f,b,e){var W=_D3_SKI.wall*e,fw=Math.abs(f)>W,bw=Math.abs(b)>W;if(fw&&!bw)return b/e;if(bw&&!fw)return f/e;return (f+b)/(2*e);}
 function _d3skiNorm(gx,gz,out){var l=Math.sqrt(gx*gx+1+gz*gz);out=out||[0,1,0];out[0]=-gx/l;out[1]=1/l;out[2]=-gz/l;return out;}
 var _D3_SKI_EV={crash:5,water:4,land:3,jump:3,bump:1,up:1};
 function _d3skiEv(S,e){if(!S.ev||(_D3_SKI_EV[e]||0)>(_D3_SKI_EV[S.ev]||0))S.ev=e;}
@@ -91701,12 +91755,12 @@ _d3skiGrad(hf,S.x,S.z,K.e,gr);_d3skiNorm(gr[0],gr[1],n);var nx=n[0],ny=n[1],nz=n
 if(!S.gnd){
 S.air+=dt;S.vy-=g*dt;sp=Math.sqrt(S.vx*S.vx+S.vy*S.vy+S.vz*S.vz);
 var fa=Math.max(0,1-((In.tuck>0.5)?K.airTuck:K.air)*sp*dt);S.vx*=fa;S.vy*=fa;S.vz*=fa;
-S.h+=Math.max(-1,Math.min(1,In.turn||0))*K.spin*dt;
+var dh=Math.max(-1,Math.min(1,In.turn||0))*K.spin*dt;S.h+=dh;S.spin=(S.spin||0)+dh;
 S.x+=S.vx*dt;S.y+=S.vy*dt;S.z+=S.vz*dt;S.yb=S.y;S.vyb=S.vy;G=hf(S.x,S.z);
 if(S.y<=G){
 _d3skiGrad(hf,S.x,S.z,K.e,gr);_d3skiNorm(gr[0],gr[1],n);
 var hs=Math.hypot(S.vx,S.vz),c=hs>1e-6?Math.abs((S.vx*Math.cos(S.h)+S.vz*Math.sin(S.h))/hs):1,skew=Math.acos(Math.min(1,c)),hit=_d3skiLay(S,n,false);
-S.y=G;S.yb=G;S.vyb=S.vy;S.gnd=true;S.lastAir=S.air;S.air=0;
+S.y=G;S.yb=G;S.vyb=S.vy;S.gnd=true;S.lastAir=S.air;S.air=0;S.lastSpin=S.spin||0;S.lastDist=(S.tx!=null)?Math.hypot(S.x-S.tx,S.z-S.tz):0;
 if(hit>K.crashLand||(skew>K.crashSkew&&hs>0.5))_d3skiCrash(S,K);else _d3skiEv(S,'land');}
 else if(S.y-G<0.6)_d3skiMeet(S,E,K,ox,oz);
 return;
@@ -91733,7 +91787,7 @@ var tr=Math.max(-1,Math.min(1,In.turn||0));if(tr)S.h+=tr*Math.max(Math.min(sp/K.
 if(S.yb<=S.y+1e-9)S.vyb=S.vy;
 S.x+=S.vx*dt;S.z+=S.vz*dt;G=hf(S.x,S.z);
 var yb=S.yb+S.vyb*dt-0.5*g*dt*dt,vyb=S.vyb-g*dt;
-if(yb>G+K.absorb&&!(S.fall>0)){S.gnd=false;S.y=yb;S.vy=vyb;S.yb=yb;S.vyb=vyb;S.air=0;_d3skiEv(S,'jump');}
+if(yb>G+K.absorb&&!(S.fall>0)){S.gnd=false;S.y=yb;S.vy=vyb;S.yb=yb;S.vyb=vyb;S.air=0;S.spin=0;S.tx=S.x;S.tz=S.z;_d3skiEv(S,'jump');}
 else if(yb<=G){S.y=G;S.yb=G;S.vyb=S.vy;}
 else{S.y=G;S.yb=yb;S.vyb=vyb;}
 var mx=S.x,mz=S.z;_d3skiMeet(S,E,K,ox,oz);
@@ -91743,7 +91797,7 @@ function _d3skiPhys(S,In,dt,E,K){
 K=K||_D3_SKI;S.ev='';dt=Math.max(0,Math.min(0.25,+dt||0));if(!(dt>0)||!E||!E.h)return S;
 var x0=S.x,z0=S.z,i;
 S.deep=(E.groom&&S.gnd&&!E.groom(S.x,S.z))?1:0;
-if(In.jump&&S.gnd&&!(S.fall>0)){S.vy+=K.pop;S.gnd=false;S.air=0;S.yb=S.y;S.vyb=S.vy;_d3skiEv(S,'jump');}
+if(In.jump&&S.gnd&&!(S.fall>0)){S.vy+=K.pop;S.gnd=false;S.air=0;S.yb=S.y;S.vyb=S.vy;S.spin=0;S.tx=S.x;S.tz=S.z;_d3skiEv(S,'jump');}
 S._al=0;
 var m=Math.max(1,Math.ceil(dt/K.sub-1e-9)),h=dt/m;
 for(i=0;i<m;i++)_d3skiSub(S,In,h,E,K);
@@ -92075,7 +92129,7 @@ var lb=document.querySelector('#d3SkiHUD [data-ski="lift"]');if(lb)lb.textConten
 function _d3skiCard(K){
 var c=document.getElementById('d3SkiCard');if(!c)return;
 if(!K||K.phase!=='top'){c.style.display='none';c.innerHTML='';return;}
-var rec=K.rec,h='<div style="color:#eaf3ff;font:700 13px system-ui;text-align:center">Pick a trail</div>',i,
+var rec=K.rec,aw=(typeof _d3skiAirBestWord==='function')?_d3skiAirBestWord(rec.R):'',h='<div style="color:#eaf3ff;font:700 13px system-ui;text-align:center">Pick a trail'+(aw?'<br><small data-skiair style="color:#ffd36a;font-weight:600">'+_d3rsEsc(aw)+'</small>':'')+'</div>',i,
 T='pointer-events:auto;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(190,220,255,.25);background:rgba(255,255,255,.06);color:#e6f0ff;font:600 13px system-ui;text-align:left';
 for(i=0;i<K.tops.length;i++){var j=K.tops[i],tv=rec.sv.trails[j],C=_D3_RS_CLS[tv.cls|0],col='#'+('00000'+C.col.toString(16)).slice(-6);
 h+='<button data-skitr="'+j+'" style="'+T+((K.pick|0)===i?';outline:2px solid #ffd36a':'')+'"><b style="color:'+(C.k==='green'?'#3fc35c':C.k==='blue'?'#5b97ff':'#fff')+';min-width:22px">'+C.sym+'</b><span style="flex:1">'+(i<9?(i+1)+'. ':'')+_d3rsEsc(rec.R.trails[j].nm||'Trail')+
@@ -92163,12 +92217,12 @@ for(i=1;i<n-1;i++){B[i][0]+=(T[i][0]-B[i][0])*0.6;B[i][1]+=(T[i][1]-B[i][1])*0.6
 return B;
 }
 function _d3skiCum(Q){var c=new Array(Q.length),i;c[0]=0;for(i=1;i<Q.length;i++)c[i]=c[i-1]+Math.hypot(Q[i][0]-Q[i-1][0],Q[i][1]-Q[i-1][1]);return c;}
-function _d3skiCourse(P,half,cls,base){
+function _d3skiCourse(P,half,cls,base,avoid){
 var C=_D3_SKI_C,lim=Math.max(0,half-0.35),Q=_d3skiBand(P,lim),cum=_d3skiCum(Q),len=cum[cum.length-1],o=[0,0,1,0],s;
 var mk=function(s,w){_d3rsAt(Q,s,o);return {s:s,x:o[0],z:o[1],nx:-o[3],nz:o[2],w:w};};
 var sf=len-0.3;if(base){for(s=len*0.5;s<len;s+=C.step){_d3rsAt(Q,s,o);if(Math.hypot(o[0]-base[0],o[1]-base[1])<C.baseIn){sf=s;break;}}}
 var start=mk(Math.min(C.start,len*0.1),half*2-0.3),fin=mk(Math.max(start.s+1,sf),half*2-0.3);
-var gap=C.gap[Math.max(0,Math.min(3,cls|0))],gates=[],side=1,c=0,on=function(x,z){return _d3rsPolyD([x,z],P)<=half-C.margin;};
+var gap=C.gap[Math.max(0,Math.min(3,cls|0))],gates=[],side=1,c=0,on=function(x,z){return _d3rsPolyD([x,z],P)<=half-C.margin&&!(avoid&&avoid(x,z));};
 for(s=start.s+C.gate0;s<fin.s-C.gateEnd;s+=gap){
 _d3rsAt(Q,s,o);var x=o[0],z=o[1],nx=-o[3]*side,nz=o[2]*side,t=C.turn,w=C.width,ok=false,q;
 for(q=0;q<16&&!ok;q++){if(on(x+nx*t,z+nz*t)&&on(x+nx*(t+w),z+nz*(t+w)))ok=true;else if(t>-0.3)t-=0.08;else if(w>C.minW)w-=0.05;else break;}
@@ -92277,7 +92331,7 @@ function _d3skiCourseFor(K,j){
 var rec=K.rec,T=rec&&rec.R.trails[j];if(!T||!T.pts||T.pts.length<2)return null;
 var sv=rec.sv.trails[j]||{},key=_d3skiTrailSig(T)+'|'+(_D3.buildCount|0),cache=K._courses||(K._courses={});
 if(cache[T.id]&&cache[T.id].key===key)return cache[T.id];
-var cls=sv.cls|0,C=_d3skiCourse(T.pts,_d3rsTrailHalf(T,cls),cls,rec.R.bx!=null?[rec.R.bx,rec.R.bz]:null);
+var KL=(rec.kick&&rec.kick[j])||[],cls=sv.cls|0,C=_d3skiCourse(T.pts,_d3rsTrailHalf(T,cls),cls,rec.R.bx!=null?[rec.R.bx,rec.R.bz]:null,KL.length?function(x,z){return _d3rsKickNear(KL,x,z,0.1);}:null);
 var hf=(K.E&&K.E.h)||_d3rsHDrawn,pace=_d3skiPace(_d3skiRaceLine(C),hf);
 return (cache[T.id]={key:key,C:C,pace:pace,M:_d3skiMedals(pace.t)});
 }
@@ -92483,6 +92537,20 @@ return true;
 }catch(_e){return false;}
 }
 function _d3skiTowersPassed(P,s0,s1){var n=0,i,st=(P&&P.st)||[];if(!(s1>s0))return 0;for(i=0;i<st.length;i++){if(st[i].t)continue;if(st[i].s>s0&&st[i].s<=s1)n++;}return n;}
+var _D3_SKI_AIR={say:0.45,spinTol:0.6};
+function _d3skiSpinWord(spin){var a=Math.abs(spin||0),n=Math.round(a/Math.PI);return (n>=1&&Math.abs(a-n*Math.PI)<_D3_SKI_AIR.spinTol)?String(n*180):'';}
+function _d3skiAirWord(t,d,spin){var w=_d3skiSpinWord(spin),m=Math.round((d||0)*((typeof WORLD_M!=='undefined'&&WORLD_M>0)?WORLD_M:10));return '✈ '+(+t).toFixed(1)+' s · '+m+' m'+(w?' · 🌀 '+w:'');}
+function _d3skiAirKeep(R,j,t,d,spin){
+if(!R||!(t>0))return false;var B=_d3skiBook(R),b=B.air;if(b&&typeof b==='object'&&b.t>=t)return false;
+B.air={t:Math.round(t*1000)/1000,d:Math.round(d*1000)/1000,spin:_d3skiSpinWord(spin),j:j|0,day:R.day|0};try{_d3rsPut(R);}catch(_p){}return true;
+}
+function _d3skiAirBestWord(R){var b=R&&R.ski&&R.ski.air;return (b&&b.t>0)?('Your best air: '+_d3skiAirWord(b.t,b.d,b.spin?(+b.spin)*Math.PI/180:0)):'';}
+function _d3skiAirSay(K,S){
+var t=S.lastAir||0;if(t>0.25)_d3sfxSki('land',Math.min(1,t));if(!(t>_D3_SKI_AIR.say))return false;
+var best=_d3skiAirKeep(K.rec&&K.rec.R,K.run?K.run.j:-1,t,S.lastDist||0,S.lastSpin||0);
+K.msg=_d3skiAirWord(t,S.lastDist||0,S.lastSpin||0)+(best?' · your best air!':'');K.msgT=2;K.msgCol=best?'#ffd36a':'';
+if(_d3skiSpinWord(S.lastSpin))_d3sfxSki('split');return true;
+}
 var _D3_SKI_CAM={back:0.5,backV:0.25,up:0.2,ahead:0.6,fov:58,fovV:16,eye:0.165,lag:5};
 function _d3skiOthersEnd(){var D=_D3;
 try{if(D.me&&D.me.on)_d3meEnd();}catch(_a){}try{if(D.drive&&D.drive.on)_d3drvEnd();}catch(_b){}try{if(D.ride&&D.ride.on)_d3rideEnd();}catch(_c){}
@@ -92562,7 +92630,7 @@ if(S.ev==='crash'){K.fallSide=(S.lean<0)?-1:1;K.msg='💥 '+({tree:'Into a tree'
 if(S.hitK==='skier'&&S.hitG>=0&&typeof _d3rsKnock==='function'&&_d3rsKnock(rec,S.hitG))K.hits=(K.hits||0)+1;
 S.hitK='';_d3sfxSki('crash');}
 else if(S.ev==='water'){K.msg='The water — go round it';K.msgT=1.6;K.msgCol='';}
-else if(S.ev==='land'){if((S.lastAir||0)>0.25)_d3sfxSki('land',Math.min(1,S.lastAir));if((S.lastAir||0)>0.6){K.msg='✈ '+S.lastAir.toFixed(1)+' s in the air';K.msgT=1.6;K.msgCol='';}}
+else if(S.ev==='land')_d3skiAirSay(K,S);
 if(K.In.brake>0.2&&S.sp>0.5&&!K.hockSide)K.hockSide=(K.In.turn<0)?-1:1;else if(!(K.In.brake>0.2))K.hockSide=0;
 if((K._tq=(K._tq||0)+1)%6===0){var on=_d3skiOnTrail(E,S.x,S.z);K.onT=on?on.j:-1;
 var L=(S.sp<0.35)?_d3skiLiftsNear(rec.lifts,S.x,S.z,3):[];K.near=L.length?L[0].li:-1;}
