@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='4233311';
+var RCG_BUILD='c9801e9';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -48506,7 +48506,7 @@ return null;
 function _d3shadowFoot(fo){
 var D=_D3;if(!fo||D._noShadowFoot)return null;
 var y=0,o;
-if(fo.mode==='walk'||fo.mode==='aboard'){try{o=(fo.mode==='aboard')?(D.aboard&&D.aboard.obj):(D.me&&D.me.obj);y=(o&&o.position&&isFinite(o.position.y))?o.position.y:0;}catch(_y){}}
+if(fo.mode==='walk'||fo.mode==='aboard'||fo.mode==='ski'){try{o=(fo.mode==='aboard')?(D.aboard&&D.aboard.obj):(fo.mode==='ski')?(D.ski&&D.ski.obj):(D.me&&D.me.obj);y=(o&&o.position&&isFinite(o.position.y))?o.position.y:0;}catch(_y){}}
 else{o=_d3shadowRider(fo);if(!o)return null;
 try{if(o.updateWorldMatrix&&o.matrixWorld){o.updateWorldMatrix(true,false);y=o.matrixWorld.elements[13];}else if(o.position)y=o.position.y;}catch(_w){}
 if(typeof y!=='number'||!isFinite(y))y=0;}
@@ -64052,9 +64052,9 @@ B.style.display='flex';var tx=document.getElementById('rcgModeTxt');if(tx)tx.tex
 try{if(!window._rcgBannerIv){window._rcgBannerIv=setInterval(driftModeBanner,250);
 document.addEventListener('keyup',function(e){try{if(typeof _d3abKey==='function'&&_d3abKey(e,false)){if(e.preventDefault)e.preventDefault();return;}if(typeof _d3expKey==='function'&&_d3expKey(e,false)&&e.preventDefault)e.preventDefault();
 if(typeof _d3diveKey==='function'&&_d3diveKey(e,false)&&e.preventDefault)e.preventDefault();
-else if(typeof _d3drvKey==='function'&&_d3drvKey(e,false)&&e.preventDefault)e.preventDefault(); else if(typeof _d3pilotKey==='function'&&_d3pilotKey(e,false)&&e.preventDefault)e.preventDefault(); else if(typeof _d3meKey==='function'&&_d3meKey(e,false)&&e.preventDefault)e.preventDefault(); else if(typeof _d3flyKey==='function'&&_d3flyKey(e,false)&&e.preventDefault)e.preventDefault();
+else if(typeof _d3drvKey==='function'&&_d3drvKey(e,false)&&e.preventDefault)e.preventDefault(); else if(typeof _d3pilotKey==='function'&&_d3pilotKey(e,false)&&e.preventDefault)e.preventDefault(); else if(typeof _d3meKey==='function'&&_d3meKey(e,false)&&e.preventDefault)e.preventDefault(); else if(typeof _d3skiKey==='function'&&_d3skiKey(e,false)&&e.preventDefault)e.preventDefault(); else if(typeof _d3flyKey==='function'&&_d3flyKey(e,false)&&e.preventDefault)e.preventDefault();
 else if(typeof _d3fishKey==='function'&&_d3fishKey(e,false)&&e.preventDefault)e.preventDefault();}catch(_dk2){}});
-document.addEventListener('keydown',function(e){try{var _tg=e.target,_tn=_tg&&_tg.tagName;if(!(_tn==='INPUT'||_tn==='TEXTAREA'||(_tg&&_tg.isContentEditable))&&((typeof _d3abKey==='function'&&_d3abKey(e,true))||(typeof _d3expKey==='function'&&_d3expKey(e,true))||(typeof _d3pilotKey==='function'&&_d3pilotKey(e,true))||(typeof _d3meKey==='function'&&_d3meKey(e,true))||(typeof _d3flyKey==='function'&&_d3flyKey(e,true))||(typeof _d3rideKey==='function'&&_d3rideKey(e,true))||(typeof _d3diveKey==='function'&&_d3diveKey(e,true))||(typeof _d3fishKey==='function'&&_d3fishKey(e,true))||(typeof _d3drvKey==='function'&&_d3drvKey(e,true)))){if(e.preventDefault)e.preventDefault();return;}}catch(_dk1){}
+document.addEventListener('keydown',function(e){try{var _tg=e.target,_tn=_tg&&_tg.tagName;if(!(_tn==='INPUT'||_tn==='TEXTAREA'||(_tg&&_tg.isContentEditable))&&((typeof _d3abKey==='function'&&_d3abKey(e,true))||(typeof _d3expKey==='function'&&_d3expKey(e,true))||(typeof _d3pilotKey==='function'&&_d3pilotKey(e,true))||(typeof _d3meKey==='function'&&_d3meKey(e,true))||(typeof _d3skiKey==='function'&&_d3skiKey(e,true))||(typeof _d3flyKey==='function'&&_d3flyKey(e,true))||(typeof _d3rideKey==='function'&&_d3rideKey(e,true))||(typeof _d3diveKey==='function'&&_d3diveKey(e,true))||(typeof _d3fishKey==='function'&&_d3fishKey(e,true))||(typeof _d3drvKey==='function'&&_d3drvKey(e,true)))){if(e.preventDefault)e.preventDefault();return;}}catch(_dk1){}
 if(e.key==='Escape'&&typeof driftIsEditing==='function'&&driftIsEditing()){try{driftExitModes();}catch(_x){}try{driftModeBanner();}catch(_x2){}}});}}catch(_bi){}
 function _rcgFloatGrp(id,btn){try{var g=document.getElementById(id);if(!g)return;
 if(!g._rcgFloat){g._rcgFloat=1;document.body.appendChild(g);
@@ -64162,7 +64162,7 @@ play:{t:'Play',rows:[
 {i:'\ud83e\ude91',l:'Ride along',d:'Sit in any car\u2019s driver\u2019s seat and look around',menu:function(){drift3DRide();}},
 {sec:'Yourself',i:'\ud83e\uddcd',l:'Be yourself',d:'Walk the map as your own character',menu:function(){drift3DMe();}},{i:'\ud83d\udeaa',l:'Go inside\u2026',d:'Walk into a business or a home on this map \u2014 or walk up to any door as yourself',menu:function(b){if(typeof driftInsideMenu==='function')driftInsideMenu(b);}},{i:'\ud83c\udfa8',l:'Your character',d:'Choose your name and look',menu:function(){_d3meCreatorOpen();}},{i:'\ud83c\udf31',l:'New game\u2026',d:'A new island, a new character, or both \u2014 nothing is lost',menu:function(){driftNewGameOpen();}}, {sec:'Water & air',i:'\ud83d\udea4',l:'Take the helm',d:'A jet ski, or your own boat \u2014 steer it',menu:function(){drift3DPilot(0);}}, {i:'\u2708\ufe0f',l:'Fly a plane',d:'A plane of the fleet, off the runway \u2014 and land it',menu:function(){drift3DFly(0);}}, {i:'\ud83e\ude91',l:'Ride in a plane',d:'The pilot\u2019s seat of a plane on its circuit \u2014 look around',menu:function(){drift3DRide('air');}}, {i:'\ud83e\udd3f',l:'Dive in\u2026',d:'Swim the lake, the river or the sea',menu:function(b){driftDiveMenu(b);}},
 {i:'\ud83c\udfa3',l:'Fish\u2026',d:'From a boat on the lake, or from the bank of a creek',menu:function(b){driftFishMenu(b);}},
-{i:'\ud83d\udea2',l:'Go aboard\u2026',d:'Walk the decks of a cruise liner, a container ship, a naval ship, a yacht \u2014 with things to do on each',menu:function(b){if(typeof driftAboardMenu==='function')driftAboardMenu(b);}},
+{i:'\ud83d\udea2',l:'Go aboard\u2026',d:'Walk the decks of a cruise liner, a container ship, a naval ship, a yacht \u2014 with things to do on each',menu:function(b){if(typeof driftAboardMenu==='function')driftAboardMenu(b);}},{i:'\u26f7\ufe0f',l:'Ski the mountain',d:'Ride the Mountain Resort\u2019s lifts and ski its trails yourself \u2014 in the winter',menu:function(){if(typeof drift3DSki==='function')drift3DSki();}},
 ]},
 drive:{t:'Drive it yourself',rows:(function(){
 var out=[],i,C=(typeof D3_CARS!=='undefined')?D3_CARS:[];
@@ -66657,7 +66657,7 @@ try{if(typeof _d3cloudShadeStep==='function')_d3cloudShadeStep(L,P);}catch(_cs1)
 var sh=!!(D.scene&&D.fog&&D.scene.fog===D.fog),cam=(typeof _d3camNow==='function')?_d3camNow():D.cam,k=0;
 if(Mp)Mp.visible=sh&&P.n>0;if(Ms)Ms.visible=sh&&P.sheets.length>0;
 if(Ms&&Ms.visible)_d3cloudSheetOrder(Ms,(cam&&!cam.isOrthographicCamera)?cam.position.y:1e9);
-var grd=!!((D.me&&D.me.on)||(D.drive&&D.drive.on));
+var grd=!!((D.me&&D.me.on)||(D.drive&&D.drive.on)||(D.ski&&D.ski.on));
 if(sh&&cam&&!cam.isOrthographicCamera&&!grd){var cp=cam.position;k=_d3cloudIn(L,P,cp.x-D._cloudOff.x,cp.y,cp.z-D._cloudOff.z);if(P.mtn)k=Math.max(k,_d3cloudPkIn(P.mtn,cp.x,cp.y,cp.z));}
 _d3cloudFog(k,L);
 }
@@ -67916,6 +67916,7 @@ if(D){
 if(D.drive&&D.drive.on&&D.drive.S)return {x:D.drive.S.x,z:D.drive.S.z,cam:cam||D.cam,mode:'drive'};
 if(D.pilot&&D.pilot.on&&D.pilot.S)return {x:D.pilot.S.x,z:D.pilot.S.z,cam:cam||D.cam,mode:'helm'};
 if(D.me&&D.me.on&&D.me.S)return {x:D.me.S.x,z:D.me.S.z,cam:cam||D.cam,mode:'walk'};
+if(D.ski&&D.ski.on&&D.ski.obj)return {x:D.ski.obj.position.x,z:D.ski.obj.position.z,cam:cam||D.cam,mode:'ski'};
 if(D.aboard&&D.aboard.on&&D.aboard.wp)return {x:D.aboard.wp.x,z:D.aboard.wp.z,cam:cam||D.cam,mode:'aboard'};
 if(D.fly&&D.fly.on&&D.fly.F)return {x:D.fly.F.x,z:D.fly.F.z,cam:cam||D.cam,mode:'fly'};
 if(((D.dive&&D.dive.on)||(D.ride&&D.ride.on))&&cam&&cam.position){var w=_d3focusWorld(cam);return {x:w.x,z:w.z,cam:cam,mode:(D.dive&&D.dive.on)?'dive':'ride'};}
@@ -89076,6 +89077,7 @@ function _d3meEnd(){
 var H=_D3&&_D3.me;if(!H||!H.on)return;H.on=false;
 if(H.obj&&H.obj.parent)H.obj.parent.remove(H.obj);H.obj=null;H.p=null;H.rig=null;
 try{if(typeof _d3dogEnd==='function')_d3dogEnd(H);}catch(_dg){}
+try{var _skn=document.getElementById('d3SkiNear');if(_skn)_skn.style.display='none';}catch(_sk){}
 _d3meSave();_d3meHUD(false);try{if(typeof _d3jobOfferHide==='function')_d3jobOfferHide();}catch(_jo){}
 try{_D3._lodZ=null;if(typeof _d3lodApply==='function')_d3lodApply(true);}catch(_lo){}
 try{if(typeof _d3updateCam==='function')_d3updateCam();}catch(_){}
@@ -89111,6 +89113,7 @@ try{if(typeof _d3collSeenStep==='function')_d3collSeenStep(H,dt);}catch(_cl){}
 try{if(typeof _d3eventStep==='function')_d3eventStep(H,dt);}catch(_ev){}
 try{if(typeof _d3treasStep==='function')_d3treasStep(H,dt);}catch(_tr){}
 try{if(typeof _d3inDoorTick==='function')_d3inDoorTick(H,dt);}catch(_in){}
+try{if(typeof _d3skiNearTick==='function'&&((H._skq=(H._skq||0)+1)%10===0))_d3skiNearTick(H);}catch(_sk){}
 var rg=H.rig;
 if(rg){if(H.S.rest){rg.drive=false;if(!H.sat){H.p.legL.rotation.z=H.p.legR.rotation.z=1.4;H.sat=1;}_d3pLive(rg,t,dt);}
 else{if(H.sat){H.sat=0;H.p.legL.rotation.z=H.p.legR.rotation.z=0;}_d3pStep(rg,{obj:H.obj,sp:1,legL:H.p.legL},t,dt);}}
@@ -90626,7 +90629,13 @@ var nx=-tz,nz=tx;
 for(j=0;j<A;j++){var f=j/(A-1),lat=(f*2-1)*hw,x=o[0]+nx*lat,z=o[1]+nz*lat,k=(i*A+j);
 pos[k*3]=x;pos[k*3+1]=hf(x,z)+lift;pos[k*3+2]=z;uv[k*2]=f;uv[k*2+1]=s/3;}}
 for(i=0;i+1<n;i++)for(j=0;j+1<A;j++){var a=i*A+j,b=a+1,c=a+A,d=c+1;idx.push(a,b,c,b,d,c);}
+_d3rsFaceUp(pos,idx);
 return {pos:pos,uv:uv,idx:idx,n:n};
+}
+function _d3rsFaceUp(pos,idx){
+var n=0,q;for(q=0;q<idx.length;q+=3){var a=idx[q]*3,b=idx[q+1]*3,c=idx[q+2]*3,ux=pos[b]-pos[a],uz=pos[b+2]-pos[a+2],vx=pos[c]-pos[a],vz=pos[c+2]-pos[a+2];
+if(uz*vx-ux*vz<0){var t=idx[q+1];idx[q+1]=idx[q+2];idx[q+2]=t;n++;}}
+return n;
 }
 function _d3rsTrails(g,R,sv,ski,parts){
 var T=window.THREE,i,K=_D3_RS_TRAIL,meshes=[],k=_d3rsLifeK();meshes.ropes=0;if(!R.trails.length)return meshes;
@@ -91139,6 +91148,7 @@ for(var li=0;li<rec.lifts.length;li++){var X=rec.lifts[li],K=X.K,P=X.P;if(!X.on|
 var Lp=K.span?_d3rsLoopLen(P):P.len,top=K.span?P.len:0,top2=X.tops;
 for(k=0;k<X.n;k++){var p1=X.u+k*X.gap,p0=p1-X.du,occ=X.occ[k];
 if(occ.length&&_d3rsPassed(p0,p1,top,Lp)){
+if(typeof _d3skiOffAt==='function')occ=X.occ[k]=_d3skiOffAt(rec,li,occ);
 if(top2.length){for(i=0;i<occ.length;i++){var Gi=gs[occ[i]],bt=_d3rsVisitAt(rec,Gi,X.L.b,occ[i]);
 if(bt>=0)_d3rsWalkIn(rec,Gi,X.L.b,bt,li);else _d3rsSkiOn(rec,Gi,_d3rsPickTrail(rec,Gi,top2,occ[i]),occ[i]);}X.occ[k]=occ=[];}}
 if(_d3rsPassed(p0,p1,0,Lp)&&X.q.length&&!occ.length){
@@ -91238,21 +91248,21 @@ _d3rsWheelsAt(rec.wheels,rec.lifts);
 for(li=0;li<rec.lifts.length;li++){X=rec.lifts[li];P=X.P;K=X.K;L=X.L;var on=run&&X.on,cnt=0;
 if(!K.span){
 if(on)for(u=0;u<X.n;u++){var oc=X.occ[u];if(!oc.length)continue;var s=((X.u+u*X.gap)%P.len+P.len)%P.len,x=L.a[0]+P.ux*s,z=L.a[1]+P.uz*s;
-for(i=0;i<oc.length&&ns<st.cap;i++)_d3rsPutPerson(st,ns++,x,_d3rsHDrawn(x,z)+0.035,z,Math.atan2(P.ux,P.uz),0,k,gs[oc[i]].col,M);}
+for(i=0;i<oc.length&&ns<st.cap;i++){if(gs[oc[i]].you)continue;_d3rsPutPerson(st,ns++,x,_d3rsHDrawn(x,z)+0.035,z,Math.atan2(P.ux,P.uz),0,k,gs[oc[i]].col,M);}}
 continue;}
 for(u=0;u<X.n;u++){_d3rsLoopAt(P,L.a,X.u+u*X.gap,M.o);var o=M.o;
 M.e.set(0,o[3],0,'YXZ');M.q.setFromEuler(M.e);M.p.set(o[0],o[1],o[2]);M.s.set(k,k,k);M.m.compose(M.p,M.q,M.s);X.im.setMatrixAt(cnt++,M.m);
 var ow=X.occ[u];if(!on||!ow.length||L.k==='gondola')continue;
 if(K.surface){
-for(var r2=0;r2<ow.length&&ns<st.cap;r2++){var lat=(gs[ow[r2]].j?-0.3:0.3)*k*10*0.1,px=o[0]+Math.cos(o[3])*lat,pz=o[2]-Math.sin(o[3])*lat;
+for(var r2=0;r2<ow.length&&ns<st.cap;r2++){if(gs[ow[r2]].you)continue;var lat=(gs[ow[r2]].j?-0.3:0.3)*k*10*0.1,px=o[0]+Math.cos(o[3])*lat,pz=o[2]-Math.sin(o[3])*lat;
 _d3rsPutPerson(st,ns++,px,_d3rsHDrawn(px,pz)+0.035,pz,o[3],-0.12,k,gs[ow[r2]].col,M);}
 continue;}
-for(var j=0;j<ow.length&&nr<se.cap;j++){var G=gs[ow[j]];M.p.set((G.j-(K.seat-1)/2)*0.56,-X.hang+0.12,-0.05);M.m2.makeTranslation(M.p.x,M.p.y,M.p.z);M.m2.premultiply(M.m);
+for(var j=0;j<ow.length&&nr<se.cap;j++){var G=gs[ow[j]];if(G.you)continue;M.p.set((G.j-(K.seat-1)/2)*0.56,-X.hang+0.12,-0.05);M.m2.makeTranslation(M.p.x,M.p.y,M.p.z);M.m2.premultiply(M.m);
 se.coat.setMatrixAt(nr,M.m2);se.rest.setMatrixAt(nr,M.m2);M.c.setHex(G.col);se.coat.setColorAt(nr,M.c);nr++;}}
 X.im.count=cnt;X.im.instanceMatrix.needsUpdate=true;}
 if(run){
 for(li=0;li<rec.lifts.length;li++){X=rec.lifts[li];
-for(i=0;i<X.q.length&&ns<st.cap;i++){var q=_d3rsQueueAt(X,i,k,M.qa);_d3rsPutPerson(st,ns++,q[0],_d3rsHDrawn(q[0],q[1])+0.035,q[1],q[2],0,k,gs[X.q[i]].col,M);}}
+for(i=0;i<X.q.length&&ns<st.cap;i++){if(gs[X.q[i]].you)continue;var q=_d3rsQueueAt(X,i,k,M.qa);_d3rsPutPerson(st,ns++,q[0],_d3rsHDrawn(q[0],q[1])+0.035,q[1],q[2],0,k,gs[X.q[i]].col,M);}}
 for(i=0;i<gs.length&&ns<st.cap;i++){var S=gs[i];
 if(S.st==='walk'){var f=S.wd/S.wl,wx=S.w[0]+(S.w[2]-S.w[0])*f,wz=S.w[1]+(S.w[3]-S.w[1])*f;
 _d3rsPutPerson(st,ns++,wx,_d3rsHDrawn(wx,wz)+0.035,wz,Math.atan2(S.w[2]-S.w[0],S.w[3]-S.w[1]),0,k,S.col,M);continue;}
@@ -91330,6 +91340,7 @@ h+='<div class="d3-rsstat"><b>'+_d3rsEsc(S.mode)+'</b> · Day '+(R.day|0)+' · <
 if(last)h+='<div class="d3-rsday">Day '+last.day+': '+(last.open?(last.g.toLocaleString()+' '+(last.season==='Winter'?'skiers':'visitors')+' at '+_d3rsMoney(last.price*(S.price||1))+' · tickets '+_d3rsMoney(last.tix)+', food '+_d3rsMoney(last.food)+_d3rsDayMore(last)+', running '+_d3rsMoney(-last.cost)+' → <b>'+_d3rsMoney(last.net)+'</b> · happy '+last.sat+'%'):'closed')+
 (last.notes&&last.notes.length?'<br><i>'+last.notes.map(_d3rsEsc).join(' · ')+'</i>':'')+'</div>';
 else{var f=_d3rsDay(R,sv,0.5,1);h+='<div class="d3-rsday">Expected today: '+(f.open&&f.g?f.g.toLocaleString()+' '+(sv.ski?'skiers':'visitors')+' → '+_d3rsMoney(f.net):'nobody')+(f.notes.length?' · <i>'+f.notes.map(_d3rsEsc).join(' · ')+'</i>':'')+'</div>';}
+if(sv.ski&&S.open&&sv.lifts.some(function(l){return l&&l.on;}))h+='<div class="d3-rsrow">'+_d3rsChip('ski','⛷ Ski it yourself','Ride its lifts and ski its trails as yourself')+'</div>';
 h+='<div class="trk-mapsec">Build</div>';
 if(A&&A.m==='trail')h+='<div class="d3-rshint">Laying a trail: '+A.pts.length+' point'+(A.pts.length===1?'':'s')+(A.pts.length>=2?' · '+_d3rsTrailWord(_d3rsRate(A.pts,_d3rsH))+' · '+_d3rsMoney(_d3rsLen(A.pts)*_D3_RS.trailCost):'')+'</div>'+
 '<div class="d3-rsrow">'+_d3rsChip('trailDone','✔ Done')+_d3rsChip('cancel','✖ Cancel')+'</div>';
@@ -91375,6 +91386,7 @@ var n=d.querySelector('[data-rsnow]');if(n)n.textContent=R?(R.nm+' · '+R.lifts.
 function _d3rsAct(a){
 var R=_d3rsGet(),p;
 if(a==='close'){_d3rsClose();return;}
+if(a==='ski'){_d3rsClose();if(typeof drift3DSki==='function')drift3DSki();return;}
 if(a==='place'){_d3rsArm('place');return;}
 if(a==='isle'){if(typeof _d3islePanel==='function'&&!document.getElementById('d3IslePanel'))_d3islePanel();return;}
 if(a==='cancel'){_da._rsTap=null;_d3rsPrev();_d3rsPanelLit();return;}
@@ -91548,6 +91560,581 @@ var gl=[];for(f=-1;f<n;f++){var gy=f<0?y0+1.8:y0+g+f*fh+1.6,sz=f<0?5.5:4.2;
 for(i=-1;i<=1;i++){gl.push([i*4.4,gy,D/2-1.3,sz]);gl.push([i*4.4,gy,-(D/2-1.3),sz]);}for(j=-1;j<=1;j+=2){gl.push([-(W/2-1.3),gy,j*2.6,sz]);gl.push([W/2-1.3,gy,j*2.6,sz]);}}
 return {sign:['OFFICES',0,y0+3.55,D/2+0.17,3.4],sbg:'#23272d',sfg:'#f1e6c8',glows:gl};
 }};
+var _D3_SKI={
+g:0.981,
+mu:0.04,
+muDeep:0.08,
+deep:0.3,
+air:0.0375,
+airTuck:0.015,
+grip:1.05,
+gripDeep:0.8,
+skid:0.55,
+brake:0.65,
+side:1.3,
+over:1.25,
+pivot:2.2,
+push:0.12,
+pushTo:0.32,
+pop:0.36,
+absorb:0.05,
+comp:0.15,
+crashLand:0.8,
+crashHit:0.45,
+crashSkew:1.0,
+spin:3.0,
+tumble:0.7,
+fallT:1.8,
+r:0.03,
+vmax:6,
+e:0.06,
+sub:1/60
+};
+function _d3skiNew(x,z,y,h){return {x:x,y:y,z:z,vx:0,vy:0,vz:0,h:h||0,gnd:true,yb:y,vyb:0,fall:0,air:0,sp:0,alat:0,lean:0,skid:0,deep:0,ev:'',dist:0};}
+function _d3skiGrad(hf,x,z,e,out){out=out||[0,0];e=e||_D3_SKI.e;out[0]=(hf(x+e,z)-hf(x-e,z))/(2*e);out[1]=(hf(x,z+e)-hf(x,z-e))/(2*e);return out;}
+function _d3skiNorm(gx,gz,out){var l=Math.sqrt(gx*gx+1+gz*gz);out=out||[0,1,0];out[0]=-gx/l;out[1]=1/l;out[2]=-gz/l;return out;}
+var _D3_SKI_EV={crash:5,water:4,land:3,jump:3,bump:1,up:1};
+function _d3skiEv(S,e){if(!S.ev||(_D3_SKI_EV[e]||0)>(_D3_SKI_EV[S.ev]||0))S.ev=e;}
+function _d3skiCrash(S,K){S.fall=K.fallT;S.vx*=0.35;S.vy*=0.35;S.vz*=0.35;_d3skiEv(S,'crash');}
+function _d3skiLay(S,n,keep){
+var vn=S.vx*n[0]+S.vy*n[1]+S.vz*n[2],s0=keep?Math.sqrt(S.vx*S.vx+S.vy*S.vy+S.vz*S.vz):0;
+S.vx-=vn*n[0];S.vy-=vn*n[1];S.vz-=vn*n[2];
+if(keep){var s1=Math.sqrt(S.vx*S.vx+S.vy*S.vy+S.vz*S.vz);if(s1>1e-9){var r=s0/s1;S.vx*=r;S.vy*=r;S.vz*=r;}}
+return vn<0?-vn:0;
+}
+function _d3skiMeet(S,E,K,ox,oz){
+if(E.water&&E.water(S.x,S.z)){S.x=ox;S.z=oz;S.vx=S.vy=S.vz=0;_d3skiEv(S,'water');return;}
+var o=E.hit?E.hit(S.x,S.z,K.r):null;if(!o)return;
+S.x+=o.nx*o.d;S.z+=o.nz*o.d;S.hitK=o.k||'';var vin=-(S.vx*o.nx+S.vz*o.nz);if(!(vin>0))return;
+if(vin>K.crashHit&&!(S.fall>0)){_d3skiCrash(S,K);S.vx=S.vy=S.vz=0;}
+else{S.vx+=vin*o.nx;S.vz+=vin*o.nz;_d3skiEv(S,'bump');}
+}
+function _d3skiSub(S,In,dt,E,K){
+var g=K.g,hf=E.h,n=S._n||(S._n=[0,1,0]),gr=S._gr||(S._gr=[0,0]),ox=S.x,oz=S.z,sp,G;
+_d3skiGrad(hf,S.x,S.z,K.e,gr);_d3skiNorm(gr[0],gr[1],n);var nx=n[0],ny=n[1],nz=n[2];
+if(!S.gnd){
+S.air+=dt;S.vy-=g*dt;sp=Math.sqrt(S.vx*S.vx+S.vy*S.vy+S.vz*S.vz);
+var fa=Math.max(0,1-((In.tuck>0.5)?K.airTuck:K.air)*sp*dt);S.vx*=fa;S.vy*=fa;S.vz*=fa;
+S.h+=Math.max(-1,Math.min(1,In.turn||0))*K.spin*dt;
+S.x+=S.vx*dt;S.y+=S.vy*dt;S.z+=S.vz*dt;S.yb=S.y;S.vyb=S.vy;G=hf(S.x,S.z);
+if(S.y<=G){
+_d3skiGrad(hf,S.x,S.z,K.e,gr);_d3skiNorm(gr[0],gr[1],n);
+var hs=Math.hypot(S.vx,S.vz),c=hs>1e-6?Math.abs((S.vx*Math.cos(S.h)+S.vz*Math.sin(S.h))/hs):1,skew=Math.acos(Math.min(1,c)),hit=_d3skiLay(S,n,false);
+S.y=G;S.yb=G;S.vyb=S.vy;S.gnd=true;S.lastAir=S.air;S.air=0;
+if(hit>K.crashLand||(skew>K.crashSkew&&hs>0.5))_d3skiCrash(S,K);else _d3skiEv(S,'land');}
+else if(S.y-G<0.6)_d3skiMeet(S,E,K,ox,oz);
+return;
+}
+var vn=S.vx*nx+S.vy*ny+S.vz*nz;
+if(vn<-K.comp){var met=_d3skiLay(S,n,false);if(met>K.crashLand&&!(S.fall>0))_d3skiCrash(S,K);}else _d3skiLay(S,n,true);
+var N=g*ny;S.vx+=g*ny*nx*dt;S.vy+=g*(ny*ny-1)*dt;S.vz+=g*ny*nz*dt;
+if(S.fall>0){
+S.fall-=dt;sp=Math.sqrt(S.vx*S.vx+S.vy*S.vy+S.vz*S.vz);var dk=K.tumble*N*dt;
+if(sp<=dk){S.vx=S.vy=S.vz=0;}else{var fk=(sp-dk)/sp;S.vx*=fk;S.vy*=fk;S.vz*=fk;}
+S.skid=0;if(S.fall<=0){S.fall=0;_d3skiEv(S,'up');}
+}else{
+var ch=Math.cos(S.h),sh=Math.sin(S.h),d=ch*nx+sh*nz,fx=ch-d*nx,fy=-d*ny,fz=sh-d*nz,fl=Math.sqrt(fx*fx+fy*fy+fz*fz)||1;fx/=fl;fy/=fl;fz/=fl;
+var lx=fy*nz-fz*ny,ly=fz*nx-fx*nz,lz=fx*ny-fy*nx,brk=Math.max(0,Math.min(1,In.brake||0)),deep=S.deep>0.5,tuck=In.tuck>0.5;
+sp=Math.sqrt(S.vx*S.vx+S.vy*S.vy+S.vz*S.vz);
+if(In.push>0&&sp<K.pushTo){var pa=K.push*Math.min(1,In.push)*dt;S.vx+=fx*pa;S.vy+=fy*pa;S.vz+=fz*pa;}
+var vl=S.vx*lx+S.vy*ly+S.vz*lz,gk=(deep?K.gripDeep:K.grip)*N*(1-0.3*brk),gp=gk*dt,hold=Math.max(-gp,Math.min(gp,vl));
+S.vx-=hold*lx;S.vy-=hold*ly;S.vz-=hold*lz;S._al=(S._al||0)-hold;
+sp=Math.sqrt(S.vx*S.vx+S.vy*S.vy+S.vz*S.vz);var vl2=S.vx*lx+S.vy*ly+S.vz*lz,slip=sp>1e-4?Math.min(1,Math.abs(vl2)/sp):0;S.skid=slip;
+var dec=((deep?K.muDeep:K.mu)+K.skid*slip+K.brake*brk)*N*dt+(deep?K.deep*sp*dt:0)+(tuck?K.airTuck:K.air)*sp*sp*dt;
+if(sp<=dec){S.vx=S.vy=S.vz=0;sp=0;}else{var fr=(sp-dec)/sp;S.vx*=fr;S.vy*=fr;S.vz*=fr;sp-=dec;}
+var tr=Math.max(-1,Math.min(1,In.turn||0));if(tr)S.h+=tr*Math.max(Math.min(sp/K.side,K.over*gk/Math.max(sp,1e-3)),K.pivot/(1+sp*3))*(tuck?0.6:1)*dt;
+}
+if(S.yb<=S.y+1e-9)S.vyb=S.vy;
+S.x+=S.vx*dt;S.z+=S.vz*dt;G=hf(S.x,S.z);
+var yb=S.yb+S.vyb*dt-0.5*g*dt*dt,vyb=S.vyb-g*dt;
+if(yb>G+K.absorb&&!(S.fall>0)){S.gnd=false;S.y=yb;S.vy=vyb;S.yb=yb;S.vyb=vyb;S.air=0;_d3skiEv(S,'jump');}
+else if(yb<=G){S.y=G;S.yb=G;S.vyb=S.vy;}
+else{S.y=G;S.yb=yb;S.vyb=vyb;}
+var mx=S.x,mz=S.z;_d3skiMeet(S,E,K,ox,oz);
+if(S.gnd&&(S.x!==mx||S.z!==mz)){S.y=hf(S.x,S.z);if(S.yb<S.y)S.yb=S.y;}
+}
+function _d3skiPhys(S,In,dt,E,K){
+K=K||_D3_SKI;S.ev='';dt=Math.max(0,Math.min(0.25,+dt||0));if(!(dt>0)||!E||!E.h)return S;
+var x0=S.x,z0=S.z,i;
+S.deep=(E.groom&&S.gnd&&!E.groom(S.x,S.z))?1:0;
+if(In.jump&&S.gnd&&!(S.fall>0)){S.vy+=K.pop;S.gnd=false;S.air=0;S.yb=S.y;S.vyb=S.vy;_d3skiEv(S,'jump');}
+S._al=0;
+var m=Math.max(1,Math.ceil(dt/K.sub-1e-9)),h=dt/m;
+for(i=0;i<m;i++)_d3skiSub(S,In,h,E,K);
+S.sp=Math.sqrt(S.vx*S.vx+S.vy*S.vy+S.vz*S.vz);if(S.sp>K.vmax){var c=K.vmax/S.sp;S.vx*=c;S.vy*=c;S.vz*=c;S.sp=K.vmax;}
+S.dist+=Math.hypot(S.x-x0,S.z-z0);
+var tl=0;if(S.gnd&&!(S.fall>0)){var gq=_d3skiGrad(E.h,S.x,S.z,K.e),n=_d3skiNorm(gq[0],gq[1]),A=(S._al||0)/dt,ch=Math.cos(S.h),sh=Math.sin(S.h);
+var d=ch*n[0]+sh*n[2],fx=ch-d*n[0],fy=-d*n[1],fz=sh-d*n[2],fl=Math.sqrt(fx*fx+fy*fy+fz*fz)||1;fx/=fl;fy/=fl;fz/=fl;
+var Nn=K.g*n[1],Rx=Nn*n[0]+A*(fy*n[2]-fz*n[1]),Ry=Nn*n[1]+A*(fz*n[0]-fx*n[2]),Rz=Nn*n[2]+A*(fx*n[1]-fy*n[0]);
+tl=Math.atan2(-Rx*sh+Rz*ch,Ry);S.alat=A;}
+S.lean+=(Math.max(-1.1,Math.min(1.1,tl))-S.lean)*Math.min(1,dt*8);
+return S;
+}
+function _d3skiKmh(sp){return Math.round((sp||0)*(((typeof WORLD_M!=='undefined'&&WORLD_M>0)?WORLD_M:10))*3.6);}
+var _D3_SKI_W={cell:1,trunk:0.07,tower:0.05,margin:6,tcell:2,edge:0.25};
+function _d3skiBoxHit(cx,cz,ry,hx,hz,x,z,r){
+var dx=x-cx,dz=z-cz,c=Math.cos(ry),s=Math.sin(ry),lx=dx*c-dz*s,lz=dx*s+dz*c,px=hx+r-Math.abs(lx),pz=hz+r-Math.abs(lz);
+if(px<=0||pz<=0)return null;
+if(px<pz){var sx=lx<0?-1:1;return {nx:sx*c,nz:-sx*s,d:px};}
+var sz=lz<0?-1:1;return {nx:sz*s,nz:sz*c,d:pz};
+}
+function _d3skiDiscHit(cx,cz,rr,x,z,r){var dx=x-cx,dz=z-cz,d=Math.hypot(dx,dz),q=rr+r-d;if(q<=0)return null;if(d<1e-6){dx=1;dz=0;d=1;}return {nx:dx/d,nz:dz/d,d:q};}
+function _d3skiBounds(R,m){
+var b=[1e9,1e9,-1e9,-1e9],add=function(x,z){if(!isFinite(x)||!isFinite(z))return;if(x<b[0])b[0]=x;if(z<b[1])b[1]=z;if(x>b[2])b[2]=x;if(z>b[3])b[3]=z;},i,j;
+if(R.bx!=null)add(R.bx,R.bz);if(R.x!=null)add(R.x,R.z);
+for(i=0;i<(R.lifts||[]).length;i++){add(R.lifts[i].a[0],R.lifts[i].a[1]);add(R.lifts[i].b[0],R.lifts[i].b[1]);}
+for(i=0;i<(R.trails||[]).length;i++)for(j=0;j<R.trails[i].pts.length;j++)add(R.trails[i].pts[j][0],R.trails[i].pts[j][1]);
+for(i=0;i<(R.blds||[]).length;i++)add(R.blds[i].x,R.blds[i].z);
+m=m||0;return b[0]>b[2]?null:[b[0]-m,b[1]-m,b[2]+m,b[3]+m];
+}
+function _d3skiTrunks(rec){
+var D=_D3,tk=D&&D.parkTrunks,cv=tk&&tk.geometry&&tk.geometry.userData&&tk.geometry.userData.carve,xz=cv&&cv.xz,R=rec&&rec.R;
+if(!R)return null;var key=(xz?xz.length:0)+'|'+(xz?xz[0]:0)+'|'+(D.buildCount|0)+'|'+R.x+','+R.z;
+if(D._skiTG&&D._skiTG.key===key)return D._skiTG;
+var W=_D3_SKI_W,b=_d3skiBounds(R,W.margin),G={key:key,cs:W.cell,c:{},n:0},i;
+if(xz&&b)for(i=0;i<xz.length;i+=2){var x=xz[i],z=xz[i+1];if(x<b[0]||x>b[2]||z<b[1]||z>b[3])continue;
+var k=Math.floor(x/W.cell)+','+Math.floor(z/W.cell);(G.c[k]||(G.c[k]=[])).push(x,z);G.n++;}
+D._skiTG=G;return G;
+}
+function _d3skiSolids(rec){
+var R=rec.R,o={box:[],disc:[]},i,j,u=(typeof _d3rsaU==='function'&&typeof _d3rsBldFw==='function')?_d3rsaU(_d3rsBldFw()):0.1;
+var box=function(key,x,z,ry){var K=(typeof _D3_RSA_BLD!=='undefined')?_D3_RSA_BLD[key]:null;if(!K||!K.foot)return;var f=K.foot,ox=(f[0]+f[1])/2*u,oz=(f[2]+f[3])/2*u,c=Math.cos(ry),s=Math.sin(ry);
+o.box.push([x+ox*c+oz*s,z-ox*s+oz*c,ry,(f[1]-f[0])/2*u,(f[3]-f[2])/2*u,key==='skilodge'?'lodge':'building']);};
+if(R.bx!=null&&R.x!=null&&typeof _d3rsBaseAng==='function')box('skilodge',R.bx,R.bz,-_d3rsBaseAng(R));
+for(i=0;i<(R.blds||[]).length;i++){var B=R.blds[i],Bk=(typeof _d3rsBld==='function')?_d3rsBld(B.k):null;if(Bk)box(Bk.key,B.x,B.z,+B.a||0);}
+for(i=0;i<(rec.lifts||[]).length;i++){var X=rec.lifts[i],P=X.P,L=X.L;if(!P||!P.st||!X.K.span)continue;
+for(j=1;j<P.st.length-1;j++)o.disc.push([L.a[0]+P.ux*P.st[j].s,L.a[1]+P.uz*P.st[j].s,_D3_SKI_W.tower]);}
+return o;
+}
+function _d3skiTrailGrid(rec){
+var R=rec.R,sv=rec.sv,W=_D3_SKI_W,G={cs:W.tcell,c:{}},i,j;
+for(j=0;j<R.trails.length;j++){var Tr=R.trails[j],P=Tr.pts||[],t=sv.trails[j]||{cls:1},hw=_d3rsTrailHalf(Tr,t.cls),r=hw+W.edge,op=!!t.on;
+for(i=1;i<P.length;i++){var a=P[i-1],b=P[i],seg=[a[0],a[1],b[0],b[1],hw,j,op],
+x0=Math.floor((Math.min(a[0],b[0])-r)/G.cs),x1=Math.floor((Math.max(a[0],b[0])+r)/G.cs),z0=Math.floor((Math.min(a[1],b[1])-r)/G.cs),z1=Math.floor((Math.max(a[1],b[1])+r)/G.cs),x,z;
+for(x=x0;x<=x1;x++)for(z=z0;z<=z1;z++){var k=x+','+z;(G.c[k]||(G.c[k]=[])).push(seg);}}}
+return G;
+}
+function _d3skiTrailIn(G,x,z,open){
+var C=G&&G.c[Math.floor(x/G.cs)+','+Math.floor(z/G.cs)],best=null,i;if(!C)return null;
+for(i=0;i<C.length;i++){var s=C[i];if(open&&!s[6])continue;var dx=s[2]-s[0],dz=s[3]-s[1],l2=dx*dx+dz*dz,t=l2>0?((x-s[0])*dx+(z-s[1])*dz)/l2:0;t=t<0?0:(t>1?1:t);
+var d=s[4]-Math.hypot(x-s[0]-dx*t,z-s[1]-dz*t);if(!best||d>best.d)best={d:d,j:s[5]};}
+return best;
+}
+function _d3skiTrailLift(d,lift,edge){if(d==null)return 0;var w=d>=0?1:Math.max(0,1+d/edge);return lift*w*w*(3-2*w);}
+function _d3skiDecks(rec){var o=[],i,e;for(i=0;i<(rec.lifts||[]).length;i++){var X=rec.lifts[i],P=X.P;if(!P||!P.st||!X.K.span)continue;
+for(e=0;e<2;e++){var S=e?P.st[P.st.length-1]:P.st[0],c=e?X.L.b:X.L.a;o.push([c[0],c[1],Math.atan2(P.ux,P.uz),P.gauge/2+0.2,0.4,S.g+0.045]);}}
+return o;}
+function _d3skiDeckAt(D,x,z,g,edge){var y=g,i;for(i=0;i<D.length;i++){var d=D[i],dx=x-d[0],dz=z-d[1],c=Math.cos(d[2]),s=Math.sin(d[2]),lx=Math.abs(dx*c-dz*s)-d[3],lz=Math.abs(dx*s+dz*c)-d[4],o=Math.max(lx,lz);
+if(o>=edge||d[5]<=g)continue;var w=o<=0?1:1-o/edge;w=w*w*(3-2*w);y=Math.max(y,g+(d[5]-g)*w);}return y;}
+function _d3skiClearOf(D,x,z,pad){for(var i=0;i<(D||[]).length;i++){var d=D[i],dx=x-d[0],dz=z-d[1],c=Math.cos(d[2]),s=Math.sin(d[2]);
+if(Math.abs(dx*c-dz*s)<d[3]+pad&&Math.abs(dx*s+dz*c)<d[4]+pad)return false;}return true;}
+function _d3skiWorld(rec){
+var R=rec.R,TG=_d3skiTrunks(rec),SO=_d3skiSolids(rec),W=_D3_SKI_W,sv=rec.sv,TR=_d3skiTrailGrid(rec),lift=(typeof _D3_RS_TRAIL!=='undefined'&&_D3_RS_TRAIL.lift>0)?_D3_RS_TRAIL.lift:0;
+var DK=_d3skiDecks(rec),h=function(x,z){var g=_d3rsHDrawn(x,z),t=lift?_d3skiTrailIn(TR,x,z,false):null;if(t)g+=_d3skiTrailLift(t.d,lift,W.edge);return DK.length?_d3skiDeckAt(DK,x,z,g,W.edge):g;};
+var hit=function(x,z,r){
+var best=null,cs=TG?TG.cs:1,i0=Math.floor((x-0.2)/cs),i1=Math.floor((x+0.2)/cs),j0=Math.floor((z-0.2)/cs),j1=Math.floor((z+0.2)/cs),a,b,k,q;
+var take=function(h,kd){if(h&&(!best||h.d>best.d)){best=h;h.k=kd;}};
+if(TG)for(a=i0;a<=i1;a++)for(b=j0;b<=j1;b++){var C=TG.c[a+','+b];if(!C)continue;for(k=0;k<C.length;k+=2)take(_d3skiDiscHit(C[k],C[k+1],W.trunk,x,z,r),'tree');}
+for(q=0;q<SO.box.length;q++){var B=SO.box[q];take(_d3skiBoxHit(B[0],B[1],B[2],B[3],B[4],x,z,r),B[5]||'building');}
+for(q=0;q<SO.disc.length;q++){var Dd=SO.disc[q];take(_d3skiDiscHit(Dd[0],Dd[1],Dd[2],x,z,r),'tower');}
+return best;};
+var groom=function(x,z){
+var j;if(R.bx!=null&&Math.hypot(x-R.bx,z-R.bz)<_D3_RS.baseR)return true;
+for(j=0;j<(rec.lifts||[]).length;j++){var L=rec.lifts[j].L;if(Math.hypot(x-L.a[0],z-L.a[1])<2.5||Math.hypot(x-L.b[0],z-L.b[1])<2.5)return true;}
+var t=_d3skiTrailIn(TR,x,z,true);return !!t&&t.d>=-0.1;};
+var water=function(x,z){try{return (typeof _d3inAnyWater==='function')&&!!_d3inAnyWater(x,z);}catch(_w){return false;}};
+return {h:h,hit:hit,groom:groom,water:water,trails:TR,decks:DK,trunks:TG?TG.n:0,solids:SO.box.length+SO.disc.length};
+}
+function _d3skiAlong(P,x,z){var best=1e9,bs=0,acc=0,i;for(i=1;i<P.length;i++){var ax=P[i-1][0],az=P[i-1][1],dx=P[i][0]-ax,dz=P[i][1]-az,l=Math.hypot(dx,dz),t=l>0?((x-ax)*dx+(z-az)*dz)/(l*l):0;
+t=t<0?0:(t>1?1:t);var d=Math.hypot(x-ax-dx*t,z-az-dz*t);if(d<best){best=d;bs=acc+t*l;}acc+=l;}return [bs,best];}
+function _d3skiDone(P,x,z,s,len,base,foot,baseR){var e=P[P.length-1];if(Math.hypot(x-e[0],z-e[1])<foot)return true;
+return !!base&&Math.hypot(e[0]-base[0],e[1]-base[1])<baseR+_D3_RS.join&&s>0.8*len&&Math.hypot(x-base[0],z-base[1])<baseR;}
+function _d3skiOnTrail(E,x,z){var t=E&&E.trails?_d3skiTrailIn(E.trails,x,z,true):null;return (t&&t.d>=-0.1)?t:null;}
+function _d3skiRec(){var E=_D3&&_D3.resortLife,i;if(!E)return null;for(i=0;i<E.length;i++)if(E[i]&&E[i].resort)return E[i];return null;}
+function _d3skiLiftsNear(lifts,x,z,r){var o=[],i;for(i=0;i<(lifts||[]).length;i++){var X=lifts[i];if(!X||!X.on)continue;var d=Math.hypot(X.L.a[0]-x,X.L.a[1]-z);if(d<=r)o.push({li:i,d:d});}
+o.sort(function(a,b){return a.d-b.d;});return o;}
+function _d3skiFirstLift(rec,at){var R=rec.R,p=at||[R.bx!=null?R.bx:R.x,R.bz!=null?R.bz:R.z],L=_d3skiLiftsNear(rec.lifts,p[0],p[1],1e9);return L.length?L[0].li:-1;}
+function _d3skiMe(K){var rec=K&&K.rec,g=rec&&rec.gs&&rec.gs[K.gi];return (g&&g.you)?g:null;}
+function _d3skiLeave(K){
+var g=_d3skiMe(K);if(g){var X=K.rec.lifts[g.li];
+if(X){var qi=X.q.indexOf(K.gi);if(qi>=0)X.q.splice(qi,1);if(g.ci>=0&&X.occ&&X.occ[g.ci]){var oi=X.occ[g.ci].indexOf(K.gi);if(oi>=0)X.occ[g.ci].splice(oi,1);}}
+g.st='off';g.li=-1;g.ci=-1;}
+K.gi=-1;
+}
+function _d3skiJoin(K,rec,li){
+var X=rec&&rec.lifts[li];if(!X||!X.on||!rec.gs)return false;
+_d3skiLeave(K);
+var g={st:'queue',t:-1,s:0,li:li,ci:-1,j:0,n:0,bi:-1,tl:-1,from:-1,sk:3,col:K.col||0x2b6cb0,you:1};
+rec.gs.push(g);K.gi=rec.gs.length-1;X.q.push(K.gi);
+K.rec=rec;K.li=li;K.phase='line';K.S=null;K.trail=-1;K.run=null;K.msg='🚡 In the line for the '+(X.L.nm||X.K.nm);K.msgT=2.5;
+return true;
+}
+function _d3skiOffAt(rec,li,occ){
+var K=_D3&&_D3.ski,i;if(!K||!K.on||K.rec!==rec)return occ;
+for(i=0;i<occ.length;i++){var g=rec.gs[occ[i]];if(g&&g.you){occ.splice(i,1);g.st='off';g.li=-1;g.ci=-1;K.gi=-1;_d3skiAtTop(K,rec,li);break;}}
+return occ;
+}
+function _d3skiAtTop(K,rec,li){
+var X=rec.lifts[li],P=X.P,L=X.L,hf=(K.E&&K.E.h)||_d3rsHDrawn,tops=(X.tops||[]).filter(function(j){return rec.sv.trails[j]&&rec.sv.trails[j].on;}),x,z,h;
+if(tops.length){var T=rec.R.trails[tops[0]].pts,a=T[0],b=T[1]||T[0],dx=a[0]-L.b[0],dz=a[1]-L.b[1],dl=Math.hypot(dx,dz);
+if(dl<0.3){dx=b[0]-a[0];dz=b[1]-a[1];dl=Math.hypot(dx,dz)||1;var r=2;x=L.b[0]+dx/dl*r;z=L.b[1]+dz/dl*r;}
+else{var r2=Math.max(dl,2);x=L.b[0]+dx/dl*r2;z=L.b[1]+dz/dl*r2;}h=Math.atan2(b[1]-a[1],b[0]-a[0]);}
+else{x=L.b[0]+P.ux*1.2;z=L.b[1]+P.uz*1.2;var gr=_d3skiGrad(hf,x,z,0.3);h=(Math.hypot(gr[0],gr[1])>0.02)?Math.atan2(-gr[1],-gr[0]):Math.atan2(P.uz,P.ux);}
+K.phase='top';K.topLi=li;K.S=_d3skiNew(x,z,hf(x,z),h);K.trail=-1;K.run=null;K.lag=null;K.pick=0;
+K.tops=tops;
+K.msg='⛰ The top of the '+(L.nm||X.K.nm)+(K.tops.length?' — pick a trail':' — no trail from here: ski the mountain');K.msgT=3;
+if(typeof _d3skiCard==='function')_d3skiCard(K);
+}
+function _d3skiPick(K,j){
+var rec=K.rec;if(!rec||!K.S)return false;
+if(j>=0){var T=rec.R.trails[j];if(!T||!T.pts||T.pts.length<2)return false;var a=T.pts[0],b=T.pts[1];
+K.S=_d3skiNew(a[0],a[1],_d3rsHDrawn(a[0],a[1]),Math.atan2(b[1]-a[1],b[0]-a[0]));K.trail=j;
+K.run={j:j,t:0,len:rec.sv.trails[j].len,best:0};K.msg=_d3skiTrailWord(rec,j)+' — go!';K.msgT=2;}
+else{K.trail=-1;K.run=null;K.msg='⛷ The mountain is yours';K.msgT=2;}
+K.phase='ski';K.lag=null;if(typeof _d3skiCard==='function')_d3skiCard(null);return true;
+}
+function _d3skiTrailWord(rec,j){var T=rec.R.trails[j],c=_D3_RS_CLS[(rec.sv.trails[j]||{}).cls|0]||_D3_RS_CLS[0];return c.sym+' '+((T&&T.nm)||'Trail');}
+function _d3skiSeat(K,out){
+var g=_d3skiMe(K),rec=K.rec;if(!g||g.st!=='ride'||g.ci<0)return null;var X=rec.lifts[g.li];if(!X)return null;
+var P=X.P,L=X.L,Kd=X.K,k=rec.k,o=K._lo||(K._lo=[0,0,0,0,0,0]);out=out||{};
+if(!Kd.span){var s=((X.u+g.ci*X.gap)%P.len+P.len)%P.len,x=L.a[0]+P.ux*s,z=L.a[1]+P.uz*s;
+out.x=x;out.z=z;out.y=_d3rsHDrawn(x,z)+0.035;out.ry=Math.atan2(P.ux,P.uz);out.seat=false;out.surf=true;out.s=s;return out;}
+_d3rsLoopAt(P,L.a,X.u+g.ci*X.gap,o);var ry=o[3],c=Math.cos(ry),sn=Math.sin(ry);out.ry=ry;out.s=o[5];
+if(Kd.surface){var lat=(g.j?-0.3:0.3)*k,px=o[0]+c*lat,pz=o[2]-sn*lat;out.x=px;out.z=pz;out.y=_d3rsHDrawn(px,pz)+0.035;out.seat=false;out.surf=true;return out;}
+var lx=(g.j-(Kd.seat-1)/2)*0.56*k,ly=(-X.hang+0.12)*k,lz=-0.05*k;
+out.x=o[0]+lx*c+lz*sn;out.y=o[1]+ly;out.z=o[2]-lx*sn+lz*c;out.seat=true;out.surf=false;out.cab=(L.k==='gondola');
+out.cx=o[0];out.cy=o[1];out.cz=o[2];return out;
+}
+function _d3skiRejoin(K,rec){
+var was=K.phase,li=K.li,s=K.seatS;K.rec=rec;K.gi=-1;
+var X=rec.lifts[li];if(!X||!X.on){var f=_d3skiFirstLift(rec,K.S?[K.S.x,K.S.z]:null);if(f<0)return false;return _d3skiJoin(K,rec,f);}
+if(was==='line')return _d3skiJoin(K,rec,li);
+if(was==='ride'){var Lp=X.K.span?_d3rsLoopLen(X.P):X.P.len,best=-1,bd=1e9,k;
+for(k=0;k<X.n;k++){var u=(((X.u||0)+k*X.gap)%Lp+Lp)%Lp;if(u>=X.P.len||(X.occ[k]||[]).length>=Math.max(1,X.K.seat|0))continue;var d=Math.abs(u-(s||0));if(d<bd){bd=d;best=k;}}
+if(best<0)return _d3skiJoin(K,rec,li);
+var g={st:'ride',t:-1,s:0,li:li,ci:best,j:X.occ[best].length,n:0,bi:-1,tl:-1,from:-1,sk:3,col:K.col||0x2b6cb0,you:1};
+rec.gs.push(g);K.gi=rec.gs.length-1;X.occ[best].push(K.gi);return true;}
+return true;
+}
+function _d3skiLiftFrame(K){
+var rec=_d3skiRec();if(!rec){K.msg='The resort is gone';K.msgT=2;return false;}
+if(rec!==K.rec){if(K.phase==='line'||K.phase==='ride'){if(!_d3skiRejoin(K,rec))return false;}else K.rec=rec;}
+if(K.phase!=='line'&&K.phase!=='ride')return true;
+var g=_d3skiMe(K);if(!g)return _d3skiJoin(K,rec,K.li);
+if(g.st==='ride'&&K.phase==='line'){K.phase='ride';K.lag=null;K.msg='🚡 Up the '+(rec.lifts[g.li].L.nm||rec.lifts[g.li].K.nm);K.msgT=2;}
+if(K.phase==='ride'){var o=_d3skiSeat(K,K._seat||(K._seat={}));if(o)K.seatS=o.s;}
+return true;
+}
+function _d3skiLineAt(K){var g=_d3skiMe(K);if(!g||g.st!=='queue')return null;var X=K.rec.lifts[g.li],i=X.q.indexOf(K.gi);if(i<0)return null;return _d3rsQueueAt(X,i,K.rec.k,K._qa||(K._qa=[0,0,0]));}
+var _D3_SKI_GEAR=null;
+function _d3skiGearGeo(){
+if(_D3_SKI_GEAR)return _D3_SKI_GEAR;var G=_d3rsGeo(),S=[],P=[];
+S.push(_d3rsPart(G.box,0x1d2228,0,0.006,0,0,0,0,1.42,0.012,0.084));
+S.push(_d3rsPart(G.box,0xd23b2a,0,0.016,0,0,0,0,1.40,0.008,0.078));
+S.push(_d3rsPart(G.box,0xd23b2a,0.80,0.04,0,0,0,0.42,0.22,0.012,0.076));
+S.push(_d3rsPart(G.box,0x1d2228,-0.77,0.018,0,0,0,-0.2,0.14,0.012,0.078));
+S.push(_d3rsPart(G.box,0x2a2d33,-0.06,0.04,0,0,0,0,0.36,0.05,0.07),_d3rsPart(G.box,0xb8bcc2,0.12,0.035,0,0,0,0,0.07,0.04,0.075));
+P.push(_d3rsPart(G.cyl8,0xc9ccd1,0,0.6,0,0,0,0,0.018,1.2,0.018));
+P.push(_d3rsPart(G.cyl,0x16181c,0,1.12,0,0,0,0,0.034,0.17,0.034));
+P.push(_d3rsPart(G.disc,0x16181c,0,0.08,0,0,0,0,0.1,0.01,0.1),_d3rsPart(G.cyl8,0x16181c,0,0.02,0,0,0,0,0.008,0.04,0.008));
+_D3_SKI_GEAR={ski:_d3rsMerge(S),pole:_d3rsMerge(P)};_D3_SKI_GEAR.ski._rsShared=_D3_SKI_GEAR.pole._rsShared=true;
+return _D3_SKI_GEAR;
+}
+function _d3skiGear(K){
+var T=window.THREE,G=_d3skiGearGeo(),m=_d3rsVcolMat({r:0.45,m:0.15}),o={skis:[],poles:[],mat:m},i;
+for(i=0;i<2;i++){var s=new T.Mesh(G.ski,m),p=new T.Mesh(G.pole,m);
+[s,p].forEach(function(x){x.castShadow=true;x.userData.noMerge=true;x.userData.skiGear=1;x.frustumCulled=false;_D3.scene.add(x);});
+o.skis.push(s);o.poles.push(p);}
+return o;
+}
+function _d3skiGearGone(K){var g=K&&K.gear;if(!g)return;g.skis.concat(g.poles).forEach(function(x){if(x.parent)x.parent.remove(x);});try{g.mat.dispose();}catch(_m){}K.gear=null;}
+var _d3skiV=null;
+function _d3skiTmp(){if(_d3skiV)return _d3skiV;var T=window.THREE;return (_d3skiV={a:new T.Vector3(),b:new T.Vector3(),c:new T.Vector3(),d:new T.Vector3(),
+m:new T.Matrix4(),q:new T.Quaternion(),up:new T.Vector3(0,1,0),e:new T.Euler(0,0,0,'YXZ'),s:new T.Vector3(),w1:new T.Vector3(),w2:new T.Vector3(),w3:new T.Vector3()});}
+function _d3skiLaySki(o,c,fwd,up,m2u){
+var V=_d3skiTmp();V.w1.crossVectors(fwd,up).normalize();V.w2.crossVectors(V.w1,fwd).normalize();
+V.m.makeBasis(fwd,V.w2,V.w1);o.quaternion.setFromRotationMatrix(V.m);o.position.copy(c);o.scale.setScalar(m2u);
+}
+function _d3skiPole(o,hand,dir,m2u){
+var V=_d3skiTmp();V.w3.copy(dir).negate();o.quaternion.setFromUnitVectors(V.up,V.w3);
+o.position.copy(hand).addScaledVector(dir,1.13*m2u);o.scale.setScalar(m2u);
+}
+function _d3skiFoot(th,kn,pitch){return kn-th-(pitch||0);}
+function _d3skiStance(c,pitch){
+c=Math.max(0,Math.min(1,c||0));var th=0.42+0.72*c,kn=0.85+1.15*c;
+return {th:th,kn:kn,ft:_d3skiFoot(th,kn,pitch),sp:0.18+0.5*c,hd:-(0.14+0.46*c)};
+}
+function _d3skiBones(rg,P,t,dt){
+var R=rg.real;if(!R)return;_d3mrLive(rg,t,dt);
+var B=R.B,w=1,V=_d3mrTmp();
+if(P.yaw){_d3mrTurn(R,B.root,[0,1,0],P.yaw,w);_d3mrTurn(R,B.spine03,[0,1,0],-P.yaw*0.8,w);}
+_d3mrTurn(R,B.spine03,[1,0,0],P.sp*0.6,w);_d3mrTurn(R,B.spine01,[1,0,0],P.sp*0.4,w);_d3mrTurn(R,B.head,[1,0,0],P.hd,w);
+[1,-1].forEach(function(s){var S=s>0?'L':'R';
+_d3mrAim(R,B['upperleg01'+S],B['lowerleg01'+S],_d3mrSag(P.th,s*(P.wx||0.05),V.d),w);
+_d3mrAim(R,B['lowerleg01'+S],B['foot'+S],_d3mrSag(P.th-P.kn,s*(P.wx||0.05)*0.4,V.d),w);
+_d3mrAim(R,B['foot'+S],B['toe11'+S],_d3mrSag(1.31+P.th-P.kn+P.ft,-s*(P.toe||0.04),V.d),w);
+var u=P.au,f=P.af;_d3mrArm(R,s,[s*u[0],u[1],u[2]],[s*f[0],f[1],f[2]],w);_d3mrCurl(R,S,0.9,w,true);});
+if(P.up!==false)_d3mrGround(R,w);
+}
+function _d3skiDrawn(p,th){if(!p||p.real)return;if(p.legL)p.legL.rotation.z=th;if(p.legR)p.legR.rotation.z=th;}
+var _D3_SKI_ARMS={ski:[[0.28,-0.78,0.55],[0.06,-0.3,0.95]],tuck:[[0.12,-0.42,0.9],[-0.28,0.08,0.96]],stand:[[0.3,-0.92,0.22],[0.18,-0.75,0.62]],
+air:[[0.62,-0.45,0.42],[0.5,-0.15,0.6]],chair:[[0.18,-0.9,0.38],[0.1,-0.25,0.96]],fall:[[0.7,-0.3,0.3],[0.6,0.1,0.3]]};
+var _D3_SKI_POLE={ski:[-0.32,-0.92,0.2],tuck:[-0.95,-0.12,0.12],stand:[-0.08,-0.97,0.22],air:[-0.4,-0.8,0.45],chair:[0.25,-0.96,0.1],fall:[-0.9,-0.2,0.4]};
+function _d3skiPlace(K,x,y,z,h,roll){var o=K.obj;if(!o)return;o.position.set(x,y,z);o.rotation.set(roll||0,-h,0,'YXZ');o.updateMatrixWorld(true);}
+function _d3skiPoseFrame(K,dt,t){
+var o=K.obj,p=K.p,rg=K.rig;if(!o)return;var V=_d3skiTmp(),m2u=K.m2u,S=K.S,hf=(K.E&&K.E.h)||_d3rsHDrawn,kind='stand',P,c=0,h=0,pitch=0,n=K._gn||(K._gn=[0,1,0]),gr=K._gg||(K._gg=[0,0]);
+if(K.phase==='ride'){var st=_d3skiSeat(K,K._seat||(K._seat={}));if(!st)return;h=Math.PI/2-st.ry;
+_d3skiPlace(K,st.x,st.y,st.z,h,0);kind=st.seat?'chair':'stand';o.visible=!st.cab;}
+else if(K.phase==='line'){var q=_d3skiLineAt(K);if(q){h=Math.PI/2-q[2];_d3skiPlace(K,q[0],hf(q[0],q[1])+0.005*K.life,q[1],h,0);}else h=K._h||0;o.visible=true;}
+else if(S){h=S.h;o.visible=true;
+var roll=S.lean;if(S.fall>0){var up=Math.min(1,S.fall/0.5);roll=(K.fallSide||1)*1.35*up;kind='fall';}
+else if(K.phase==='ski'&&!S.gnd)kind='air';else if(K.phase==='ski'){kind=(K.In.tuck>0.5)?'tuck':'ski';c=(K.In.tuck>0.5)?1:Math.min(0.45,0.15+S.sp*0.12);}
+_d3skiPlace(K,S.x,S.y+0.004*K.life,S.z,h,roll);}
+K._h=h;
+if(kind!=='chair'){_d3skiGrad(hf,o.position.x,o.position.z,0.06,gr);_d3skiNorm(gr[0],gr[1],n);pitch=Math.atan(-(gr[0]*Math.cos(h)+gr[1]*Math.sin(h)));}
+var brk=(K.phase==='ski'&&S&&S.gnd&&!(S.fall>0))?(K.In.brake||0):0,plow=brk>0.2&&S.sp<0.5,hock=brk>0.2&&!plow;
+K.hock=(K.hock||0)+((hock?(K.hockSide||1):0)-(K.hock||0))*Math.min(1,dt*7);
+if(kind==='chair')P={th:1.5,kn:1.45,ft:_d3skiFoot(1.5,1.45,-0.14),sp:-0.05,hd:-0.05,wx:0.07,toe:0.02,up:false};
+else if(kind==='air')P={th:0.95,kn:1.55,ft:_d3skiFoot(0.95,1.55,-0.1),sp:0.3,hd:-0.3,wx:0.06};
+else if(kind==='fall')P={th:0.6,kn:0.9,ft:_d3skiFoot(0.6,0.9,0),sp:0.1,hd:-0.2,wx:0.12};
+else if(kind==='stand'){P=_d3skiStance(0,pitch);P.th=0.2;P.kn=0.35;P.ft=_d3skiFoot(0.2,0.35,pitch);P.sp=0.06;P.hd=-0.05;}
+else{P=_d3skiStance(c,pitch);if(plow){P.wx=0.17;P.toe=0.35;}if(K.hock){P.kn+=0.3*Math.abs(K.hock);P.yaw=K.hock*1.0;}}
+var A=_D3_SKI_ARMS[kind]||_D3_SKI_ARMS.ski;P.au=A[0];P.af=A[1];
+if(p&&p.real&&rg)_d3skiBones(rg,P,t,dt);else{_d3skiDrawn(p,kind==='chair'?1.4:Math.min(0.9,P.th*0.6));if(rg&&typeof _d3pLive==='function')try{_d3pLive(rg,t,dt);}catch(_l){}}
+if(kind==='chair'&&p&&p.real){var B=p.real.B;if(B.upperleg01L&&B.upperleg01R){B.upperleg01L.getWorldPosition(V.a);B.upperleg01R.getWorldPosition(V.b);V.a.add(V.b).multiplyScalar(0.5);
+o.position.x+=o.position.x-V.a.x;o.position.y+=o.position.y+0.1*m2u-V.a.y;o.position.z+=o.position.z-V.a.z;o.updateMatrixWorld(true);}}
+_d3skiGearFrame(K,kind,h,n,pitch);
+}
+function _d3skiGearFrame(K,kind,h,n,pitch){
+var g=K.gear,o=K.obj,p=K.p;if(!g||!o)return;var V=_d3skiTmp(),m2u=K.m2u,T=window.THREE,i;
+var vis=o.visible!==false;for(i=0;i<2;i++){g.skis[i].visible=vis;g.poles[i].visible=vis;}if(!vis)return;
+var ch=Math.cos(h),sh=Math.sin(h),side=K._side||(K._side=new T.Vector3()),fwd=K._fwd||(K._fwd=new T.Vector3()),up=K._up||(K._up=new T.Vector3());
+if(kind==='chair'){fwd.set(ch,0.14,sh).normalize();up.set(0,1,0);}
+else{fwd.set(ch,0,sh);var d=fwd.x*n[0]+fwd.z*n[2];fwd.set(ch-d*n[0],-d*n[1],sh-d*n[2]).normalize();up.set(n[0],n[1],n[2]);
+var r=o.rotation.x;if(r){side.crossVectors(fwd,up);up.multiplyScalar(Math.cos(r)).addScaledVector(side,Math.sin(r)).normalize();}
+if(K.hock){var a=K.hock*1.0,ca=Math.cos(a),sa=Math.sin(a);side.crossVectors(up,fwd);fwd.multiplyScalar(ca).addScaledVector(side,sa).normalize();}}
+side.crossVectors(fwd,up).normalize();
+var feet=[null,null];if(p&&p.real&&p.real.B.footL&&p.real.B.footR){feet[0]=p.real.B.footL.getWorldPosition(V.a).clone();feet[1]=p.real.B.footR.getWorldPosition(V.b).clone();}
+else{for(i=0;i<2;i++){feet[i]=o.position.clone().addScaledVector(side,(i?0.11:-0.11)*m2u).addScaledVector(up,0.09*m2u);}}
+for(i=0;i<2;i++){V.c.copy(feet[i]).addScaledVector(up,-0.085*m2u).addScaledVector(fwd,0.07*m2u);if(kind==='chair')V.c.addScaledVector(fwd,0.05*m2u);
+_d3skiLaySki(g.skis[i],V.c,fwd,up,m2u);}
+var PD=_D3_SKI_POLE[kind]||_D3_SKI_POLE.ski,bf=K._bf||(K._bf=new T.Vector3());bf.set(ch,0,sh);
+for(i=0;i<2;i++){var hand=null,out=i?1:-1;
+if(p&&p.real){var wb=p.real.B[i?'wristR':'wristL'];if(wb)hand=wb.getWorldPosition(V.d).clone();}
+if(!hand)hand=o.position.clone().addScaledVector(V.up,0.85*m2u).addScaledVector(bf,0.25*m2u).addScaledVector(side,out*0.3*m2u);
+V.a.set(0,0,0).addScaledVector(bf,PD[0]).addScaledVector(V.up,PD[1]).addScaledVector(side,out*PD[2]).normalize();
+_d3skiPole(g.poles[i],hand,V.a,m2u);}
+}
+function _d3skiHUD(on){
+var el=document.getElementById('d3SkiHUD');
+if(on===false){if(el)el.style.display='none';_d3skiCard(null);return;}
+if(!el){
+el=document.createElement('div');el.id='d3SkiHUD';
+el.style.cssText='position:fixed;left:0;right:0;top:0;bottom:0;z-index:2147482000;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;';
+var B='pointer-events:auto;height:52px;border-radius:12px;border:1px solid rgba(190,220,255,.3);background:rgba(10,16,26,.7);color:#e6f0ff;font:700 15px system-ui,sans-serif;touch-action:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;';
+var S='pointer-events:auto;height:36px;padding:0 10px;border-radius:12px;border:1px solid rgba(190,220,255,.3);background:rgba(10,16,26,.62);color:#e6f0ff;font:700 12px system-ui;touch-action:none;';
+el.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:calc(10px + env(safe-area-inset-top,0px))">'+
+'<div id="d3SkiTop" style="padding:6px 14px;border-radius:12px;background:rgba(10,16,26,.66);color:#eaf3ff;font:700 14px system-ui;max-width:92vw;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>'+
+'<div id="d3SkiMsg" style="padding:5px 12px;border-radius:10px;background:rgba(10,16,26,.55);color:#cfe4ff;font:600 13px system-ui;max-width:86vw;text-align:center;display:none"></div>'+
+'<div id="d3SkiCard" style="display:none;pointer-events:auto;flex-direction:column;gap:6px;padding:10px;border-radius:14px;background:rgba(10,16,26,.82);max-width:min(420px,92vw)"></div></div>'+
+'<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:6px;padding:0 max(10px,env(safe-area-inset-right,0px)) calc(78px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px))">'+
+'<div style="display:flex;gap:6px"><button data-ski="left" style="'+B+'width:min(64px,16vw)">◀</button><button data-ski="right" style="'+B+'width:min(64px,16vw)">▶</button></div>'+
+'<div style="display:flex;gap:6px;align-items:flex-end"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'+
+'<button data-ski="lift" style="'+S+'">🚡 Lift</button><button data-ski="cam" style="'+S+'">📷 View</button><button data-ski="out" style="'+S+'grid-column:span 2">Done</button></div>'+
+'<div style="display:flex;flex-direction:column;gap:6px"><button data-ski="jump" style="'+B+'width:min(86px,22vw);height:40px;font-size:13px">JUMP</button>'+
+'<button data-ski="tuck" style="'+B+'width:min(86px,22vw);background:rgba(24,74,44,.8)">TUCK</button>'+
+'<button data-ski="brake" style="'+B+'width:min(86px,22vw);height:40px;font-size:13px;background:rgba(90,30,24,.75)">BRAKE</button></div></div></div>';
+document.body.appendChild(el);
+var press=function(ev){
+var b=ev.target&&ev.target.closest?ev.target.closest('[data-ski],[data-skitr]'):null;if(!b)return;var K=_D3.ski;if(!K||!K.on)return;
+var down=(ev.type==='pointerdown');if(K.src==='key')_d3skiKeysIn(K);K.src='pad';
+var tr=b.getAttribute('data-skitr');if(tr!=null){if(down)_d3skiPick(K,+tr);ev.preventDefault();ev.stopPropagation();return;}
+var a=b.getAttribute('data-ski');
+if(down){if(a==='out')_d3skiEnd();else if(a==='lift')_d3skiLiftPad(K);else if(a==='cam'){K.view=(K.view==='eye')?'chase':'eye';K.lag=null;}else if(a==='jump')K.In.jump=true;
+else{try{b.setPointerCapture(ev.pointerId);}catch(_c){}if(a==='left')K.In.turn=-1;else if(a==='right')K.In.turn=1;else if(a==='tuck'){K.In.tuck=1;K.In.push=1;}else if(a==='brake')K.In.brake=1;}}
+else{if(a==='left'||a==='right')K.In.turn=0;else if(a==='tuck'){K.In.tuck=0;K.In.push=0;}else if(a==='brake')K.In.brake=0;}
+if(ev.preventDefault)ev.preventDefault();if(ev.stopPropagation)ev.stopPropagation();};
+el.addEventListener('pointerdown',press);el.addEventListener('pointerup',press);el.addEventListener('pointercancel',press);
+}
+el.style.display='flex';_d3skiHUDTick(true);
+}
+function _d3skiClock(s){s=Math.max(0,s||0);var m=Math.floor(s/60),r=s-m*60;return m+':'+(r<10?'0':'')+r.toFixed(1);}
+function _d3skiTopLine(o){
+if(o.phase==='line')return '🚡 '+o.lift+' · '+(o.ahead>0?o.ahead+' ahead of you':'next on');
+if(o.phase==='ride')return '🚡 Up the '+o.lift;
+if(o.phase==='top')return '⛰ The top of the '+o.lift;
+return '⛷ '+(o.trail||(o.off?'Off-piste':'The mountain'))+' · '+o.kmh+' km/h'+(o.run!=null?' · ⏱ '+_d3skiClock(o.run):'');
+}
+function _d3skiHUDTick(force){
+var K=_D3&&_D3.ski;if(!K||!K.on)return;if(!force&&(K._hz=(K._hz||0)+1)%4)return;
+var top=document.getElementById('d3SkiTop'),msg=document.getElementById('d3SkiMsg');if(!top)return;
+var rec=K.rec,g=_d3skiMe(K),X=rec&&rec.lifts[(g&&g.li>=0)?g.li:(K.phase==='top'?K.topLi:K.li)],ahead=0;
+if(g&&g.st==='queue'&&X){ahead=X.q.indexOf(K.gi);}
+var tw='';if(K.phase==='ski'&&K.onT>=0&&rec)tw=_d3skiTrailWord(rec,K.onT);
+top.textContent=_d3skiTopLine({phase:K.phase,kmh:_d3skiKmh(K.S?K.S.sp:0),trail:tw,off:!!(K.S&&K.S.deep),ahead:ahead,lift:X?(X.L.nm||X.K.nm):'lift',run:K.run?K.run.t:null});
+if(msg){var on=K.msgT>0&&K.msg;msg.style.display=on?'block':'none';if(on)msg.textContent=K.msg;}
+var lb=document.querySelector('#d3SkiHUD [data-ski="lift"]');if(lb)lb.textContent=(K.near>=0&&rec&&rec.lifts[K.near])?('🚡 '+(rec.lifts[K.near].L.nm||'Lift')):'🚡 Lift';
+}
+function _d3skiCard(K){
+var c=document.getElementById('d3SkiCard');if(!c)return;
+if(!K||K.phase!=='top'){c.style.display='none';c.innerHTML='';return;}
+var rec=K.rec,h='<div style="color:#eaf3ff;font:700 13px system-ui;text-align:center">Pick a trail</div>',i,
+T='pointer-events:auto;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(190,220,255,.25);background:rgba(255,255,255,.06);color:#e6f0ff;font:600 13px system-ui;text-align:left';
+for(i=0;i<K.tops.length;i++){var j=K.tops[i],tv=rec.sv.trails[j],C=_D3_RS_CLS[tv.cls|0],col='#'+('00000'+C.col.toString(16)).slice(-6);
+h+='<button data-skitr="'+j+'" style="'+T+((K.pick|0)===i?';outline:2px solid #ffd36a':'')+'"><b style="color:'+(C.k==='green'?'#3fc35c':C.k==='blue'?'#5b97ff':'#fff')+';min-width:22px">'+C.sym+'</b><span style="flex:1">'+(i<9?(i+1)+'. ':'')+_d3rsEsc(rec.R.trails[j].nm||'Trail')+
+'<br><small style="color:#a9bdd6">'+C.nm+' · '+Math.round(tv.len*10)+' m · '+Math.round(tv.drop*10)+' m down</small></span><i style="width:8px;height:8px;border-radius:4px;background:'+col+'"></i></button>';}
+h+='<button data-skitr="-1" style="'+T+((K.pick|0)===K.tops.length?';outline:2px solid #ffd36a':'')+'"><b style="min-width:22px">⛰</b><span>'+(K.tops.length?'0. ':'')+'Ski from here<br><small style="color:#a9bdd6">The mountain itself, off any trail</small></span></button>';
+c.innerHTML=h;c.style.display='flex';
+}
+function _d3skiLiftPad(K){
+var rec=K.rec;if(!rec)return false;if(K.phase==='line'||K.phase==='ride')return false;
+var p=K.S?[K.S.x,K.S.z]:null;if(!p)return false;var L=_d3skiLiftsNear(rec.lifts,p[0],p[1],8);
+if(!L.length){K.msg='🚡 Ski down to the foot of a lift';K.msgT=2;return false;}
+return _d3skiJoin(K,rec,L[0].li);
+}
+function _d3skiKeysIn(K){var k=K.key||{};K.In.turn=(k.left?-1:0)+(k.right?1:0);K.In.tuck=k.up?1:0;K.In.push=k.up?1:0;K.In.brake=k.down?1:0;}
+function _d3skiKey(e,down){
+var K=_D3&&_D3.ski;if(!K||!K.on)return false;
+var k=(e.key||'').toLowerCase();K.key=K.key||{};K.src='key';
+if(k==='arrowleft'||k==='a'){K.key.left=down;return true;}
+if(k==='arrowright'||k==='d'){K.key.right=down;return true;}
+if(k==='arrowup'||k==='w'){K.key.up=down;return true;}
+if(k==='arrowdown'||k==='s'){K.key.down=down;return true;}
+if(!down)return k===' '||k==='e'||k==='c';
+if(k===' '){K.In.jump=true;return true;}
+if(k==='e'){_d3skiLiftPad(K);return true;}
+if(k==='c'){K.view=(K.view==='eye')?'chase':'eye';K.lag=null;return true;}
+if(k==='escape'){_d3skiEnd();return true;}
+if(K.phase==='top'&&/^[0-9]$/.test(k)){var n=+k;if(n===0)_d3skiPick(K,-1);else if(K.tops[n-1]!=null)_d3skiPick(K,K.tops[n-1]);return true;}
+return false;
+}
+function _d3skiNearTick(H){
+var el=document.getElementById('d3SkiNear'),rec=_d3skiRec(),L=(rec&&rec.ski&&rec.open&&H&&H.S)?_d3skiLiftsNear(rec.lifts,H.S.x,H.S.z,3):[];
+if(!L.length){if(el)el.style.display='none';return -1;}
+if(!el){el=document.createElement('button');el.id='d3SkiNear';el.type='button';
+el.style.cssText='position:fixed;left:50%;transform:translateX(-50%);top:calc(64px + env(safe-area-inset-top,0px));z-index:2147482001;height:40px;padding:0 16px;border-radius:20px;border:1px solid rgba(190,220,255,.4);background:rgba(16,48,96,.85);color:#fff;font:700 14px system-ui;';
+el.addEventListener('click',function(){var r=_d3skiRec(),me=_D3.me,q=(r&&me&&me.S)?_d3skiLiftsNear(r.lifts,me.S.x,me.S.z,3):[];el.style.display='none';if(q.length)drift3DSki({li:q[0].li});});
+document.body.appendChild(el);}
+var X=rec.lifts[L[0].li];el.textContent='⛷ Ski — the '+(X.L.nm||X.K.nm);el.style.display='';return L[0].li;
+}
+function _d3padSkiIn(axes,btn){axes=axes||[];btn=btn||[];var rt=_d3padBtn(btn[7]),lt=_d3padBtn(btn[6]);
+return {turn:_d3padAxis(axes[0],_D3_PAD_DEAD),tuck:rt>0.3?1:0,push:rt>0.3?1:0,brake:lt<_D3_PAD_TRIG?0:Math.min(1,lt)};}
+function _d3padSki(p,E,dt){var K=_D3.ski;if(!K||!K.on)return false;
+var c=_d3padSkiIn(p.axes,p.buttons);
+if(c.turn!==0||c.tuck||c.brake)K.src='gamepad';
+if(K.src==='gamepad'){K.In.turn=c.turn;K.In.tuck=c.tuck;K.In.push=c.push;K.In.brake=c.brake;}
+if(typeof _d3padHint==='function')_d3padHint('ski',_d3padLayoutLine('ski'));
+if(K.phase==='top'&&K.tops&&K.tops.length){var n=K.tops.length+1;
+if(E[4]||E[5]){K.pick=(((K.pick|0)+(E[5]?1:-1))%n+n)%n;_d3skiCard(K);}
+if(E[0]){var j=(K.pick|0)<K.tops.length?K.tops[K.pick|0]:-1;_d3skiPick(K,j);}
+return true;}
+if(E[0])K.In.jump=true;else if(E[2])_d3skiLiftPad(K);else if(E[3]){K.view=(K.view==='eye')?'chase':'eye';K.lag=null;}else if(E[8])_d3skiEnd();
+return true;}
+var _D3_SKI_CAM={back:0.5,backV:0.25,up:0.2,ahead:0.6,fov:58,fovV:16,eye:0.165,lag:5};
+function _d3skiOthersEnd(){var D=_D3;
+try{if(D.me&&D.me.on)_d3meEnd();}catch(_a){}try{if(D.drive&&D.drive.on)_d3drvEnd();}catch(_b){}try{if(D.ride&&D.ride.on)_d3rideEnd();}catch(_c){}
+try{if(D.dive&&D.dive.on)_d3diveEnd();}catch(_d){}try{if(D.fishing&&D.fishing.on)_d3fishEnd();}catch(_e){}try{if(D.pilot&&D.pilot.on)_d3pilotEnd();}catch(_f){}
+try{if(D.fly&&D.fly.on&&typeof _d3flyEnd==='function')_d3flyEnd();}catch(_g){}try{if(D.aboard&&D.aboard.on&&typeof _d3abEnd==='function')_d3abEnd();}catch(_h){}}
+function _d3skiOtherOn(){var D=_D3;return !!((D.me&&D.me.on)||(D.drive&&D.drive.on)||(D.ride&&D.ride.on)||(D.dive&&D.dive.on)||(D.fishing&&D.fishing.on)||(D.pilot&&D.pilot.on)||(D.fly&&D.fly.on)||(D.aboard&&D.aboard.on));}
+function _d3skiWhyNot(rec,li){
+if(!rec)return 'Build a Mountain Resort first — Town > Mountain Resort…';
+if(!rec.ski)return 'The resort’s lifts carry skiers in the winter';
+if(!rec.open)return 'The resort is shut for the thaw';
+if(li==null||li<0||!rec.lifts[li]||!rec.lifts[li].on)return 'No lift is running at the resort';
+return '';
+}
+function drift3DSki(opt){
+try{
+if(!_D3||!_D3.scene)return false;
+if(_D3.ski&&_D3.ski.on){_d3skiEnd();return false;}
+opt=opt||{};var rec=_d3skiRec(),li=rec?((opt.li!=null)?opt.li:_d3skiFirstLift(rec,opt.at||null)):-1,why=_d3skiWhyNot(rec,li);
+if(why){try{showToast('⛷ '+why);}catch(_t){}return false;}
+_d3skiOthersEnd();
+var M=_d3meLoad(),life=(typeof _dsc==='function')?(_dsc('life')||1):1,W=(typeof WORLD_M!=='undefined'&&WORLD_M>0)?WORLD_M:10,p=_d3meFigure(M);
+p.grp.scale.multiplyScalar(life);p.grp.userData.noMerge=true;
+var K=_D3.ski={on:true,M:M,p:p,obj:p.grp,rig:_d3pRig(p.grp),In:{turn:0,tuck:0,brake:0,push:0,jump:false},key:{},src:'key',phase:'line',rec:rec,gi:-1,li:li,
+S:null,trail:-1,run:null,onT:-1,near:-1,cam:null,lag:null,view:'chase',life:life,m2u:life/W,col:(M.look&&M.look.col)||0x2b6cb0,msg:'',msgT:0,yaw:null};
+if(K.rig)K.rig.nextE=1e9;
+_D3.scene.add(p.grp);K.gear=_d3skiGear(K);
+_d3skiJoin(K,rec,li);
+_D3.follow=false;_D3.spin=false;
+_d3skiCamera();_d3skiHUD(true);
+try{_D3._lodZ=null;if(typeof _d3lodApply==='function')_d3lodApply(true);}catch(_lo){}
+try{if(typeof _d3careerStat==='function')_d3careerStat('ski',1);}catch(_cs){}
+return true;
+}catch(_e){try{if(window.console&&console.warn)console.warn('[HighWall] skiing failed:',_e&&_e.message);}catch(_w){}try{_d3skiEnd();}catch(_x){}return false;}
+}
+function _d3skiEnd(){
+var K=_D3&&_D3.ski;if(!K||!K.on)return;K.on=false;
+try{_d3skiLeave(K);}catch(_l){}
+if(K.obj&&K.obj.parent)K.obj.parent.remove(K.obj);K.obj=null;K.p=null;K.rig=null;
+_d3skiGearGone(K);_d3skiHUD(false);
+try{_D3._lodZ=null;if(typeof _d3lodApply==='function')_d3lodApply(true);}catch(_lo){}
+try{if(typeof _d3updateCam==='function')_d3updateCam();}catch(_c){}
+}
+function _d3skiCamera(){
+var T=window.THREE,cv=_D3.ren&&_D3.ren.domElement,a=(cv&&cv.clientHeight)?(cv.clientWidth/cv.clientHeight):1.6,K=_D3.ski;
+if(!K.cam)K.cam=new T.PerspectiveCamera(_D3_SKI_CAM.fov,a,0.01,600);else if(Math.abs(K.cam.aspect-a)>1e-3){K.cam.aspect=a;K.cam.updateProjectionMatrix();}
+return K.cam;
+}
+function _d3skiWorldOf(K){if(!K.E||K.E.rec!==K.rec||K.E.bc!==(_D3.buildCount|0)){K.E=_d3skiWorld(K.rec);K.E.rec=K.rec;K.E.bc=_D3.buildCount|0;}return K.E;}
+function _d3skiFrame(dt,t){
+var K=_D3&&_D3.ski;if(!K||!K.on)return;
+if(_d3skiOtherOn()){_d3skiEnd();return;}
+if(!K.obj||!K.obj.parent){if(K.obj)_D3.scene.add(K.obj);else{_d3skiEnd();return;}}
+if(K.p&&!K.p.real&&typeof _d3mrWants==='function'&&_d3mrWants(K.M.look)&&_d3mrReady()){
+var q=_d3meFigure(K.M);q.grp.scale.multiplyScalar(K.life);q.grp.userData.noMerge=true;K.obj.parent.remove(K.obj);_D3.scene.add(q.grp);
+K.p=q;K.obj=q.grp;K.rig=_d3pRig(q.grp);if(K.rig)K.rig.nextE=1e9;}
+dt=Math.min(Math.max(0,dt||0),0.1);
+if(K.src==='key')_d3skiKeysIn(K);
+if(!_d3skiLiftFrame(K)){try{showToast('⛷ '+(K.msg||'The lift has gone'));}catch(_t){}_d3skiEnd();return;}
+_d3skiWorldOf(K);
+if(K.msgT>0)K.msgT-=dt;
+if(K.phase==='top'&&K.S){
+if(K.In.turn)K.S.h+=K.In.turn*_D3_SKI.pivot*0.6*dt;
+if(K.In.tuck>0.5||K.In.push>0.5)_d3skiPick(K,-1);}
+if(K.phase==='ski'&&K.S)_d3skiRun(K,dt);
+K.In.jump=false;
+_d3skiPoseFrame(K,dt,t);
+_d3skiCamAt(K,dt);
+_d3skiHUDTick();
+}
+function _d3skiRun(K,dt){
+var S=K.S,rec=K.rec,E=_d3skiWorldOf(K);
+_d3skiPhys(S,K.In,dt,E);
+if(S.ev==='crash'){K.fallSide=(S.lean<0)?-1:1;K.msg='💥 '+({tree:'Into a tree',lodge:'Into the lodge',building:'Into a building',tower:'Into a lift tower'}[S.hitK]||'Down')+'! Up again in a moment';K.msgT=2;K.falls=(K.falls||0)+1;S.hitK='';}
+else if(S.ev==='water'){K.msg='The water — go round it';K.msgT=1.6;}
+else if(S.ev==='land'&&(S.lastAir||0)>0.6){K.msg='✈ '+S.lastAir.toFixed(1)+' s in the air';K.msgT=1.6;}
+if(K.In.brake>0.2&&S.sp>0.5&&!K.hockSide)K.hockSide=(K.In.turn<0)?-1:1;else if(!(K.In.brake>0.2))K.hockSide=0;
+if((K._tq=(K._tq||0)+1)%6===0){var on=_d3skiOnTrail(E,S.x,S.z);K.onT=on?on.j:-1;
+var L=(S.sp<0.35)?_d3skiLiftsNear(rec.lifts,S.x,S.z,3):[];K.near=L.length?L[0].li:-1;}
+if(K.run){var R=K.run,T=rec.R.trails[R.j];R.t+=dt;R.top=Math.max(R.top||0,S.sp);
+if(T&&K._tq%6===0){var al=_d3skiAlong(T.pts,S.x,S.z);if(al[1]<3)R.s=Math.max(R.s||0,al[0]);}
+if(T&&_d3skiDone(T.pts,S.x,S.z,R.s||0,R.len,rec.R.bx!=null?[rec.R.bx,rec.R.bz]:null,1.5,_D3_RS.baseR-0.5)){
+K.last={j:R.j,t:R.t,top:R.top,falls:K.falls||0};K.msg='🏁 '+_d3skiTrailWord(rec,R.j)+' — '+_d3skiClock(R.t)+' · top speed '+_d3skiKmh(R.top)+' km/h';K.msgT=4;K.run=null;K.trail=-1;
+try{if(typeof _d3careerStat==='function')_d3careerStat('skiRun',1);}catch(_cs){}}}
+}
+function _d3skiCamAt(K,dt){
+var T=window.THREE,C=_D3_SKI_CAM,cam=_d3skiCamera(),o=K.obj;if(!o)return;var m=K.life,S=K.S,px=o.position.x,py=o.position.y,pz=o.position.z;
+var dir=K._cd||(K._cd=new T.Vector3()),want=K._cw||(K._cw=new T.Vector3()),look=K._cl||(K._cl=new T.Vector3()),yaw,back=C.back,up=C.up,ahead=C.ahead,fov=C.fov;
+if(K.phase==='ride'&&K._seat){var st=K._seat;yaw=Math.PI/2-st.ry;back=st.cab?0.7:0.34;up=st.cab?0.05:0.1;ahead=1.6;px=st.x;py=st.y;pz=st.z;}
+else if(K.phase==='line'){yaw=K._h||0;back=0.45;up=0.22;}
+else if(K.phase==='top'){var h0=K._h||0,cy=[0,Math.PI/2,-Math.PI/2,Math.PI],q;yaw=h0;back=0.5;up=0.2;ahead=0.9;
+for(q=0;q<cy.length;q++){var yq=h0+cy[q];if(_d3skiClearOf(K.E&&K.E.decks,px-Math.cos(yq)*back*m,pz-Math.sin(yq)*back*m,0.3)){yaw=yq;if(q)ahead=-0.05;break;}}}
+else if(S&&K.phase==='ski'){var hs=Math.hypot(S.vx,S.vz);yaw=(hs>0.25)?Math.atan2(S.vz,S.vx):S.h;back=C.back+C.backV*Math.min(1,S.sp/3);fov=C.fov+C.fovV*Math.min(1,S.sp/3.5);}
+else yaw=K._h||0;
+if(K.yaw==null||!K.lag)K.yaw=yaw;else{var dy=Math.atan2(Math.sin(yaw-K.yaw),Math.cos(yaw-K.yaw));K.yaw+=dy*Math.min(1,dt*3.2);}
+dir.set(Math.cos(K.yaw),0,Math.sin(K.yaw));
+if(K.view==='eye'&&K.phase!=='ride'){want.set(px,py+C.eye*m,pz).addScaledVector(dir,0.03*m);var g0=_d3rsHDrawn(px+dir.x*0.5*m,pz+dir.z*0.5*m);
+look.copy(want).addScaledVector(dir,0.5*m);look.y=Math.min(want.y,g0+C.eye*m*0.8);K.lag=want.clone();}
+else{want.set(px,py+up*m,pz).addScaledVector(dir,-back*m);var gc=_d3rsHDrawn(want.x,want.z);if(want.y<gc+0.08*m)want.y=gc+0.08*m;
+look.set(px,py+0.08*m,pz).addScaledVector(dir,ahead*m);if(K.phase==='ski'||K.phase==='top'){var gl=_d3rsHDrawn(look.x,look.z);look.y=Math.min(look.y,gl+0.12*m);}
+if(!K.lag)K.lag=want.clone();else K.lag.lerp(want,Math.min(1,dt*C.lag));}
+cam.position.copy(K.lag);
+try{if(K.view!=='eye'&&typeof _d3camGuard==='function')_d3camGuard({x:px,y:py+0.12*m,z:pz},cam.position,K.cg||(K.cg={}),dt);}catch(_g){}
+if(Math.abs(cam.fov-fov)>0.05){cam.fov+=(fov-cam.fov)*Math.min(1,dt*2);cam.updateProjectionMatrix();}
+cam.lookAt(look);
+}
 var _D3_ME_SKINS=[0xf2d0b4,0xe8b894,0xd39a72,0xb57a52,0x8d5a3b,0x5e3a24];
 var _D3_ME_HAIRS=[0x1c1612,0x3a2a1e,0x6e4a2e,0xa8743e,0xd9b46a,0x8a8580,0xb23a2a];
 var _D3_ME_TOPS=[0x2b6cb0,0xe76f51,0xf4f1e8,0x2a9d8f,0x8a2f5a,0xf4a261,0x1d1f22,0x3f7d3a];
@@ -92468,11 +93055,11 @@ else if(eView)_d3drvEnd();
 _d3padFeel(p,D);
 return;
 }
-if((typeof _d3padShip==='function'&&_d3padShip(p,E,dt))||_d3padFly(p,E,dt)||_d3padHelm(p,E)||_d3padWalk(p,E)||(typeof _d3padDerby==='function'&&_d3padDerby(p,E,dt))||(typeof _d3padWade==='function'&&_d3padWade(p,E,dt)))return;
+if((typeof _d3padShip==='function'&&_d3padShip(p,E,dt))||_d3padFly(p,E,dt)||_d3padHelm(p,E)||(typeof _d3padSki==='function'&&_d3padSki(p,E,dt))||_d3padWalk(p,E)||(typeof _d3padDerby==='function'&&_d3padDerby(p,E,dt))||(typeof _d3padWade==='function'&&_d3padWade(p,E,dt)))return;
 if(eMenu&&_D3&&_D3.scene&&!_d3padBusy()){try{drift3DDrive((typeof _d3cars==='function')?_d3cars().lead:0);}catch(_dv){}return;}
 if(typeof _d3padNav==='function'&&!_d3padBusy())_d3padNav(p,E);
 }
-function _d3padBusy(){var D=_D3;return !!((D.dive&&D.dive.on)||(D.fishing&&D.fishing.on)||(D.ride&&D.ride.on)||(D.me&&D.me.on)||(D.pilot&&D.pilot.on)||(D.fly&&D.fly.on)||(D.aboard&&D.aboard.on));}
+function _d3padBusy(){var D=_D3;return !!((D.ski&&D.ski.on)||(D.dive&&D.dive.on)||(D.fishing&&D.fishing.on)||(D.ride&&D.ride.on)||(D.me&&D.me.on)||(D.pilot&&D.pilot.on)||(D.fly&&D.fly.on)||(D.aboard&&D.aboard.on));}
 function _d3padFeel(p,D){try{
 var A=p.vibrationActuator;if(!A||typeof A.playEffect!=='function'||D.src!=='gamepad'||!D.S)return;
 var now=performance.now();if(now<_D3PAD.rumbleAt)return;_D3PAD.rumbleAt=now+100;
@@ -92607,6 +93194,7 @@ var _D3_PAD_LAYOUT=[
 {k:'drive',t:'Driving a drift car',rows:[['Left stick','steers'],['RT','gas'],['LT','brake'],['A or X','handbrake'],['Y','reset'],['LB / RB','car'],['Menu','compete'],['View','done']]},
 {k:'fly',t:'Flying',rows:[['Left stick','flies (pull back to climb)'],['RT / LT','power'],['A','brake'],['Y','view'],['RB','next plane'],['View','done']]},
 {k:'helm',t:'At the helm of a boat',rows:[['Left stick','steers'],['RT','ahead'],['LT','astern'],['RB','next craft'],['View','done']]},
+{k:'ski',t:'Skiing',rows:[['Left stick','turns'],['RT','tuck, or pushes off when slow'],['LT','brakes'],['A','jumps \u00b7 at a lift\u2019s top, takes the trail picked'],['LB / RB','picks a trail at the top'],['X','into the line of the lift at hand'],['Y','view'],['View','done']]},
 {k:'walk',t:'On foot',rows:[['Left stick','walks'],['A','runs'],['D-pad, X, Y','emotes'],['B','rest'],['RB','goes in at a door'],['View','done']]},
 {k:'ship',t:'Aboard a ship',rows:[['Left stick','walks and turns'],['Right stick','looks round'],['A','does what is here'],['X','your eyes or over the shoulder'],['Y','things to do'],['B','closes'],['View','ashore']]},
 {k:'derby',t:'In the fishing derby',rows:[['A','casts (hold), twitches, sets the hook'],['RT','reels'],['Left stick','boat and rod'],['LB / RB','lure'],['Menu','start'],['View','done']]},
@@ -93487,7 +94075,7 @@ if(!_D3)return null;
 if(typeof _d3expCam==='function'){var _xc9=_d3expCam();if(_xc9)return _xc9;}
 if(_D3.aboard&&_D3.aboard.on&&_D3.aboard.cam)return _D3.aboard.cam;
 if(_D3.drive&&_D3.drive.on&&_D3.drive.cam)return _D3.drive.cam;
-if(_D3.pilot&&_D3.pilot.on&&_D3.pilot.cam)return _D3.pilot.cam;if(_D3.me&&_D3.me.on&&_D3.me.cam)return _D3.me.cam;
+if(_D3.pilot&&_D3.pilot.on&&_D3.pilot.cam)return _D3.pilot.cam;if(_D3.me&&_D3.me.on&&_D3.me.cam)return _D3.me.cam; if(_D3.ski&&_D3.ski.on&&_D3.ski.cam)return _D3.ski.cam;
 if(_D3.fly&&_D3.fly.on&&_D3.fly.cam)return _D3.fly.cam;
 if(_D3.ride&&_D3.ride.on&&_D3.ride.cam)return _D3.ride.cam;
 if(_D3.dive&&_D3.dive.on&&_D3.dive.cam)return _D3.dive.cam;
@@ -101154,6 +101742,7 @@ if(_D3.portParts&&_D3.portParts.length){try{_d3portStep(now*0.001);}catch(_ptp9)
 if(_D3.proRigs&&_D3.proRigs.length){try{_d3proStep(now*0.001);}catch(_prp9){}}
 try{if(typeof _d3padPoll==='function')_d3padPoll(dt);}catch(_pad9){}
 if(_D3.drive&&_D3.drive.on){try{_d3drvStepFrame(dt,now*0.001);}catch(_drv9){}}
+if(_D3.ski&&_D3.ski.on&&typeof _d3skiFrame==='function'){try{_d3skiFrame(dt,now*0.001);}catch(_sk9){_D3._skiErr=(_sk9&&_sk9.message)||String(_sk9);}}
 if(_D3.me&&_D3.me.on&&typeof _d3meStep==='function'){try{_d3meStep(dt,now*0.001);}catch(_me9){}} if(_D3.aboard&&_D3.aboard.on&&typeof _d3abStep==='function'){try{_d3abStep(dt,now*0.001);}catch(_ab9){}} if(_D3.pilot&&_D3.pilot.on&&typeof _d3pilotStep==='function'){try{_d3pilotStep(dt,now*0.001);}catch(_plt9){}} if(_D3.fly&&_D3.fly.on&&typeof _d3flyStep==='function'){try{_d3flyStep(dt);}catch(_fly9){}}
 try{if(typeof _d3lifeLod==='function')_d3lifeLod();}catch(_lL9){}try{if(typeof _d3glowPoolArm==='function')_d3glowPoolArm();}catch(_gp9){} if(!_frz&&_D3.lakeLife&&_D3.lakeLife.length){var _llt=now*0.001,_lk9;
 for(_lk9=0;_lk9<_D3.lakeLife.length;_lk9++){var _lf=_D3.lakeLife[_lk9];if(!_lf.obj)continue;
