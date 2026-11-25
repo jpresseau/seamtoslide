@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='ed2d548';
+var RCG_BUILD='379b0e2';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -90298,7 +90298,8 @@ R.trails=Array.isArray(R.trails)?R.trails.filter(function(T){return T&&Array.isA
 R.blds=Array.isArray(R.blds)?R.blds.filter(function(B){return B&&_d3rsBld(B.k)&&isFinite(B.x)&&isFinite(B.z);}):[];
 if(!Array.isArray(R.log))R.log=[];if(R.price==null)R.price=_D3_RS.price0;if(R.bank==null)R.bank=_D3_RS.bank0;R.day=R.day|0;R.clock=+R.clock||0;
 var num=function(v){return typeof v==='number'&&isFinite(v);};
-if(!num(R.earn)){R.earn=0;for(var q=0;q<R.log.length;q++)R.earn+=(R.log[q]&&num(R.log[q].net))?R.log[q].net:0;}if(!num(R.paid))R.paid=0;}
+if(!num(R.earn)){R.earn=0;for(var q=0;q<R.log.length;q++)R.earn+=(R.log[q]&&num(R.log[q].net))?R.log[q].net:0;}if(!num(R.paid))R.paid=0;
+if(!num(R.inv))R.inv=0;}
 else R=null;
 D._rs={k:k,R:R};return R;
 }
@@ -90336,7 +90337,7 @@ try{if(typeof driftLandSave==='function')driftLandSave();}catch(_ls){}
 }
 var S=_d3rsPeak(_d3rsH,x,z,stamp?8:P.reach*0.6),B=_d3rsBaseFind(_d3rsH,_d3rsOk,S,fx,fz,46);
 var R={v:1,x:+S[0].toFixed(2),z:+S[1].toFixed(2),bx:+B[0].toFixed(2),bz:+B[1].toFixed(2),stamp:stamp?{x:stamp.x,z:stamp.z}:null,
-nm:'Mountain Resort',lifts:[],trails:[],blds:[],price:_D3_RS.price0,bank:_D3_RS.bank0,day:0,clock:0,rep:60,log:[],earn:0,paid:0};
+nm:'Mountain Resort',lifts:[],trails:[],blds:[],price:_D3_RS.price0,bank:_D3_RS.bank0,day:0,clock:0,rep:60,log:[],earn:0,paid:0,inv:0};
 _d3rsPut(R);return R;
 }
 function _d3rsRemove(){var R=_d3rsGet();if(!R)return;var i=_d3rsStampOf(R);
@@ -90379,6 +90380,15 @@ function _d3rsPayOut(keep){
 var R=_d3rsGet();if(!R)return 0;var amt=_d3rsPayable(R,keep);if(!(amt>0))return 0;
 if(typeof _d3rpgLoad!=='function'||typeof _d3rpgEarn!=='function')return 0;
 R.bank-=amt;R.paid=(+R.paid||0)+amt;_d3rsPut(R);_d3rpgEarn(_d3rpgLoad(),amt,Math.round(amt/500));if(typeof _d3rpgSave==='function')_d3rpgSave();return amt;
+}
+function _d3rsInvest(amt){
+var R=_d3rsGet();if(!R)return {ok:false,why:'none'};
+amt=Math.floor(+amt);if(!(amt>0)||!isFinite(amt))return {ok:false,why:'amount'};
+if(typeof _d3rpgLoad!=='function')return {ok:false,why:'purse'};
+var P=_d3rpgLoad(),have=Math.floor(+P.cash||0);if(have<amt)return {ok:false,why:'cash',have:have};
+P.cash=(+P.cash||0)-amt;if(typeof _d3rpgSave==='function')_d3rpgSave();try{if(typeof _d3rpgHUD==='function')_d3rpgHUD();}catch(_h){}
+R.bank=(+R.bank||0)+amt;R.inv=(+R.inv||0)+amt;_d3rsPut(R);
+return {ok:true,amt:amt,bank:R.bank,cash:P.cash};
 }
 function _d3rsIsle(ck){
 var R=_d3rsGet();if(!R||!ck||(typeof _D3!=='undefined'&&_D3&&_D3._noResort))return;var i,j;
@@ -91336,7 +91346,7 @@ h+='<div class="d3-rsrow">'+_d3rsChip('place','⛰ Place the resort','Tap the ma
 _d3rsChip('isle','🏝 Make the island bigger','No room for a mountain? Give the island more land: More > Island size')+'</div>';return h;}
 var S=sv.S,last=R.log[0]||null,stars=_d3rsStars(R.rep),st='';for(i=1;i<=5;i++)st+=(stars>=i)?'★':'☆';st+=' '+stars.toFixed(1);
 h+='<div class="d3-rsstat"><b>'+_d3rsEsc(S.mode)+'</b> · Day '+(R.day|0)+' · <span data-rsclock>'+Math.round(100*(R.clock||0)/_D3_RS.dayMs)+'%</span> of today<br>'+
-'Bank <b>'+_d3rsMoney(R.bank)+'</b>'+(_d3rsPayable(R)>0?' · <b data-rspay>'+_d3rsMoney(_d3rsPayable(R))+'</b> earned to pay out':'')+' · <span class="d3-rsstars" title="What people say of it: '+Math.round(R.rep||0)+'/100">'+st+'</span>'+
+'Bank <b>'+_d3rsMoney(R.bank)+'</b>'+(_d3rsPayable(R)>0?' · <b data-rspay>'+_d3rsMoney(_d3rsPayable(R))+'</b> earned to pay out':'')+((R.inv>0)?' · <span data-rsinvd>'+_d3rsMoney(R.inv)+' invested</span>':'')+' · <span class="d3-rsstars" title="What people say of it: '+Math.round(R.rep||0)+'/100">'+st+'</span>'+
 (sv.vertM?' · '+sv.vertM+' m vertical':'')+'</div>';
 if(last)h+='<div class="d3-rsday">Day '+last.day+': '+(last.open?(last.g.toLocaleString()+' '+(last.season==='Winter'?'skiers':'visitors')+' at '+_d3rsMoney(last.price*(S.price||1))+' · tickets '+_d3rsMoney(last.tix)+', food '+_d3rsMoney(last.food)+_d3rsDayMore(last)+', running '+_d3rsMoney(-last.cost)+' → <b>'+_d3rsMoney(last.net)+'</b> · happy '+last.sat+'%'):'closed')+
 (last.notes&&last.notes.length?'<br><i>'+last.notes.map(_d3rsEsc).join(' · ')+'</i>':'')+'</div>';
@@ -91368,9 +91378,23 @@ if(!(R.blds||[]).length)h+='<div class="d3-rshint">The base lodge. Build a renta
 for(i=0;i<(R.blds||[]).length;i++){var Bq=R.blds[i],Kq=_d3rsBld(Bq.k);if(!Kq)continue;
 h+='<div class="d3-rsitem"><span>🏠 <b>'+_d3rsEsc(Kq.nm)+'</b><small>'+_d3rsEsc(Kq.d)+' · '+_d3rsMoney(Kq.run)+' a day</small></span>'+_d3rsChip('dropBld:'+Bq.id,'Take down')+'</div>';}
 var pay=_d3rsPayable(R);
-h+='<div class="trk-mapsec">The resort</div><div class="d3-rsrow">'+_d3rsChip('payout',pay>0?'💰 Pay out '+_d3rsMoney(pay):'💰 Nothing earned to pay out yet','What the resort has earned and not paid out, over the '+_d3rsMoney(_D3_RS.keep)+' it keeps to run on, into your career’s purse. The '+_d3rsMoney(_D3_RS.bank0)+' it opened with is its own: it builds and runs the resort')+
+h+='<div class="trk-mapsec">The resort</div>'+_d3rsInvestHTML(R)+'<div class="d3-rsrow">'+_d3rsChip('payout',pay>0?'💰 Pay out '+_d3rsMoney(pay):'💰 Nothing earned to pay out yet','What the resort has earned and not paid out, over the '+_d3rsMoney(_D3_RS.keep)+' it keeps to run on, into your career’s purse. The '+_d3rsMoney(_D3_RS.bank0)+' it opened with is its own: it builds and runs the resort')+
 _d3rsChip('remove','🗑 Take it all down','The lifts, the trails, the lodge and the mountain it raised')+'</div>';
 return h;
+}
+var _D3_RS_INV=[10000,50000,250000];
+function _d3rsPurse(){try{return (typeof _d3rpgLoad==='function')?Math.floor(+_d3rpgLoad().cash||0):0;}catch(_p){return 0;}}
+function _d3rsInvestHTML(R){
+var cash=_d3rsPurse(),h='<div class="d3-rshint">Invest from your purse (<b data-rspurse>'+_d3rsMoney(cash)+'</b>) into its bank, to build and run it with'+((R.inv>0)?' · you have put in '+_d3rsMoney(R.inv):'')+'. It is the resort’s own: Pay out pays only what it earns.</div><div class="d3-rsrow" data-rsinv>',i;
+for(i=0;i<_D3_RS_INV.length;i++)h+=_d3rsChip('invest:'+_D3_RS_INV[i],'➕ '+_d3rsMoney(_D3_RS_INV[i]),cash>=_D3_RS_INV[i]?'Put '+_d3rsMoney(_D3_RS_INV[i])+' of your purse into the resort’s bank':'Your purse has '+_d3rsMoney(cash));
+return h+_d3rsChip('invest:all','➕ All of it','Put all '+_d3rsMoney(cash)+' of your purse into the resort’s bank')+'</div>';
+}
+function _d3rsInvestTap(want){
+var amt=(want==='all')?_d3rsPurse():parseInt(want,10);
+if(want==='all'&&amt>0&&typeof confirm==='function'&&!confirm('Invest all '+_d3rsMoney(amt)+' of your purse in the resort? It is the resort’s to build and run with: Pay out pays only what it earns.'))return '';
+var r=_d3rsInvest(amt);
+if(r.ok)return '💰 '+_d3rsMoney(r.amt)+' invested · the resort’s bank is '+_d3rsMoney(r.bank);
+return (r.why==='cash')?('Your purse has '+_d3rsMoney(r.have)+' — not enough to invest '+_d3rsMoney(amt)):((r.why==='amount')?'Your purse is empty':'⚠️ The resort could not take it');
 }
 function _d3rsDropAsk(kind,id){var R=_d3rsGet();if(!R)return false;var A=(kind==='lift')?R.lifts:((kind==='bld')?R.blds:R.trails),X=A.filter(function(x){return x.id===id;})[0];if(!X)return false;
 return typeof confirm!=='function'||confirm('Remove '+(X.nm||'this trail')+'? It is gone for good, and '+_d3rsMoney(_d3rsBack(kind,X))+' of what it cost comes back. To keep it and stop it being skied, Close it instead.');}
@@ -91403,6 +91427,7 @@ else if(a.indexOf('dropBld:')===0){p=_d3rsDrop('bld',parseInt(a.slice(8),10));_d
 else if(a.indexOf('closeTrail:')===0||a.indexOf('openTrail:')===0){var sh=a.indexOf('close')===0,Tq=_d3rsShut(parseInt(a.slice(a.indexOf(':')+1),10),sh);
 if(Tq){_d3rsSay(_d3rsShutSaid(Tq));_d3rsRebuild();}}
 else if(a.indexOf('dropTrail:')===0){var tid=parseInt(a.slice(10),10);if(!_d3rsDropAsk('trail',tid))return;p=_d3rsDrop('trail',tid);_d3rsSay('Removed · '+_d3rsMoney(p)+' back');_d3rsRebuild();}
+else if(a.indexOf('invest:')===0){var said=_d3rsInvestTap(a.slice(7));if(said)_d3rsSay(said);}
 else if(a==='payout'){p=_d3rsPayOut();_d3rsSay(p>0?('💰 '+_d3rsMoney(p)+' into your purse'):('Nothing earned to pay out yet — the resort pays out what it earns, over the '+_d3rsMoney(_D3_RS.keep)+' it keeps to run on'));}
 else if(a==='remove'){var left=_d3rsPayable(R);if(typeof confirm==='function'&&!confirm('Take the whole resort down, and the mountain it raised? Its bank of '+_d3rsMoney(R.bank)+' goes with it'+(left>0?' — pay out the '+_d3rsMoney(left)+' it has earned first':'')+'.'))return;
 _d3rsRemove();_d3rsSay('The resort is gone');_d3rsRebuild();}
