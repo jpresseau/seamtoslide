@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='4c84379';
+var RCG_BUILD='0d3cde5';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -108091,17 +108091,31 @@ function hwTitleSketchAll(g){
 var draw=function(){try{var cs=g.querySelectorAll('canvas[data-map]'),i;for(i=0;i<cs.length;i++)hwSketchCanvas(cs[i],cs[i].getAttribute('data-map'));}catch(_d){}};
 if(typeof requestAnimationFrame==='function')requestAnimationFrame(draw);else draw();
 }
+var _dwSyncSt=null,_dwSyncAt='';
+function driftWelcomeSyncWrap(){
+if(typeof rcgSyncUI!=='function'||rcgSyncUI._dw)return;
+var f=rcgSyncUI;
+rcgSyncUI=function(st){var r=f.apply(this,arguments);
+try{if(!st&&_dwSyncSt==='syncing')_dwSyncAt=(new Date()).toTimeString().slice(0,5);_dwSyncSt=st||null;driftWelcomeSyncSub();}catch(_w){}return r;};
+rcgSyncUI._dw=1;
+}
 function driftWelcomeSyncSub(){
 var el=document.getElementById('dwSyncSub');if(!el)return;
+try{driftWelcomeSyncWrap();}catch(_wr){}
 var txt='Share every map and your career across your devices';
 try{
 if(typeof _rcgSyncReady==='function'&&!_rcgSyncReady())txt='Not available in this copy of the app';
 else if(typeof rcgSyncGetPass==='function'&&!rcgSyncGetPass())
 txt='Not set up on this device — tap to turn it on with a passphrase';
 else{
-var id=(typeof _rcgSyncFp!=='undefined'&&_rcgSyncFp)?_rcgSyncFp:'';
-txt='On'+(id?(' · sync id '+id+' — must match on your other devices'):'')
-+' — tap to sync now';
+var id=(typeof _rcgSyncFp!=='undefined'&&_rcgSyncFp)?_rcgSyncFp:'',sid=id?(' · sync id '+id):'';
+var err=(typeof _rcgSyncLastErr!=='undefined'&&_rcgSyncLastErr)?String(_rcgSyncLastErr):'';
+if(_dwSyncSt==='syncing')txt='Syncing…'+sid;
+else if(_dwSyncSt==='error')txt='Sync error'+(err?(' — '+err):'')+' — tap to try again';
+else if(_dwSyncSt==='empty')txt='Synced, but sync id '+(id||'?')+' holds no maps — is it the id your other devices show?';
+else if(typeof _rcgSyncPendingTs!=='undefined'&&_rcgSyncPendingTs)txt='Newer maps from another device are in the cloud — tap to review and bring them in';
+else if(_dwSyncAt)txt='Synced at '+_dwSyncAt+sid+' — tap to sync again';
+else txt='On'+(id?(' · sync id '+id+' — must match on your other devices'):'')+' — tap to sync now';
 }
 }catch(_e){}
 el.textContent=txt;
