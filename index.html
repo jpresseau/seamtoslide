@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='0d3cde5';
+var RCG_BUILD='763428c';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -4753,9 +4753,11 @@ _rcgSyncBusy=true;rcgSyncUI('syncing');
 var UI=function(_st){if(_rcgSyncGen===_gen)rcgSyncUI(_st);};
 var _wd=setTimeout(function(){
 if(!_rcgSyncBusy||_rcgSyncGen!==_gen)return;
+try{_rcgSyncLastErr=(new Date()).toTimeString().slice(0,5)+' sync: the cloud did not answer in '+(_RCG_SYNC_TIMEOUT/1000)+' s';}catch(_le){}
 _rcgSyncBusy=false;
 try{rcgSyncUI('error');}catch(_we){}
 try{console.warn('[RC Garage] sync timed out after '+(_RCG_SYNC_TIMEOUT/1000)+'s - giving up waiting, not cancelling');}catch(_wl){}
+if(interactive)try{rcgAlert('Sync did not finish: the cloud did not answer in '+(_RCG_SYNC_TIMEOUT/1000)+' seconds. Check the connection, then tap Sync to try again.');}catch(_wa){}
 },_RCG_SYNC_TIMEOUT);
 try{
 var db=await _rcgSyncInit();
@@ -108119,6 +108121,10 @@ else txt='On'+(id?(' · sync id '+id+' — must match on your other devices'):''
 }
 }catch(_e){}
 el.textContent=txt;
+var lb=document.querySelector('#dwSync b');if(!lb)return;
+var on=false;try{on=!!(typeof rcgSyncGetPass==='function'&&rcgSyncGetPass());}catch(_g){}
+lb.textContent=!on?'Sync':_dwSyncSt==='syncing'?'Syncing…':_dwSyncSt==='error'?'Sync failed':_dwSyncSt==='empty'?'Sync: no data'
+:(typeof _rcgSyncPendingTs!=='undefined'&&_rcgSyncPendingTs)?'Sync ⬇️':_dwSyncAt?('Synced '+_dwSyncAt):'Sync';
 }
 function driftWelcomeRecoverable(){
 var out=[],i,arch={},aid=[];
