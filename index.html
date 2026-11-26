@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='a361b2d';
+var RCG_BUILD='427ff17';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -91156,12 +91156,14 @@ function _d3rsaBuild(key,fw,G){
 var R=_D3_RSA_BLD[key],T=window.THREE;if(!R||!T)return G;var u=_d3rsaU(fw),B=null,snow=_d3rsaSnow(),r,made;
 var sh=(typeof _d3rsaShareOn==='function')&&_d3rsaShareOn();
 var tl=(sh&&typeof _d3bldTrimLevel==='function')?(+_d3bldTrimLevel()||0):0,E=sh?_d3rsaShareGet(key,fw,snow,tl):null;
-if(E){r=E.r;made=_d3rsaShareMeshes(E,G);}
+var ms=sh&&(typeof _d3rsaShareMass==='function'),i;
+if(E){r=E.r;made=ms?_d3rsaShareMass(E,G,key):_d3rsaShareMeshes(E,G);}
 else{B=_d3rsaBuilder();if(tl>0){var f0=R.foot;B.lim=tl*Math.max(f0[1]-f0[0],f0[3]-f0[2]);}
-r=R.make(B,snow)||{};made=B.finish(G,u);if(sh)E=_d3rsaSharePut(key,fw,snow,made,r,B.parts,tl);}
+r=R.make(B,snow)||{};made=B.finish(G,u);if(sh)E=_d3rsaSharePut(key,fw,snow,made,r,B.parts,tl);
+if(ms){for(i=0;i<made.length;i++)G.remove(made[i]);made=_d3rsaShareMass(E,G,key);}}
 if(sh&&typeof _d3rsaShadeOf==='function'){var shd=_d3rsaShadeOf(E,made,G);if(shd)made.push(shd);}
 if(sh&&typeof _d3kitArm==='function')_d3kitArm(_D3.scene);
-var f=R.foot,ox=-(f[0]+f[1])/2*u,oz=-(f[2]+f[3])/2*u,i;
+var f=R.foot,ox=-(f[0]+f[1])/2*u,oz=-(f[2]+f[3])/2*u;
 if(r.sign)made.push(_d3rsaSign(G,u,r.sign[0],r.sign[1],r.sign[2],r.sign[3],r.sign[5]||0,r.sign[4],{bg:r.sbg,fg:r.sfg}));
 for(i=0;i<made.length;i++){made[i].position.x+=ox;made[i].position.z+=oz;}
 if(r.glows&&typeof _d3glow==='function')for(i=0;i<r.glows.length;i++){var q=r.glows[i];_d3glow(G,q[0]*u+ox,q[1]*u,q[2]*u+oz,q[4]||0xffdca8,q[3]*u,q[5]==null?0.42:q[5]);}
@@ -91205,14 +91207,55 @@ if(typeof _D3SHPMAT!=='undefined')_D3SHPMAT.push(M);return (_D3_RSA.mat.shade=M)
 }
 function _d3rsaShadeOf(E,made,G){
 var T=window.THREE,i,j;if(!E||!T||(typeof _D3!=='undefined'&&_D3&&_D3._noKitShade))return null;
-var cast=[];for(i=0;i<made.length;i++){var o=made[i],m=o.material;if(o.castShadow&&m&&!m.transparent&&!(m.userData&&m.userData.raGlow))cast.push(o);}
-if(!E.sh){var nv=0;for(i=0;i<cast.length;i++)nv+=cast[i].geometry.attributes.position.count;if(!nv)return null;
-var pos=new Float32Array(nv*3),o2=0;for(i=0;i<cast.length;i++){var pa=cast[i].geometry.attributes.position.array;pos.set(pa,o2);o2+=pa.length;}
+var cast=[],L=[],ok=function(m){return m&&!m.transparent&&!(m.userData&&m.userData.raGlow);};
+for(i=0;i<made.length;i++){var o=made[i],ks=o.userData._massKs;if(!o.castShadow||!ok(o.material))continue;cast.push(o);
+if(!ks){L.push(o.geometry);continue;}
+for(j=0;j<E.ms.length;j++){var q=E.ms[j];if(ks[q.k]&&q.cs&&ok(_d3rsaMat(q.k)))L.push(q.g);}}
+if(!E.sh){var nv=0;for(i=0;i<L.length;i++)nv+=L[i].attributes.position.count;if(!nv)return null;
+var pos=new Float32Array(nv*3),o2=0;for(i=0;i<L.length;i++){var pa=L[i].attributes.position.array;pos.set(pa,o2);o2+=pa.length;}
 var W=_d3rsaWeld(pos),g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(W.p,3));g.setIndex(new T.BufferAttribute(W.i,1));g.computeBoundingSphere();g.computeBoundingBox();
 g.userData._shared=1;g.userData._rsaGeo=(E.ms[0]&&E.ms[0].g.userData._rsaGeo||'?')+'|shade';E.sh=g;}
 for(j=0;j<cast.length;j++){cast[j].castShadow=false;cast[j].userData._shProxy=1;}
 var sm=new T.Mesh(E.sh,_d3rsaShadeMat());sm.name='ra-shade';sm.castShadow=true;sm.receiveShadow=false;
 sm.userData._shadowProxy=1;sm.userData._noB=1;sm.userData.noMerge=true;sm.userData._glbFitSkip=1;G.add(sm);return sm;
+}
+function _d3rsaPlain(m){
+if(!m||m.map||m.transparent||(m.metalness||0)>=0.25||(m.userData&&m.userData.raShade))return false;
+return !(m.emissive&&m.emissive.getHex&&m.emissive.getHex()>0&&(m.emissiveIntensity||0)>0);
+}
+function _d3rsaMassMat(){
+var M=_D3_RSA.mat.mass;if(M)return M;var T=window.THREE;
+M=new T.MeshStandardMaterial({vertexColors:true,roughness:0.9,metalness:0});
+M.userData.raKey='mass';return (_D3_RSA.mat.mass=M);
+}
+function _d3rsaMassOf(E){
+if(E.mass!==undefined)return E.mass;E.mass=null;
+var T=window.THREE,L=[],nv=0,i;
+for(i=0;i<E.ms.length;i++){var q=E.ms[i];if(!_d3rsaPlain(_d3rsaMat(q.k)))continue;
+var g=q.g,n=g.index?g.index.count:g.attributes.position.count;if(!n)continue;L.push(q);nv+=n;}
+if(L.length<2)return null;
+var ln=!(typeof _D3!=='undefined'&&_D3&&_D3._noLeanMerge),pos=new Float32Array(nv*3),nor=ln?new Int8Array(nv*3):new Float32Array(nv*3),col=ln?new Uint8Array(nv*3):new Float32Array(nv*3);
+var I=new T.Matrix4().elements,N=new T.Matrix3().elements,vo=0,ks={};
+for(i=0;i<L.length;i++){var q2=L[i],g2=q2.g,ix=g2.index,pa=g2.attributes.position,na=g2.attributes.normal,n2=ix?ix.count:pa.count,c=_d3rsaMat(q2.k).color;
+_d3bakeVerts(pa.array,na?na.array:null,ix?ix.array:null,n2,I,N,pos,nor,col,vo,c.r,c.g,c.b);vo+=n2;ks[q2.k]=1;}
+var bg=new T.BufferGeometry();
+bg.setAttribute('position',new T.BufferAttribute(pos,3));bg.setAttribute('normal',new T.BufferAttribute(nor,3,ln));bg.setAttribute('color',new T.BufferAttribute(col,3,ln));
+bg.computeBoundingSphere();bg.computeBoundingBox();
+bg.userData._shared=1;bg.userData._rsaGeo=(L[0].g.userData._rsaGeo||'?')+'|mass';
+return (E.mass={g:bg,ks:ks});
+}
+function _d3rsaMassOn(key){
+if(typeof _D3!=='undefined'&&_D3&&_D3._noKitMass)return false;
+try{var s=(typeof _rwSty==='function')?_rwSty(key):null;if(s&&s.colors)return false;}catch(_s){}
+return true;
+}
+function _d3rsaShareMass(E,G,key){
+var M=_d3rsaMassOn(key)?_d3rsaMassOf(E):null;if(!M)return _d3rsaShareMeshes(E,G);
+var T=window.THREE,out=[],i;
+for(i=0;i<E.ms.length;i++){var q=E.ms[i];if(M.ks[q.k])continue;var m=new T.Mesh(q.g,_d3rsaMat(q.k));
+m.name=q.nm;m.castShadow=q.cs;m.receiveShadow=q.rs;m.renderOrder=q.ro;G.add(m);out.push(m);}
+var mm=new T.Mesh(M.g,_d3rsaMassMat());mm.name='ra-mass';mm.castShadow=true;mm.receiveShadow=true;mm.userData.noMerge=true;mm.userData._massKs=M.ks;
+G.add(mm);out.push(mm);return out;
 }
 var _D3_RS_BREACH=42;
 var _D3_RS_BKEEP=1.3;
