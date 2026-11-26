@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='fc4748f';
+var RCG_BUILD='e928728';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -59345,6 +59345,7 @@ K.samples=ns;K.rtC=ns>0?new T.WebGLMultisampleRenderTarget(w,h,o):new T.WebGLRen
 var dt=new T.DepthTexture(w,h);dt.format=T.DepthFormat;dt.type=T.UnsignedIntType;dt.minFilter=T.NearestFilter;dt.magFilter=T.NearestFilter;
 K.rtD=new T.WebGLRenderTarget(w,h,{format:T.RGBAFormat,minFilter:T.NearestFilter,magFilter:T.NearestFilter,depthBuffer:true,stencilBuffer:false,generateMipmaps:false,depthTexture:dt});K.w=w;K.h=h;
 K.rtC.texture.encoding=ren.outputEncoding;
+K.rtD.texture.encoding=ren.outputEncoding;
 var U=K.quad.material.uniforms;U.tCol.value=K.rtC.texture;U.tDep.value=K.rtD.depthTexture;U.uRes.value.set(w,h);}
 var B=D.parkBlobs,cs=B.userData.forestCells,sm=ren.shadowMap,au=sm.autoUpdate,nu=sm.needsUpdate,bg=D.scene.background,cc=ren.getClearColor(_fhdCol).getHex(),ca=ren.getClearAlpha();
 var mask=cam.layers.mask,rt0=ren.getRenderTarget(),lp=D._renderLoop,cb=ren.state.buffers.color,GU=_d3fhdGrowU();
