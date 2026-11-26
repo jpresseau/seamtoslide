@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='c7561f6';
+var RCG_BUILD='1cadff8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -4037,7 +4037,7 @@ function rcgSyncGetPass(){try{return __LS.getItem('rcgSyncPass')||'';}catch(e){r
 function rcgSyncSetPass(p){try{
 var cur=rcgSyncGetPass();
 if(p!==cur){
-var K=['rcgSyncTs','rcgSyncLastHash','rcgSyncSnap','rcgSyncMeta','rcgSyncLocalSnap'],i;
+var K=['rcgSyncTs','rcgSyncLastHash','rcgSyncSnap','rcgSyncMeta','rcgSyncLocalSnap','rcgSyncPushGen'],i;
 for(i=0;i<K.length;i++){try{__LS.removeItem(K[i]);}catch(_t){}}
 _rcgSyncFp='';
 }
@@ -4356,7 +4356,7 @@ function _rcgSyncLocalClean(){var d=_rcgSyncLocalDiff();return !!d&&d.length===0
 function _rcgSyncKeepLocalSnap(snap){try{__LS.setItem('rcgSyncLocalSnap',JSON.stringify(snap||_rcgSyncSnapOf(_rcgSyncTrimDump())));}catch(_k){}}
 function _rcgSyncLocalEmpty(){return _rcgSyncDataEmpty(function(k){return __LS.getItem(k);});}
 function _rcgSyncTrimDump(){var dump=_rcgDumpAllLS();delete dump['rcgSyncPass'];
-delete dump['rcgSyncTs'];delete dump['rcgSyncLastHash'];delete dump['rcgBakeTs'];delete dump['rcgSyncSnap'];delete dump['rcgSyncLocalSnap'];delete dump['rcgSyncDev'];
+delete dump['rcgSyncTs'];delete dump['rcgSyncLastHash'];delete dump['rcgBakeTs'];delete dump['rcgSyncSnap'];delete dump['rcgSyncLocalSnap'];delete dump['rcgSyncPushGen'];delete dump['rcgSyncDev'];
 delete dump['rcgCrumb'];delete dump['rcgLastError'];
 try{var _ph=(typeof syncPhotoPayload==='function')?syncPhotoPayload():null;
 if(_ph){dump['rcgarage_buildimages']=_ph.rcgarage_buildimages;dump['rcgarage_partimages']=_ph.rcgarage_partimages;}
@@ -4424,7 +4424,8 @@ return 'The photos that did not fit belong to the inventory. Open RC Garage (../
 +'this device and use Data \u25b8 there to clear thumbnails and photos, then pull again.';
 }
 async function _rcgSyncApplyPull(db,loc,remote,pass,remoteTs){
-var pulledJson9=(await _rcgSyncReadPayload(db,loc.readId,remote,pass,loc.plain,true)).json;
+var _fr9=await _rcgSyncReadFresh(db,loc,remote,pass),pulledJson9=_fr9.json;
+if(_fr9.remote!==remote)remoteTs=(_fr9.remote&&_fr9.remote._ts)||remoteTs;
 var data=JSON.parse(pulledJson9);
 var _phB9=data['rcgarage_buildimages'],_phP9=data['rcgarage_partimages'],_phOk9=false;
 try{if((_phB9||_phP9)&&typeof applySyncPhotos==='function')_phOk9=await applySyncPhotos(_phB9,_phP9);}catch(_phe9){}
@@ -4546,29 +4547,40 @@ function _rcgB64Bytes(b64){
 if(typeof Uint8Array.fromBase64==='function')return Uint8Array.fromBase64(b64);
 var raw=atob(b64),a=new Uint8Array(raw.length),i;for(i=0;i<raw.length;i++)a[i]=raw.charCodeAt(i);return a;
 }
+function _rcgSyncChunkId(enc,i){return enc&&enc.g?enc.g+'-'+i:String(i);}
+function _rcgSyncGenId(){return Array.from(crypto.getRandomValues(new Uint8Array(6))).map(function(b){return b.toString(16).padStart(2,'0');}).join('');}
 async function _rcgSyncSeal(pass,json){
 var k=await _rcgSyncKeys(pass),iv=crypto.getRandomValues(new Uint8Array(12));
 var ct=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},k.key,new TextEncoder().encode(String(json)));
-return {chunks:_rcgSyncChunks(_rcgB64(new Uint8Array(ct))),enc:{v:2,iv:_rcgB64(iv)}};
+return {chunks:_rcgSyncChunks(_rcgB64(new Uint8Array(ct))),enc:{v:2,iv:_rcgB64(iv),g:_rcgSyncGenId()}};
 }
+function _rcgSyncUnreadable(msg){var e=new Error(msg);e.rcgUnreadable=true;return e;}
+var _rcgSyncTickAt=0,_rcgSyncBadCopy=null;
+async function _rcgSyncUnreadableAsk(e){
+var yes=await rcgConfirm('The newest copy in the cloud cannot be opened. A save from another device was cut off partway (the app '
++'was closed, or lost its connection, while it was saving), so part of that copy is missing. Nothing on this device was changed.\n\n'
++'The device you played on last still has that progress: open the app there and it saves it again, whole, and this device then '
++'takes it by itself.\n\nOr put this device\'s copy in the cloud now, in place of the broken one.','Use this device\'s copy','Not now');
+if(!yes)try{_rcgSyncLastErr=(new Date()).toTimeString().slice(0,5)+' sync: '+String((e&&e.message)||e).slice(0,140);}catch(_l){}
+return yes;}
 async function _rcgSyncOpen(pass,manifest,joined,plain){
 var enc=manifest&&manifest.enc;
 if(!enc){
 if(plain)return joined;
-throw new Error('The cloud copy is not sealed, so it was not written by this app. Nothing was applied.');
+throw _rcgSyncUnreadable('The cloud copy is not sealed, so it was not written by this app. Nothing was applied.');
 }
 var k=await _rcgSyncKeys(pass);
 try{
 var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:_rcgB64Bytes(enc.iv)},k.key,_rcgB64Bytes(joined));
 return new TextDecoder().decode(pt);
 }catch(e){
-throw new Error('The cloud copy could not be opened with this passphrase: it was changed by something other than this app, or part of it is missing. Nothing was applied.');
+throw _rcgSyncUnreadable('The cloud copy could not be opened with this passphrase: it was changed by something other than this app, or part of it is missing. Nothing was applied.');
 }
 }
 async function _rcgSyncReadPayload(db,readId,manifest,pass,plain,fromServer){
 var cc=(manifest&&manifest.chunkCount)||0,parts=[],missing=0,cached=false,i;
 for(i=0;i<cc;i++){
-var ref=_rcgSyncFs.doc(db,'rcgSync',readId,'chunks',String(i));
+var ref=_rcgSyncFs.doc(db,'rcgSync',readId,'chunks',_rcgSyncChunkId(manifest&&manifest.enc,i));
 var cs=fromServer?await _rcgSyncRead(ref,true):await _rcgSyncFs.getDoc(ref);
 if(fromServer&&_rcgSyncCacheNote(cs))cached=true;
 if(!cs.exists())missing++;
@@ -4578,6 +4590,37 @@ var raw=cc?parts.join(''):null;
 var json=raw==null?(plain?_rcgSyncCanonicalJSON((manifest&&manifest.data)||{}):'{}'):await _rcgSyncOpen(pass,manifest,raw,plain);
 return {json:json,chunks:cc,missing:missing,cached:cached};
 }
+function _rcgSyncSameCopy(a,b){a=a||{};b=b||{};return a._ts===b._ts&&a.chunkCount===b.chunkCount&&((a.enc||{}).iv||'')===((b.enc||{}).iv||'');}
+async function _rcgSyncReadFresh(db,loc,remote,pass){
+try{return {json:(await _rcgSyncReadPayload(db,loc.readId,remote,pass,loc.plain,true)).json,loc:loc,remote:remote};}
+catch(e){
+if(!(e&&e.rcgUnreadable))throw e;
+var l2=await _rcgSyncLocate(db,pass,true),r2=l2.snap.exists()?l2.snap.data():null;
+if(!r2||_rcgSyncSameCopy(r2,remote))throw e;
+return {json:(await _rcgSyncReadPayload(db,l2.readId,r2,pass,l2.plain,true)).json,loc:l2,remote:r2};
+}
+}
+function _rcgSyncDropChunk(db,docId,id){
+try{return Promise.resolve(_rcgSyncFs.deleteDoc(_rcgSyncFs.doc(db,'rcgSync',docId,'chunks',id))).catch(function(){});}catch(_e){return Promise.resolve();}}
+async function _rcgSyncDropChunks(db,docId,enc,n){var ps=[],i;
+for(i=0;i<(n|0);i++)ps.push(_rcgSyncDropChunk(db,docId,_rcgSyncChunkId(enc,i)));
+await Promise.all(ps);}
+async function _rcgSyncWriteChunks(db,docId,seal,current){var n=seal.chunks.length,i;
+try{__LS.setItem('rcgSyncPushGen',JSON.stringify({g:seal.enc.g,n:n}));}catch(_pg){}
+for(i=0;i<n;i++){
+if(!current()){await _rcgSyncDropChunks(db,docId,seal.enc,i);return false;}
+await _rcgSyncFs.setDoc(_rcgSyncFs.doc(db,'rcgSync',docId,'chunks',_rcgSyncChunkId(seal.enc,i)),{data:seal.chunks[i]});
+_rcgSyncTickAt=Date.now();
+}
+if(!current()){await _rcgSyncDropChunks(db,docId,seal.enc,n);return false;}
+return true;}
+async function _rcgSyncDropTorn(db,docId,snap){var p=null;
+try{p=JSON.parse(__LS.getItem('rcgSyncPushGen')||'null');}catch(_p){p=null;}
+if(!p||!p.g)return;
+if(snap&&snap.metadata&&snap.metadata.fromCache)return;
+var cur=snap&&snap.exists&&snap.exists()?((snap.data()||{}).enc||{}):{};
+if(cur.g!==p.g)await _rcgSyncDropChunks(db,docId,{g:p.g},p.n);
+try{__LS.removeItem('rcgSyncPushGen');}catch(_r){}}
 async function _rcgSyncLocate(db,pass,fromServer){
 var id=await _rcgSyncDocId(pass),get=function(ref){return fromServer?_rcgSyncRead(ref,true):_rcgSyncFs.getDoc(ref);};
 var snap=await get(_rcgSyncFs.doc(db,'rcgSync',id)),legacyId=await _rcgSyncHash(pass);
@@ -4762,14 +4805,17 @@ if(!pass)return;
 var _gen=(_rcgSyncGen=(_rcgSyncGen||0)+1);
 _rcgSyncBusy=true;rcgSyncUI('syncing');
 var UI=function(_st){if(_rcgSyncGen===_gen)rcgSyncUI(_st);};
-var _wd=setTimeout(function(){
+var _t0=Date.now(),_wd,_wdf=function(){
 if(!_rcgSyncBusy||_rcgSyncGen!==_gen)return;
+var _left=Math.max(_t0,_rcgSyncTickAt||0)+_RCG_SYNC_TIMEOUT-Date.now();
+if(_left>50){_wd=setTimeout(_wdf,_left);return;}
 try{_rcgSyncLastErr=(new Date()).toTimeString().slice(0,5)+' sync: the cloud did not answer in '+(_RCG_SYNC_TIMEOUT/1000)+' s';}catch(_le){}
 _rcgSyncBusy=false;
 try{rcgSyncUI('error');}catch(_we){}
 try{console.warn('[RC Garage] sync timed out after '+(_RCG_SYNC_TIMEOUT/1000)+'s - giving up waiting, not cancelling');}catch(_wl){}
 if(interactive)try{rcgAlert('Sync did not finish: the cloud did not answer in '+(_RCG_SYNC_TIMEOUT/1000)+' seconds. Check the connection, then tap Sync to try again.');}catch(_wa){}
-},_RCG_SYNC_TIMEOUT);
+};
+_wd=setTimeout(_wdf,_RCG_SYNC_TIMEOUT);
 try{
 var db=await _rcgSyncInit();
 if(!db)throw new Error('init failed');
@@ -4792,10 +4838,19 @@ try{_clean9=!_fresh9&&localTs>0&&_rcgSyncLocalClean();}catch(_cl9){_clean9=false
 if(!interactive&&!_fresh9&&!_clean9){_rcgSyncPendingTs=remoteTs;UI();return;}
 var choice=(_fresh9||_clean9)?'pull':(await _rcgSyncConflictDialog(localTs,remoteTs));
 if(choice==='pull'){
+if(!interactive&&_rcgSyncBadCopy&&_rcgSyncSameCopy(remote,_rcgSyncBadCopy)){UI('error');return;}
 if(_clean9)try{sessionStorage.setItem('rcgSyncAutoPulled','1');}catch(_as9){}
-var _pr9=await _rcgSyncApplyPull(db,loc,remote,pass,remoteTs);
+var _pr9=null;
+try{_pr9=await _rcgSyncApplyPull(db,loc,remote,pass,remoteTs);}
+catch(_pe9){try{sessionStorage.removeItem('rcgSyncAutoPulled');}catch(_ar8){}
+if(!(_pe9&&_pe9.rcgUnreadable)||!interactive){if(_pe9&&_pe9.rcgUnreadable)_rcgSyncBadCopy=remote;throw _pe9;}
+if(!(await _rcgSyncUnreadableAsk(_pe9))){_rcgSyncBadCopy=remote;UI('error');return;}
+_pr9={replace:true};
+}
+if(!_pr9||!_pr9.replace){
 if(_pr9&&_pr9.failed&&_pr9.failed.length)try{sessionStorage.removeItem('rcgSyncAutoPulled');}catch(_ar9){}
 return;
+}
 }else if(choice!=='push'){
 _rcgSyncPendingTs=remoteTs;UI();return;
 }
@@ -4804,7 +4859,7 @@ forcePush=true;
 }
 }
 var dump=_rcgSyncTrimDump(),_localSnap9=_rcgSyncSnapOf(dump);
-var _pushSnap=null,_remoteHash=null;
+var _pushSnap=null,_remoteHash=null,_remoteBad=false;
 try{
 var _rmt9=null;
 if(oldChunkCount){
@@ -4825,10 +4880,10 @@ dump.rcgSyncMeta=JSON.stringify(_meta);
 try{__LS.setItem('rcgSyncMeta',dump.rcgSyncMeta);}catch(_sm0){}
 _pushSnap=_rcgSyncSnapOf(dump);
 if(_rmt9)_remoteHash=await _rcgSyncHash(_rcgSyncCanonicalJSON(_rmt9));
-}catch(_mg9){}
+}catch(_mg9){_remoteBad=!!(_mg9&&_mg9.rcgUnreadable);}
 var json=_rcgSyncCanonicalJSON(dump);
 var contentHash=await _rcgSyncHash(json);
-if(!forcePush&&!migrating&&contentHash===(__LS.getItem('rcgSyncLastHash')||'')&&(_remoteHash===null||contentHash===_remoteHash)){
+if(!forcePush&&!migrating&&!_remoteBad&&contentHash===(__LS.getItem('rcgSyncLastHash')||'')&&(_remoteHash===null||contentHash===_remoteHash)){
 try{var _idleTs=_rcgSyncIdleTs(localTs,_remoteTs0,contentHash,_remoteHash);
 if(_idleTs!==null)__LS.setItem('rcgSyncTs',String(_idleTs));}catch(e){}
 if(_remoteHash!==null)_rcgSyncKeepLocalSnap(_localSnap9);
@@ -4847,14 +4902,17 @@ UI();
 if(interactive)showToast('☁️ Already up to date');
 return;
 }
+await _rcgSyncDropTorn(db,docId,snap);
+var _prevEnc9=(!migrating&&snap.exists())?((snap.data()||{}).enc||{}):null;
 var _seal=await _rcgSyncSeal(pass,json),chunks=_seal.chunks;
 var ts=Date.now();
-var wi;for(wi=0;wi<chunks.length;wi++){await _rcgSyncFs.setDoc(_rcgSyncFs.doc(db,'rcgSync',docId,'chunks',String(wi)),{data:chunks[wi]});}
-for(wi=chunks.length;wi<(migrating?0:oldChunkCount);wi++){try{await _rcgSyncFs.deleteDoc(_rcgSyncFs.doc(db,'rcgSync',docId,'chunks',String(wi)));}catch(_dce){}}
+if(!(await _rcgSyncWriteChunks(db,docId,_seal,function(){return _rcgSyncGen===_gen;})))return;
 var _dev9={};try{if(snap.exists()){var _pd9=snap.data().devices;if(_pd9&&typeof _pd9==='object')_dev9=_pd9;}}catch(_dv9){}
 try{_dev9[_rcgSyncDevId()]={t:ts,n:_rcgSyncDevLabel()};}catch(_dv8){}
 await _rcgSyncFs.setDoc(ref,{_ts:ts,chunkCount:chunks.length,devices:_dev9,enc:_seal.enc});
-try{__LS.setItem('rcgSyncTs',String(ts));}catch(e){}
+try{__LS.setItem('rcgSyncTs',String(ts));__LS.removeItem('rcgSyncPushGen');}catch(e){}
+if(_prevEnc9)await _rcgSyncDropChunks(db,docId,_prevEnc9,oldChunkCount);
+_rcgSyncBadCopy=null;
 if(migrating){try{if(await _rcgSyncDropLegacy(db,loc.legacyId)&&interactive)showToast('\ud83d\udd12 Your cloud copy is now encrypted');}catch(_dl){}}
 try{if(_pushSnap)__LS.setItem('rcgSyncSnap',JSON.stringify(_pushSnap));}catch(_ps0){}
 _rcgSyncKeepLocalSnap(_localSnap9);
