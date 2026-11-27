@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='a355875';
+var RCG_BUILD='249a736';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -104580,10 +104580,12 @@ try{var gl=G.gl;G.fr++;
 if(gl.getParameter(G.ext.GPU_DISJOINT_EXT)){G.pend.forEach(function(e){gl.deleteQuery(e.q);});G.pend=[];G.rec=null;G.lost++;return;}
 while(G.pend.length&&gl.getQueryParameter(G.pend[0].q,gl.QUERY_RESULT_AVAILABLE)){
 var e=G.pend.shift(),ns=gl.getQueryParameter(e.q,gl.QUERY_RESULT);gl.deleteQuery(e.q);_d3pfGpuAdd(G,e.f,e.p,ns/1e6);}
+if(P.ab&&typeof _d3pfAbGpu==='function'){var nw=(G.done|0)-(G.fed|0),h=G.hist;for(var i=Math.max(0,h.length-nw);i<h.length;i++)_d3pfAbGpu(h[i]);}
+G.fed=G.done|0;
 }catch(_e){P.gq=null;P.gpuErr=String((_e&&_e.message)||_e);}
 }
 function _d3pfGpuAdd(G,f,p,ms){
-if(G.rec&&G.rec.f!==f){G.hist.push(G.rec);if(G.hist.length>_D3_PF_GPU.keep)G.hist.shift();G.rec=null;}
+if(G.rec&&G.rec.f!==f){G.hist.push(G.rec);if(G.hist.length>_D3_PF_GPU.keep)G.hist.shift();G.rec=null;G.done=(G.done|0)+1;}
 if(!G.rec)G.rec={f:f,t:{}};G.rec.t[p]=(G.rec.t[p]||0)+(ms>0?ms:0);
 }
 function _d3pfGpuSum(H){
@@ -104605,20 +104607,25 @@ var _D3_PFAB_WARM=8;
 var _D3_PFAB_N=45;
 function _d3pfAbPlan(keys){var out=[''];for(var i=0;i<keys.length;i++)out.push(keys[i],'');return out;}
 function _d3pfAbMed(a){var s=a.slice().sort(function(x,y){return x-y;});return s.length?s[Math.floor((s.length-1)/2)]:0;}
+function _d3pfAbGMed(r){return (r&&r.gpu&&r.gpu.length>=5)?_d3pfAbMed(r.gpu):null;}
 function _d3pfAbResult(runs){
-var out=[],i,base=[];for(i=0;i<runs.length;i++)if(!runs[i].k)base.push(_d3pfAbMed(runs[i].dt));
+var out=[],i,base=[],bg=[];for(i=0;i<runs.length;i++)if(!runs[i].k){base.push(_d3pfAbMed(runs[i].dt));var g0=_d3pfAbGMed(runs[i]);if(g0!=null)bg.push(g0);}
 for(i=1;i<runs.length-1;i++){var r=runs[i];if(!r.k)continue;var a=runs[i-1],b=runs[i+1];
 var bf=(_d3pfAbMed(a.dt)+_d3pfAbMed(b.dt))/2,bl=(_d3pfAbMed(a.lm)+_d3pfAbMed(b.lm))/2,bt=(a.tri+b.tri)/2,f=_d3pfAbMed(r.dt),l=_d3pfAbMed(r.lm);
-out.push({k:r.k,frame:f,base:bf,saved:bf-f,game:l,baseGame:bl,tri:bt-r.tri,n:r.dt.length});}
-var w=0;for(i=0;i<base.length;i++)w+=base[i];
-return {whole:base.length?w/base.length:0,parts:out.sort(function(x,y){return y.saved-x.saved;})};
+var ga=_d3pfAbGMed(a),gb=_d3pfAbGMed(b),gr=_d3pfAbGMed(r),gbase=(ga!=null&&gb!=null)?(ga+gb)/2:null;
+out.push({k:r.k,frame:f,base:bf,saved:bf-f,game:l,baseGame:bl,tri:bt-r.tri,n:r.dt.length,gpu:(gbase!=null)?gr:null,baseGpu:(gr!=null)?gbase:null});}
+var w=0,wg=0;for(i=0;i<base.length;i++)w+=base[i];for(i=0;i<bg.length;i++)wg+=bg[i];
+var sv=function(p){return p.saved*1000+((p.gpu!=null)?p.baseGpu-p.gpu:0)+(p.baseGame-p.game);};
+return {whole:base.length?w/base.length:0,wholeGpu:bg.length?wg/bg.length:null,parts:out.sort(function(x,y){return sv(y)-sv(x);})};
 }
 function _d3pfAbLines(R,names,why){
 if(!R||!R.parts.length)return [];
 var f1=function(x){return (Math.round(x*10)/10).toFixed(1);};
-var L=['what each part costs a frame, switched off in turn on this device: the whole picture '+f1(R.whole)+' ms a frame ('+Math.round(R.whole>0?1000/R.whole:0)+' fps)'+(why?' - '+why:'')];
+var L=['what each part costs a frame, switched off in turn on this device: the whole picture '+f1(R.whole)+' ms a frame ('+Math.round(R.whole>0?1000/R.whole:0)+' fps)'
++((R.wholeGpu!=null)?', the graphics card '+f1(R.wholeGpu)+' ms of it':'')+(why?' - '+why:'')];
 R.parts.forEach(function(p){L.push('  '+(names[p.k]||p.k)+': '+(p.saved>=0?'saves ':'costs ')+f1(Math.abs(p.saved))+' ms ('+f1(p.frame)+' against '+f1(p.base)
-+'), the game’s work '+f1(p.game)+' against '+f1(p.baseGame)+(p.tri>0?', '+(p.tri/1e6).toFixed(2)+' M triangles':''));});
++'), the game’s work '+f1(p.game)+' against '+f1(p.baseGame)+((p.gpu!=null&&p.baseGpu!=null)?', the graphics card '+f1(p.gpu)+' against '+f1(p.baseGpu):'')
++(p.tri>0?', '+(p.tri/1e6).toFixed(2)+' M triangles':''));});
 return L;
 }
 var _D3_PFAB_NAMES={shadows:'the sun’s shadow pass',forest:'the forest',crowd:'the crowd’s pools (people, traffic, animals)',world:'the merged world (ground, roads, buildings’ shells)',shoals:'the fish shoals (the lakes’ and the reef’s)',res:'half the resolution across (the forest held at its level; the shadow\u2019s and the pools\u2019 levels follow the pixels)'};
@@ -104646,14 +104653,14 @@ function driftPerfMeasure(){
 var P=_RCGPF;if(P.ab){_d3pfAbStop('stopped');return;}
 if(!P.on||typeof _D3==='undefined'||!_D3.ren)return;
 var parts=_d3pfAbParts(),by={};parts.forEach(function(p){by[p.k]=p;});
-P.ab={plan:_d3pfAbPlan(parts.map(function(p){return p.k;})),by:by,i:-1,f:0,runs:[],put:null,bc:_D3.buildCount|0,why:{}};
+P.ab={plan:_d3pfAbPlan(parts.map(function(p){return p.k;})),by:by,i:-1,f:0,runs:[],put:null,bc:_D3.buildCount|0,why:{},gmap:{}};
 P.abRes=null;_D3._pfAb=1;_d3pfAbNext();
 try{if(typeof showToast==='function')showToast('📏 Measuring: each part of the picture goes off for a few seconds - about half a minute');}catch(_t){}
 }
 function _d3pfAbNext(){
 var A=_RCGPF.ab;if(A.put){try{A.put();}catch(_p){}A.put=null;}
 A.i++;A.f=0;if(A.i>=A.plan.length){_d3pfAbStop();return;}
-var k=A.plan[A.i];A.runs.push({k:k,dt:[],lm:[],tri:0});
+var k=A.plan[A.i];A.runs.push({k:k,dt:[],lm:[],tri:0,gpu:[]});
 if(k){try{A.put=A.by[k].off();}catch(_o){A.put=null;}}
 }
 function _d3pfAbFrame(c){
@@ -104662,8 +104669,13 @@ if((_D3.buildCount|0)!==A.bc){A.why.build=1;A.bc=_D3.buildCount|0;}
 if(_D3._interT&&performance.now()-_D3._interT<1200)A.why.gesture=1;
 if(c.dt>250)A.why.gap=1;
 if(typeof _d3pfAbShadowFrame==='function')_d3pfAbShadowFrame(A);
-if(++A.f>_D3_PFAB_WARM&&c.dt>0){var r=A.runs[A.runs.length-1],n=r.dt.length;r.dt.push(c.dt);r.lm.push(c.lm);r.tri=(r.tri*n+c.tm+c.ts)/(n+1);}
+if(++A.f>_D3_PFAB_WARM&&c.dt>0){var r=A.runs[A.runs.length-1],n=r.dt.length;r.dt.push(c.dt);r.lm.push(c.lm);r.tri=(r.tri*n+c.tm+c.ts)/(n+1);
+var G=_RCGPF.gq;if(G&&A.gmap)A.gmap[G.fr]=A.runs.length-1;}
 if(A.f>=_D3_PFAB_WARM+_D3_PFAB_N)_d3pfAbNext();
+}
+function _d3pfAbGpu(rec){
+var A=_RCGPF.ab;if(!A||!A.gmap||!rec)return;var ri=A.gmap[rec.f];if(ri==null)return;delete A.gmap[rec.f];
+var s=0,k;for(k in rec.t)s+=rec.t[k];var r=A.runs[ri];if(r&&r.gpu)r.gpu.push(s);
 }
 function _d3pfAbStop(how){
 var P=_RCGPF,A=P.ab;if(!A)return;P.ab=null;_D3._pfAb=0;
