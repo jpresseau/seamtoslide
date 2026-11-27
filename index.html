@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='0dd7eb2';
+var RCG_BUILD='a355875';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -81109,8 +81109,21 @@ add(w*1.02,0.04,d*1.02,M.soot,0,0.02,0);
 for(var b=0;b<4;b++){var L2=Math.min(w,d)*(0.55+0.3*rnd()),lean=0.35+0.4*rnd(),bm=add(L2,t*1.1,t*1.1,M.soot,(rnd()-0.5)*w*0.5,Math.sin(lean)*L2*0.5,(rnd()-0.5)*d*0.5,rnd()*Math.PI);
 bm.rotation.z=(b%2?1:-1)*lean;}
 for(var r=0;r<9;r++){var s=Math.min(w,d)*(0.08+0.12*rnd());add(s,s*0.6,s,rnd()<0.5?M.ash:M.char,(rnd()-0.5)*w*0.7,s*0.3,(rnd()-0.5)*d*0.7,rnd()*3);}
+if(!(D&&D._noRuinFold))_d3emgRuinFold(G,M.fold||(M.fold=new T.MeshStandardMaterial({vertexColors:true,roughness:0.985})));
 var sc=new T.Mesh(new T.CircleGeometry(Math.hypot(w,d)*0.75,32),M.scorch);sc.rotation.x=-Math.PI/2;sc.position.y=0.03;sc.renderOrder=2;sc.userData.noMerge=true;G.add(sc);
 G.userData.noMerge=true;G.userData._noB=1;return G;
+}
+function _d3emgRuinFold(G,mat){
+var T=window.THREE,P=[],N=[],C=[],I=[],v=new T.Vector3(),n3=new T.Matrix3(),m4=new T.Matrix4(),vo=0,n=0;G.updateMatrixWorld(true);
+var inv=new T.Matrix4().copy(G.matrixWorld).invert();
+G.children.slice().forEach(function(o){var g=o.geometry,mt=o.material;if(!o.isMesh||!g||!g.index||!mt||mt.transparent||!mt.color)return;
+var pa=g.attributes.position,na=g.attributes.normal,c=mt.color,k,ix=g.index.array;m4.multiplyMatrices(inv,o.matrixWorld);n3.getNormalMatrix(m4);
+for(k=0;k<pa.count;k++){v.fromBufferAttribute(pa,k).applyMatrix4(m4);P.push(v.x,v.y,v.z);v.fromBufferAttribute(na,k).applyMatrix3(n3).normalize();N.push(v.x,v.y,v.z);C.push(c.r,c.g,c.b);}
+for(k=0;k<ix.length;k++)I.push(ix[k]+vo);vo+=pa.count;n++;G.remove(o);g.dispose();});
+if(!n)return null;
+var bg=new T.BufferGeometry();bg.setAttribute('position',new T.Float32BufferAttribute(P,3));bg.setAttribute('normal',new T.Float32BufferAttribute(N,3));
+bg.setAttribute('color',new T.Float32BufferAttribute(C,3));bg.setIndex(vo>65535?new T.Uint32BufferAttribute(I,1):new T.Uint16BufferAttribute(I,1));bg.computeBoundingSphere();
+var me=new T.Mesh(bg,mat);me.name='ruin-body';me.castShadow=true;me.receiveShadow=true;me.userData.noMerge=true;me.userData.ruinParts=n;G.add(me);return me;
 }
 function _d3emgRuinDress(now){
 var D=_D3,T=window.THREE;if(!D.scene||!D.bldMeshes)return;var R=_d3emgRuins(),ids=Object.keys(R);
