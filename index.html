@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='8f20125';
+var RCG_BUILD='1775f7c';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -40493,6 +40493,7 @@ if(!_D3.depots||!_D3.depots.length||!_D3.roadGraph||!_D3.roadGraph.E.length||!_D
 var T=window.THREE,RG=_D3.roadGraph,rw=_D3.roadW||0.3,_depMs=(_D3.mapM&&_D3.mapM.s)||0.018,_depBsc=(typeof _dsc==='function')?_dsc('bld'):1,_depRefLs=Math.max(0.8,(typeof _dsc==='function'?_dsc('life'):1))*1.25*0.75*(_depMs/(12/660))*_depBsc*PEOPLE_SIZE_BASE,carL=_d3realCarL() ,tsc=(typeof _dsc==='function')?_dsc('traffic'):1;
 var OFF={firestation:[-1.02,0.62,-1.02,1.45],policestation:[1.15,0.9,1.15,1.6],hospital:[0,0.8,0,1.55]};
 var KIND={firestation:'firetruck',policestation:'police',hospital:'ambulance'};
+var _dvS=_d3vehStore({fold:1});
 for(var di=0;di<_D3.depots.length;di++){var dp=_D3.depots[di];if(dp.ready)continue;dp.ready=true;
 var o=OFF[dp.key]||[0,0.8,0,1.5],u=dp.fw*dp.sc;
 var bay={x:dp.gx+o[0]*u,z:dp.gz+o[1]*u},apr={x:dp.gx+o[2]*u,z:dp.gz+o[3]*u};
@@ -40515,9 +40516,8 @@ if(dl2>0.02){var strip2=new T.Mesh(new T.BoxGeometry(dl2,0.008,rw*1.15),_mat(0x4
 strip2.position.set((bay.x+apr.x)/2,0.012,(bay.z+apr.z)/2);strip2.rotation.y=-Math.atan2(ddz2,ddx2);strip2.receiveShadow=true;strip2.userData._depotStrip=1;_D3.trackG.add(strip2);}}catch(_ds2){}
 var kind=KIND[dp.key]||'police';var _dkL=carL;try{if(typeof _vsScale==='function')_dkL=carL*_vsScale(kind);}catch(_vs7){}
 var _dCarW=0;try{
-var _dc8=_d3vehicle('car',0x888888,carL*((typeof _vsScale==='function')?_vsScale('car'):1));
-if(_dc8)_dCarW=_d3vehRefW(_dc8);}catch(_dc9){_dCarW=0;}
-for(var vi=0;vi<2;vi++){var veh=null;try{veh=_d3vehicle(kind,0xf2f4f6,_dkL);}catch(_dv){veh=null;}if(!veh)continue;try{_d3trafShareLights(veh);}catch(_sl8){}
+_dCarW=_d3roadRefW(carL);}catch(_dc9){_dCarW=0;}
+for(var vi=0;vi<2;vi++){var veh=null;try{veh=_d3vehMake(kind,0xf2f4f6,_dkL,_dvS);}catch(_dv){veh=null;} if(!veh)continue;try{_d3trafShareLights(veh);}catch(_sl8){}
 var _dzf=1;try{if(typeof _d3vehNormWidth==='function')_dzf=_d3vehNormWidth(veh,kind,_dCarW);}catch(_dz9){_dzf=1;}
 veh.scale.set(tsc,tsc,tsc*_dzf);_D3.trackG.add(veh);
 var ent={obj:veh,dep:di,e:dp.re,fdir:1,s:dp.rs,spd:rw*2.0,siren:false,sirenPh:Math.random()*6.283};
@@ -49668,7 +49668,7 @@ var key=(mt.color?mt.color.getHex():0)+'|'+(mt.emissive?mt.emissive.getHex():0)+
 +'|'+(mt.roughness!=null?mt.roughness:'')+'|'+(mt.metalness!=null?mt.metalness:'')
 +'|'+(mt.transparent?1:0)+'|'+(mt.opacity!=null?mt.opacity:1)+'|'+(mt.side||0)
 +'|'+(mt.flatShading?1:0)+'|'+(o.castShadow?1:0)+(o.receiveShadow?1:0)+'|'+(det?'D':'S')+'|'+(mt.vertexColors?'C':'')
-+((mt.userData&&mt.userData.toBed)?'|B':'');
++((mt.userData&&mt.userData.toBed)?'|B':'')+((mt.userData&&mt.userData._vbody)?'|V':'');
 var gr=groups[key];if(!gr){gr=groups[key]={mat:mt,cast:!!o.castShadow,recv:!!o.receiveShadow,det:det,items:[],v:0,ix:0};list.push(gr);}
 var np=g9.attributes.position.count,ni=g9.index?g9.index.count:np;
 gr.items.push(o);gr.v+=np;gr.ix+=ni;});
@@ -50049,27 +50049,12 @@ _d3crowdShadow(rig); if(typeof _d3skinFold==='function')_d3skinFold(); if(typeof
 function _d3batchAnimated(only,noPool){
 try{
 var D=window._D3;if(!D||typeof _d3batchStatic!=='function')return 0;
-var LIMBS=['legL','legR','armL','armR','legFL','legFR','legBL','legBR'];
-function collectAnimated(rec,root,out){
-var i;for(i=0;i<LIMBS.length;i++){var h=rec&&rec[LIMBS[i]];if(h&&h.isObject3D)out.push(h);}
-function _pick(v,out2,d){
-if(!v||d>3)return;
-if(v.isObject3D){out2.push(v);return;}
-if(Array.isArray(v)){for(var j=0;j<v.length;j++)_pick(v[j],out2,d+1);return;}
-if(typeof v==='object'){for(var k2 in v){if(!Object.prototype.hasOwnProperty.call(v,k2))continue;
-var w=v[k2];if(w&&(w.isObject3D||Array.isArray(w)||typeof w==='object'))_pick(w,out2,d+1);}}
-}
-try{root.traverse(function(c){
-var u=c.userData;if(!u)return;
-for(var k in u){if(!Object.prototype.hasOwnProperty.call(u,k))continue;_pick(u[k],out,0);}
-});}catch(_ca){}
-}
 var _pa9=noPool?null:_d3poolCrowdTake(only),_cpN=_pa9?_pa9.n:0,_cpR=_pa9?_pa9.recs:[];
 try{if(typeof _d3prSweep==='function')_d3prSweep();}catch(_prs9){}
 var bodies=[];
 function add(rec,o){if(o&&o.traverse&&(!only||only.has(o)))bodies.push({rec:rec||{},root:o});}
 var carRoots=new Set();D._baCarKept=0;(D.cars||[]).forEach(function(w){if(w){if(w._kept){D._baCarKept++;return;} add(w,w.obj||w.grp);carRoots.add(w.obj||w.grp);}});
-D._baKept=0;(D.traffic||[]).forEach(function(w){if(!w)return;if(w._kept){D._baKept++;return;}add(w,w.obj||w.grp);});
+D._baKept=0;D._baFolded=0;(D.traffic||[]).forEach(function(w){if(!w)return;if(w._kept){D._baKept++;return;}var o9=w.obj||w.grp;if(o9&&o9.userData&&o9.userData._vfold){D._baFolded++;return;}add(w,o9);});
 (D.walkers||[]).forEach(function(w){if(w)add(w,w.obj||w.grp);});
 (D.boats3d||[]).forEach(function(w){if(w)add(w,w.obj);});
 (D.aircraft3d||[]).forEach(function(w){if(w)add(w,w.obj);});
@@ -50080,29 +50065,8 @@ var _bm9=(typeof _d3bmMemo==='function')?_d3bmMemo():null;
 ALL.forEach(function(k){stash[k]=D[k];D[k]=[];});
 try{
 bodies.forEach(function(b){
-var keep=[],bm=carRoots.has(b.root)?null:_bm9;collectAnimated(b.rec,b.root,keep);
-var keepSet=new Set();keep.forEach(function(o){if(o.traverse)o.traverse(function(c){keepSet.add(c);});});
-try{b.root.traverse(function(c){
-if(!c.isMesh)return;
-if(c.userData)delete c.userData._noBx;
-if(c.geometry){c.geometry.userData=c.geometry.userData||{};
-if(!c.geometry.userData._shared){c.geometry.userData._shared=1;c.geometry.userData._tmp=1;touched.push(c.geometry);}}
-});}catch(_bs){}
-keepSet.forEach(function(c){if(c.isMesh){c.userData=c.userData||{};c.userData._noBx=1;}});
-var HS=new Set(),HM=new Set();keep.forEach(function(h){if(h&&h.isObject3D){if(h.isMesh)HM.add(h);else HS.add(h);}});
-function nested(c,h){var p=c.parent;while(p&&p!==h){if(HS.has(p))return true;p=p.parent;}return false;}
-try{keep.forEach(function(h){
-if(!h||!h.isObject3D||h.isMesh)return;
-var kids=0;h.traverse(function(c){if(c.isMesh&&!nested(c,h))kids++;});
-if(kids<4)return;
-h.traverse(function(c){if(c.isMesh&&c.userData&&!nested(c,h)&&!HM.has(c))delete c.userData._noBx;});
-if(h.userData)h.userData._batched=0;
-_d3batchStatic(h,false,bm);
-if(h.userData)delete h.userData._batched;
-h.traverse(function(c){if(c.isMesh){c.userData=c.userData||{};c.userData._noBx=1;}});
-});}catch(_bw){}
-if(b.root.userData)b.root.userData._batched=0;
-try{_d3batchStatic(b.root,false,bm);n++;}catch(_bb){}
+var bm=carRoots.has(b.root)?null:_bm9;
+try{_d3bodyFold(b.rec,b.root,bm,touched);n++;}catch(_bb){}
 if(carRoots.has(b.root))try{_d3vcolMerge(b.root);_d3wheelSkin(b.root); _d3carShadow(b.root); }catch(_vc){}
 if(b.root.userData)delete b.root.userData._batched;
 try{if(b.root.userData&&b.root.userData._carKey!=null&&typeof _d3carShareGeo==='function')
@@ -51067,6 +51031,47 @@ function _d3bmMemo(){
 var D=(typeof _D3!=='undefined')?_D3:null,off=!!(D&&D._noBatchMemo);
 if(D)D._batchMemoN=off?null:{made:0,reused:0};
 return off?null:new Map();
+}
+var _D3_FOLD_LIMBS=['legL','legR','armL','armR','legFL','legFR','legBL','legBR'];
+function _d3foldHeld(rec,root,out){
+var i;for(i=0;i<_D3_FOLD_LIMBS.length;i++){var h=rec&&rec[_D3_FOLD_LIMBS[i]];if(h&&h.isObject3D)out.push(h);}
+function _pick(v,out2,d){
+if(!v||d>3)return;
+if(v.isObject3D){out2.push(v);return;}
+if(Array.isArray(v)){for(var j=0;j<v.length;j++)_pick(v[j],out2,d+1);return;}
+if(typeof v==='object'){for(var k2 in v){if(!Object.prototype.hasOwnProperty.call(v,k2))continue;
+var w=v[k2];if(w&&(w.isObject3D||Array.isArray(w)||typeof w==='object'))_pick(w,out2,d+1);}}
+}
+try{root.traverse(function(c){
+var u=c.userData;if(!u)return;
+for(var k in u){if(!Object.prototype.hasOwnProperty.call(u,k))continue;_pick(u[k],out,0);}
+});}catch(_ca){}
+}
+function _d3bodyFold(rec,root,bm,touched){
+var keep=[];_d3foldHeld(rec,root,keep);
+var keepSet=new Set();keep.forEach(function(o){if(o.traverse)o.traverse(function(c){keepSet.add(c);});});
+try{root.traverse(function(c){
+if(!c.isMesh)return;
+if(c.userData)delete c.userData._noBx;
+if(c.geometry){c.geometry.userData=c.geometry.userData||{};
+if(!c.geometry.userData._shared){c.geometry.userData._shared=1;c.geometry.userData._tmp=1;touched.push(c.geometry);}}
+});}catch(_bs){}
+keepSet.forEach(function(c){if(c.isMesh){c.userData=c.userData||{};c.userData._noBx=1;}});
+var HS=new Set(),HM=new Set();keep.forEach(function(h){if(h&&h.isObject3D){if(h.isMesh)HM.add(h);else HS.add(h);}});
+function nested(c,h){var p=c.parent;while(p&&p!==h){if(HS.has(p))return true;p=p.parent;}return false;}
+try{keep.forEach(function(h){
+if(!h||!h.isObject3D||h.isMesh)return;
+var kids=0;h.traverse(function(c){if(c.isMesh&&!nested(c,h))kids++;});
+if(kids<4)return;
+h.traverse(function(c){if(c.isMesh&&c.userData&&!nested(c,h)&&!HM.has(c))delete c.userData._noBx;});
+if(h.userData)h.userData._batched=0;
+_d3batchStatic(h,false,bm);
+if(h.userData)delete h.userData._batched;
+h.traverse(function(c){if(c.isMesh){c.userData=c.userData||{};c.userData._noBx=1;}});
+});}catch(_bw){}
+if(root.userData)root.userData._batched=0;
+_d3batchStatic(root,false,bm);
+return 1;
 }
 var _D3_POOL_LOD=[{px:16,div:8},{px:6,div:3},{px:1.5,div:1}];
 var _D3_POOL_HIDE_PX=0.5;
@@ -52435,6 +52440,7 @@ try{
 var T=window.THREE;grp.updateMatrixWorld(true);
 var pos=new T.Vector3(),qt=new T.Quaternion(),scl=new T.Vector3();
 grp.matrixWorld.decompose(pos,qt,scl);
+var u0=grp.userData;if(u0&&typeof u0._vbw==='number')return u0._vbw*Math.abs(scl.z||1);
 var inv=new T.Matrix4().copy(grp.matrixWorld).invert();
 var tmp=new T.Matrix4(),v3=new T.Vector3(),wsum=0,vsum=0;
 grp.traverse(function(o){if(!o.isMesh||!o.geometry)return;
@@ -53109,7 +53115,8 @@ function _d3vehMake(type,col,L,S){
 var D=window._D3;
 if(!S||(D&&D._noVehClone))return _d3vehicle(type,col,L);
 var k=type+'|'+L,e=S.p[k];
-if(!e){var P=_d3vehicle(type,col,L);if(!P)return P;e=S.p[k]={P:P,col:col,body:_D3VBODY.get(P)||null};S.built++;}
+if(!e){var P=_d3vehicle(type,col,L);if(!P)return P;e=S.p[k]={P:P,col:col,body:_D3VBODY.get(P)||null};S.built++;
+if(S.fold&&_d3vehFoldOn()){_d3vehFoldProto(P,type,L,e.body);S.folded++;}}
 else S.copied++;
 var C=_d3vehClone(e.P);
 if(col!==e.col&&e.body){var nb=S.body[col]||(S.body[col]=_mat(col,{r:0.35,m:0.35}));
@@ -53117,7 +53124,19 @@ C.traverse(function(o){if(o.material===e.body)o.material=nb;});}
 _d3vehOwnHeld(C);
 return C;
 }
-function _d3vehStore(){return {p:{},body:{},built:0,copied:0};}
+function _d3vehStore(o){return {p:{},body:{},built:0,copied:0,folded:0,fold:!!(o&&o.fold)};}
+function _d3vehFoldOn(){var D=(typeof _D3!=='undefined')?_D3:null;return !(D&&D._noVehFold);}
+function _d3vehFoldProto(P,type,L,body){
+if(!P||typeof _d3bodyFold!=='function')return P;
+var u=P.userData||(P.userData={}),touched=[],i;
+if(type==='semi'&&!u.artic)try{_d3articulate(P,L);}catch(_ar){}
+try{u._vbw=_d3vehBodyW(P);}catch(_bw){}
+var bu=body?(body.userData||(body.userData={})):null;if(bu)bu._vbody=1;
+try{_d3bodyFold({},P,null,touched);}finally{if(bu)delete bu._vbody;
+for(i=0;i<touched.length;i++){var g=touched[i].userData;if(g&&g._tmp){delete g._tmp;delete g._shared;}}}
+delete u._batched;delete u._rideY;delete u._rollZ;u._vfold=1;
+return P;
+}
 var _D3_ROAD_TARMAC=0x3c4046,_D3_ROAD_TARMAC_E=0x2b2e33;
 var _D3_ROAD_CLASS=[
 {id:'lane', name:'Lane', w:1.00, dash:'dash', pave:true, big:true, col:_D3_ROAD_TARMAC, edge:_D3_ROAD_TARMAC_E,
@@ -57140,7 +57159,7 @@ n=Math.max(1,n|0);return a+((k%n)+0.25+Math.random()*0.5)/n*(b-a);
 }
 function _d3trafSpd(vt,rw,rnd){return rw*0.5*(vt==='bus'?1.5:vt==='truck'?1.8:2.0+(rnd?rnd():0.5)*0.7);}
 function _d3roadSpawn(g,_GE,carL,tsc,rwWorld,_rdCarW9){
-var tn=0,_vm9=_d3vehStore();
+var tn=0,_vm9=_d3vehStore({fold:1});
 var _tCap=200;try{if(typeof _d3qual==='function'){var _tq=_d3qual();if(_tq&&_tq.trafficCap>0)_tCap=_tq.trafficCap;}}catch(_tc9){} if(_da.cars!==false&&_GE.length){for(var _ce=0;_ce<_GE.length&&tn<_tCap;_ce++){var _ed=_GE[_ce],_nc=Math.max(1,Math.round(_ed.len/3.5));if(_nc>30)_nc=30;for(var _cc2=0;_cc2<_nc&&tn<_tCap;_cc2++){var _vt,_vtCol,_vtLen=carL,_kp=null,_gcu=null;
 if(typeof _CUSTOM_VEHICLES!=='undefined'&&_CUSTOM_VEHICLES.length&&Math.random()<0.3){var _cv9=_CUSTOM_VEHICLES[Math.floor(Math.random()*_CUSTOM_VEHICLES.length)];_vt=_cv9.vtype;_vtCol=(_cv9.color!=null?_cv9.color:_VPAL[0]);_vtLen=carL*Math.max(0.6,Math.min(1.8,_cv9.lenScale||1)); try{if(typeof _vsScale==='function')_vtLen*=_vsScale(_cv9.vtype);}catch(_vs8){}
 _gcu=_vtCol;_kp=_d3trafGarageTake([_d3trafGarageKey(_vt,_vtLen,tsc,_gcu)]); }
@@ -57149,10 +57168,10 @@ var _vTy9=_VTYPES;if(_d3roadOf(_ed).big===false){_vTy9=_d3roadSmallTypes();}
 var _gks=[],_gi9;for(_gi9=0;_gi9<_vTy9.length;_gi9++){var _gt9=_vTy9[_gi9],_gl9=carL;try{if(typeof _vsScale==='function')_gl9=carL*_vsScale(_gt9);}catch(_vs7){}_gks.push(_d3trafGarageKey(_gt9,_gl9,tsc,null));}_kp=_d3trafGarageTake(_gks);
 if(_kp){_vt=_kp.vt;_vtCol=_kp.col;_vtLen=_kp.len;}else{
 _vt=_vTy9[Math.floor(Math.random()*_vTy9.length)];_vtCol=_VPAL[Math.floor(Math.random()*_VPAL.length)]; try{if(typeof _vsScale==='function')_vtLen=carL*_vsScale(_vt);}catch(_vs9){}}}
-var car;if(_kp){car=_kp.obj;}else{car=_d3vehMake(_vt,_vtCol,_vtLen,_vm9);try{_d3trafShareLights(car);}catch(_sl9){} if(_vt==='semi'){try{_d3articulate(car,_vtLen);}catch(_ar9){}}
+var car;if(_kp){car=_kp.obj;}else{car=_d3vehMake(_vt,_vtCol,_vtLen,_vm9);try{_d3trafShareLights(car);}catch(_sl9){} if(_vt==='semi'&&!car.userData.artic){try{_d3articulate(car,_vtLen);}catch(_ar9){}}
 _D3.carRefW=_rdCarW9;_D3.trafficSc=tsc;var _zf9=1;try{_zf9=_d3vehNormWidth(car,_vt,_rdCarW9);}catch(_zn9){}car.scale.set(tsc,tsc,tsc*_zf9);
 try{car.userData.bodyW=_d3vehBodyW(car)/(tsc||1);}catch(_bw9){}}g.add(car);var _isEmg=(_vt==='firetruck'||_vt==='ambulance'||_vt==='police');_D3.traffic.push({obj:car,vt:_vt,e:_ce,col:_vtCol,cust:_gcu,_gk:_kp?_kp.key:_d3trafGarageKey(_vt,_vtLen,tsc,_gcu),_inst:_kp?_kp._inst:undefined,_kept:_kp?1:0, fdir:(_ed.ow?1:(Math.random()<0.5?1:-1)),s:_d3spawnS(_GE,_ed,_cc2,_nc,rwWorld),spd:_d3trafSpd(_vt,rwWorld,Math.random),siren:(_isEmg&&Math.random()<0.35),sirenPh:Math.random()*6.283,len:_vtLen,vt:_vt});tn++;}}}
-_D3._vehClone={built:_vm9.built,copied:_vm9.copied};
+_D3._vehClone={built:_vm9.built,copied:_vm9.copied,folded:_vm9.folded};
 try{var _G9=_D3._trafGarage,_tk9=_G9?_G9.taken:0;_D3._trafGarageN={kept:_G9?_G9.kept:0,taken:_tk9,built:tn-_tk9,dropped:_d3trafGarageDrop()};}catch(_gd9){}
 return tn;
 }
