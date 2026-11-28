@@ -2963,7 +2963,7 @@ return (versioned||!mine)?null:c.delete(rq);
 })); });
 }); })); }).then(go,go); return; } }catch(e){}
 go(); }
-var RCG_BUILD='249a736';
+var RCG_BUILD='c6995e8';
 try{window.RCG_BUILD=RCG_BUILD;}catch(_rb){}
 function addRefresh(){ if(document.getElementById('rcgAppRefresh'))return;
 var host=document.getElementById('topActions')||document.getElementById('topNav');
@@ -104323,7 +104323,8 @@ var ren=(typeof _D3!=='undefined'&&_D3)?_D3.ren:null,pgN=(ren&&ren.info&&ren.inf
 var np=(pgN>=0&&P.lastPg>=0)?Math.max(0,pgN-P.lastPg):0;P.lastPg=pgN;
 if(P.ab){if(typeof _d3pfAbFrame==='function')_d3pfAbFrame(c);}
 else if(c.dt>0){P.hist.push(c);if(P.hist.length>600)P.hist.shift();}
-if(c.dt>100){P.hitchN=(P.hitchN|0)+1;P.hitch.push({at:performance.now(),dt:c.dt,lm:c.lm,rm:c.rm,top:_d3pfTop(c.st,3),build:(P.lastBc>=0&&bc!==P.lastBc),t1:now,dp:_d3pfTopOf(c.st,'drawing/',2),lp:_d3pfTopOf(c.st,'loop/',2),pg:np,kb:(typeof _d3pfSentKB==='function')?_d3pfSentKB(c.st):0});if(P.hitch.length>200)P.hitch.shift();}
+if(typeof _d3pfClkTick==='function')_d3pfClkTick(now);
+if(c.dt>100){P.hitchN=(P.hitchN|0)+1;P.hitch.push({at:performance.now(),dt:c.dt,lm:c.lm,rm:c.rm,top:_d3pfTop(c.st,3),build:(P.lastBc>=0&&bc!==P.lastBc),t1:now,dp:_d3pfTopOf(c.st,'drawing/',2),lp:_d3pfTopOf(c.st,'loop/',2),pg:np,kb:(typeof _d3pfSentKB==='function')?_d3pfSentKB(c.st):0,clk:(typeof _d3pfClkNow==='function')?_d3pfClkNow():null});if(P.hitch.length>200)P.hitch.shift();}
 P.lastBc=bc;P.cur=_d3pfNew();
 if(P.gq&&typeof _d3pfGpuFrame==='function')_d3pfGpuFrame();
 if(++P.tick%20===0){_d3pfHook();_d3pfShow();}
@@ -104406,7 +104407,8 @@ else L.push('no frames measured yet');
 if(d.lastBuild){L.push(_d3pfBuildLine(d.lastBuild));if(d.lastBuild.prof)L.push('  its phases (ms): '+d.lastBuild.prof);}
 var H=d.hitch||[],HN=Math.max(H.length,d.hitchN|0);L.push('hitches over 100 ms since the readout was turned on: '+HN+(H.length?':':''));
 var WHY={background:', the page in the background - not the game',idle:', the page idle - the browser or the graphics card held the frame',busy:', the page busy'};
-H.slice(-20).forEach(function(h){L.push('  '+Math.round(h.dt)+' ms, '+(h.ago/1000).toFixed(0)+' s ago, game work '+Math.round(h.lm)+' ms'+_d3pfHitchWhat(h)+(h.build?', a map build ran':'')+(WHY[h.why]||''));});
+H.slice(-20).forEach(function(h){L.push('  '+Math.round(h.dt)+' ms, '+(h.ago/1000).toFixed(0)+' s ago, game work '+Math.round(h.lm)+' ms'+_d3pfHitchWhat(h)+(h.build?', a map build ran':'')+(WHY[h.why]||'')+((typeof _d3pfClkWords==='function')?_d3pfClkWords(h.clk):''));});
+if(d.clkLine)L.push(d.clkLine);
 var T=d.lt||[];if(T.length){var s=0;T.forEach(function(x){s+=x[1];});L.push('long tasks since then: '+T.length+', '+(s/1000).toFixed(1)+' s in all, longest '+Math.round(Math.max.apply(null,T.map(function(x){return x[1];})))+' ms');}
 var B=d.by||[];if(B.length){L.push('one frame, by what it draws (calls, triangles):');
 B.slice(0,24).forEach(function(r){L.push('  '+r[0]+'  '+r[1]+'  '+M(r[2]));});}
@@ -104427,7 +104429,7 @@ map:(typeof _da!=='undefined'&&_da)?_da.pattern:'',bld:(typeof _da!=='undefined'
 tier:(typeof _d3qualName==='function')?_d3qualName():'',shadows:!!(D.ren&&D.ren.shadowMap&&D.ren.shadowMap.enabled),
 w:cv?cv.width:0,h:cv?cv.height:0,dpr:(D.ren&&D.ren.getPixelRatio)?D.ren.getPixelRatio():1,mode:mode,S:S,
 lastBuild:_d3pfLastBuild(),hitch:_RCGPF.hitch.map(function(h){var w='';try{if(h.t1!=null&&typeof _d3gapWhy==='function')w=_d3gapWhy(h.t1-h.dt,h.t1,_RCGPF.lt,(typeof _RCGLR!=='undefined'&&_RCGLR.vis)||[]);}catch(_w){}
-return {dt:h.dt,lm:h.lm,rm:h.rm,top:h.top,build:h.build,ago:now-h.at,why:w,dp:h.dp,lp:h.lp,pg:h.pg,kb:h.kb};}),hitchN:_RCGPF.hitchN|0,lt:_RCGPF.lt,by:by,load:load,
+return {dt:h.dt,lm:h.lm,rm:h.rm,top:h.top,build:h.build,ago:now-h.at,clk:h.clk,why:w,dp:h.dp,lp:h.lp,pg:h.pg,kb:h.kb};}),clkLine:(typeof _d3pfClkLine==='function')?_d3pfClkLine(_RCGPF.clk,_RCGPF.batt):'',hitchN:_RCGPF.hitchN|0,lt:_RCGPF.lt,by:by,load:load,
 shk:(typeof _d3shkLine==='function'&&D._shKeep&&D.ren&&D.ren.shadowMap&&D.ren.shadowMap.enabled)?_d3shkLine(D._shKeep,!!D._noShadowKeep,(typeof _d3shkWhy==='function')?_d3shkWhy():null):null,
 crowdN:D._crowdStepN||null,skinN:D._skinStepN||null,lodN:D._poolLod||null,shoalLodN:D._shoalLod||null,rivShoalLodN:D._rivShoalLod||null,dirtyN:dn,tfN:{cars:(D.traffic||[]).length,walkers:(D.walkers||[]).length,wait:D._walkWait|0},
 fhd:(typeof _d3fhdLine==='function'&&D._fhd)?_d3fhdLine(D._fhd,!!D._noForestHold):null,fv:(typeof _d3fvLine==='function'&&(D._fv||D._noForestView))?_d3fvLine(D._fv,!!D._noForestView):null,ffar:ffar,mem:mem,heap:_d3pfHeap(),gpuT:(typeof _d3pfGpuReport==='function')?_d3pfGpuReport():null,ab:(_RCGPF.abRes&&typeof _d3pfAbLines==='function')?_d3pfAbLines(_RCGPF.abRes.R,_D3_PFAB_NAMES,_RCGPF.abRes.why):null});
@@ -104453,6 +104455,7 @@ function driftPerfToggle(){
 var P=_RCGPF;P.on=!P.on;
 if(P.on){_d3pfHook();P.cur=_d3pfNew();P.hist=[];P.hitch=[];P.hitchN=0;P.lt=[];P.lastNow=null;P.lastBc=-1;
 try{if(typeof _d3pfGpuOn==='function')_d3pfGpuOn(_D3.ren);}catch(_gq){}
+try{if(typeof _d3pfClkOn==='function')_d3pfClkOn();}catch(_ck){}
 try{if(!P.obs){P.obs=new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(P.on&&P.lt.length<500)P.lt.push([e.startTime,e.duration]);});});P.obs.observe({type:'longtask'});}}catch(_o){}
 var el=P.el=document.createElement('div');el.id='rcgPerfHud';
 el.style.cssText='position:fixed;left:10px;bottom:10px;z-index:2147481901;background:rgba(10,14,20,0.82);color:#e8eef5;font:11px/1.45 ui-monospace,Menlo,Consolas,monospace;padding:6px 10px;border-radius:8px;display:flex;gap:10px;align-items:center;max-width:calc(100vw - 32px);';
@@ -104602,6 +104605,28 @@ if(!r.g)return 'the graphics card’s own time: no frame timed yet'+lo+(r.err?' 
 var g=r.g,K=Object.keys(g.parts).sort(function(a,b){return g.parts[b]-g.parts[a];});
 return 'the graphics card’s own time (its own timer, '+g.n+' frames): '+f2(g.med)+' ms a median frame'+((rmMed>0)?', against '+f2(rmMed)+' of the page’s own drawing':'')
 +' - '+K.map(function(k){return k+' '+f2(g.parts[k]);}).join(', ')+lo;
+}
+var _D3_PF_CLK={n:1500000,every:1000,keep:300,slow:2};
+function _d3pfClkWork(n){var a=0,b=1,i;for(i=0;i<n;i++){a=(a+(b*7)+i)|0;b=(b^a)&0xffff;}return a;}
+function _d3pfClkTick(now){
+var P=_RCGPF,C=P.clk||(P.clk={best:Infinity,last:null,at:-1e9,hist:[],sink:0});if(now-C.at<_D3_PF_CLK.every)return;C.at=now;
+var t0=performance.now();C.sink^=_d3pfClkWork(_D3_PF_CLK.n);var ms=performance.now()-t0,heap=null;
+try{var m=performance.memory;if(m&&m.usedJSHeapSize>0)heap=Math.round(m.usedJSHeapSize/1048576);}catch(_m){}
+if(ms>0&&ms<C.best)C.best=ms;C.last={at:now,ms:ms,heap:heap};C.hist.push(C.last);if(C.hist.length>_D3_PF_CLK.keep)C.hist.shift();
+}
+function _d3pfClkNow(){var C=_RCGPF.clk;return (C&&C.last&&C.best<Infinity&&C.last.ms>0)?C.best/C.last.ms:null;}
+function _d3pfClkWords(r){if(r==null)return '';return r>=0.7?', the machine at its speed':', THE MACHINE AT '+(r>=0.15?Math.round(r*100)+'%':'1/'+Math.round(1/r))+' OF ITS SPEED';}
+function _d3pfClkLine(C,batt){
+if(!C||!C.hist.length||!(C.best<Infinity))return '';var H=C.hist,n=H.length,slow=0,worst=0,i;
+for(i=0;i<n;i++){var r=H[i].ms/C.best;if(r>=_D3_PF_CLK.slow)slow++;if(r>worst)worst=r;}
+var b=batt?(batt.charging?', plugged in':', on battery')+(batt.level!=null?' at '+Math.round(batt.level*100)+'%':''):'';
+return 'the machine’s own speed (a fixed sum timed every '+(_D3_PF_CLK.every/1000)+' s, nothing of the game’s in it): its best '+C.best.toFixed(2)+' ms; at under half its speed in '
++slow+' of the last '+n+' ('+Math.round(n*_D3_PF_CLK.every/1000)+' s), its slowest '+(worst>=1.5?worst.toFixed(1)+' times its best':'at its best')+b;
+}
+function _d3pfClkOn(){
+var P=_RCGPF;P.clk=null;P.batt=null;
+try{if(navigator.getBattery)navigator.getBattery().then(function(B){var f=function(){P.batt={charging:!!B.charging,level:B.level};};f();
+if(!B._rcgClk){B._rcgClk=1;B.addEventListener('chargingchange',f);B.addEventListener('levelchange',f);}}).catch(function(){});}catch(_b){}
 }
 var _D3_PFAB_WARM=8;
 var _D3_PFAB_N=45;
